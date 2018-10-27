@@ -92,7 +92,7 @@ public:
 
 };
 
-std::string tokToStr(ACC::Token::TokenClass tok) {
+static std::string tokToStr(ACC::Token::TokenClass tok) {
   switch (tok) {
     case ACC::Token::TokenClass::IDENTIFIER:
       return "IDENTIFIER";
