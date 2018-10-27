@@ -12,6 +12,7 @@ class Tokeniser {
 public:
   Tokeniser(Scanner& scanner);
 
+  /* Parses the next Token out of the Input File. */
   ACC::Token nextToken();
 
 private:
