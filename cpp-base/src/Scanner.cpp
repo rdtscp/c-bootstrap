@@ -2,27 +2,25 @@
 #include <streambuf>
 #include <string>
 
-#include "Scanner.h"
+#include "../include/Scanner.h"
 
 ACC::Scanner::Scanner(const std::string &filename) : column(1), line(1) {
   std::ifstream t(filename);
-  std::string m_file((std::istreambuf_iterator<char>(t)),
+  file = std::string((std::istreambuf_iterator<char>(t)),
                      std::istreambuf_iterator<char>());
-  currChar = m_file.begin();
+  currChar = file.begin();
 }
 
 char ACC::Scanner::next() {
-  if (currChar == file.end())
-    return (char)-1;
-
-  char nextChar = *(currChar++);
+  char nextChar = *currChar;
   if (nextChar == '\n' || nextChar == '\r') {
     line++;
     column = 0;
   } else {
     column++;
   }
+  currChar++;
   return nextChar;
 }
 
-char ACC::Scanner::peek() { return *(currChar + 1); }
+char ACC::Scanner::peek() { return *currChar; }
