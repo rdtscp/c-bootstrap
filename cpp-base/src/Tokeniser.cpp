@@ -7,7 +7,7 @@
 #include "../include/Token.h"
 #include "../include/Tokeniser.h"
 
-ACC::Tokeniser::Tokeniser(Scanner &scanner) : scanner(scanner) {}
+ACC::Tokeniser::Tokeniser(const Scanner &scanner) : scanner(scanner) {}
 
 ACC::Token ACC::Tokeniser::nextToken() {
   // Get the next Char.
@@ -381,8 +381,9 @@ ACC::Token ACC::Tokeniser::nextToken() {
       return ACC::Token(ACC::Token::TokenClass::NE, scanner.line,
                         scanner.column);
     } else {
-      return ACC::Token(ACC::Token::TokenClass::INVALID, scanner.line,
-                        scanner.column);
+      throw std::runtime_error("Unexpected Token at Line " +
+                               std::to_string(scanner.line) + ", Column " +
+                               std::to_string(scanner.column));
     }
   }
   // Recognise CHAR_LITERAL token.
