@@ -7,7 +7,7 @@
 #include "Token.h"
 #include "Tokeniser.h"
 
-ACC::Tokeniser::Tokeniser(const Scanner &scanner) : scanner(scanner) {}
+ACC::Tokeniser::Tokeniser(Scanner &scanner) : scanner(scanner) {}
 
 ACC::Token ACC::Tokeniser::next() {
   // Get the next Char.
