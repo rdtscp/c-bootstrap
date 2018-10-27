@@ -19,7 +19,6 @@ public:
   VarDecl(std::shared_ptr<ACC::Type> type_ptr, std::string p_identifer)
       : identifer(p_identifer), fpOffset(0) {
     type = type_ptr;
-    printf("Retrieved Type: %s\n", type_ptr->toString().c_str());
   }
   
 };
