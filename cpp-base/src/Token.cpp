@@ -8,10 +8,3 @@ ACC::Token::Token()
 ACC::Token::Token(ACC::Token::TokenClass type, int lineNum, int colNum,
                   std::string data)
     : tokenClass(type), position(Position(lineNum, colNum)), data(data) {}
-
-ACC::Token::Token(const ACC::Token &t)
-    : tokenClass(t.tokenClass), position(t.position), data(t.data) {}
-
-ACC::Token ACC::Token::operator=(Token t) {
-  return t;
-}
