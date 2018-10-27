@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Type.h"
 
 namespace ACC {
@@ -7,16 +9,19 @@ namespace ACC {
 class VarDecl {
 
 public:
-  Type type;
+  std::shared_ptr<ACC::Type> type;
   std::string identifer;
   int numBytes;
   ACC::FunDecl parentFunc;
   int fpOffset;
   int spOffset;
 
-public:
-  VarDecl(Type p_type, std::string p_identifer)
-      : type(p_type), identifer(p_identifer), fpOffset(0) {}
+  VarDecl(std::shared_ptr<ACC::Type> type_ptr, std::string p_identifer)
+      : identifer(p_identifer), fpOffset(0) {
+    type = type_ptr;
+    printf("Retrieved Type: %s\n", type_ptr->toString().c_str());
+  }
+  
 };
 
 }; // namespace ACC
