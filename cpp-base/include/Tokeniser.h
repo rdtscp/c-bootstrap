@@ -10,7 +10,7 @@ namespace ACC {
 class Tokeniser {
 
 public:
-  Tokeniser(Scanner& scanner);
+  Tokeniser(const Scanner &scanner);
 
   /* Parses the next Token out of the Input File. */
   ACC::Token nextToken();
