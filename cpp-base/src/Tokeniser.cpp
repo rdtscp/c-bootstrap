@@ -4,18 +4,18 @@
 #include <streambuf>
 #include <string>
 
-#include "Token.h"
-#include "Tokeniser.h"
+#include "../include/Token.h"
+#include "../include/Tokeniser.h"
 
 ACC::Tokeniser::Tokeniser(Scanner &scanner) : scanner(scanner) {}
 
-ACC::Token ACC::Tokeniser::next() {
+ACC::Token ACC::Tokeniser::nextToken() {
   // Get the next Char.
   char c = scanner.next();
 
-  // if ((int)c == -1)
-  return ACC::Token(ACC::Token::TokenClass::ENDOFFILE, scanner.line,
-                    scanner.column);
+  if ((int)c == 0)
+    return ACC::Token(ACC::Token::TokenClass::ENDOFFILE, scanner.line,
+                      scanner.column);
 
   // Parse DIV token taking into account comments.
   if (c == '/') {
@@ -58,14 +58,16 @@ ACC::Token ACC::Tokeniser::next() {
     while (true) {
       c = scanner.next();
       if ((int)c == -1) {
-        throw std::runtime_error("Unexpected EOF at Line " + scanner.line +
-                                 ", Column " + scanner.column);
+        throw std::runtime_error("Unexpected EOF at Line " +
+                                 std::to_string(scanner.line) + ", Column " +
+                                 std::to_string(scanner.column));
       }
       // If hit new-line before STRING_LITERAL terminator, we have invalid
       // token.
       if (scanner.line != currLine) {
-        throw std::runtime_error("Unexpected Token at Line " + scanner.line +
-                                 ", Column " + scanner.column);
+        throw std::runtime_error("Unexpected Token at Line " +
+                                 std::to_string(scanner.line) + ", Column " +
+                                 std::to_string(scanner.column));
       }
       // Check if we are about to see an escaped character.
       if (c == '\\') {
@@ -259,7 +261,8 @@ ACC::Token ACC::Tokeniser::next() {
         }
         peek = scanner.peek();
         if (isStruct && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-                  return ACC::Token(ACC::Token::TokenClass::STRUCT, scanner.line,scanner.column));
+          return ACC::Token(ACC::Token::TokenClass::STRUCT, scanner.line,
+                            scanner.column);
         }
       }
     }
@@ -274,7 +277,7 @@ ACC::Token ACC::Tokeniser::next() {
       for (int i = 0; i < expected.length(); i++) {
         // Get the next char, and the expected char.
         peek = scanner.peek();
-        expt_c = expected.[i];
+        expt_c = expected[i];
         if (peek != expt_c) {
           // This is not a WHILE token.
           isWhile = false;
@@ -399,17 +402,19 @@ ACC::Token ACC::Tokeniser::next() {
         // Next character must be a closing single quote to be a valid
         // CHAR_LITERAL.
         if (peek == '\'') {
-          std::string ltr = "\\" + c;
+          std::string ltr = "\\" + std::to_string(c);
           c = scanner.next();
           return ACC::Token(ACC::Token::TokenClass::CHAR_LITERAL, scanner.line,
                             scanner.column, ltr);
         } else {
-          throw std::runtime_error("Unexpected Token at Line " + scanner.line +
-                                   ", Column " + scanner.column);
+          throw std::runtime_error("Unexpected Token at Line " +
+                                   std::to_string(scanner.line) + ", Column " +
+                                   std::to_string(scanner.column));
         }
       } else {
-        throw std::runtime_error("Unexpected Token at Line " + scanner.line +
-                                 ", Column " + scanner.column);
+        throw std::runtime_error("Unexpected Token at Line " +
+                                 std::to_string(scanner.line) + ", Column " +
+                                 std::to_string(scanner.column));
       }
     }
     // Otherwise we have a normal char.
@@ -419,10 +424,12 @@ ACC::Token ACC::Tokeniser::next() {
         char val = c;
         c = scanner.next();
         return ACC::Token(ACC::Token::TokenClass::CHAR_LITERAL, scanner.line,
-                          scanner.column, std::string("" + val));
+                          scanner.column,
+                          std::string("" + std::to_string(val)));
       } else {
-        throw std::runtime_error("Unexpected Token at Line " + scanner.line +
-                                 ", Column " + scanner.column);
+        throw std::runtime_error("Unexpected Token at Line " +
+                                 std::to_string(scanner.line) + ", Column " +
+                                 std::to_string(scanner.column));
       }
     }
   }
@@ -452,8 +459,9 @@ ACC::Token ACC::Tokeniser::next() {
       return ACC::Token(ACC::Token::TokenClass::AND, scanner.line,
                         scanner.column);
     } else {
-      throw std::runtime_error("Unexpected Token at Line " + scanner.line +
-                               ", Column " + scanner.column);
+      throw std::runtime_error("Unexpected Token at Line " +
+                               std::to_string(scanner.line) + ", Column " +
+                               std::to_string(scanner.column));
     }
   }
   // Recognise OR token.
@@ -463,8 +471,9 @@ ACC::Token ACC::Tokeniser::next() {
       return ACC::Token(ACC::Token::TokenClass::OR, scanner.line,
                         scanner.column);
     } else {
-      throw std::runtime_error("Unexpected Token at Line " + scanner.line +
-                               ", Column " + scanner.column);
+      throw std::runtime_error("Unexpected Token at Line " +
+                               std::to_string(scanner.line) + ", Column " +
+                               std::to_string(scanner.column));
     }
   }
   // Recognise INCLUDE token.
@@ -478,8 +487,9 @@ ACC::Token ACC::Tokeniser::next() {
       expt_c = expected[i];
       // If the current character is not expected.
       if (c != expt_c) {
-        throw std::runtime_error("Unexpected Token at Line " + scanner.line +
-                                 ", Column " + scanner.column);
+        throw std::runtime_error("Unexpected Token at Line " +
+                                 std::to_string(scanner.line) + ", Column " +
+                                 std::to_string(scanner.column));
       }
     }
     // We have found "#include".
@@ -529,9 +539,10 @@ ACC::Token ACC::Tokeniser::next() {
 
   // Skip Whitespace.
   if (std::isspace(c))
-    return next();
+    return nextToken();
 
   // if we reach this point, it means we did not recognise a valid token
-  throw std::runtime_error("Unexpected Token at Line " + scanner.line +
-                           ", Column " + scanner.column);
+  throw std::runtime_error("Unexpected Token at Line " +
+                           std::to_string(scanner.line) + ", Column " +
+                           std::to_string(scanner.column));
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 
 #include "Scanner.h"
@@ -8,9 +10,9 @@ namespace ACC {
 class Tokeniser {
 
 public:
-  Tokeniser(const Scanner &scanner);
+  Tokeniser(Scanner& scanner);
 
-  ACC::Token next();
+  ACC::Token nextToken();
 
 private:
   Scanner scanner;

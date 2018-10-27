@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Position.h"
 
 namespace ACC {
@@ -81,8 +83,7 @@ public:
   TokenClass tokenClass;
 
   Token(TokenClass tokenClass, int lineNum, int colNum, std::string data = "");
-
-  std::string toString();
+  
 };
 
 }; // namespace ACC
