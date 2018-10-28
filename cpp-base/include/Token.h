@@ -93,21 +93,21 @@ static std::string tokToStr(const Token::TokenClass &tok) {
   case Token::TokenClass::IDENTIFIER:
     return "IDENTIFIER";
   case Token::TokenClass::ASSIGN:
-    return "ASSIGN";
+    return "=";
   case Token::TokenClass::LBRA:
-    return "LBRA";
+    return "{";
   case Token::TokenClass::RBRA:
-    return "RBRA";
+    return "}";
   case Token::TokenClass::LPAR:
-    return "LPAR";
+    return "(";
   case Token::TokenClass::RPAR:
-    return "RPAR";
+    return ")";
   case Token::TokenClass::LSBR:
-    return "LSBR";
+    return "[";
   case Token::TokenClass::RSBR:
-    return "RSBR";
+    return "]";
   case Token::TokenClass::SC:
-    return "SC";
+    return ";";
   case Token::TokenClass::COMMA:
     return "COMMA";
   case Token::TokenClass::INT:
@@ -137,35 +137,35 @@ static std::string tokToStr(const Token::TokenClass &tok) {
   case Token::TokenClass::CHAR_LITERAL:
     return "CHAR_LITERAL";
   case Token::TokenClass::AND:
-    return "AND";
+    return "&&";
   case Token::TokenClass::OR:
-    return "OR";
+    return "||";
   case Token::TokenClass::EQ:
-    return "EQ";
+    return "==";
   case Token::TokenClass::NE:
-    return "NE";
+    return "!=";
   case Token::TokenClass::LT:
-    return "LT";
+    return "<";
   case Token::TokenClass::GT:
-    return "GT";
+    return ">";
   case Token::TokenClass::LE:
-    return "LE";
+    return "<=";
   case Token::TokenClass::GE:
-    return "GE";
+    return ">=";
   case Token::TokenClass::PLUS:
-    return "PLUS";
+    return "+";
   case Token::TokenClass::MINUS:
-    return "MINUS";
+    return "-";
   case Token::TokenClass::ASTERIX:
-    return "ASTERIX";
+    return "*";
   case Token::TokenClass::DIV:
-    return "DIV";
+    return "/";
   case Token::TokenClass::REM:
-    return "REM";
+    return "%";
   case Token::TokenClass::DOT:
-    return "DOT";
+    return ".";
   case Token::TokenClass::ENDOFFILE:
-    return "ENDOFFILE";
+    return "EOF";
   case Token::TokenClass::INVALID:
     return "INVALID";
   }
