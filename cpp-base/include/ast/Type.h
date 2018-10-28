@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef TYPE_H
+#define TYPE_H
+
 #include <string>
 
 namespace ACC {
@@ -18,3 +21,5 @@ static bool instanceOf(const Child &child) {
 }
 
 }; // namespace ACC
+
+#endif

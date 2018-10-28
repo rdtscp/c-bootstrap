@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef BASETYPE_H
+#define BASETYPE_H
+
 #include <string>
 
 #include "PrimitiveType.h"
@@ -33,3 +36,5 @@ public:
 };
 
 }; // namespace ACC
+
+#endif

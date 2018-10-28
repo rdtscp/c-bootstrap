@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef TOKENISER_H
+#define TOKENISER_H
+
 #include <string>
 
 #include "Scanner.h"
@@ -20,3 +23,5 @@ private:
 };
 
 }; // namespace ACC
+
+#endif

@@ -1,9 +1,7 @@
-#include <cctype>
-#include <fstream>
+// #include <cctype>
 #include <stdexcept>
-#include <streambuf>
-#include <string>
 
+#include "../include/Scanner.h"
 #include "../include/Token.h"
 #include "../include/Tokeniser.h"
 

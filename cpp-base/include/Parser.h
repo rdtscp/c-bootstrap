@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef PARSER_H
+#define PARSER_H
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -19,7 +22,6 @@ public:
   Program parse();
 
 private:
-
   Token currToken;
   std::vector<Token> tokenBuffer;
   Tokeniser tokeniser;
@@ -62,3 +64,5 @@ private:
 };
 
 }; // namespace ACC
+
+#endif

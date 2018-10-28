@@ -1,6 +1,4 @@
 #include <fstream>
-#include <streambuf>
-#include <string>
 
 #include "../include/Scanner.h"
 

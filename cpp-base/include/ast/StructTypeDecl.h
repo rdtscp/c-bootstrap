@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef STRUCTTYPEDECL_H
+#define STRUCTTYPEDECL_H
+
 #include <vector>
 
 #include "StructType.h"
@@ -21,3 +24,5 @@ public:
 };
 
 }; // namespace ACC
+
+#endif

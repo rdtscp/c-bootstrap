@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef POINTERTYPE_H
+#define POINTERTYPE_H
+
 #include <string>
 
 #include "PrimitiveType.h"
@@ -22,3 +25,5 @@ public:
 };
 
 }; // namespace ACC
+
+#endif

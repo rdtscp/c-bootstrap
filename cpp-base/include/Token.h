@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef TOKEN_H
+#define TOKEN_H
+
 #include "Position.h"
 
 namespace ACC {
@@ -82,10 +85,12 @@ public:
   Position position;
   TokenClass tokenClass;
 
-  Token();
+  Token()
+      : tokenClass(Token::TokenClass::INVALID), position(Position(-1, -1)),
+        data("") {}
 
-  Token(TokenClass tokenClass, int lineNum, int colNum, std::string data = "");
-
+  Token(TokenClass tokenClass, int lineNum, int colNum, std::string data = "")
+      : tokenClass(tokenClass), position(Position(lineNum, colNum)), data(data) {}
 };
 
 static std::string tokToStr(const Token::TokenClass &tok) {
@@ -172,3 +177,5 @@ static std::string tokToStr(const Token::TokenClass &tok) {
 }
 
 }; // namespace ACC
+
+#endif

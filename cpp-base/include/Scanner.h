@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef SCANNER_H
+#define SCANNER_H
+
 #include <string>
 
 namespace ACC {
@@ -22,3 +25,5 @@ private:
 };
 
 }; // namespace ACC
+
+#endif

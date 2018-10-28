@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef PROGRAM_H
+#define PROGRAM_H
+
 #include "FunDecl.h"
 #include "StructTypeDecl.h"
 #include "VarDecl.h"
@@ -21,3 +24,5 @@ public:
 };
 
 }; // namespace ACC
+
+#endif

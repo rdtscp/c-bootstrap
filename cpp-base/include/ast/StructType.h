@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef STRUCTTYPE_H
+#define STRUCTTYPE_H
+
 #include <memory>
 #include <string>
 
@@ -20,3 +23,5 @@ public:
 };
 
 }; // namespace ACC
+
+#endif

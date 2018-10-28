@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef VARDECL_H
+#define VARDECL_H
+
 #include <memory>
 
 #include "Type.h"
@@ -24,3 +27,5 @@ public:
 };
 
 }; // namespace ACC
+
+#endif

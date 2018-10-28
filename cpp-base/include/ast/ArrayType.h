@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef ARRAYTYPE_H
+#define ARRAYTYPE_H
+
 #include <memory>
 #include <string>
 
@@ -23,3 +26,5 @@ public:
 };
 
 }; // namespace ACC
+
+#endif
