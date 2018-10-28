@@ -7,14 +7,16 @@
 #include "../include/Token.h"
 #include "../include/Tokeniser.h"
 
-ACC::Tokeniser::Tokeniser(const Scanner &scanner) : scanner(scanner) {}
+using namespace ACC;
 
-ACC::Token ACC::Tokeniser::nextToken() {
+Tokeniser::Tokeniser(const Scanner &scanner) : scanner(scanner) {}
+
+Token Tokeniser::nextToken() {
   // Get the next Char.
   char c = scanner.next();
 
   if ((int)c == 0)
-    return ACC::Token(ACC::Token::TokenClass::ENDOFFILE, scanner.line,
+    return Token(Token::TokenClass::ENDOFFILE, scanner.line,
                       scanner.column);
 
   // Parse DIV token taking into account comments.
@@ -45,7 +47,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
       }
       c = scanner.next();
     } else
-      return ACC::Token(ACC::Token::TokenClass::DIV, scanner.line,
+      return Token(Token::TokenClass::DIV, scanner.line,
                         scanner.column);
   }
 
@@ -82,7 +84,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
         literal += c;
       }
     }
-    return ACC::Token(ACC::Token::TokenClass::STRING_LITERAL, scanner.line,
+    return Token(Token::TokenClass::STRING_LITERAL, scanner.line,
                       scanner.column, literal);
   }
 
@@ -114,7 +116,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
       }
       peek = scanner.peek();
       if (isChar && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-        return ACC::Token(ACC::Token::TokenClass::CHAR, scanner.line,
+        return Token(Token::TokenClass::CHAR, scanner.line,
                           scanner.column);
       }
     }
@@ -140,7 +142,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
       }
       peek = scanner.peek();
       if (isElse && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-        return ACC::Token(ACC::Token::TokenClass::ELSE, scanner.line,
+        return Token(Token::TokenClass::ELSE, scanner.line,
                           scanner.column);
       }
     }
@@ -154,7 +156,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
         // If the char following IF is valid for an IF statement, return the
         // token.
         if ((!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-          return ACC::Token(ACC::Token::TokenClass::IF, scanner.line,
+          return Token(Token::TokenClass::IF, scanner.line,
                             scanner.column);
         }
       }
@@ -180,7 +182,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
         }
         peek = scanner.peek();
         if (isInt && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-          return ACC::Token(ACC::Token::TokenClass::INT, scanner.line,
+          return Token(Token::TokenClass::INT, scanner.line,
                             scanner.column);
         }
       }
@@ -207,7 +209,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
       }
       peek = scanner.peek();
       if (isReturn && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-        return ACC::Token(ACC::Token::TokenClass::RETURN, scanner.line,
+        return Token(Token::TokenClass::RETURN, scanner.line,
                           scanner.column);
       }
     }
@@ -235,7 +237,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
         }
         peek = scanner.peek();
         if (isSizeof && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-          return ACC::Token(ACC::Token::TokenClass::SIZEOF, scanner.line,
+          return Token(Token::TokenClass::SIZEOF, scanner.line,
                             scanner.column);
         }
       }
@@ -261,7 +263,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
         }
         peek = scanner.peek();
         if (isStruct && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-          return ACC::Token(ACC::Token::TokenClass::STRUCT, scanner.line,
+          return Token(Token::TokenClass::STRUCT, scanner.line,
                             scanner.column);
         }
       }
@@ -288,7 +290,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
       }
       peek = scanner.peek();
       if (isWhile && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-        return ACC::Token(ACC::Token::TokenClass::WHILE, scanner.line,
+        return Token(Token::TokenClass::WHILE, scanner.line,
                           scanner.column);
       }
       c = scanner.next();
@@ -316,7 +318,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
       }
       peek = scanner.peek();
       if (isVoid && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-        return ACC::Token(ACC::Token::TokenClass::VOID, scanner.line,
+        return Token(Token::TokenClass::VOID, scanner.line,
                           scanner.column);
       }
     }
@@ -329,13 +331,13 @@ ACC::Token ACC::Tokeniser::nextToken() {
       // If the next character is whitespace, the IDENTIFIER has been
       // identified.
       if (std::isspace(peek)) {
-        return ACC::Token(ACC::Token::TokenClass::IDENTIFIER, scanner.line,
+        return Token(Token::TokenClass::IDENTIFIER, scanner.line,
                           scanner.column, literal);
       }
       // If the next character is an illegal characater for an IDENTIFIER, we
       // have finished finding the token.
       if (!isalpha(peek) && !isdigit(peek) && peek != '_') {
-        return ACC::Token(ACC::Token::TokenClass::IDENTIFIER, scanner.line,
+        return Token(Token::TokenClass::IDENTIFIER, scanner.line,
                           scanner.column, literal);
       }
       // We are still Lexing the token.
@@ -353,7 +355,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
       peek = scanner.peek();
       // Check that next char is a digit.
       if (!isdigit(peek)) {
-        return ACC::Token(ACC::Token::TokenClass::INT_LITERAL, scanner.line,
+        return Token(Token::TokenClass::INT_LITERAL, scanner.line,
                           scanner.column, literal);
       }
       c = scanner.next();
@@ -366,19 +368,19 @@ ACC::Token ACC::Tokeniser::nextToken() {
     // EQ Token.
     if (scanner.peek() == '=') {
       scanner.next();
-      return ACC::Token(ACC::Token::TokenClass::EQ, scanner.line,
+      return Token(Token::TokenClass::EQ, scanner.line,
                         scanner.column);
     }
     // ASSIGN Token.
     else
-      return ACC::Token(ACC::Token::TokenClass::ASSIGN, scanner.line,
+      return Token(Token::TokenClass::ASSIGN, scanner.line,
                         scanner.column);
   }
   // Recognise NE token.
   if (c == '!') {
     if (scanner.peek() == '=') {
       c = scanner.next();
-      return ACC::Token(ACC::Token::TokenClass::NE, scanner.line,
+      return Token(Token::TokenClass::NE, scanner.line,
                         scanner.column);
     } else {
       throw std::runtime_error("Unexpected Token at Line " +
@@ -405,7 +407,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
         if (peek == '\'') {
           std::string ltr = "\\" + std::to_string(c);
           c = scanner.next();
-          return ACC::Token(ACC::Token::TokenClass::CHAR_LITERAL, scanner.line,
+          return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
                             scanner.column, ltr);
         } else {
           throw std::runtime_error("Unexpected Token at Line " +
@@ -424,7 +426,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
       if (peek == '\'') {
         char val = c;
         c = scanner.next();
-        return ACC::Token(ACC::Token::TokenClass::CHAR_LITERAL, scanner.line,
+        return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
                           scanner.column,
                           std::string("" + std::to_string(val)));
       } else {
@@ -438,26 +440,26 @@ ACC::Token ACC::Tokeniser::nextToken() {
   if (c == '<') {
     if (scanner.peek() == '=') {
       c = scanner.next();
-      return ACC::Token(ACC::Token::TokenClass::LE, scanner.line,
+      return Token(Token::TokenClass::LE, scanner.line,
                         scanner.column);
     } else
-      return ACC::Token(ACC::Token::TokenClass::LT, scanner.line,
+      return Token(Token::TokenClass::LT, scanner.line,
                         scanner.column);
   }
   // Recognise GT/GE tokens.
   if (c == '>') {
     if (scanner.peek() == '=') {
       c = scanner.next();
-      return ACC::Token(ACC::Token::TokenClass::GE, scanner.line,
+      return Token(Token::TokenClass::GE, scanner.line,
                         scanner.column);
     }
-    return ACC::Token(ACC::Token::TokenClass::GT, scanner.line, scanner.column);
+    return Token(Token::TokenClass::GT, scanner.line, scanner.column);
   }
   // Recognise AND token.
   if (c == '&') {
     if (scanner.peek() == '&') {
       c = scanner.next();
-      return ACC::Token(ACC::Token::TokenClass::AND, scanner.line,
+      return Token(Token::TokenClass::AND, scanner.line,
                         scanner.column);
     } else {
       throw std::runtime_error("Unexpected Token at Line " +
@@ -469,7 +471,7 @@ ACC::Token ACC::Tokeniser::nextToken() {
   if (c == '|') {
     if (scanner.peek() == '|') {
       c = scanner.next();
-      return ACC::Token(ACC::Token::TokenClass::OR, scanner.line,
+      return Token(Token::TokenClass::OR, scanner.line,
                         scanner.column);
     } else {
       throw std::runtime_error("Unexpected Token at Line " +
@@ -494,48 +496,48 @@ ACC::Token ACC::Tokeniser::nextToken() {
       }
     }
     // We have found "#include".
-    return ACC::Token(ACC::Token::TokenClass::INCLUDE, scanner.line,
+    return Token(Token::TokenClass::INCLUDE, scanner.line,
                       scanner.column);
   }
 
   /* Recognise simple tokens. */
   if (c == '{')
-    return ACC::Token(ACC::Token::TokenClass::LBRA, scanner.line,
+    return Token(Token::TokenClass::LBRA, scanner.line,
                       scanner.column);
   if (c == '}')
-    return ACC::Token(ACC::Token::TokenClass::RBRA, scanner.line,
+    return Token(Token::TokenClass::RBRA, scanner.line,
                       scanner.column);
   if (c == '(')
-    return ACC::Token(ACC::Token::TokenClass::LPAR, scanner.line,
+    return Token(Token::TokenClass::LPAR, scanner.line,
                       scanner.column);
   if (c == ')')
-    return ACC::Token(ACC::Token::TokenClass::RPAR, scanner.line,
+    return Token(Token::TokenClass::RPAR, scanner.line,
                       scanner.column);
   if (c == '[')
-    return ACC::Token(ACC::Token::TokenClass::LSBR, scanner.line,
+    return Token(Token::TokenClass::LSBR, scanner.line,
                       scanner.column);
   if (c == ']')
-    return ACC::Token(ACC::Token::TokenClass::RSBR, scanner.line,
+    return Token(Token::TokenClass::RSBR, scanner.line,
                       scanner.column);
   if (c == ';')
-    return ACC::Token(ACC::Token::TokenClass::SC, scanner.line, scanner.column);
+    return Token(Token::TokenClass::SC, scanner.line, scanner.column);
   if (c == ',')
-    return ACC::Token(ACC::Token::TokenClass::COMMA, scanner.line,
+    return Token(Token::TokenClass::COMMA, scanner.line,
                       scanner.column);
   if (c == '+')
-    return ACC::Token(ACC::Token::TokenClass::PLUS, scanner.line,
+    return Token(Token::TokenClass::PLUS, scanner.line,
                       scanner.column);
   if (c == '-')
-    return ACC::Token(ACC::Token::TokenClass::MINUS, scanner.line,
+    return Token(Token::TokenClass::MINUS, scanner.line,
                       scanner.column);
   if (c == '*')
-    return ACC::Token(ACC::Token::TokenClass::ASTERIX, scanner.line,
+    return Token(Token::TokenClass::ASTERIX, scanner.line,
                       scanner.column);
   if (c == '%')
-    return ACC::Token(ACC::Token::TokenClass::REM, scanner.line,
+    return Token(Token::TokenClass::REM, scanner.line,
                       scanner.column);
   if (c == '.')
-    return ACC::Token(ACC::Token::TokenClass::DOT, scanner.line,
+    return Token(Token::TokenClass::DOT, scanner.line,
                       scanner.column);
 
   // Skip Whitespace.

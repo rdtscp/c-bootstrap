@@ -4,14 +4,16 @@
 
 #include "../include/Scanner.h"
 
-ACC::Scanner::Scanner(const std::string &filename) : column(1), line(1) {
+using namespace ACC;
+
+Scanner::Scanner(const std::string &filename) : column(1), line(1) {
   std::ifstream t(filename);
   file = std::string((std::istreambuf_iterator<char>(t)),
                      std::istreambuf_iterator<char>());
   currChar = file.begin();
 }
 
-char ACC::Scanner::next() {
+char Scanner::next() {
   char nextChar = *currChar;
   if (nextChar == '\n' || nextChar == '\r') {
     line++;
@@ -23,4 +25,4 @@ char ACC::Scanner::next() {
   return nextChar;
 }
 
-char ACC::Scanner::peek() { return *currChar; }
+char Scanner::peek() { return *currChar; }
