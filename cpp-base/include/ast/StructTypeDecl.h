@@ -1,13 +1,23 @@
 #pragma once
 
+#include <vector>
+
+#include "StructType.h"
+#include "VarDecl.h"
+
 namespace ACC {
 
 class StructTypeDecl {
 
 public:
-  StructTypeDecl() {}
+  std::shared_ptr<StructType> structType;
+  std::vector<VarDecl> varDecls;
+  int allocSize;
+  int compactSize;
 
-  StructTypeDecl(const StructTypeDecl &std) {}
+  StructTypeDecl(std::shared_ptr<StructType> structType_ptr, const std::vector<VarDecl>& varDecls) : varDecls(varDecls) {
+    structType = structType_ptr;
+  }
 };
 
 }; // namespace ACC
