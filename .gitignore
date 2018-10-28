@@ -13,4 +13,5 @@ CTestTestfile.cmake
 build/
 
 # Ignore VSCode Settings.
-.vscode/
+.vscode/c_cpp_properties.json
+.vscode/settings.json
