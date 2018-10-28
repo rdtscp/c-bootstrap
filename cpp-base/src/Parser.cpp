@@ -32,6 +32,15 @@ bool Parser::accept(std::vector<Token::TokenClass> expected) {
   return output;
 }
 
+Token Parser::expect(Token::TokenClass expected) {
+  if (expected == currToken.tokenClass) {
+    Token temp = currToken;
+    nextToken();
+    return temp;
+  }
+  throw std::runtime_error("Expected Token " + ACC::tokToStr(expected) + " at " + currToken.position.toString());
+}
+
 Token Parser::expect(std::vector<Token::TokenClass> expected) {
   for (Token::TokenClass token : expected) {
     if (token == currToken.tokenClass) {
@@ -41,15 +50,6 @@ Token Parser::expect(std::vector<Token::TokenClass> expected) {
     }
   }
   throw std::runtime_error("Invalid Token at " + currToken.position.toString());
-}
-
-Token Parser::expect(Token::TokenClass expected) {
-  if (expected == currToken.tokenClass) {
-    Token temp = currToken;
-    nextToken();
-    return temp;
-  }
-  return currToken;
 }
 
 Token Parser::lookAhead(int i) {
