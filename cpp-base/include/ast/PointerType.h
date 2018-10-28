@@ -10,9 +10,9 @@ namespace ACC {
 class PointerType : public Type {
 
 public:
-  std::shared_ptr<ACC::Type> pointedType;
+  std::shared_ptr<Type> pointedType;
 
-  PointerType(std::shared_ptr<ACC::Type> type_ptr) {
+  PointerType(std::shared_ptr<Type> type_ptr) {
     pointedType = type_ptr;
   }
 

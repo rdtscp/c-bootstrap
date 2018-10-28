@@ -13,48 +13,52 @@ namespace ACC {
 class Parser {
 
 public:
-  Parser(const ACC::Tokeniser &tokeniser);
+  Parser(const Tokeniser &tokeniser);
 
-  /* Parses the Tokens into an AST with root node ACC::Program. */
-  ACC::Program parse();
+  /* Parses the Tokens into an AST with root node Program. */
+  Program parse();
 
 private:
-  ACC::Token currToken;
-  std::vector<ACC::Token> tokenBuffer;
-  ACC::Tokeniser tokeniser;
+
+  Token currToken;
+  std::vector<Token> tokenBuffer;
+  Tokeniser tokeniser;
 
   /* Check if we can expect the provided Token to be next. */
-  bool accept(ACC::Token::TokenClass expected);
+  bool accept(Token::TokenClass expected);
 
   /* Check if we can expect one of the provided Tokens to be next. */
-  bool accept(std::vector<ACC::Token::TokenClass> expected);
+  bool accept(std::vector<Token::TokenClass> expected);
 
   /* Expect the next Token to be of a certain type. Throws if not. */
-  ACC::Token expect(ACC::Token::TokenClass expected);
+  Token expect(Token::TokenClass expected);
 
   /* Expect the next Token to be one of a list of types. Throws if not. */
-  ACC::Token expect(std::vector<ACC::Token::TokenClass> expected);
+  Token expect(std::vector<Token::TokenClass> expected);
 
   /* Looks ahead 'i' number of Tokens. */
-  ACC::Token lookAhead(int i);
+  Token lookAhead(int i);
 
   /* Populates currToken with the next unconsumed Token. */
   void nextToken();
 
   /* Parsing */
 
+  std::shared_ptr<Type> expectType();
+  VarDecl expectVarDecl();
+
   void parseIncludes();
-  ACC::Program parseProgram();
-  std::vector<ACC::FunDecl> parseFunDecls();
-  std::vector<ACC::StructTypeDecl> parseStructTypeDecls();
-  std::vector<ACC::VarDecl> parseVarDecls();
+  Program parseProgram();
+  std::vector<FunDecl> parseFunDecls();
+  std::vector<StructTypeDecl> parseStructDecls();
+  std::vector<VarDecl> parseVarDecls();
 
   /* @TODO Parse the rest of the AST. */
 
   /* Helpers */
 
-  /* Converts an ACC::Token to an ACC::Type */
-  std::shared_ptr<ACC::BaseType> tokenToType(const ACC::Token::TokenClass &tc);
+  /* Converts an Token to an Type */
+  std::shared_ptr<BaseType> tokenToType(const Token::TokenClass &tc);
 };
 
 }; // namespace ACC

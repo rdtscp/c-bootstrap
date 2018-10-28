@@ -13,7 +13,7 @@ public:
   Tokeniser(const Scanner &scanner);
 
   /* Parses the next Token out of the Input File. */
-  ACC::Token nextToken();
+  Token nextToken();
 
 private:
   Scanner scanner;

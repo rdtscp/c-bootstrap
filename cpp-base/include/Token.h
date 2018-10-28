@@ -88,85 +88,85 @@ public:
 
 };
 
-static std::string tokToStr(const ACC::Token::TokenClass &tok) {
+static std::string tokToStr(const Token::TokenClass &tok) {
   switch (tok) {
-  case ACC::Token::TokenClass::IDENTIFIER:
+  case Token::TokenClass::IDENTIFIER:
     return "IDENTIFIER";
-  case ACC::Token::TokenClass::ASSIGN:
+  case Token::TokenClass::ASSIGN:
     return "ASSIGN";
-  case ACC::Token::TokenClass::LBRA:
+  case Token::TokenClass::LBRA:
     return "LBRA";
-  case ACC::Token::TokenClass::RBRA:
+  case Token::TokenClass::RBRA:
     return "RBRA";
-  case ACC::Token::TokenClass::LPAR:
+  case Token::TokenClass::LPAR:
     return "LPAR";
-  case ACC::Token::TokenClass::RPAR:
+  case Token::TokenClass::RPAR:
     return "RPAR";
-  case ACC::Token::TokenClass::LSBR:
+  case Token::TokenClass::LSBR:
     return "LSBR";
-  case ACC::Token::TokenClass::RSBR:
+  case Token::TokenClass::RSBR:
     return "RSBR";
-  case ACC::Token::TokenClass::SC:
+  case Token::TokenClass::SC:
     return "SC";
-  case ACC::Token::TokenClass::COMMA:
+  case Token::TokenClass::COMMA:
     return "COMMA";
-  case ACC::Token::TokenClass::INT:
+  case Token::TokenClass::INT:
     return "INT";
-  case ACC::Token::TokenClass::VOID:
+  case Token::TokenClass::VOID:
     return "VOID";
-  case ACC::Token::TokenClass::CHAR:
+  case Token::TokenClass::CHAR:
     return "CHAR";
-  case ACC::Token::TokenClass::IF:
+  case Token::TokenClass::IF:
     return "IF";
-  case ACC::Token::TokenClass::ELSE:
+  case Token::TokenClass::ELSE:
     return "ELSE";
-  case ACC::Token::TokenClass::WHILE:
+  case Token::TokenClass::WHILE:
     return "WHILE";
-  case ACC::Token::TokenClass::RETURN:
+  case Token::TokenClass::RETURN:
     return "RETURN";
-  case ACC::Token::TokenClass::STRUCT:
+  case Token::TokenClass::STRUCT:
     return "STRUCT";
-  case ACC::Token::TokenClass::SIZEOF:
+  case Token::TokenClass::SIZEOF:
     return "SIZEOF";
-  case ACC::Token::TokenClass::INCLUDE:
+  case Token::TokenClass::INCLUDE:
     return "INCLUDE";
-  case ACC::Token::TokenClass::STRING_LITERAL:
+  case Token::TokenClass::STRING_LITERAL:
     return "STRING_LITERAL";
-  case ACC::Token::TokenClass::INT_LITERAL:
+  case Token::TokenClass::INT_LITERAL:
     return "INT_LITERAL";
-  case ACC::Token::TokenClass::CHAR_LITERAL:
+  case Token::TokenClass::CHAR_LITERAL:
     return "CHAR_LITERAL";
-  case ACC::Token::TokenClass::AND:
+  case Token::TokenClass::AND:
     return "AND";
-  case ACC::Token::TokenClass::OR:
+  case Token::TokenClass::OR:
     return "OR";
-  case ACC::Token::TokenClass::EQ:
+  case Token::TokenClass::EQ:
     return "EQ";
-  case ACC::Token::TokenClass::NE:
+  case Token::TokenClass::NE:
     return "NE";
-  case ACC::Token::TokenClass::LT:
+  case Token::TokenClass::LT:
     return "LT";
-  case ACC::Token::TokenClass::GT:
+  case Token::TokenClass::GT:
     return "GT";
-  case ACC::Token::TokenClass::LE:
+  case Token::TokenClass::LE:
     return "LE";
-  case ACC::Token::TokenClass::GE:
+  case Token::TokenClass::GE:
     return "GE";
-  case ACC::Token::TokenClass::PLUS:
+  case Token::TokenClass::PLUS:
     return "PLUS";
-  case ACC::Token::TokenClass::MINUS:
+  case Token::TokenClass::MINUS:
     return "MINUS";
-  case ACC::Token::TokenClass::ASTERIX:
+  case Token::TokenClass::ASTERIX:
     return "ASTERIX";
-  case ACC::Token::TokenClass::DIV:
+  case Token::TokenClass::DIV:
     return "DIV";
-  case ACC::Token::TokenClass::REM:
+  case Token::TokenClass::REM:
     return "REM";
-  case ACC::Token::TokenClass::DOT:
+  case Token::TokenClass::DOT:
     return "DOT";
-  case ACC::Token::TokenClass::ENDOFFILE:
+  case Token::TokenClass::ENDOFFILE:
     return "ENDOFFILE";
-  case ACC::Token::TokenClass::INVALID:
+  case Token::TokenClass::INVALID:
     return "INVALID";
   }
 }

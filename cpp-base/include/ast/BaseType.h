@@ -10,9 +10,9 @@ namespace ACC {
 class BaseType : public Type {
 
 public:
-  ACC::PrimitiveType primitiveType;
+  PrimitiveType primitiveType;
 
-  BaseType(ACC::PrimitiveType pType) : primitiveType(pType) {}
+  BaseType(PrimitiveType pType) : primitiveType(pType) {}
 
   BaseType(const BaseType& bt) {
     primitiveType = bt.primitiveType;
@@ -20,11 +20,11 @@ public:
 
   std::string toString() const override {
     switch (primitiveType) {
-    case ACC::PrimitiveType::INT:
+    case PrimitiveType::INT:
       return "int";
-    case ACC::PrimitiveType::CHAR:
+    case PrimitiveType::CHAR:
       return "char";
-    case ACC::PrimitiveType::VOID:
+    case PrimitiveType::VOID:
       return "void";
     default:
       return "BaseType::T";

@@ -9,13 +9,13 @@ namespace ACC {
 class Program {
 
 public:
-  std::vector<ACC::FunDecl> funDecls;
-  std::vector<ACC::StructTypeDecl> structTypeDecls;
-  std::vector<ACC::VarDecl> varDecls;
+  std::vector<FunDecl> funDecls;
+  std::vector<StructTypeDecl> structTypeDecls;
+  std::vector<VarDecl> varDecls;
 
-  Program(const std::vector<ACC::FunDecl> &funDecls,
-          const std::vector<ACC::StructTypeDecl> &structTypeDecls,
-          const std::vector<ACC::VarDecl> &varDecls)
+  Program(const std::vector<FunDecl> &funDecls,
+          const std::vector<StructTypeDecl> &structTypeDecls,
+          const std::vector<VarDecl> &varDecls)
       : funDecls(funDecls), structTypeDecls(structTypeDecls),
         varDecls(varDecls) {}
 };
