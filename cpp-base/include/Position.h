@@ -18,8 +18,8 @@ public:
   }
 
 private:
-  int line;
   int column;
+  int line;
 };
 
 }; // namespace ACC
