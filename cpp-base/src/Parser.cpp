@@ -37,7 +37,7 @@ Token Parser::expect(Token::TokenClass expected) {
     nextToken();
     return temp;
   }
-  throw std::runtime_error("Expected Token " + ACC::tokToStr(expected) + " at " + currToken.position.toString());
+  throw std::runtime_error("Parsing: Expected Token " + ACC::tokToStr(expected) + " at " + currToken.position.toString());
 }
 
 Token Parser::expect(std::vector<Token::TokenClass> expected) {
@@ -48,7 +48,7 @@ Token Parser::expect(std::vector<Token::TokenClass> expected) {
       return output;
     }
   }
-  throw std::runtime_error("Invalid Token at " + currToken.position.toString());
+  throw std::runtime_error("Parsing: Invalid Token at " + currToken.position.toString());
 }
 
 Token Parser::lookAhead(int i) {
@@ -93,7 +93,7 @@ std::shared_ptr<Type> Parser::expectType() {
     }
     return type;
   } else {
-    throw std::runtime_error("Expected a Type at " +
+    throw std::runtime_error("Parsing: Expected a Type at " +
                              currToken.position.toString());
   }
 }
@@ -258,7 +258,7 @@ std::shared_ptr<BaseType> Parser::tokenToType(const Token::TokenClass &tc) {
   case Token::TokenClass::VOID:
     return std::make_shared<BaseType>(BaseType(PrimitiveType::VOID));
   default:
-    throw std::runtime_error("Cannot resolve Token " + tokToStr(tc) +
+    throw std::runtime_error("Parsing: Cannot resolve Token " + tokToStr(tc) +
                              "  to a type.");
   }
 }
