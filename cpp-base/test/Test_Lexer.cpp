@@ -10,7 +10,8 @@
 
 using namespace ACC;
 
-std::string test_prefix = "../../test/tests/";
+std::string test_prefix = "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/cpp-base/test/tests/";
+// std::string test_prefix = "../../test/tests/";
 
 TEST(LexerTest, AllTokens) {
   Scanner scanner(test_prefix + "lexer/alltokens.c");
@@ -97,7 +98,7 @@ TEST(LexerTest, AllTokens) {
 }
 
 TEST(LexerTest, InvalidIdentifier) {
-  Scanner scanner(test_prefix + "lexer/alltokens.c");  
+  Scanner scanner(test_prefix + "lexer/errors.c");  
   Tokeniser tokeniser(scanner);
 
   ASSERT_EQ(Token::TokenClass::INT_LITERAL, tokeniser.nextToken().tokenClass);
