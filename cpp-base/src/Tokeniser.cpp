@@ -14,8 +14,7 @@ Token Tokeniser::nextToken() {
   char c = scanner.next();
 
   if ((int)c == 0)
-    return Token(Token::TokenClass::ENDOFFILE, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::ENDOFFILE, scanner.line, scanner.column);
 
   // Parse DIV token taking into account comments.
   if (c == '/') {
@@ -45,8 +44,7 @@ Token Tokeniser::nextToken() {
       }
       c = scanner.next();
     } else
-      return Token(Token::TokenClass::DIV, scanner.line,
-                        scanner.column);
+      return Token(Token::TokenClass::DIV, scanner.line, scanner.column);
   }
 
   // Recognise STRING_LITERAL token. @TODO, multiple lines fix.
@@ -58,16 +56,17 @@ Token Tokeniser::nextToken() {
     while (true) {
       c = scanner.next();
       if ((int)c == -1) {
-        throw std::runtime_error("Unexpected EOF at Line " +
+        throw std::runtime_error("Tokeniser: Unexpected EOF at Line " +
                                  std::to_string(scanner.line) + ", Column " +
                                  std::to_string(scanner.column));
       }
       // If hit new-line before STRING_LITERAL terminator, we have invalid
       // token.
       if (scanner.line != currLine) {
-        throw std::runtime_error("Unexpected Token at Line " +
+        throw std::runtime_error("Tokeniser: Unexpected Token at Line " +
                                  std::to_string(scanner.line) + ", Column " +
-                                 std::to_string(scanner.column));
+                                 std::to_string(scanner.column) +
+                                 ". New line found in string literal.");
       }
       // Check if we are about to see an escaped character.
       if (c == '\\') {
@@ -83,7 +82,7 @@ Token Tokeniser::nextToken() {
       }
     }
     return Token(Token::TokenClass::STRING_LITERAL, scanner.line,
-                      scanner.column, literal);
+                 scanner.column, literal);
   }
 
   // Recognise IDENTIFIER/keywords/types token.
@@ -114,8 +113,7 @@ Token Tokeniser::nextToken() {
       }
       peek = scanner.peek();
       if (isChar && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-        return Token(Token::TokenClass::CHAR, scanner.line,
-                          scanner.column);
+        return Token(Token::TokenClass::CHAR, scanner.line, scanner.column);
       }
     }
     // Check for ELSE token.
@@ -140,8 +138,7 @@ Token Tokeniser::nextToken() {
       }
       peek = scanner.peek();
       if (isElse && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-        return Token(Token::TokenClass::ELSE, scanner.line,
-                          scanner.column);
+        return Token(Token::TokenClass::ELSE, scanner.line, scanner.column);
       }
     }
     // Check for IF/INT token.
@@ -154,8 +151,7 @@ Token Tokeniser::nextToken() {
         // If the char following IF is valid for an IF statement, return the
         // token.
         if ((!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-          return Token(Token::TokenClass::IF, scanner.line,
-                            scanner.column);
+          return Token(Token::TokenClass::IF, scanner.line, scanner.column);
         }
       }
       // Check for INT token.
@@ -164,13 +160,9 @@ Token Tokeniser::nextToken() {
                                      // that has already been checked.
         // Flag to track if this stream of characters is an INT token.
         bool isInt = true;
-        char expt_c;
-        char peek;
-        for (int i = 0; i < expected.length(); i++) {
+        for (const char character: expected) {
           // Get the next char, and the expected char.
-          peek = scanner.peek();
-          expt_c = expected[i];
-          if (peek != expt_c) {
+          if (scanner.peek() != character) {
             // This is not an ELSE token.
             isInt = false;
             break;
@@ -178,10 +170,9 @@ Token Tokeniser::nextToken() {
           c = scanner.next();
           literal += c;
         }
-        peek = scanner.peek();
+        char peek = scanner.peek();
         if (isInt && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-          return Token(Token::TokenClass::INT, scanner.line,
-                            scanner.column);
+          return Token(Token::TokenClass::INT, scanner.line, scanner.column);
         }
       }
     }
@@ -207,8 +198,7 @@ Token Tokeniser::nextToken() {
       }
       peek = scanner.peek();
       if (isReturn && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-        return Token(Token::TokenClass::RETURN, scanner.line,
-                          scanner.column);
+        return Token(Token::TokenClass::RETURN, scanner.line, scanner.column);
       }
     }
     // Check for SIZEOF/STRUCT token.
@@ -235,8 +225,7 @@ Token Tokeniser::nextToken() {
         }
         peek = scanner.peek();
         if (isSizeof && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-          return Token(Token::TokenClass::SIZEOF, scanner.line,
-                            scanner.column);
+          return Token(Token::TokenClass::SIZEOF, scanner.line, scanner.column);
         }
       }
       // Check for STRUCT token.
@@ -261,8 +250,7 @@ Token Tokeniser::nextToken() {
         }
         peek = scanner.peek();
         if (isStruct && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-          return Token(Token::TokenClass::STRUCT, scanner.line,
-                            scanner.column);
+          return Token(Token::TokenClass::STRUCT, scanner.line, scanner.column);
         }
       }
     }
@@ -288,8 +276,7 @@ Token Tokeniser::nextToken() {
       }
       peek = scanner.peek();
       if (isWhile && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-        return Token(Token::TokenClass::WHILE, scanner.line,
-                          scanner.column);
+        return Token(Token::TokenClass::WHILE, scanner.line, scanner.column);
       }
       c = scanner.next();
       literal += c;
@@ -316,8 +303,7 @@ Token Tokeniser::nextToken() {
       }
       peek = scanner.peek();
       if (isVoid && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-        return Token(Token::TokenClass::VOID, scanner.line,
-                          scanner.column);
+        return Token(Token::TokenClass::VOID, scanner.line, scanner.column);
       }
     }
 
@@ -330,13 +316,13 @@ Token Tokeniser::nextToken() {
       // identified.
       if (std::isspace(peek)) {
         return Token(Token::TokenClass::IDENTIFIER, scanner.line,
-                          scanner.column, literal);
+                     scanner.column, literal);
       }
       // If the next character is an illegal characater for an IDENTIFIER, we
       // have finished finding the token.
       if (!isalpha(peek) && !isdigit(peek) && peek != '_') {
         return Token(Token::TokenClass::IDENTIFIER, scanner.line,
-                          scanner.column, literal);
+                     scanner.column, literal);
       }
       // We are still Lexing the token.
       c = scanner.next();
@@ -354,7 +340,7 @@ Token Tokeniser::nextToken() {
       // Check that next char is a digit.
       if (!isdigit(peek)) {
         return Token(Token::TokenClass::INT_LITERAL, scanner.line,
-                          scanner.column, literal);
+                     scanner.column, literal);
       }
       c = scanner.next();
       literal += c;
@@ -366,24 +352,22 @@ Token Tokeniser::nextToken() {
     // EQ Token.
     if (scanner.peek() == '=') {
       scanner.next();
-      return Token(Token::TokenClass::EQ, scanner.line,
-                        scanner.column);
+      return Token(Token::TokenClass::EQ, scanner.line, scanner.column);
     }
     // ASSIGN Token.
     else
-      return Token(Token::TokenClass::ASSIGN, scanner.line,
-                        scanner.column);
+      return Token(Token::TokenClass::ASSIGN, scanner.line, scanner.column);
   }
   // Recognise NE token.
   if (c == '!') {
     if (scanner.peek() == '=') {
       c = scanner.next();
-      return Token(Token::TokenClass::NE, scanner.line,
-                        scanner.column);
+      return Token(Token::TokenClass::NE, scanner.line, scanner.column);
     } else {
-      throw std::runtime_error("Unexpected Token at Line " +
+      throw std::runtime_error("Tokeniser: Unexpected Token at Line " +
                                std::to_string(scanner.line) + ", Column " +
-                               std::to_string(scanner.column));
+                               std::to_string(scanner.column) +
+                               ". Expected '!=' but only found '!'.");
     }
   }
   // Recognise CHAR_LITERAL token.
@@ -406,16 +390,20 @@ Token Tokeniser::nextToken() {
           std::string ltr = "\\" + std::to_string(c);
           c = scanner.next();
           return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
-                            scanner.column, ltr);
+                       scanner.column, ltr);
         } else {
-          throw std::runtime_error("Unexpected Token at Line " +
-                                   std::to_string(scanner.line) + ", Column " +
-                                   std::to_string(scanner.column));
+          throw std::runtime_error(
+              "Tokeniser: Unexpected Token at Line " +
+              std::to_string(scanner.line) + ", Column " +
+              std::to_string(scanner.column) +
+              ". Char literal contained more than one character.");
         }
       } else {
-        throw std::runtime_error("Unexpected Token at Line " +
-                                 std::to_string(scanner.line) + ", Column " +
-                                 std::to_string(scanner.column));
+        throw std::runtime_error(
+            "Tokeniser: Unexpected Token at Line " +
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column) +
+            ". Char literal contained more than one character.");
       }
     }
     // Otherwise we have a normal char.
@@ -425,12 +413,13 @@ Token Tokeniser::nextToken() {
         char val = c;
         c = scanner.next();
         return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
-                          scanner.column,
-                          std::string("" + std::to_string(val)));
+                     scanner.column, std::string("" + std::to_string(val)));
       } else {
-        throw std::runtime_error("Unexpected Token at Line " +
-                                 std::to_string(scanner.line) + ", Column " +
-                                 std::to_string(scanner.column));
+        throw std::runtime_error(
+            "Tokeniser: Unexpected Token at Line " +
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column) +
+            ". Char literal contained more than one character.");
       }
     }
   }
@@ -438,18 +427,15 @@ Token Tokeniser::nextToken() {
   if (c == '<') {
     if (scanner.peek() == '=') {
       c = scanner.next();
-      return Token(Token::TokenClass::LE, scanner.line,
-                        scanner.column);
+      return Token(Token::TokenClass::LE, scanner.line, scanner.column);
     } else
-      return Token(Token::TokenClass::LT, scanner.line,
-                        scanner.column);
+      return Token(Token::TokenClass::LT, scanner.line, scanner.column);
   }
   // Recognise GT/GE tokens.
   if (c == '>') {
     if (scanner.peek() == '=') {
       c = scanner.next();
-      return Token(Token::TokenClass::GE, scanner.line,
-                        scanner.column);
+      return Token(Token::TokenClass::GE, scanner.line, scanner.column);
     }
     return Token(Token::TokenClass::GT, scanner.line, scanner.column);
   }
@@ -457,24 +443,24 @@ Token Tokeniser::nextToken() {
   if (c == '&') {
     if (scanner.peek() == '&') {
       c = scanner.next();
-      return Token(Token::TokenClass::AND, scanner.line,
-                        scanner.column);
+      return Token(Token::TokenClass::AND, scanner.line, scanner.column);
     } else {
-      throw std::runtime_error("Unexpected Token at Line " +
+      throw std::runtime_error("Tokeniser: Unexpected Token at Line " +
                                std::to_string(scanner.line) + ", Column " +
-                               std::to_string(scanner.column));
+                               std::to_string(scanner.column) +
+                               ". && Operator Expected, & Found.");
     }
   }
   // Recognise OR token.
   if (c == '|') {
     if (scanner.peek() == '|') {
       c = scanner.next();
-      return Token(Token::TokenClass::OR, scanner.line,
-                        scanner.column);
+      return Token(Token::TokenClass::OR, scanner.line, scanner.column);
     } else {
-      throw std::runtime_error("Unexpected Token at Line " +
+      throw std::runtime_error("Tokeniser: Unexpected Token at Line " +
                                std::to_string(scanner.line) + ", Column " +
-                               std::to_string(scanner.column));
+                               std::to_string(scanner.column) +
+                               ". || Operator Expected, | Found.");
     }
   }
   // Recognise INCLUDE token.
@@ -488,62 +474,50 @@ Token Tokeniser::nextToken() {
       expt_c = expected[i];
       // If the current character is not expected.
       if (c != expt_c) {
-        throw std::runtime_error("Unexpected Token at Line " +
+        throw std::runtime_error("Tokeniser: Unexpected Token at Line " +
                                  std::to_string(scanner.line) + ", Column " +
-                                 std::to_string(scanner.column));
+                                 std::to_string(scanner.column) +
+                                 ". Expected to find #include.");
       }
     }
     // We have found "#include".
-    return Token(Token::TokenClass::INCLUDE, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::INCLUDE, scanner.line, scanner.column);
   }
 
   /* Recognise simple tokens. */
   if (c == '{')
-    return Token(Token::TokenClass::LBRA, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::LBRA, scanner.line, scanner.column);
   if (c == '}')
-    return Token(Token::TokenClass::RBRA, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::RBRA, scanner.line, scanner.column);
   if (c == '(')
-    return Token(Token::TokenClass::LPAR, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::LPAR, scanner.line, scanner.column);
   if (c == ')')
-    return Token(Token::TokenClass::RPAR, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::RPAR, scanner.line, scanner.column);
   if (c == '[')
-    return Token(Token::TokenClass::LSBR, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::LSBR, scanner.line, scanner.column);
   if (c == ']')
-    return Token(Token::TokenClass::RSBR, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::RSBR, scanner.line, scanner.column);
   if (c == ';')
     return Token(Token::TokenClass::SC, scanner.line, scanner.column);
   if (c == ',')
-    return Token(Token::TokenClass::COMMA, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::COMMA, scanner.line, scanner.column);
   if (c == '+')
-    return Token(Token::TokenClass::PLUS, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::PLUS, scanner.line, scanner.column);
   if (c == '-')
-    return Token(Token::TokenClass::MINUS, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::MINUS, scanner.line, scanner.column);
   if (c == '*')
-    return Token(Token::TokenClass::ASTERIX, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::ASTERIX, scanner.line, scanner.column);
   if (c == '%')
-    return Token(Token::TokenClass::REM, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::REM, scanner.line, scanner.column);
   if (c == '.')
-    return Token(Token::TokenClass::DOT, scanner.line,
-                      scanner.column);
+    return Token(Token::TokenClass::DOT, scanner.line, scanner.column);
 
   // Skip Whitespace.
   if (std::isspace(c))
     return nextToken();
 
   // if we reach this point, it means we did not recognise a valid token
-  throw std::runtime_error("Unexpected Token at Line " +
+  throw std::runtime_error("Tokeniser: Unexpected Token at Line " +
                            std::to_string(scanner.line) + ", Column " +
                            std::to_string(scanner.column));
 }
