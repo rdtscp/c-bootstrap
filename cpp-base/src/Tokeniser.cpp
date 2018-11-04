@@ -55,8 +55,13 @@ Token Tokeniser::nextToken() {
     int currLine = scanner.line;
     while (true) {
       c = scanner.next();
-      if ((int)c == -1) {
+      if ((int)c == 0) {
         throw std::runtime_error("Tokeniser: Unexpected EOF at Line " +
+                                 std::to_string(scanner.line) + ", Column " +
+                                 std::to_string(scanner.column));
+      }
+      if (c == '\n') {
+        throw std::runtime_error("Tokeniser: Unexpected Newline Character at Line " +
                                  std::to_string(scanner.line) + ", Column " +
                                  std::to_string(scanner.column));
       }
