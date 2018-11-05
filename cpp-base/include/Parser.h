@@ -9,14 +9,14 @@
 
 #include "AST.h"
 #include "Token.h"
-#include "Tokeniser.h"
+#include "Lexer.h"
 
 namespace ACC {
 
 class Parser {
 
 public:
-  Parser(const Tokeniser &tokeniser);
+  Parser(const Lexer &lexer);
 
   /* Parses the Tokens into an AST with root node Program. */
   Program parse();
@@ -24,7 +24,7 @@ public:
 private:
   Token currToken;
   std::vector<Token> tokenBuffer;
-  Tokeniser tokeniser;
+  Lexer lexer;
 
   /* Check if we can expect the provided Token to be next. */
   bool accept(Token::TokenClass expected);

@@ -4,19 +4,20 @@
 
 #include "gtest/gtest.h"
 
+#include "../include/Lexer.h"
 #include "../include/Parser.h"
 #include "../include/Scanner.h"
 #include "../include/Token.h"
-#include "../include/Tokeniser.h"
 
 using namespace ACC;
 
-std::string test_prefix = "tests/";
+std::string test_prefix = "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/cpp-base/test/tests/";
+// std::string test_prefix = "../../test/tests/";
 
 TEST(ParserTest, AllTokens) {
   Scanner scanner(test_prefix + "lexer/alltokens.c");
-  Tokeniser tokeniser(scanner);
-  Parser parser(tokeniser);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
 
   try {
     parser.parse();
@@ -35,8 +36,8 @@ TEST(ParserTest, AllTokens) {
 
 TEST(ParserTest, InvalidIdentifier) {
   Scanner scanner(test_prefix + "lexer/errors.c");
-  Tokeniser tokeniser(scanner);
-  Parser parser(tokeniser);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
 
   try {
     parser.parse();
@@ -55,8 +56,8 @@ TEST(ParserTest, InvalidIdentifier) {
 
 TEST(ParserTest, NestedComments) {
   Scanner scanner(test_prefix + "lexer/nested_comments.c");
-  Tokeniser tokeniser(scanner);
-  Parser parser(tokeniser);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
 
   Program p = parser.parse();
 
@@ -65,8 +66,8 @@ TEST(ParserTest, NestedComments) {
 
 TEST(ParserTest, VarDecls) {
   Scanner scanner(test_prefix + "parser/vardecl.c");
-  Tokeniser tokeniser(scanner);
-  Parser parser(tokeniser);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
 
   Program actual = parser.parse();
   // ASSERT_EQ(actual.funDecls.size(), 0);

@@ -1,15 +1,15 @@
 // #include <cctype>
 #include <stdexcept>
 
+#include "../include/Lexer.h"
 #include "../include/Scanner.h"
 #include "../include/Token.h"
-#include "../include/Tokeniser.h"
 
 using namespace ACC;
 
-Tokeniser::Tokeniser(const Scanner &scanner) : scanner(scanner) {}
+Lexer::Lexer(const Scanner &scanner) : scanner(scanner) {}
 
-Token Tokeniser::nextToken() {
+Token Lexer::nextToken() {
   // Get the next Char.
   char c = scanner.next();
 
@@ -27,6 +27,8 @@ Token Tokeniser::nextToken() {
       // Loop until we find the end of the comment.
       while (scanner.line == currLine) {
         c = scanner.next();
+        if (c == '\0')
+          return Token(Token::TokenClass::ENDOFFILE, scanner.line, scanner.column);
       }
     }
     // We have a block comment.
@@ -37,7 +39,7 @@ Token Tokeniser::nextToken() {
       while (true) {
         c = scanner.next();
         if (c == '\0') {
-          throw std::runtime_error("Tokeniser: Unexpected EOF at Line " +
+          throw std::runtime_error("Lexer: Unexpected EOF at Line " +
                                    std::to_string(scanner.line) + ", Column " +
                                    std::to_string(scanner.column));
         }
@@ -61,20 +63,20 @@ Token Tokeniser::nextToken() {
     while (true) {
       c = scanner.next();
       if (c == '\0') {
-        throw std::runtime_error("Tokeniser: Unexpected EOF at Line " +
+        throw std::runtime_error("Lexer: Unexpected EOF at Line " +
                                  std::to_string(scanner.line) + ", Column " +
                                  std::to_string(scanner.column));
       }
       if (c == '\n') {
         throw std::runtime_error(
-            "Tokeniser: Unexpected Newline Character at Line " +
+            "Lexer: Unexpected Newline Character at Line " +
             std::to_string(scanner.line) + ", Column " +
             std::to_string(scanner.column));
       }
       // If hit new-line before STRING_LITERAL terminator, we have invalid
       // token.
       if (scanner.line != currLine) {
-        throw std::runtime_error("Tokeniser: Unexpected Newline at Line " +
+        throw std::runtime_error("Lexer: Unexpected Newline at Line " +
                                  std::to_string(scanner.line) + ", Column " +
                                  std::to_string(scanner.column) +
                                  ". New line found in string literal.");
@@ -340,7 +342,6 @@ Token Tokeniser::nextToken() {
       literal += c;
     }
   }
-
   // Recognise INT_LITERAL token.
   if (isdigit(c)) {
     std::string literal;
@@ -375,7 +376,7 @@ Token Tokeniser::nextToken() {
       c = scanner.next();
       return Token(Token::TokenClass::NE, scanner.line, scanner.column);
     } else {
-      throw std::runtime_error("Tokeniser: Unexpected Token at Line " +
+      throw std::runtime_error("Lexer: Unexpected Token at Line " +
                                std::to_string(scanner.line) + ", Column " +
                                std::to_string(scanner.column) +
                                ". Expected '!=' but only found '!'.");
@@ -404,14 +405,14 @@ Token Tokeniser::nextToken() {
                        scanner.column, ltr);
         } else {
           throw std::runtime_error(
-              "Tokeniser: Unexpected Token at Line " +
+              "Lexer: Unexpected Token at Line " +
               std::to_string(scanner.line) + ", Column " +
               std::to_string(scanner.column) +
               ". Char literal contained more than one character.");
         }
       } else {
         throw std::runtime_error(
-            "Tokeniser: Unexpected Token at Line " +
+            "Lexer: Unexpected Token at Line " +
             std::to_string(scanner.line) + ", Column " +
             std::to_string(scanner.column) +
             ". Char literal contained more than one character.");
@@ -427,7 +428,7 @@ Token Tokeniser::nextToken() {
                      scanner.column, std::string("" + std::to_string(val)));
       } else {
         throw std::runtime_error(
-            "Tokeniser: Unexpected Token at Line " +
+            "Lexer: Unexpected Token at Line " +
             std::to_string(scanner.line) + ", Column " +
             std::to_string(scanner.column) +
             ". Char literal contained more than one character.");
@@ -456,7 +457,7 @@ Token Tokeniser::nextToken() {
       c = scanner.next();
       return Token(Token::TokenClass::AND, scanner.line, scanner.column);
     } else {
-      throw std::runtime_error("Tokeniser: Unexpected Token at Line " +
+      throw std::runtime_error("Lexer: Unexpected Token at Line " +
                                std::to_string(scanner.line) + ", Column " +
                                std::to_string(scanner.column) +
                                ". && Operator Expected, & Found.");
@@ -468,7 +469,7 @@ Token Tokeniser::nextToken() {
       c = scanner.next();
       return Token(Token::TokenClass::OR, scanner.line, scanner.column);
     } else {
-      throw std::runtime_error("Tokeniser: Unexpected Token at Line " +
+      throw std::runtime_error("Lexer: Unexpected Token at Line " +
                                std::to_string(scanner.line) + ", Column " +
                                std::to_string(scanner.column) +
                                ". || Operator Expected, | Found.");
@@ -485,7 +486,7 @@ Token Tokeniser::nextToken() {
       expt_c = expected[i];
       // If the current character is not expected.
       if (c != expt_c) {
-        throw std::runtime_error("Tokeniser: Unexpected Token at Line " +
+        throw std::runtime_error("Lexer: Unexpected Token at Line " +
                                  std::to_string(scanner.line) + ", Column " +
                                  std::to_string(scanner.column) +
                                  ". Expected to find #include.");
@@ -528,7 +529,7 @@ Token Tokeniser::nextToken() {
     return nextToken();
 
   // if we reach this point, it means we did not recognise a valid token
-  throw std::runtime_error("Tokeniser: Unexpected Token at Line " +
+  throw std::runtime_error("Lexer: Unexpected Token at Line " +
                            std::to_string(scanner.line) + ", Column " +
                            std::to_string(scanner.column));
 }

@@ -6,7 +6,7 @@
 
 #include "../include/Scanner.h"
 #include "../include/Token.h"
-#include "../include/Tokeniser.h"
+#include "../include/Lexer.h"
 
 using namespace ACC;
 

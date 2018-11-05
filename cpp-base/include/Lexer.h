@@ -10,10 +10,10 @@
 
 namespace ACC {
 
-class Tokeniser {
+class Lexer {
 
 public:
-  Tokeniser(const Scanner &scanner);
+  Lexer(const Scanner &scanner);
 
   /* Parses the next Token out of the Input File. */
   Token nextToken();

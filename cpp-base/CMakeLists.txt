@@ -5,15 +5,15 @@ project(cpp_base)
 
 IF(CMAKE_BUILD_TYPE MATCHES Release)
   message(" --- Building in Release Mode ---")
-  add_library(Parser SHARED src/Parser.cpp)
   add_library(Scanner SHARED src/Scanner.cpp)
-  add_library(Tokeniser SHARED src/Tokeniser.cpp)
+  add_library(Lexer SHARED src/Lexer.cpp)
+  add_library(Parser SHARED src/Parser.cpp)
 
-  target_link_libraries(Tokeniser Scanner)
-  target_link_libraries(Parser Tokeniser)
+  target_link_libraries(Lexer Scanner)
+  target_link_libraries(Parser Lexer)
 
   install(
-    TARGETS Parser Scanner Tokeniser
+    TARGETS Parser Lexer Scanner
     DESTINATION lib
   )
   install(
@@ -22,7 +22,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
   )
 
   add_executable(cpp_base main.cpp)
-  target_link_libraries(cpp_base Parser Tokeniser Scanner)
+  target_link_libraries(cpp_base Parser Lexer Scanner)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -70,15 +70,15 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
     )
   ENDIF(NOT GTEST_INSTALLED MATCHES TRUE)
 
-  add_library(Parser SHARED src/Parser.cpp)
   add_library(Scanner SHARED src/Scanner.cpp)
-  add_library(Tokeniser SHARED src/Tokeniser.cpp)
+  add_library(Lexer SHARED src/Lexer.cpp)
+  add_library(Parser SHARED src/Parser.cpp)
 
-  target_link_libraries(Tokeniser Scanner)
-  target_link_libraries(Parser Tokeniser)
+  target_link_libraries(Lexer Scanner)
+  target_link_libraries(Parser Lexer)
 
   install(
-    TARGETS Parser Scanner Tokeniser
+    TARGETS Parser Lexer Scanner
     DESTINATION lib
   )
   install(
@@ -88,4 +88,6 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
 
   enable_testing()
   add_subdirectory(test)
+  add_executable(cpp_base main.cpp)
+  target_link_libraries(cpp_base Parser Lexer Scanner)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)

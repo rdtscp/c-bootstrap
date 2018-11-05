@@ -6,7 +6,7 @@
 
 #include "../include/Scanner.h"
 #include "../include/Token.h"
-#include "../include/Tokeniser.h"
+#include "../include/Lexer.h"
 
 using namespace ACC;
 
@@ -15,7 +15,7 @@ std::string test_prefix = "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/c
 
 TEST(LexerTest, AllTokens) {
   Scanner scanner(test_prefix + "lexer/alltokens.c");
-  Tokeniser tokeniser(scanner);
+  Lexer lexer(scanner);
 
   std::vector<Token::TokenClass> expected = {Token::TokenClass::IDENTIFIER,
                                              Token::TokenClass::ASSIGN,
@@ -86,7 +86,7 @@ TEST(LexerTest, AllTokens) {
 
   Token::TokenClass currToken = Token::TokenClass::INVALID;
   while (currToken != Token::TokenClass::ENDOFFILE) {
-    currToken = tokeniser.nextToken().tokenClass;
+    currToken = lexer.nextToken().tokenClass;
     actual.push_back(currToken);
   }
 
@@ -99,20 +99,20 @@ TEST(LexerTest, AllTokens) {
 
 TEST(LexerTest, InvalidIdentifier) {
   Scanner scanner(test_prefix + "lexer/errors.c");  
-  Tokeniser tokeniser(scanner);
+  Lexer lexer(scanner);
 
-  ASSERT_EQ(Token::TokenClass::INT_LITERAL, tokeniser.nextToken().tokenClass);
-  ASSERT_EQ(Token::TokenClass::IDENTIFIER, tokeniser.nextToken().tokenClass);
+  ASSERT_EQ(Token::TokenClass::INT_LITERAL, lexer.nextToken().tokenClass);
+  ASSERT_EQ(Token::TokenClass::IDENTIFIER, lexer.nextToken().tokenClass);
 }
 
 TEST(LexerTest, InvalidIncludes) {
   Scanner scanner(test_prefix + "lexer/inclood.c");
-  Tokeniser tokeniser(scanner);
+  Lexer lexer(scanner);
 
   try {
     Token::TokenClass currToken = Token::TokenClass::INVALID;
     while (currToken != Token::TokenClass::ENDOFFILE) {
-      currToken = tokeniser.nextToken().tokenClass;
+      currToken = lexer.nextToken().tokenClass;
     }
   } catch (std::runtime_error const &err) {
     ASSERT_TRUE(true);
@@ -130,12 +130,12 @@ TEST(LexerTest, InvalidIncludes) {
 
 TEST(LexerTest, InvalidIncludes2) {
   Scanner scanner(test_prefix + "lexer/include_error.c");
-  Tokeniser tokeniser(scanner);
+  Lexer lexer(scanner);
 
   try {
     Token::TokenClass currToken = Token::TokenClass::INVALID;
     while (currToken != Token::TokenClass::ENDOFFILE) {
-      currToken = tokeniser.nextToken().tokenClass;
+      currToken = lexer.nextToken().tokenClass;
     }
   } catch (std::runtime_error const &err) {
     ASSERT_TRUE(true);
@@ -153,11 +153,11 @@ TEST(LexerTest, InvalidIncludes2) {
 
 TEST(LexerTest, NestedComments) {
   Scanner scanner(test_prefix + "lexer/nested_comments.c");
-  Tokeniser tokeniser(scanner);
+  Lexer lexer(scanner);
 
   Token::TokenClass currToken = Token::TokenClass::INVALID;
   while (currToken != Token::TokenClass::ENDOFFILE) {
-    currToken = tokeniser.nextToken().tokenClass;
+    currToken = lexer.nextToken().tokenClass;
   }
 
   ASSERT_TRUE(true);
@@ -165,11 +165,11 @@ TEST(LexerTest, NestedComments) {
 
 TEST(LexerTest, VarDecls) {
   Scanner scanner(test_prefix + "parser/vardecl.c");
-  Tokeniser tokeniser(scanner);
+  Lexer lexer(scanner);
 
 	Token::TokenClass currToken = Token::TokenClass::INVALID;
   while (currToken != Token::TokenClass::ENDOFFILE) {
-    currToken = tokeniser.nextToken().tokenClass;
+    currToken = lexer.nextToken().tokenClass;
   }
 
   ASSERT_TRUE(true);

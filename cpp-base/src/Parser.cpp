@@ -6,8 +6,8 @@
 
 using namespace ACC;
 
-Parser::Parser(const Tokeniser &tokeniser)
-    : currToken(Token::TokenClass::INVALID, -1, -1), tokeniser(tokeniser) {}
+Parser::Parser(const Lexer &lexer)
+    : currToken(Token::TokenClass::INVALID, -1, -1), lexer(lexer) {}
 
 Program Parser::parse() {
   nextToken();
@@ -54,7 +54,7 @@ Token Parser::expect(std::vector<Token::TokenClass> expected) {
 Token Parser::lookAhead(int i) {
   assert(i > 0);
   while (tokenBuffer.size() < i) {
-    tokenBuffer.push_back(tokeniser.nextToken());
+    tokenBuffer.push_back(lexer.nextToken());
   }
 
   return tokenBuffer[i - 1];
@@ -66,7 +66,7 @@ void Parser::nextToken() {
     currToken = tokenBuffer.front();
     tokenBuffer.erase(tokenBuffer.begin());
   } else {
-    currToken = tokeniser.nextToken();
+    currToken = lexer.nextToken();
   }
 }
 
