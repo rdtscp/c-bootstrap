@@ -13,7 +13,7 @@ Token Tokeniser::nextToken() {
   // Get the next Char.
   char c = scanner.next();
 
-  if ((int)c == 0)
+  if (c == '\0')
     return Token(Token::TokenClass::ENDOFFILE, scanner.line, scanner.column);
 
   // Parse DIV token taking into account comments.
@@ -36,6 +36,11 @@ Token Tokeniser::nextToken() {
       // Loop until we find the end of the comment.
       while (true) {
         c = scanner.next();
+        if (c == '\0') {
+          throw std::runtime_error("Tokeniser: Unexpected EOF at Line " +
+                                   std::to_string(scanner.line) + ", Column " +
+                                   std::to_string(scanner.column));
+        }
         peek = scanner.peek();
         if (c == '*' && peek == '/') {
           scanner.next();
@@ -55,20 +60,21 @@ Token Tokeniser::nextToken() {
     int currLine = scanner.line;
     while (true) {
       c = scanner.next();
-      if ((int)c == 0) {
+      if (c == '\0') {
         throw std::runtime_error("Tokeniser: Unexpected EOF at Line " +
                                  std::to_string(scanner.line) + ", Column " +
                                  std::to_string(scanner.column));
       }
       if (c == '\n') {
-        throw std::runtime_error("Tokeniser: Unexpected Newline Character at Line " +
-                                 std::to_string(scanner.line) + ", Column " +
-                                 std::to_string(scanner.column));
+        throw std::runtime_error(
+            "Tokeniser: Unexpected Newline Character at Line " +
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column));
       }
       // If hit new-line before STRING_LITERAL terminator, we have invalid
       // token.
       if (scanner.line != currLine) {
-        throw std::runtime_error("Tokeniser: Unexpected Token at Line " +
+        throw std::runtime_error("Tokeniser: Unexpected Newline at Line " +
                                  std::to_string(scanner.line) + ", Column " +
                                  std::to_string(scanner.column) +
                                  ". New line found in string literal.");
