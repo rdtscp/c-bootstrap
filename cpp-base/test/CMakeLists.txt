@@ -22,3 +22,13 @@ TARGET_LINK_LIBRARIES(runParserUnitTests
     Tokeniser
 )
 add_test(ParserUnitTests runParserUnitTests)
+
+ADD_EXECUTABLE(runScannerUnitTests Test_Scanner.cpp  main.cpp)
+TARGET_LINK_LIBRARIES(runScannerUnitTests
+    libgtest
+    libgmock
+    Parser
+    Scanner
+    Tokeniser
+)
+add_test(ScannerUnitTests runScannerUnitTests)
