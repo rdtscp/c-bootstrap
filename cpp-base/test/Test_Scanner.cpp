@@ -4,13 +4,14 @@
 
 #include "gtest/gtest.h"
 
+#include "../include/Lexer.h"
 #include "../include/Scanner.h"
 #include "../include/Token.h"
-#include "../include/Lexer.h"
 
 using namespace ACC;
 
-std::string test_prefix = "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/cpp-base/test/tests/";
+std::string test_prefix =
+    "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/cpp-base/test/tests/";
 // std::string test_prefix = "../../test/tests/";
 
 TEST(ScannerTest, TestAPI) {
@@ -49,14 +50,65 @@ TEST(ScannerTest, TestAPI) {
 
   ASSERT_EQ(scanner.next(), '8');
   ASSERT_EQ(scanner.next(), '9');
-  
+
   ASSERT_EQ(scanner.next(), 'a');
   ASSERT_EQ(scanner.next(), '\n');
   ASSERT_EQ(scanner.next(), '\n');
   ASSERT_EQ(scanner.next(), ' ');
   ASSERT_EQ(scanner.peek(), '\0');
+}
+
+TEST(ScannerTest, FetchingPastEOF) {
+  Scanner scanner(test_prefix + "scanner/eof.c");
+  ASSERT_EQ(scanner.next(), 'c');
+  ASSERT_EQ(scanner.next(), 'h');
+  ASSERT_EQ(scanner.next(), 'a');
+  ASSERT_EQ(scanner.next(), 'r');
+  ASSERT_EQ(scanner.next(), 's');
   ASSERT_EQ(scanner.next(), '\0');
+  try {
+    scanner.next();
+  } catch (std::runtime_error const &err) {
+    ASSERT_TRUE(true);
+    return;
+  } catch (std::exception const &err) {
+    std::cout << "Expected a std::runtime_error, but got:" << err.what()
+              << std::endl;
+    ASSERT_TRUE(false);
+    return;
+  }
+  std::cout << "Expected a std::runtime_error, no exception thrown."
+            << std::endl;
+  ASSERT_TRUE(false);
+}
+
+TEST(ScannerTest, PeekingPastEOF) {
+  Scanner scanner(test_prefix + "scanner/eof.c");
+  ASSERT_EQ(scanner.next(), 'c');
+  ASSERT_EQ(scanner.peek(), 'h');
+  ASSERT_EQ(scanner.next(), 'h');
+  ASSERT_EQ(scanner.peek(), 'a');
+  ASSERT_EQ(scanner.next(), 'a');
+  ASSERT_EQ(scanner.peek(), 'r');
+  ASSERT_EQ(scanner.next(), 'r');
+  ASSERT_EQ(scanner.peek(), 's');
+  ASSERT_EQ(scanner.next(), 's');
   ASSERT_EQ(scanner.peek(), '\0');
+  ASSERT_EQ(scanner.next(), '\0');
+  try {
+    scanner.peek();
+  } catch (std::runtime_error const &err) {
+    ASSERT_TRUE(true);
+    return;
+  } catch (std::exception const &err) {
+    std::cout << "Expected a std::runtime_error, but got:" << err.what()
+              << std::endl;
+    ASSERT_TRUE(false);
+    return;
+  }
+  std::cout << "Expected a std::runtime_error, no exception thrown."
+            << std::endl;
+  ASSERT_TRUE(false);
 }
 
 // The fixture for testing class Project1. From google test primer.
