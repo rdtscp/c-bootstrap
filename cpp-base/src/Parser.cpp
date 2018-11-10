@@ -24,8 +24,6 @@ bool Parser::accept(std::vector<Token::TokenClass> expected) {
   bool output = false;
   for (const Token::TokenClass token : expected) {
     bool curr = accept(token);
-    // printf("%s == %s => %i\n", tokToStr(token).c_str(),
-    //        tokToStr(currToken.tokenClass).c_str(), curr);
     output |= curr;
   }
   return output;
