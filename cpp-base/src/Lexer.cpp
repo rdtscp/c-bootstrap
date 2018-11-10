@@ -1,4 +1,4 @@
-// #include <cctype>
+#include <iostream>
 #include <stdexcept>
 
 #include "../include/Lexer.h"
@@ -9,320 +9,201 @@ using namespace ACC;
 
 Lexer::Lexer(const Scanner &scanner) : scanner(scanner) {}
 
+Token Lexer::lexStringLiteral() {
+  std::string literal;
+  int currLine = scanner.line;
+
+  char c;
+  while (true) {
+    c = scanner.next();
+    if (c == '\0')
+      throw std::runtime_error(
+          "Lexer: Unexpected EOF in String Literal at Line " +
+          std::to_string(scanner.line) + ", Column " +
+          std::to_string(scanner.column));
+    if (c == '\n')
+      throw std::runtime_error(
+          "Lexer: Unexpected Newline Character in String Literal at Line " +
+          std::to_string(scanner.line) + ", Column " +
+          std::to_string(scanner.column));
+
+    // Check if we are about to see an escaped character.
+    if (c == '\\') {
+      literal += c;
+      c = scanner.next();
+      literal += c;
+    } else if (c == '"') {
+      break;
+    } else {
+      literal += c;
+    }
+  }
+  return Token(Token::TokenClass::STRING_LITERAL, scanner.line, scanner.column,
+               literal);
+}
+
+void Lexer::passComment() {
+  // Consume the '/' or '*' character.
+  char c = scanner.next();
+  int currLine = scanner.line;
+  if (c == '/') {
+    while (scanner.line == currLine)
+      scanner.next();
+    return;
+  } else if (c == '*') {
+    c = scanner.next();
+    while (true) {
+      c = scanner.next();
+      if (c == '*' && scanner.peek() == '/') {
+        scanner.next(); // Consume the closing DIV.
+        return;
+      }
+    }
+  }
+  throw std::runtime_error(
+      "Lexer: Parsing Comment Returned Unexpected Token(s). Line " +
+      std::to_string(scanner.line) + ", Column " +
+      std::to_string(scanner.column));
+}
+
+std::pair<bool, std::string> Lexer::tryLexKeyword(const std::string &keyword) {
+  bool keywordMatch = false;
+  std::string literal(1, keyword[0]);
+
+  for (int i = 1; i < keyword.length(); i++)
+    literal += scanner.next();
+
+  char peek = scanner.peek();
+  if ((literal == keyword) && (!isalpha(peek)) && (!isdigit(peek)) &&
+      (peek != '_'))
+    keywordMatch = true;
+
+  return std::pair(keywordMatch, literal);
+}
+
 Token Lexer::nextToken() {
   // Get the next Char.
   char c = scanner.next();
 
+  // Find EOF.
   if (c == '\0')
     return Token(Token::TokenClass::ENDOFFILE, scanner.line, scanner.column);
 
-  // Parse DIV token taking into account comments.
-  if (c == '/') {
-    char peek = scanner.peek();
-    // We have a regular line comment.
-    if (peek == '/') {
-      // Move into the comment content.
-      c = scanner.next();
-      int currLine = scanner.line;
-      // Loop until we find the end of the comment.
-      while (scanner.line == currLine) {
+  // Skip through Comments.
+  if (c == '/' && (scanner.peek() == '*' || scanner.peek() == '/'))
+    passComment();
+
+  /* Parse Multi Symbol Tokens */
+
+  // Recognise STRING_LITERAL Token.
+  if (c == '"')
+    return lexStringLiteral();
+
+  // Recognise CHAR_LITERAL token.
+  if (c == '\'') {
+    c = scanner.next();
+    if (c == '\\') {
+      char peek = scanner.peek();
+      // Valid Escapes: '\t' | '\b' | '\n' | '\r' | '\f' | '\'' | '\"' | '\\'
+      if (peek == 't' || peek == 'b' || peek == 'n' || peek == 'r' ||
+          peek == 'f' || peek == '\'' || peek == '"' || peek == '\\') {
         c = scanner.next();
-        if (c == '\0')
-          return Token(Token::TokenClass::ENDOFFILE, scanner.line, scanner.column);
-      }
-    }
-    // We have a block comment.
-    else if (peek == '*') {
-      // Move into the comment content.
-      c = scanner.next();
-      // Loop until we find the end of the comment.
-      while (true) {
-        c = scanner.next();
-        if (c == '\0') {
-          throw std::runtime_error("Lexer: Unexpected EOF at Line " +
-                                   std::to_string(scanner.line) + ", Column " +
-                                   std::to_string(scanner.column));
-        }
-        peek = scanner.peek();
-        if (c == '*' && peek == '/') {
+        if (scanner.peek() == '\'') {
+          char val = c;
           scanner.next();
-          break;
+          return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
+                       scanner.column, std::to_string('\\' + val));
         }
       }
-      c = scanner.next();
-    } else
-      return Token(Token::TokenClass::DIV, scanner.line, scanner.column);
-  }
-
-  // Recognise STRING_LITERAL token. @TODO, multiple lines fix.
-  if (c == '"') {
-    // We are now expecting any set of characters, terminated by a single ".
-    // With care taken for escaped characters.
-    std::string literal;
-    int currLine = scanner.line;
-    while (true) {
-      c = scanner.next();
-      if (c == '\0') {
-        throw std::runtime_error("Lexer: Unexpected EOF at Line " +
-                                 std::to_string(scanner.line) + ", Column " +
-                                 std::to_string(scanner.column));
-      }
-      if (c == '\n') {
-        throw std::runtime_error(
-            "Lexer: Unexpected Newline Character at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column));
-      }
-      // If hit new-line before STRING_LITERAL terminator, we have invalid
-      // token.
-      if (scanner.line != currLine) {
-        throw std::runtime_error("Lexer: Unexpected Newline at Line " +
-                                 std::to_string(scanner.line) + ", Column " +
-                                 std::to_string(scanner.column) +
-                                 ". New line found in string literal.");
-      }
-      // Check if we are about to see an escaped character.
-      if (c == '\\') {
-        literal += c;
-        c = scanner.next();
-        literal += c;
-      }
-      // End of string.
-      else if (c == '"') {
-        break;
-      } else {
-        literal += c;
-      }
     }
-    return Token(Token::TokenClass::STRING_LITERAL, scanner.line,
-                 scanner.column, literal);
+    // Otherwise we have a normal char.
+    else if (scanner.peek() == '\'') {
+      char val = c;
+      scanner.next();
+      return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
+                   scanner.column, std::to_string(val));
+    }
   }
-
-  // Recognise IDENTIFIER/keywords/types token.
+  // Recognise IDENTIFIERS & Keyword Tokens.
   if (isalpha(c) || c == '_') {
-    /* Alphabetically go throuh possible keywords/types before assuming
-     * IDENTIFIER. */
-    // Create a StringBuilder in case of IDENTIFIER.
-    std::string literal;
-    literal += c;
-    // Check for CHAR token.
-    if (c == 'c') {
-      std::string expected = "har"; // "char" but with first char removed since
-                                    // that has already been checked.
-      char peek;                    // Peek into next char of stream.
-      char expt;                    // What we expect the peek to be.
-      bool isChar = true;           // Track if this is a CHAR token.
-      for (int i = 0; i < expected.length(); i++) {
-        // Peek the next char, and the expected char.
-        peek = scanner.peek();
-        expt = expected[i];
-        if (peek != expt) {
-          isChar = false; // This is not a CHAR token.
-          break;
-        }
-        // It is potentially part of a CHAR token, save this char.
-        c = scanner.next();
-        literal += c;
-      }
-      peek = scanner.peek();
-      if (isChar && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
+    std::string literal(1, c);
+    // Check for CHAR Token.
+    if (c == 'c' && scanner.peek() == 'h') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("char");
+      literal = lexResult.second;
+
+      if (lexResult.first)
         return Token(Token::TokenClass::CHAR, scanner.line, scanner.column);
-      }
     }
-    // Check for ELSE token.
-    else if (c == 'e') {
-      std::string expected = "lse"; // "else" but with first char removed since
-                                    // that has already been checked.
-      // Flag to track if this stream of characters is an ELSE token.
-      bool isElse = true;
-      char expt_c;
-      char peek;
-      for (int i = 0; i < expected.length(); i++) {
-        // Get the next char, and the expected char.
-        peek = scanner.peek();
-        expt_c = expected[i];
-        if (peek != expt_c) {
-          // This is not an ELSE token.
-          isElse = false;
-          break;
-        }
-        c = scanner.next();
-        literal += c;
-      }
-      peek = scanner.peek();
-      if (isElse && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
+    // Check for ELSE Token.
+    else if (c == 'e' && scanner.peek() == 'l') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("else");
+      literal = lexResult.second;
+
+      if (lexResult.first)
         return Token(Token::TokenClass::ELSE, scanner.line, scanner.column);
-      }
     }
-    // Check for IF/INT token.
-    else if (c == 'i') {
-      // Check for IF token.
-      if (scanner.peek() == 'f') {
-        c = scanner.next();
-        literal += c;
-        char peek = scanner.peek();
-        // If the char following IF is valid for an IF statement, return the
-        // token.
-        if ((!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-          return Token(Token::TokenClass::IF, scanner.line, scanner.column);
-        }
-      }
-      // Check for INT token.
-      else {
-        std::string expected = "nt"; // "int" but with first char removed since
-                                     // that has already been checked.
-        // Flag to track if this stream of characters is an INT token.
-        bool isInt = true;
-        for (const char character: expected) {
-          // Get the next char, and the expected char.
-          if (scanner.peek() != character) {
-            // This is not an ELSE token.
-            isInt = false;
-            break;
-          }
-          c = scanner.next();
-          literal += c;
-        }
-        char peek = scanner.peek();
-        if (isInt && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-          return Token(Token::TokenClass::INT, scanner.line, scanner.column);
-        }
-      }
+    // Check for IF Token.
+    else if (c == 'i' && scanner.peek() == 'f') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("if");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return Token(Token::TokenClass::IF, scanner.line, scanner.column);
     }
-    // Check for RETURN token.
-    else if (c == 'r') {
-      std::string expected = "eturn"; // "return" but with first char removed
-                                      // since that has already been checked.
-      // Flag to track if this stream of characters is a RETURN token.
-      bool isReturn = true;
-      char expt_c;
-      char peek;
-      for (int i = 0; i < expected.length(); i++) {
-        // Get the next char, and the expected char.
-        peek = scanner.peek();
-        expt_c = expected[i];
-        if (peek != expt_c) {
-          // This is not a RETURN token.
-          isReturn = false;
-          break;
-        }
-        c = scanner.next();
-        literal += c;
-      }
-      peek = scanner.peek();
-      if (isReturn && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
+    // Check for INT token.
+    else if (c == 'i' && scanner.peek() == 'n') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("int");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return Token(Token::TokenClass::INT, scanner.line, scanner.column);
+    }
+    // Check for RETURN Token.
+    else if (c == 'r' && scanner.peek() == 'e') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("return");
+      literal = lexResult.second;
+
+      if (lexResult.first)
         return Token(Token::TokenClass::RETURN, scanner.line, scanner.column);
-      }
     }
-    // Check for SIZEOF/STRUCT token.
-    else if (c == 's') {
-      // Check for SIZEOF token.
-      if (scanner.peek() == 'i') {
-        std::string expected = "izeof"; // "sizeof" but with first char removed
-                                        // since that has already been checked.
-        // Flag to track if this stream of characters is an SIZEOF token.
-        bool isSizeof = true;
-        char expt_c;
-        char peek;
-        for (int i = 0; i < expected.length(); i++) {
-          // Get the next char, and the expected char.
-          peek = scanner.peek();
-          expt_c = expected[i];
-          if (peek != expt_c) {
-            // This is not an SIZEOF token.
-            isSizeof = false;
-            break;
-          }
-          c = scanner.next();
-          literal += c;
-        }
-        peek = scanner.peek();
-        if (isSizeof && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-          return Token(Token::TokenClass::SIZEOF, scanner.line, scanner.column);
-        }
-      }
-      // Check for STRUCT token.
-      else {
-        std::string expected = "truct"; // "struct" but with first char removed
-                                        // since that has already been checked.
-        // Flag to track if this stream of characters is an STRUCT token.
-        bool isStruct = true;
-        char expt_c;
-        char peek;
-        for (int i = 0; i < expected.length(); i++) {
-          // Get the next char, and the expected char.
-          peek = scanner.peek();
-          expt_c = expected[i];
-          if (peek != expt_c) {
-            // This is not a STRUCT token.
-            isStruct = false;
-            break;
-          }
-          c = scanner.next();
-          literal += c;
-        }
-        peek = scanner.peek();
-        if (isStruct && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
-          return Token(Token::TokenClass::STRUCT, scanner.line, scanner.column);
-        }
-      }
+    // Check for SIZEOF Token.
+    else if (c == 's' && scanner.peek() == 'i') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("sizeof");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return Token(Token::TokenClass::SIZEOF, scanner.line, scanner.column);
     }
-    // Check for WHILE token.
-    else if (c == 'w') {
-      std::string expected = "hile"; // "while" but with first char removed
-                                     // since that has already been checked.
-      // Flag to track if this stream of characters is a WHILE token.
-      bool isWhile = true;
-      char expt_c;
-      char peek;
-      for (int i = 0; i < expected.length(); i++) {
-        // Get the next char, and the expected char.
-        peek = scanner.peek();
-        expt_c = expected[i];
-        if (peek != expt_c) {
-          // This is not a WHILE token.
-          isWhile = false;
-          break;
-        }
-        c = scanner.next();
-        literal += c;
-      }
-      peek = scanner.peek();
-      if (isWhile && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
+    // Check for STRUCT Token.
+    else if (c == 's' && scanner.peek() == 't') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("struct");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return Token(Token::TokenClass::STRUCT, scanner.line, scanner.column);
+    }
+    // Check for WHILE Token.
+    else if (c == 'w' && scanner.peek() == 'h') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("while");
+      literal = lexResult.second;
+
+      if (lexResult.first)
         return Token(Token::TokenClass::WHILE, scanner.line, scanner.column);
-      }
-      c = scanner.next();
-      literal += c;
     }
-    // Check for VOID token.
-    else if (c == 'v') {
-      std::string expected = "oid"; // "void" but with first char removed since
-                                    // that has already been checked.
-      // Flag to track if this stream of characters is a VOID token.
-      bool isVoid = true;
-      char expt_c;
-      char peek;
-      for (int i = 0; i < expected.length(); i++) {
-        // Get the next char, and the expected char.
-        peek = scanner.peek();
-        expt_c = expected[i];
-        if (peek != expt_c) {
-          // This is not a VOID token.
-          isVoid = false;
-          break;
-        }
-        c = scanner.next();
-        literal += c;
-      }
-      peek = scanner.peek();
-      if (isVoid && (!isalpha(peek)) && (!isdigit(peek)) && (peek != '_')) {
+    // Check for VOID Token.
+    else if (c == 'v' && scanner.peek() == 'o') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("void");
+      literal = lexResult.second;
+
+      if (lexResult.first)
         return Token(Token::TokenClass::VOID, scanner.line, scanner.column);
-      }
     }
 
-    // If we have reached here, no token has been returned.
-    // Now Lex an IDENTIFIER, where c is the last character in sb.
+    // No keyword Token has been returned.
+    // Now Lex an IDENTIFIER.
     char peek;
+    literal += scanner.next();
     while (true) {
       peek = scanner.peek();
       // If the next character is whitespace, the IDENTIFIER has been
@@ -342,161 +223,59 @@ Token Lexer::nextToken() {
       literal += c;
     }
   }
-  // Recognise INT_LITERAL token.
+  // Recognise INT_LITERAL Token.
   if (isdigit(c)) {
     std::string literal;
-    literal += c;
-    char peek;
     while (true) {
-      peek = scanner.peek();
-      // Check that next char is a digit.
-      if (!isdigit(peek)) {
-        return Token(Token::TokenClass::INT_LITERAL, scanner.line,
-                     scanner.column, literal);
-      }
-      c = scanner.next();
       literal += c;
+      if (!isdigit(scanner.peek()))
+        break;
+      c = scanner.next();
     }
+    return Token(Token::TokenClass::INT_LITERAL, scanner.line, scanner.column,
+                 literal);
   }
 
-  // Recognise ASSIGN/EQ tokens.
-  if (c == '=') {
-    // EQ Token.
-    if (scanner.peek() == '=') {
-      scanner.next();
-      return Token(Token::TokenClass::EQ, scanner.line, scanner.column);
-    }
-    // ASSIGN Token.
-    else
-      return Token(Token::TokenClass::ASSIGN, scanner.line, scanner.column);
-  }
-  // Recognise NE token.
-  if (c == '!') {
-    if (scanner.peek() == '=') {
-      c = scanner.next();
-      return Token(Token::TokenClass::NE, scanner.line, scanner.column);
-    } else {
-      throw std::runtime_error("Lexer: Unexpected Token at Line " +
-                               std::to_string(scanner.line) + ", Column " +
-                               std::to_string(scanner.column) +
-                               ". Expected '!=' but only found '!'.");
-    }
-  }
-  // Recognise CHAR_LITERAL token.
-  if (c == '\'') {
-    c = scanner.next();
-    char peek = scanner.peek();
-    // Check for escape character: '\t' | '\b' | '\n' | '\r' | '\f' | '\'' |
-    // '\"' | '\\'
-    if (c == '\\') {
-      std::string value = "\\";
-      // Our valid set of escaped characters.
-      if (peek == 't' || peek == 'b' || peek == 'n' || peek == 'r' ||
-          peek == 'f' || peek == '\'' || peek == '"' || peek == '\\') {
-        c = scanner.next();
-        value += c;
-        peek = scanner.peek();
-        // Next character must be a closing single quote to be a valid
-        // CHAR_LITERAL.
-        if (peek == '\'') {
-          std::string ltr = "\\" + std::to_string(c);
-          c = scanner.next();
-          return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
-                       scanner.column, ltr);
-        } else {
-          throw std::runtime_error(
-              "Lexer: Unexpected Token at Line " +
-              std::to_string(scanner.line) + ", Column " +
-              std::to_string(scanner.column) +
-              ". Char literal contained more than one character.");
-        }
-      } else {
-        throw std::runtime_error(
-            "Lexer: Unexpected Token at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column) +
-            ". Char literal contained more than one character.");
-      }
-    }
-    // Otherwise we have a normal char.
-    else {
-      // Check the CHAR_LITERAL is closed correctly.
-      if (peek == '\'') {
-        char val = c;
-        c = scanner.next();
-        return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
-                     scanner.column, std::string("" + std::to_string(val)));
-      } else {
-        throw std::runtime_error(
-            "Lexer: Unexpected Token at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column) +
-            ". Char literal contained more than one character.");
-      }
-    }
-  }
-  // Recognise LT/LE tokens.
-  if (c == '<') {
-    if (scanner.peek() == '=') {
-      c = scanner.next();
-      return Token(Token::TokenClass::LE, scanner.line, scanner.column);
-    } else
-      return Token(Token::TokenClass::LT, scanner.line, scanner.column);
-  }
-  // Recognise GT/GE tokens.
-  if (c == '>') {
-    if (scanner.peek() == '=') {
-      c = scanner.next();
-      return Token(Token::TokenClass::GE, scanner.line, scanner.column);
-    }
-    return Token(Token::TokenClass::GT, scanner.line, scanner.column);
-  }
-  // Recognise AND token.
-  if (c == '&') {
-    if (scanner.peek() == '&') {
-      c = scanner.next();
-      return Token(Token::TokenClass::AND, scanner.line, scanner.column);
-    } else {
-      throw std::runtime_error("Lexer: Unexpected Token at Line " +
-                               std::to_string(scanner.line) + ", Column " +
-                               std::to_string(scanner.column) +
-                               ". && Operator Expected, & Found.");
-    }
-  }
-  // Recognise OR token.
-  if (c == '|') {
-    if (scanner.peek() == '|') {
-      c = scanner.next();
-      return Token(Token::TokenClass::OR, scanner.line, scanner.column);
-    } else {
-      throw std::runtime_error("Lexer: Unexpected Token at Line " +
-                               std::to_string(scanner.line) + ", Column " +
-                               std::to_string(scanner.column) +
-                               ". || Operator Expected, | Found.");
-    }
-  }
   // Recognise INCLUDE token.
-  if (c == '#') {
-    // The only valid characters that can proceed a '#'' are "include"
-    std::string expected = "include";
-    char expt_c;
-    for (int i = 0; i < expected.length(); i++) {
-      // Get the current and expected char.
-      c = scanner.next();
-      expt_c = expected[i];
-      // If the current character is not expected.
-      if (c != expt_c) {
-        throw std::runtime_error("Lexer: Unexpected Token at Line " +
-                                 std::to_string(scanner.line) + ", Column " +
-                                 std::to_string(scanner.column) +
-                                 ". Expected to find #include.");
-      }
-    }
-    // We have found "#include".
-    return Token(Token::TokenClass::INCLUDE, scanner.line, scanner.column);
+  if (c == '#' && scanner.peek() == 'i') {
+    scanner.next();
+    std::pair<bool, std::string> lexResult = tryLexKeyword("include");
+
+    c = lexResult.second[lexResult.second.length() - 1];
+
+    if (lexResult.first)
+      return Token(Token::TokenClass::INCLUDE, scanner.line, scanner.column);
   }
 
-  /* Recognise simple tokens. */
+  /* Recognise Two Symbol Tokens. */
+  if (c == '=' && scanner.peek() == '=') {
+    scanner.next();
+    return Token(Token::TokenClass::EQ, scanner.line, scanner.column);
+  }
+  if (c == '!' && scanner.peek() == '=') {
+    scanner.next();
+    return Token(Token::TokenClass::NE, scanner.line, scanner.column);
+  }
+  if (c == '<' && scanner.peek() == '=') {
+    scanner.next();
+    return Token(Token::TokenClass::LE, scanner.line, scanner.column);
+  }
+  if (c == '>' && scanner.peek() == '=') {
+    scanner.next();
+    return Token(Token::TokenClass::GE, scanner.line, scanner.column);
+  }
+  if (c == '&' && scanner.peek() == '&') {
+    scanner.next();
+    return Token(Token::TokenClass::AND, scanner.line, scanner.column);
+  }
+  if (c == '|' && scanner.peek() == '|') {
+    scanner.next();
+    return Token(Token::TokenClass::OR, scanner.line, scanner.column);
+  }
+
+  /* Recognise One Symbol Tokens. */
+  if (c == '=')
+    return Token(Token::TokenClass::ASSIGN, scanner.line, scanner.column);
   if (c == '{')
     return Token(Token::TokenClass::LBRA, scanner.line, scanner.column);
   if (c == '}')
@@ -523,6 +302,12 @@ Token Lexer::nextToken() {
     return Token(Token::TokenClass::REM, scanner.line, scanner.column);
   if (c == '.')
     return Token(Token::TokenClass::DOT, scanner.line, scanner.column);
+  if (c == '/')
+    return Token(Token::TokenClass::DIV, scanner.line, scanner.column);
+  if (c == '>')
+    return Token(Token::TokenClass::GT, scanner.line, scanner.column);
+  if (c == '<')
+    return Token(Token::TokenClass::LT, scanner.line, scanner.column);
 
   // Skip Whitespace.
   if (std::isspace(c))

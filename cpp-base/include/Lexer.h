@@ -4,6 +4,7 @@
 #define TOKENISER_H
 
 #include <string>
+#include <utility>
 
 #include "Scanner.h"
 #include "Token.h"
@@ -20,6 +21,10 @@ public:
 
 private:
   Scanner scanner;
+
+  Token lexStringLiteral();
+  void passComment();
+  std::pair<bool, std::string> tryLexKeyword(const std::string& keyword);
 };
 
 }; // namespace ACC
