@@ -35,7 +35,7 @@ Token Parser::expect(Token::TokenClass expected) {
     nextToken();
     return temp;
   }
-  throw std::runtime_error("Parsing: Expected Token " + ACC::tokToStr(expected) + " at " + currToken.position.toString());
+  throw std::runtime_error("Parsing: Expected Token " + ACC::tokToStr(expected) + " at " + currToken.position.toString() + " but found: " + ACC::tokToStr(currToken.tokenClass));
 }
 
 Token Parser::expect(std::vector<Token::TokenClass> expected) {
