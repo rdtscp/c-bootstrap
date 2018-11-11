@@ -1,3 +1,4 @@
+
 #include <stdexcept>
 
 #include "../include/Parser.h"
@@ -35,7 +36,10 @@ Token Parser::expect(Token::TokenClass expected) {
     nextToken();
     return temp;
   }
-  throw std::runtime_error("Parsing: Expected Token " + ACC::tokToStr(expected) + " at " + currToken.position.toString() + " but found: " + ACC::tokToStr(currToken.tokenClass));
+  throw std::runtime_error(
+      "Parsing: Expected Token " + ACC::tokToStr(expected) + " at " +
+      currToken.position.toString() +
+      " but found: " + ACC::tokToStr(currToken.tokenClass));
 }
 
 Token Parser::expect(std::vector<Token::TokenClass> expected) {
@@ -46,7 +50,8 @@ Token Parser::expect(std::vector<Token::TokenClass> expected) {
       return output;
     }
   }
-  throw std::runtime_error("Parsing: Invalid Token at " + currToken.position.toString());
+  throw std::runtime_error("Parsing: Invalid Token at " +
+                           currToken.position.toString());
 }
 
 Token Parser::lookAhead(int i) {
@@ -149,7 +154,8 @@ std::vector<StructTypeDecl> Parser::parseStructDecls() {
     expect(Token::TokenClass::SC);
 
     // Add this StructDecl to our output.
-    output.push_back(StructTypeDecl(std::shared_ptr<StructType>(new StructType(structName)), varDecls));
+    output.push_back(StructTypeDecl(
+        std::shared_ptr<StructType>(new StructType(structName)), varDecls));
 
     // Try to parse more StructDecl's to add to our output.
     std::vector<StructTypeDecl> moreStructTypes = parseStructDecls();
@@ -189,8 +195,7 @@ std::vector<VarDecl> Parser::parseVarDecls() {
       // Check for array declaration.
       if (accept(Token::TokenClass::LSBR)) {
         expect(Token::TokenClass::LSBR);
-        std::string arraySize =
-        expect(Token::TokenClass::INT_LITERAL).data;
+        std::string arraySize = expect(Token::TokenClass::INT_LITERAL).data;
         expect(Token::TokenClass::RSBR);
         varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
       }
