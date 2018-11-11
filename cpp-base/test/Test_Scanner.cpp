@@ -10,9 +10,8 @@
 
 using namespace ACC;
 
-std::string test_prefix =
-    "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/cpp-base/test/tests/";
-// std::string test_prefix = "../../test/tests/";
+// std::string test_prefix = "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/cpp-base/test/tests/";
+std::string test_prefix = "../../test/tests/";
 
 TEST(ScannerTest, TestAPI) {
   Scanner scanner(test_prefix + "scanner/scanner.c");
@@ -87,7 +86,7 @@ TEST(ScannerTest, PeekingPastEOF) {
   ASSERT_EQ(scanner.next(), 's');
   ASSERT_EQ(scanner.peek(), '\0');
   ASSERT_EQ(scanner.next(), '\0');
-  
+
   ASSERT_EQ(scanner.next(), '\0');
   ASSERT_EQ(scanner.peek(), '\0');
   ASSERT_EQ(scanner.next(), '\0');
