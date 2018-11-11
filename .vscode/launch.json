@@ -27,6 +27,18 @@
       "environment": [],
       "externalConsole": true,
       "MIMode": "lldb"
+    },
+    {
+      "name": "(lldb) Scanner Unit Tests",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/cpp-base/build/test/runScannerUnitTests",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "lldb"
     }
   ]
 }
