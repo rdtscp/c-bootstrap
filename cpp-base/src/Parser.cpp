@@ -107,8 +107,9 @@ VarDecl Parser::expectVarDecl() {
   std::string varName = expect(Token::TokenClass::IDENTIFIER).data;
   if (accept(Token::TokenClass::LSBR)) {
     expect(Token::TokenClass::LSBR);
-    expect(Token::TokenClass::INT_LITERAL);
+    std::string arraySize = expect(Token::TokenClass::INT_LITERAL).data;
     expect(Token::TokenClass::RSBR);
+    type = std::shared_ptr<ArrayType>(new ArrayType(type, arraySize));
   }
   expect(Token::TokenClass::SC);
   return VarDecl(type, varName);
