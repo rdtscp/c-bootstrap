@@ -12,13 +12,13 @@ Scanner::Scanner(const std::string &filename) : column(1), line(1) {
 }
 
 char Scanner::next() {
+  if (currChar == file.end())
+    return '\0';
+
   char nextChar = *currChar;
-  if ((currChar - 1) == file.end())
-    throw std::runtime_error(
-        "Internal Error: Attempted to fetch character past EOF.");
   if (nextChar == '\n' || nextChar == '\r') {
     line++;
-    column = 0;
+    column = 1;
   } else {
     column++;
   }
@@ -27,8 +27,7 @@ char Scanner::next() {
 }
 
 char Scanner::peek() {
-  if ((currChar - 1) == file.end())
-    throw std::runtime_error(
-        "Internal Error: Attempted to peek character past EOF.");
+  if (currChar == file.end())
+    return '\0';
   return *currChar;
 }
