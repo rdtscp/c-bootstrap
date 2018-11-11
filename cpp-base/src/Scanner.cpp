@@ -12,10 +12,10 @@ Scanner::Scanner(const std::string &filename) : column(1), line(1) {
 }
 
 char Scanner::next() {
-  if (currChar == file.end())
+  char nextChar = *currChar;
+  if (currChar == file.end() || nextChar == '\0')
     return '\0';
 
-  char nextChar = *currChar;
   if (nextChar == '\n' || nextChar == '\r') {
     line++;
     column = 1;
