@@ -60,6 +60,8 @@ void Lexer::passComment() {
         char temp = scanner.peek();
         return;
       }
+      if (c == '\0')
+        break;
     }
   }
   throw std::runtime_error(
