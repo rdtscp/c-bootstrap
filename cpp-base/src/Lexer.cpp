@@ -56,6 +56,8 @@ void Lexer::passComment() {
       c = scanner.next();
       if (c == '*' && scanner.peek() == '/') {
         scanner.next(); // Consume the closing DIV.
+        c = scanner.next();
+        char temp = scanner.peek();
         return;
       }
     }
@@ -90,8 +92,10 @@ Token Lexer::nextToken() {
     return Token(Token::TokenClass::ENDOFFILE, scanner.line, scanner.column);
 
   // Skip through Comments.
-  if (c == '/' && (scanner.peek() == '*' || scanner.peek() == '/'))
+  if (c == '/' && (scanner.peek() == '*' || scanner.peek() == '/')) {
     passComment();
+    return nextToken();
+  }
 
   /* Parse Multi Symbol Tokens */
 
