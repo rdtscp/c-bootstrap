@@ -192,6 +192,10 @@ std::vector<VarDecl> Parser::parseVarDecls() {
         expect(Token::TokenClass::ASTERIX);
         varType = std::shared_ptr<PointerType>(new PointerType(varType));
       }
+      if (accept(Token::TokenClass::ASTERIX)) {
+        expect(Token::TokenClass::ASTERIX);
+        varType = std::shared_ptr<PointerType>(new PointerType(varType));
+      }
       std::string varName = expect(Token::TokenClass::IDENTIFIER).data;
 
       // Check for array declaration.
