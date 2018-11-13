@@ -3,6 +3,9 @@
 #ifndef FUNDECL_H
 #define FUNDECL_H
 
+#include <vector>
+
+#include "Block.h"
 #include "Type.h"
 #include "VarDecl.h"
 
