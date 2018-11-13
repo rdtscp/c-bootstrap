@@ -47,6 +47,7 @@ private:
   /* Parsing */
 
   std::shared_ptr<Type> expectType();
+  std::vector<VarDecl> expectParams();
   VarDecl expectVarDecl();
 
   void parseIncludes();

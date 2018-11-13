@@ -5,6 +5,7 @@
 
 #include "ast/ArrayType.h"
 #include "ast/BaseType.h"
+#include "ast/Block.h"
 #include "ast/FunDecl.h"
 #include "ast/PointerType.h"
 #include "ast/PrimitiveType.h"
