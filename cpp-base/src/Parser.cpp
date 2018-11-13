@@ -137,9 +137,12 @@ std::vector<VarDecl> Parser::expectParams() {
       std::string paramName = expect(Token::TokenClass::IDENTIFIER).data;
 
       output.push_back(VarDecl(paramType, paramName));
-    } else if (accept({Token::TokenClass::INT, Token::TokenClass::CHAR, Token::TokenClass::VOID})) {
-      std::shared_ptr<Type> paramType = tokenToType(
-          expect({Token::TokenClass::INT, Token::TokenClass::CHAR, Token::TokenClass::VOID}).tokenClass);
+    } else if (accept({Token::TokenClass::INT, Token::TokenClass::CHAR,
+                       Token::TokenClass::VOID})) {
+      std::shared_ptr<Type> paramType =
+          tokenToType(expect({Token::TokenClass::INT, Token::TokenClass::CHAR,
+                              Token::TokenClass::VOID})
+                          .tokenClass);
       if (accept(Token::TokenClass::ASTERIX)) {
         expect(Token::TokenClass::ASTERIX);
         paramType = std::shared_ptr<PointerType>(new PointerType(paramType));
@@ -228,9 +231,12 @@ std::vector<FunDecl> Parser::parseFunDecls() {
       expect(Token::TokenClass::RBRA);
 
       output.push_back(FunDecl(funType, funName, funArgs, funBlock));
-    } else if (accept({Token::TokenClass::INT, Token::TokenClass::CHAR, Token::TokenClass::VOID})) {
-      funType = tokenToType(
-          expect({Token::TokenClass::INT, Token::TokenClass::CHAR, Token::TokenClass::VOID}).tokenClass);
+    } else if (accept({Token::TokenClass::INT, Token::TokenClass::CHAR,
+                       Token::TokenClass::VOID})) {
+      funType =
+          tokenToType(expect({Token::TokenClass::INT, Token::TokenClass::CHAR,
+                              Token::TokenClass::VOID})
+                          .tokenClass);
       while (accept(Token::TokenClass::ASTERIX)) {
         expect(Token::TokenClass::ASTERIX);
         funType = std::shared_ptr<PointerType>(new PointerType(funType));
