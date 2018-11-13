@@ -110,18 +110,13 @@ std::vector<VarDecl> Parser::expectParams() {
   Token::TokenClass twoAhead = lookAhead(2).tokenClass;
   Token::TokenClass threeAhead = lookAhead(3).tokenClass;
   Token::TokenClass fourAhead = lookAhead(4).tokenClass;
-  if (twoAhead != Token::TokenClass::RPAR) {
-    if (twoAhead != Token::TokenClass::COMMA) {
-      if (threeAhead != Token::TokenClass::RPAR) {
-        if (threeAhead != Token::TokenClass::COMMA) {
-          if (fourAhead != Token::TokenClass::RPAR) {
-            if (fourAhead != Token::TokenClass::COMMA) {
-              return output;
-            }
-          }
-        }
-      }
-    }
+  if (twoAhead != Token::TokenClass::RPAR &&
+      twoAhead != Token::TokenClass::COMMA &&
+      threeAhead != Token::TokenClass::RPAR &&
+      threeAhead != Token::TokenClass::COMMA &&
+      fourAhead != Token::TokenClass::RPAR &&
+      fourAhead != Token::TokenClass::COMMA) {
+    return output;
   }
   if (accept({Token::TokenClass::STRUCT, Token::TokenClass::INT,
               Token::TokenClass::CHAR, Token::TokenClass::VOID})) {
@@ -192,12 +187,10 @@ std::vector<FunDecl> Parser::parseFunDecls() {
   Token::TokenClass twoAhead = lookAhead(2).tokenClass;
   Token::TokenClass threeAhead = lookAhead(3).tokenClass;
   Token::TokenClass fourAhead = lookAhead(4).tokenClass;
-  if (twoAhead != Token::TokenClass::LPAR) {
-    if (threeAhead != Token::TokenClass::LPAR) {
-      if (fourAhead != Token::TokenClass::LPAR) {
-        return output;
-      }
-    }
+  if (twoAhead != Token::TokenClass::LPAR &&
+      threeAhead != Token::TokenClass::LPAR &&
+      fourAhead != Token::TokenClass::LPAR) {
+    return output;
   }
 
   if (accept({Token::TokenClass::STRUCT, Token::TokenClass::INT,
@@ -207,8 +200,8 @@ std::vector<FunDecl> Parser::parseFunDecls() {
     std::vector<VarDecl> funArgs;
 
     Block funBlock;
-    // List<VarDecl> blockVars;
-    // List<Stmt> blockStmts;
+    // std::vector<VarDecl> blockVars;
+    // std::vector<Stmt> blockStmts;
 
     if (accept(Token::TokenClass::STRUCT)) {
       expect(Token::TokenClass::STRUCT);
@@ -247,9 +240,9 @@ std::vector<FunDecl> Parser::parseFunDecls() {
       expect(Token::TokenClass::RPAR);
       expect(Token::TokenClass::LBRA);
 
-      // blockVars = parseVarDecls();
+      blockVars = parseVarDecls();
       // blockStmts = parseStmts();
-      // funBlock = new Block(blockVars, blockStmts);
+      funBlock = Block(); // new Block(blockVars, blockStmts);
 
       expect(Token::TokenClass::RBRA);
 
