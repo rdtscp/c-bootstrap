@@ -42,6 +42,7 @@ public:
     RETURN, // "return"
     STRUCT, // "struct"
     SIZEOF, // "sizeof"
+    CONST,  // "const"
 
     // include
     INCLUDE, // "#include"
@@ -72,6 +73,7 @@ public:
     ASTERIX, // '*'  // can be used for multiplication or pointers
     DIV,     // '/'
     REM,     // '%'
+    REF,     // '&'
 
     // struct member access
     DOT, // '.'
@@ -90,7 +92,8 @@ public:
         data("") {}
 
   Token(TokenClass tokenClass, int lineNum, int colNum, std::string data = "")
-      : tokenClass(tokenClass), position(Position(lineNum, colNum)), data(data) {}
+      : tokenClass(tokenClass), position(Position(lineNum, colNum)),
+        data(data) {}
 };
 
 static std::string tokToStr(const Token::TokenClass &tok) {
@@ -173,6 +176,10 @@ static std::string tokToStr(const Token::TokenClass &tok) {
     return "EOF";
   case Token::TokenClass::INVALID:
     return "INVALID";
+  case Token::TokenClass::REF:
+    return "&";
+  case Token::TokenClass::CONST:
+    return "CONST";
   }
 }
 

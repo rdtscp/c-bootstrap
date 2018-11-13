@@ -141,6 +141,14 @@ Token Lexer::nextToken() {
       if (lexResult.first)
         return Token(Token::TokenClass::CHAR, scanner.line, scanner.column);
     }
+    // Check for CONST Token.
+    if (c == 'c' && scanner.peek() == 'o') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("const");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return Token(Token::TokenClass::CONST, scanner.line, scanner.column);
+    }
     // Check for ELSE Token.
     else if (c == 'e' && scanner.peek() == 'l') {
       std::pair<bool, std::string> lexResult = tryLexKeyword("else");
@@ -314,6 +322,8 @@ Token Lexer::nextToken() {
     return Token(Token::TokenClass::GT, scanner.line, scanner.column);
   if (c == '<')
     return Token(Token::TokenClass::LT, scanner.line, scanner.column);
+  if (c == '&')
+    return Token(Token::TokenClass::REF, scanner.line, scanner.column);
 
   // Skip Whitespace.
   if (std::isspace(c))
