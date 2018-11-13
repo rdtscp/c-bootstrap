@@ -240,7 +240,7 @@ std::vector<FunDecl> Parser::parseFunDecls() {
       expect(Token::TokenClass::RPAR);
       expect(Token::TokenClass::LBRA);
 
-      blockVars = parseVarDecls();
+      // blockVars = parseVarDecls();
       // blockStmts = parseStmts();
       funBlock = Block(); // new Block(blockVars, blockStmts);
 
