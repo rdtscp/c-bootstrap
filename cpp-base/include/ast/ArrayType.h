@@ -16,7 +16,8 @@ public:
   std::string arraySize;
   std::shared_ptr<Type> arrayType;
 
-  ArrayType(std::shared_ptr<Type> type_ptr, const std::string& arraySize) : arraySize(arraySize) {
+  ArrayType(std::shared_ptr<Type> type_ptr, const std::string &arraySize)
+      : arraySize(arraySize) {
     arrayType = type_ptr;
   }
 

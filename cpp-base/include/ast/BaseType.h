@@ -17,9 +17,7 @@ public:
 
   BaseType(PrimitiveType pType) : primitiveType(pType) {}
 
-  BaseType(const BaseType& bt) {
-    primitiveType = bt.primitiveType;
-  }
+  BaseType(const BaseType &bt) { primitiveType = bt.primitiveType; }
 
   std::string toString() const override {
     switch (primitiveType) {

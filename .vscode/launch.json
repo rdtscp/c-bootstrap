@@ -39,6 +39,18 @@
       "environment": [],
       "externalConsole": true,
       "MIMode": "lldb"
+    },
+    {
+      "name": "(lldb) AST Unit Tests",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/cpp-base/build/test/runASTUnitTests",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "lldb"
     }
   ]
 }
