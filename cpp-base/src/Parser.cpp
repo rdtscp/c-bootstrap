@@ -1,4 +1,3 @@
-
 #include <cassert>
 #include <stdexcept>
 
@@ -29,6 +28,11 @@ bool Parser::accept(std::vector<Token::TokenClass> expected) {
     output |= curr;
   }
   return output;
+}
+
+bool Parser::acceptType() {
+  return accept({Token::TokenClass::INT, Token::TokenClass::CHAR,
+                 Token::TokenClass::VOID, Token::TokenClass::STRUCT});
 }
 
 Token Parser::expect(Token::TokenClass expected) {
@@ -173,9 +177,17 @@ VarDecl Parser::expectVarDecl() {
 
 Program Parser::parseProgram() {
   parseIncludes();
-  std::vector<StructTypeDecl> stds = parseStructDecls();
-  std::vector<VarDecl> vds = parseVarDecls();
-  std::vector<FunDecl> fds = parseFunDecls();
+  std::vector<StructTypeDecl> stds;
+  std::vector<VarDecl> vds;
+  std::vector<FunDecl> fds;
+  while (acceptType()) {
+    std::vector<StructTypeDecl> moreSTDs = parseStructDecls();
+    stds.insert(stds.end(), moreSTDs.begin(), moreSTDs.end());
+    std::vector<VarDecl> moreVDs = parseVarDecls();
+    vds.insert(vds.end(), moreVDs.begin(), moreVDs.end());
+    std::vector<FunDecl> moreFDs = parseFunDecls();
+    fds.insert(fds.end(), moreFDs.begin(), moreFDs.end());
+  }
   expect(Token::TokenClass::ENDOFFILE);
   return Program(fds, stds, vds);
 }

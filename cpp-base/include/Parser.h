@@ -32,6 +32,9 @@ private:
   /* Check if we can expect one of the provided Tokens to be next. */
   bool accept(std::vector<Token::TokenClass> expected);
 
+  /* Check if we can expect a Type. */
+  bool acceptType();
+
   /* Expect the next Token to be of a certain type. Throws if not. */
   Token expect(Token::TokenClass expected);
 
