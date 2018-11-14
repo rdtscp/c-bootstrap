@@ -5,11 +5,13 @@
 
 #include <memory>
 
+#include "Decl.h"
+
 namespace ACC {
 
 class FunDecl;
 
-class VarDecl {
+class VarDecl : public Decl {
 
 public:
   std::shared_ptr<Type> type;

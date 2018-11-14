@@ -6,12 +6,13 @@
 #include <vector>
 
 #include "Block.h"
+#include "Decl.h"
 #include "Type.h"
 #include "VarDecl.h"
 
 namespace ACC {
 
-class FunDecl {
+class FunDecl : public Decl {
 
 public:
   FunDecl(std::shared_ptr<Type> funType, std::string funName,

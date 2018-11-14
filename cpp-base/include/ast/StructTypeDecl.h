@@ -5,12 +5,13 @@
 
 #include <vector>
 
+#include "Decl.h"
 #include "StructType.h"
 #include "VarDecl.h"
 
 namespace ACC {
 
-class StructTypeDecl {
+class StructTypeDecl : public Decl {
 
 public:
   std::shared_ptr<StructType> structType;
