@@ -16,11 +16,13 @@ class FunDecl : public Decl {
 
 public:
   FunDecl(std::shared_ptr<Type> funType, std::string funName,
-          std::vector<VarDecl> funArgs, Block funBlock) {
+          std::vector<std::shared_ptr<VarDecl>> funArgs, Block funBlock) {
     // Boilerplate Code.
   }
 
   bool operator==(const FunDecl &fd) const { return true; }
+
+  std::string toString() const override { return "FunDecl"; }
 };
 
 }; // namespace ACC

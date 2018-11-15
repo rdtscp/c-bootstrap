@@ -108,8 +108,8 @@ std::shared_ptr<Type> Parser::expectType() {
 
 // Expects params
 // params  -> [ type IDENT (COMMA type IDENT)* ]
-std::vector<VarDecl> Parser::expectParams() {
-  std::vector<VarDecl> output;
+std::vector<std::shared_ptr<VarDecl>> Parser::expectParams() {
+  std::vector<std::shared_ptr<VarDecl>> output;
   // Check for vardecl && fundecl.
   Token::TokenClass twoAhead = lookAhead(2).tokenClass;
   Token::TokenClass threeAhead = lookAhead(3).tokenClass;
@@ -135,7 +135,8 @@ std::vector<VarDecl> Parser::expectParams() {
       }
       std::string paramName = expect(Token::TokenClass::IDENTIFIER).data;
 
-      output.push_back(VarDecl(paramType, paramName));
+      output.push_back(
+          std::shared_ptr<VarDecl>(new VarDecl(paramType, paramName)));
     } else if (accept({Token::TokenClass::INT, Token::TokenClass::CHAR,
                        Token::TokenClass::VOID})) {
       std::shared_ptr<Type> paramType =
@@ -148,7 +149,8 @@ std::vector<VarDecl> Parser::expectParams() {
       }
       std::string paramName = expect(Token::TokenClass::IDENTIFIER).data;
 
-      output.push_back(VarDecl(paramType, paramName));
+      output.push_back(
+          std::shared_ptr<VarDecl>(new VarDecl(paramType, paramName)));
     }
 
     while (accept(Token::TokenClass::COMMA)) {
@@ -156,13 +158,14 @@ std::vector<VarDecl> Parser::expectParams() {
       std::shared_ptr<Type> paramType = expectType();
       std::string paramName = expect(Token::TokenClass::IDENTIFIER).data;
 
-      output.push_back(VarDecl(paramType, paramName));
+      output.push_back(
+          std::shared_ptr<VarDecl>(new VarDecl(paramType, paramName)));
     }
   }
   return output;
 }
 
-VarDecl Parser::expectVarDecl() {
+std::shared_ptr<VarDecl> Parser::expectVarDecl() {
   std::shared_ptr<Type> type = expectType();
   std::string varName = expect(Token::TokenClass::IDENTIFIER).data;
   if (accept(Token::TokenClass::LSBR)) {
@@ -172,28 +175,24 @@ VarDecl Parser::expectVarDecl() {
     type = std::shared_ptr<ArrayType>(new ArrayType(type, arraySize));
   }
   expect(Token::TokenClass::SC);
-  return VarDecl(type, varName);
+  return std::shared_ptr<VarDecl>(new VarDecl(type, varName));
 }
 
 Program Parser::parseProgram() {
   parseIncludes();
-  std::vector<StructTypeDecl> stds;
-  std::vector<VarDecl> vds;
-  std::vector<FunDecl> fds;
-  while (acceptType()) {
-    std::vector<StructTypeDecl> moreSTDs = parseStructDecls();
-    stds.insert(stds.end(), moreSTDs.begin(), moreSTDs.end());
-    std::vector<VarDecl> moreVDs = parseVarDecls();
-    vds.insert(vds.end(), moreVDs.begin(), moreVDs.end());
-    std::vector<FunDecl> moreFDs = parseFunDecls();
-    fds.insert(fds.end(), moreFDs.begin(), moreFDs.end());
-  }
+  std::vector<std::shared_ptr<Decl>> decls;
+  std::vector<std::shared_ptr<StructTypeDecl>> stds = parseStructDecls();
+  decls.insert(decls.end(), stds.begin(), stds.end());
+  std::vector<std::shared_ptr<VarDecl>> vds = parseVarDecls();
+  decls.insert(decls.end(), vds.begin(), vds.end());
+  std::vector<std::shared_ptr<FunDecl>> fds = parseFunDecls();
+  decls.insert(decls.end(), fds.begin(), fds.end());
   expect(Token::TokenClass::ENDOFFILE);
-  return Program(fds, stds, vds);
+  return Program(decls);
 }
 
-std::vector<FunDecl> Parser::parseFunDecls() {
-  std::vector<FunDecl> output;
+std::vector<std::shared_ptr<FunDecl>> Parser::parseFunDecls() {
+  std::vector<std::shared_ptr<FunDecl>> output;
 
   // Check if this will be an invalid fundecl.
   Token::TokenClass twoAhead = lookAhead(2).tokenClass;
@@ -209,7 +208,7 @@ std::vector<FunDecl> Parser::parseFunDecls() {
               Token::TokenClass::CHAR, Token::TokenClass::VOID})) {
     std::shared_ptr<Type> funType;
     std::string funName;
-    std::vector<VarDecl> funArgs;
+    std::vector<std::shared_ptr<VarDecl>> funArgs;
 
     Block funBlock;
     // std::vector<VarDecl> blockVars;
@@ -235,7 +234,8 @@ std::vector<FunDecl> Parser::parseFunDecls() {
 
       expect(Token::TokenClass::RBRA);
 
-      output.push_back(FunDecl(funType, funName, funArgs, funBlock));
+      output.push_back(std::shared_ptr<FunDecl>(
+          new FunDecl(funType, funName, funArgs, funBlock)));
     } else if (accept({Token::TokenClass::INT, Token::TokenClass::CHAR,
                        Token::TokenClass::VOID})) {
       funType =
@@ -258,19 +258,20 @@ std::vector<FunDecl> Parser::parseFunDecls() {
 
       expect(Token::TokenClass::RBRA);
 
-      output.push_back(FunDecl(funType, funName, funArgs, funBlock));
+      output.push_back(std::shared_ptr<FunDecl>(
+          new FunDecl(funType, funName, funArgs, funBlock)));
     }
 
     // Try to parse more fundecl
-    std::vector<FunDecl> moreFunDecls = parseFunDecls();
+    std::vector<std::shared_ptr<FunDecl>> moreFunDecls = parseFunDecls();
     output.insert(output.end(), moreFunDecls.begin(), moreFunDecls.end());
   }
 
   return output;
 }
 
-std::vector<StructTypeDecl> Parser::parseStructDecls() {
-  std::vector<StructTypeDecl> output;
+std::vector<std::shared_ptr<StructTypeDecl>> Parser::parseStructDecls() {
+  std::vector<std::shared_ptr<StructTypeDecl>> output;
   // Check for struct being used as a vardecl.
   if (lookAhead(2).tokenClass != Token::TokenClass::LBRA)
     return output;
@@ -279,7 +280,7 @@ std::vector<StructTypeDecl> Parser::parseStructDecls() {
   if (accept(Token::TokenClass::STRUCT)) {
 
     // Define the struct info.
-    std::vector<VarDecl> varDecls;
+    std::vector<std::shared_ptr<VarDecl>> varDecls;
 
     expect(Token::TokenClass::STRUCT);
     std::string structName = expect(Token::TokenClass::IDENTIFIER).data;
@@ -288,25 +289,26 @@ std::vector<StructTypeDecl> Parser::parseStructDecls() {
     // Add all VarDecl's to our varDecl List.
     varDecls.push_back(expectVarDecl());
 
-    std::vector<VarDecl> moreVarDecls = parseVarDecls();
+    std::vector<std::shared_ptr<VarDecl>> moreVarDecls = parseVarDecls();
     varDecls.insert(varDecls.end(), moreVarDecls.begin(), moreVarDecls.end());
 
     expect(Token::TokenClass::RBRA);
     expect(Token::TokenClass::SC);
 
     // Add this StructDecl to our output.
-    output.push_back(StructTypeDecl(
-        std::shared_ptr<StructType>(new StructType(structName)), varDecls));
+    output.push_back(std::shared_ptr<StructTypeDecl>(new StructTypeDecl(
+        std::shared_ptr<StructType>(new StructType(structName)), varDecls)));
 
     // Try to parse more StructDecl's to add to our output.
-    std::vector<StructTypeDecl> moreStructTypes = parseStructDecls();
+    std::vector<std::shared_ptr<StructTypeDecl>> moreStructTypes =
+        parseStructDecls();
     output.insert(output.end(), moreStructTypes.begin(), moreStructTypes.end());
   }
   return output;
 }
 
-std::vector<VarDecl> Parser::parseVarDecls() {
-  std::vector<VarDecl> output;
+std::vector<std::shared_ptr<VarDecl>> Parser::parseVarDecls() {
+  std::vector<std::shared_ptr<VarDecl>> output;
   Token::TokenClass twoAhead = lookAhead(2).tokenClass;
   Token::TokenClass threeAhead = lookAhead(3).tokenClass;
   Token::TokenClass fourAhead = lookAhead(4).tokenClass;
@@ -341,7 +343,7 @@ std::vector<VarDecl> Parser::parseVarDecls() {
       }
       expect(Token::TokenClass::SC);
 
-      output.push_back(VarDecl(varType, varName));
+      output.push_back(std::shared_ptr<VarDecl>(new VarDecl(varType, varName)));
     } else if (accept({Token::TokenClass::INT, Token::TokenClass::CHAR,
                        Token::TokenClass::VOID})) {
 
@@ -367,11 +369,11 @@ std::vector<VarDecl> Parser::parseVarDecls() {
 
       expect(Token::TokenClass::SC);
 
-      output.push_back(VarDecl(varType, varName));
+      output.push_back(std::shared_ptr<VarDecl>(new VarDecl(varType, varName)));
     }
 
     // Try to parse more vardecl
-    std::vector<VarDecl> moreVarDecls = parseVarDecls();
+    std::vector<std::shared_ptr<VarDecl>> moreVarDecls = parseVarDecls();
     output.insert(output.end(), moreVarDecls.begin(), moreVarDecls.end());
   }
   return output;

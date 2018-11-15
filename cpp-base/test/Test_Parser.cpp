@@ -11,7 +11,8 @@
 
 using namespace ACC;
 
-// std::string test_prefix = "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/cpp-base/test/tests/";
+// std::string test_prefix =
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/cpp-base/test/tests/";
 std::string test_prefix = "../../test/tests/";
 
 TEST(ParserTest, AllTokens) {
@@ -76,34 +77,64 @@ TEST(ParserTest, VarDecls) {
 
   ASSERT_EQ(actual.structTypeDecls[0].structType->identifier, "FooStruct");
   ASSERT_EQ(actual.structTypeDecls[0].varDecls.size(), 1);
-  ASSERT_EQ(actual.structTypeDecls[0].varDecls[0].identifer, "fooInt");
+  ASSERT_EQ(actual.structTypeDecls[0].varDecls[0]->identifer, "fooInt");
 
-  ASSERT_TRUE(instanceOf<BaseType>(*actual.structTypeDecls[0].varDecls[0].type.get()));
-  BaseType* bt = static_cast<BaseType*>(actual.structTypeDecls[0].varDecls[0].type.get());
+  ASSERT_TRUE(
+      instanceOf<BaseType>(*actual.structTypeDecls[0].varDecls[0]->type.get()));
+  BaseType *bt = static_cast<BaseType *>(
+      actual.structTypeDecls[0].varDecls[0]->type.get());
   ASSERT_EQ(PrimitiveType::INT, bt->primitiveType);
-  // ASSERT_EQ(static_cast<BaseType>(*actual.structTypeDecls[0].varDecls[0].type.get()).primitiveType, PrimitiveType::INT);
+  // ASSERT_EQ(static_cast<BaseType>(*actual.structTypeDecls[0].varDecls[0].type.get()).primitiveType,
+  // PrimitiveType::INT);
 
-  Type* struct0Field0Type = actual.structTypeDecls[0].varDecls[0].type.get();
+  Type *struct0Field0Type = actual.structTypeDecls[0].varDecls[0]->type.get();
 
   std::vector<VarDecl> expectedVarDecls = {
-    VarDecl(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)), std::string("myInt")),
-    VarDecl(std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)), std::string("myChar")),
+      VarDecl(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+              std::string("myInt")),
+      VarDecl(std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
+              std::string("myChar")),
 
-    VarDecl(std::make_shared<PointerType>(PointerType(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)))), std::string("myIntPtr")),
-    VarDecl(std::make_shared<PointerType>(PointerType(std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))), std::string("myCharPtr")),
-    VarDecl(std::make_shared<PointerType>(PointerType(std::make_shared<BaseType>(BaseType(PrimitiveType::VOID)))), std::string("myVoidPtr")),
+      VarDecl(std::make_shared<PointerType>(PointerType(
+                  std::make_shared<BaseType>(BaseType(PrimitiveType::INT)))),
+              std::string("myIntPtr")),
+      VarDecl(std::make_shared<PointerType>(PointerType(
+                  std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))),
+              std::string("myCharPtr")),
+      VarDecl(std::make_shared<PointerType>(PointerType(
+                  std::make_shared<BaseType>(BaseType(PrimitiveType::VOID)))),
+              std::string("myVoidPtr")),
 
-    VarDecl(std::make_shared<PointerType>(std::make_shared<PointerType>(PointerType(std::make_shared<BaseType>(BaseType(PrimitiveType::INT))))), std::string("myIntPtrPtr")),
-    VarDecl(std::make_shared<PointerType>(std::make_shared<PointerType>(PointerType(std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR))))), std::string("myCharPtrPtr")),
-    VarDecl(std::make_shared<PointerType>(std::make_shared<PointerType>(PointerType(std::make_shared<BaseType>(BaseType(PrimitiveType::VOID))))), std::string("myVoidPtrPtr")),
+      VarDecl(std::make_shared<PointerType>(std::make_shared<PointerType>(
+                  PointerType(std::make_shared<BaseType>(
+                      BaseType(PrimitiveType::INT))))),
+              std::string("myIntPtrPtr")),
+      VarDecl(std::make_shared<PointerType>(std::make_shared<PointerType>(
+                  PointerType(std::make_shared<BaseType>(
+                      BaseType(PrimitiveType::CHAR))))),
+              std::string("myCharPtrPtr")),
+      VarDecl(std::make_shared<PointerType>(std::make_shared<PointerType>(
+                  PointerType(std::make_shared<BaseType>(
+                      BaseType(PrimitiveType::VOID))))),
+              std::string("myVoidPtrPtr")),
 
-    VarDecl(std::make_shared<ArrayType>(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)), "5"), std::string("myIntArr")),
-    VarDecl(std::make_shared<ArrayType>(std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)), "5"), std::string("myCharArr")),
+      VarDecl(
+          std::make_shared<ArrayType>(
+              std::make_shared<BaseType>(BaseType(PrimitiveType::INT)), "5"),
+          std::string("myIntArr")),
+      VarDecl(
+          std::make_shared<ArrayType>(
+              std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)), "5"),
+          std::string("myCharArr")),
 
-    VarDecl(std::make_shared<StructType>(StructType("myFooStruct")), std::string("myFooStruct")),
-    VarDecl(std::make_shared<PointerType>(std::make_shared<StructType>(StructType("myFooStruct"))), std::string("myFooStruct")),
-    VarDecl(std::make_shared<ArrayType>(std::make_shared<StructType>(StructType("myFooStruct")), "5"), std::string("myFooStruct"))
-  };
+      VarDecl(std::make_shared<StructType>(StructType("myFooStruct")),
+              std::string("myFooStruct")),
+      VarDecl(std::make_shared<PointerType>(
+                  std::make_shared<StructType>(StructType("myFooStruct"))),
+              std::string("myFooStruct")),
+      VarDecl(std::make_shared<ArrayType>(
+                  std::make_shared<StructType>(StructType("myFooStruct")), "5"),
+              std::string("myFooStruct"))};
 
   std::vector<VarDecl> actualVarDecls;
   for (const VarDecl &varDecl : actual.varDecls) {

@@ -15,13 +15,17 @@ class StructTypeDecl : public Decl {
 
 public:
   std::shared_ptr<StructType> structType;
-  std::vector<VarDecl> varDecls;
+  std::vector<std::shared_ptr<VarDecl>> varDecls;
   int allocSize;
   int compactSize;
 
-  StructTypeDecl(std::shared_ptr<StructType> structType_ptr, const std::vector<VarDecl>& varDecls) : varDecls(varDecls) {
+  StructTypeDecl(std::shared_ptr<StructType> structType_ptr,
+                 const std::vector<std::shared_ptr<VarDecl>> &varDecls)
+      : varDecls(varDecls) {
     structType = structType_ptr;
   }
+
+  std::string toString() const override { return "StructTypeDecl"; }
 };
 
 }; // namespace ACC

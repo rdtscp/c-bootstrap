@@ -13,6 +13,8 @@ public:
   }
 
   bool operator==(const Decl &d) const { return true; }
+
+  virtual std::string toString() const { return "Decl"; }
 };
 
 }; // namespace ACC

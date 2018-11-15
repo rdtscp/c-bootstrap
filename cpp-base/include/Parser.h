@@ -8,8 +8,8 @@
 #include <vector>
 
 #include "AST.h"
-#include "Token.h"
 #include "Lexer.h"
+#include "Token.h"
 
 namespace ACC {
 
@@ -50,14 +50,14 @@ private:
   /* Parsing */
 
   std::shared_ptr<Type> expectType();
-  std::vector<VarDecl> expectParams();
-  VarDecl expectVarDecl();
+  std::vector<std::shared_ptr<VarDecl>> expectParams();
+  std::shared_ptr<VarDecl> expectVarDecl();
 
   void parseIncludes();
   Program parseProgram();
-  std::vector<FunDecl> parseFunDecls();
-  std::vector<StructTypeDecl> parseStructDecls();
-  std::vector<VarDecl> parseVarDecls();
+  std::vector<std::shared_ptr<FunDecl>> parseFunDecls();
+  std::vector<std::shared_ptr<StructTypeDecl>> parseStructDecls();
+  std::vector<std::shared_ptr<VarDecl>> parseVarDecls();
 
   /* @TODO Parse the rest of the AST. */
 

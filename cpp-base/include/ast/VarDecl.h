@@ -37,6 +37,8 @@ public:
     return typesEqual && namesEqual && bytesEqual && parentEqual && fpEqual &&
            spEqual;
   }
+
+  std::string toString() const override { return "VarDecl"; }
 };
 
 }; // namespace ACC
