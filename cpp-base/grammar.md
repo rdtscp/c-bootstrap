@@ -1,8 +1,10 @@
 # Mini-C/C++ Grammar
 ```
-program    -> include* ((structdecl)* (vardecl)* (fundecl)*)* EOF
+program    -> (include)* (decl)* EOF
 
 include    -> "#include" STRING_LITERAL
+
+decl       -> (structdecl)* (vardecl)* (fundecl)*
 
 structdecl -> structtype "{" (vardecl)+ "}" ";"       # structure declaration
 
@@ -11,7 +13,7 @@ vardecl    -> type IDENT ";"                          # normal declaration, e.g.
 
 fundecl    -> type IDENT "(" params ")" block         # function declaration
 
-type       -> ("int" | "char" | "void" | structtype) ["*"]
+type       -> ("int" | "char" | "void" | structtype) (ASTERIX)*
 structtype -> "struct" IDENT
 
 params     -> [ type IDENT ("," type IDENT)* ]
