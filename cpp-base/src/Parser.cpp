@@ -6,36 +6,30 @@
 /* Public */
 
 using namespace ACC;
+using TC = Token::TokenClass;
 
 Parser::Parser(const Lexer &lexer)
-    : currToken(Token::TokenClass::INVALID, -1, -1), lexer(lexer) {}
+    : currToken(TC::INVALID, -1, -1), lexer(lexer) {}
 
 Program Parser::parse() {
   nextToken();
   return parseProgram();
 }
 
-/* Token Operations */
+/* ---- Token Operations ---- */
 
-bool Parser::accept(Token::TokenClass expected) {
-  return expected == currToken.tokenClass;
-}
+bool Parser::accept(TC expected) { return expected == currToken.tokenClass; }
 
-bool Parser::accept(std::vector<Token::TokenClass> expected) {
+bool Parser::accept(std::vector<TC> expected) {
   bool output = false;
-  for (const Token::TokenClass token : expected) {
+  for (const TC token : expected) {
     bool curr = accept(token);
     output |= curr;
   }
   return output;
 }
 
-bool Parser::acceptType() {
-  return accept({Token::TokenClass::INT, Token::TokenClass::CHAR,
-                 Token::TokenClass::VOID, Token::TokenClass::STRUCT});
-}
-
-Token Parser::expect(Token::TokenClass expected) {
+Token Parser::expect(TC expected) {
   if (expected == currToken.tokenClass) {
     Token temp = currToken;
     nextToken();
@@ -47,8 +41,8 @@ Token Parser::expect(Token::TokenClass expected) {
       " but found: " + ACC::tokToStr(currToken.tokenClass));
 }
 
-Token Parser::expect(std::vector<Token::TokenClass> expected) {
-  for (Token::TokenClass token : expected) {
+Token Parser::expect(std::vector<TC> expected) {
+  for (TC token : expected) {
     if (token == currToken.tokenClass) {
       Token output = currToken;
       nextToken();
@@ -78,324 +72,180 @@ void Parser::nextToken() {
   }
 }
 
-/* AST Construction */
+/* ---- Look Ahead ---- */
 
-std::shared_ptr<Type> Parser::expectType() {
-  if (accept({Token::TokenClass::INT, Token::TokenClass::CHAR,
-              Token::TokenClass::VOID})) {
-    Token typeToken = expect({Token::TokenClass::INT, Token::TokenClass::CHAR,
-                              Token::TokenClass::VOID});
-    std::shared_ptr<Type> type = tokenToType(typeToken.tokenClass);
-    while (accept(Token::TokenClass::ASTERIX)) {
-      expect(Token::TokenClass::ASTERIX);
-      type = std::shared_ptr<Type>(new PointerType(type));
+bool Parser::acceptDecl() {
+  return acceptStructTypeDecl() || acceptVarDecl() || acceptFunDecl();
+}
+
+bool Parser::acceptFunDecl() {
+  std::pair<bool, int> acceptTypeRes = acceptType();
+  bool canAcceptType = acceptTypeRes.first;
+  int numTokens = acceptTypeRes.second;
+  TC expctIdentLoc = lookAhead(numTokens).tokenClass;
+  TC expctLPARLoc = lookAhead(numTokens + 1).tokenClass;
+  return (canAcceptType && (expctIdentLoc == TC::IDENTIFIER) &&
+          (expctLPARLoc) == TC::LPAR);
+}
+
+bool Parser::acceptStructTypeDecl() {
+  Token twoAhead = lookAhead(2);
+  return acceptStructType() && (twoAhead.tokenClass == TC::LBRA);
+}
+
+bool Parser::acceptVarDecl() {
+  std::pair<bool, int> acceptTypeRes = acceptType();
+  bool canAcceptType = acceptTypeRes.first;
+
+  int numTokens = acceptTypeRes.second;
+  TC tokenPastType = lookAhead(numTokens).tokenClass;
+  bool followedByIDENT = (tokenPastType == TC::IDENTIFIER);
+  TC tokenPastIdent = lookAhead(numTokens + 1).tokenClass;
+  bool followedBySC = (tokenPastIdent == TC::SC);
+  bool followedByLSBR = (tokenPastIdent == TC::LSBR);
+  return (canAcceptType && followedByIDENT && (followedBySC || followedByLSBR));
+}
+
+std::pair<bool, int> Parser::acceptType() {
+  int numTokens = 1;
+  if (accept({TC::INT, TC::CHAR, TC::VOID})) {
+    numTokens = 1;
+    TC lookAheadToken = lookAhead(numTokens).tokenClass;
+    while (lookAheadToken == TC::ASTERIX) {
+      numTokens++;
+      lookAheadToken = lookAhead(numTokens).tokenClass;
     }
-    return type;
-  } else if (accept(Token::TokenClass::STRUCT)) {
-    expect(Token::TokenClass::STRUCT);
-    Token structIdentToken = expect(Token::TokenClass::IDENTIFIER);
-    std::shared_ptr<Type> type(new StructType(structIdentToken.data));
-    if (accept(Token::TokenClass::ASTERIX)) {
-      expect(Token::TokenClass::ASTERIX);
-      type = std::shared_ptr<Type>(new PointerType(type));
+  } else if (acceptStructType()) {
+    numTokens = 2;
+    TC lookAheadToken = lookAhead(numTokens).tokenClass;
+    while (lookAheadToken == TC::ASTERIX) {
+      numTokens++;
+      lookAheadToken = lookAhead(numTokens).tokenClass;
     }
-    return type;
   } else {
-    throw std::runtime_error("Parsing: Expected a Type at " +
-                             currToken.position.toString());
+    return std::pair<bool, int>(false, numTokens);
   }
+  return std::pair<bool, int>(true, numTokens);
 }
 
-// Expects params
-// params  -> [ type IDENT (COMMA type IDENT)* ]
-std::vector<std::shared_ptr<VarDecl>> Parser::expectParams() {
-  std::vector<std::shared_ptr<VarDecl>> output;
-  // Check for vardecl && fundecl.
-  Token::TokenClass twoAhead = lookAhead(2).tokenClass;
-  Token::TokenClass threeAhead = lookAhead(3).tokenClass;
-  Token::TokenClass fourAhead = lookAhead(4).tokenClass;
-  if (twoAhead != Token::TokenClass::RPAR &&
-      twoAhead != Token::TokenClass::COMMA &&
-      threeAhead != Token::TokenClass::RPAR &&
-      threeAhead != Token::TokenClass::COMMA &&
-      fourAhead != Token::TokenClass::RPAR &&
-      fourAhead != Token::TokenClass::COMMA) {
-    return output;
-  }
-  if (accept({Token::TokenClass::STRUCT, Token::TokenClass::INT,
-              Token::TokenClass::CHAR, Token::TokenClass::VOID})) {
-    if (accept(Token::TokenClass::STRUCT)) {
-      expect(Token::TokenClass::STRUCT);
-      std::shared_ptr<Type> paramType = std::shared_ptr<StructType>(
-          new StructType(expect(Token::TokenClass::IDENTIFIER).data));
-
-      while (accept(Token::TokenClass::ASTERIX)) {
-        expect(Token::TokenClass::ASTERIX);
-        paramType = std::shared_ptr<PointerType>(new PointerType(paramType));
-      }
-      std::string paramName = expect(Token::TokenClass::IDENTIFIER).data;
-
-      output.push_back(
-          std::shared_ptr<VarDecl>(new VarDecl(paramType, paramName)));
-    } else if (accept({Token::TokenClass::INT, Token::TokenClass::CHAR,
-                       Token::TokenClass::VOID})) {
-      std::shared_ptr<Type> paramType =
-          tokenToType(expect({Token::TokenClass::INT, Token::TokenClass::CHAR,
-                              Token::TokenClass::VOID})
-                          .tokenClass);
-      if (accept(Token::TokenClass::ASTERIX)) {
-        expect(Token::TokenClass::ASTERIX);
-        paramType = std::shared_ptr<PointerType>(new PointerType(paramType));
-      }
-      std::string paramName = expect(Token::TokenClass::IDENTIFIER).data;
-
-      output.push_back(
-          std::shared_ptr<VarDecl>(new VarDecl(paramType, paramName)));
-    }
-
-    while (accept(Token::TokenClass::COMMA)) {
-      expect(Token::TokenClass::COMMA);
-      std::shared_ptr<Type> paramType = expectType();
-      std::string paramName = expect(Token::TokenClass::IDENTIFIER).data;
-
-      output.push_back(
-          std::shared_ptr<VarDecl>(new VarDecl(paramType, paramName)));
-    }
-  }
-  return output;
+bool Parser::acceptStructType() {
+  return accept(TC::STRUCT) && (lookAhead(1).tokenClass == TC::IDENTIFIER);
 }
 
-std::shared_ptr<VarDecl> Parser::expectVarDecl() {
-  std::shared_ptr<Type> type = expectType();
-  std::string varName = expect(Token::TokenClass::IDENTIFIER).data;
-  if (accept(Token::TokenClass::LSBR)) {
-    expect(Token::TokenClass::LSBR);
-    std::string arraySize = expect(Token::TokenClass::INT_LITERAL).data;
-    expect(Token::TokenClass::RSBR);
-    type = std::shared_ptr<ArrayType>(new ArrayType(type, arraySize));
-  }
-  expect(Token::TokenClass::SC);
-  return std::shared_ptr<VarDecl>(new VarDecl(type, varName));
-}
+/* ---- Parsing ---- */
 
 Program Parser::parseProgram() {
-  parseIncludes();
+  while (accept(TC::INCLUDE))
+    parseInclude();
+
   std::vector<std::shared_ptr<Decl>> decls;
-  std::vector<std::shared_ptr<StructTypeDecl>> stds = parseStructDecls();
-  decls.insert(decls.end(), stds.begin(), stds.end());
-  std::vector<std::shared_ptr<VarDecl>> vds = parseVarDecls();
-  decls.insert(decls.end(), vds.begin(), vds.end());
-  std::vector<std::shared_ptr<FunDecl>> fds = parseFunDecls();
-  decls.insert(decls.end(), fds.begin(), fds.end());
-  expect(Token::TokenClass::ENDOFFILE);
+  while (acceptDecl())
+    decls.push_back(parseDecl());
+
+  expect(TC::ENDOFFILE);
   return Program(decls);
 }
 
-std::vector<std::shared_ptr<FunDecl>> Parser::parseFunDecls() {
-  std::vector<std::shared_ptr<FunDecl>> output;
+void Parser::parseInclude() {
+  expect(TC::INCLUDE);
+  expect(TC::STRING_LITERAL);
+}
 
-  // Check if this will be an invalid fundecl.
-  Token::TokenClass twoAhead = lookAhead(2).tokenClass;
-  Token::TokenClass threeAhead = lookAhead(3).tokenClass;
-  Token::TokenClass fourAhead = lookAhead(4).tokenClass;
-  if (twoAhead != Token::TokenClass::LPAR &&
-      threeAhead != Token::TokenClass::LPAR &&
-      fourAhead != Token::TokenClass::LPAR) {
-    return output;
+std::shared_ptr<Decl> Parser::parseDecl() {
+  if (acceptStructTypeDecl())
+    return parseStructTypeDecl();
+
+  if (acceptVarDecl())
+    return parseVarDecl();
+
+  if (acceptFunDecl())
+    return parseFunDecl();
+
+  throw std::runtime_error("Parser: Expected a Struct/Variable/Function "
+                           "Declaration but none was found.");
+}
+
+std::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
+  std::shared_ptr<StructType> structType = parseStructType();
+  expect(TC::LBRA);
+  std::vector<std::shared_ptr<VarDecl>> fields;
+  do {
+    fields.push_back(parseVarDecl());
+  } while (acceptVarDecl());
+
+  expect(TC::RBRA);
+  expect(TC::SC);
+  return std::shared_ptr<StructTypeDecl>(
+      new StructTypeDecl(structType, fields));
+}
+
+std::shared_ptr<VarDecl> Parser::parseVarDecl() {
+  std::shared_ptr<Type> varType = parseType();
+  std::string varIdentifier = expect(TC::IDENTIFIER).data;
+  if (accept(TC::LSBR)) {
+    expect(TC::LSBR);
+    std::string arraySize = expect(TC::INT_LITERAL).data;
+    expect(TC::RSBR);
+    varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
+  expect(TC::SC);
+  return std::shared_ptr<VarDecl>(new VarDecl(varType, varIdentifier));
+}
 
-  if (accept({Token::TokenClass::STRUCT, Token::TokenClass::INT,
-              Token::TokenClass::CHAR, Token::TokenClass::VOID})) {
-    std::shared_ptr<Type> funType;
-    std::string funName;
-    std::vector<std::shared_ptr<VarDecl>> funArgs;
+std::shared_ptr<FunDecl> Parser::parseFunDecl() {
+  throw std::runtime_error(
+      "Parser: Expected a Function Declaration but none was found.");
+}
 
-    Block funBlock;
-    // std::vector<VarDecl> blockVars;
-    // std::vector<Stmt> blockStmts;
-
-    if (accept(Token::TokenClass::STRUCT)) {
-      expect(Token::TokenClass::STRUCT);
-      funType = std::shared_ptr<StructType>(
-          new StructType(expect(Token::TokenClass::IDENTIFIER).data));
-      while (accept(Token::TokenClass::ASTERIX)) {
-        expect(Token::TokenClass::ASTERIX);
-        funType = std::shared_ptr<PointerType>(new PointerType(funType));
-      }
-      funName = expect(Token::TokenClass::IDENTIFIER).data;
-      expect(Token::TokenClass::LPAR);
-      funArgs = expectParams();
-      expect(Token::TokenClass::RPAR);
-      expect(Token::TokenClass::LBRA);
-
-      // std::vector<VarDecl> blockVars = parseVarDecls();
-      // blockStmts = parseStmts();
-      // funBlock = new Block(blockVars, blockStmts);
-
-      expect(Token::TokenClass::RBRA);
-
-      output.push_back(std::shared_ptr<FunDecl>(
-          new FunDecl(funType, funName, funArgs, funBlock)));
-    } else if (accept({Token::TokenClass::INT, Token::TokenClass::CHAR,
-                       Token::TokenClass::VOID})) {
-      funType =
-          tokenToType(expect({Token::TokenClass::INT, Token::TokenClass::CHAR,
-                              Token::TokenClass::VOID})
-                          .tokenClass);
-      while (accept(Token::TokenClass::ASTERIX)) {
-        expect(Token::TokenClass::ASTERIX);
-        funType = std::shared_ptr<PointerType>(new PointerType(funType));
-      }
-      funName = expect(Token::TokenClass::IDENTIFIER).data;
-      expect(Token::TokenClass::LPAR);
-      funArgs = expectParams();
-      expect(Token::TokenClass::RPAR);
-      expect(Token::TokenClass::LBRA);
-
-      // blockVars = parseVarDecls();
-      // blockStmts = parseStmts();
-      funBlock = Block(); // new Block(blockVars, blockStmts);
-
-      expect(Token::TokenClass::RBRA);
-
-      output.push_back(std::shared_ptr<FunDecl>(
-          new FunDecl(funType, funName, funArgs, funBlock)));
+std::shared_ptr<Type> Parser::parseType() {
+  std::shared_ptr<Type> type;
+  if (acceptStructType()) {
+    type = parseStructType();
+    while (accept(TC::ASTERIX)) {
+      expect(TC::ASTERIX);
+      type = std::shared_ptr<PointerType>(new PointerType(type));
     }
-
-    // Try to parse more fundecl
-    std::vector<std::shared_ptr<FunDecl>> moreFunDecls = parseFunDecls();
-    output.insert(output.end(), moreFunDecls.begin(), moreFunDecls.end());
-  }
-
-  return output;
-}
-
-std::vector<std::shared_ptr<StructTypeDecl>> Parser::parseStructDecls() {
-  std::vector<std::shared_ptr<StructTypeDecl>> output;
-  // Check for struct being used as a vardecl.
-  if (lookAhead(2).tokenClass != Token::TokenClass::LBRA)
-    return output;
-
-  // Parse the struct.
-  if (accept(Token::TokenClass::STRUCT)) {
-
-    // Define the struct info.
-    std::vector<std::shared_ptr<VarDecl>> varDecls;
-
-    expect(Token::TokenClass::STRUCT);
-    std::string structName = expect(Token::TokenClass::IDENTIFIER).data;
-    expect(Token::TokenClass::LBRA);
-
-    // Add all VarDecl's to our varDecl List.
-    varDecls.push_back(expectVarDecl());
-
-    std::vector<std::shared_ptr<VarDecl>> moreVarDecls = parseVarDecls();
-    varDecls.insert(varDecls.end(), moreVarDecls.begin(), moreVarDecls.end());
-
-    expect(Token::TokenClass::RBRA);
-    expect(Token::TokenClass::SC);
-
-    // Add this StructDecl to our output.
-    output.push_back(std::shared_ptr<StructTypeDecl>(new StructTypeDecl(
-        std::shared_ptr<StructType>(new StructType(structName)), varDecls)));
-
-    // Try to parse more StructDecl's to add to our output.
-    std::vector<std::shared_ptr<StructTypeDecl>> moreStructTypes =
-        parseStructDecls();
-    output.insert(output.end(), moreStructTypes.begin(), moreStructTypes.end());
-  }
-  return output;
-}
-
-std::vector<std::shared_ptr<VarDecl>> Parser::parseVarDecls() {
-  std::vector<std::shared_ptr<VarDecl>> output;
-  Token::TokenClass twoAhead = lookAhead(2).tokenClass;
-  Token::TokenClass threeAhead = lookAhead(3).tokenClass;
-  Token::TokenClass fourAhead = lookAhead(4).tokenClass;
-  if (twoAhead != Token::TokenClass::SC &&
-      twoAhead != Token::TokenClass::LSBR &&
-      threeAhead != Token::TokenClass::SC &&
-      threeAhead != Token::TokenClass::LSBR &&
-      fourAhead != Token::TokenClass::SC &&
-      fourAhead != Token::TokenClass::LSBR) {
-    return output;
-  }
-  if (accept({Token::TokenClass::STRUCT, Token::TokenClass::INT,
-              Token::TokenClass::CHAR, Token::TokenClass::VOID})) {
-    if (accept(Token::TokenClass::STRUCT)) {
-      expect(Token::TokenClass::STRUCT);
-      std::string structType = expect(Token::TokenClass::IDENTIFIER).data;
-      std::shared_ptr<Type> varType(new StructType(structType));
-
-      // Check if this is a pointer.
-      while (accept(Token::TokenClass::ASTERIX)) {
-        expect(Token::TokenClass::ASTERIX);
-        varType = std::shared_ptr<PointerType>(new PointerType(varType));
-      }
-      std::string varName = expect(Token::TokenClass::IDENTIFIER).data;
-
-      // Check for array declaration.
-      if (accept(Token::TokenClass::LSBR)) {
-        expect(Token::TokenClass::LSBR);
-        std::string arraySize = expect(Token::TokenClass::INT_LITERAL).data;
-        expect(Token::TokenClass::RSBR);
-        varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
-      }
-      expect(Token::TokenClass::SC);
-
-      output.push_back(std::shared_ptr<VarDecl>(new VarDecl(varType, varName)));
-    } else if (accept({Token::TokenClass::INT, Token::TokenClass::CHAR,
-                       Token::TokenClass::VOID})) {
-
-      Token typeToken = expect({Token::TokenClass::INT, Token::TokenClass::CHAR,
-                                Token::TokenClass::VOID});
-
-      std::shared_ptr<Type> varType = tokenToType(typeToken.tokenClass);
-
-      while (accept(Token::TokenClass::ASTERIX)) {
-        expect(Token::TokenClass::ASTERIX);
-        varType = std::shared_ptr<Type>(new PointerType(varType));
-      }
-
-      std::string varName = expect(Token::TokenClass::IDENTIFIER).data;
-
-      // Check for array declaration.
-      if (accept(Token::TokenClass::LSBR)) {
-        expect(Token::TokenClass::LSBR);
-        std::string arraySize = expect(Token::TokenClass::INT_LITERAL).data;
-        expect(Token::TokenClass::RSBR);
-        varType = std::shared_ptr<Type>(new ArrayType(varType, arraySize));
-      }
-
-      expect(Token::TokenClass::SC);
-
-      output.push_back(std::shared_ptr<VarDecl>(new VarDecl(varType, varName)));
+  } else {
+    Token baseType = expect({TC::INT, TC::CHAR, TC::VOID});
+    PrimitiveType pType;
+    switch (baseType.tokenClass) {
+    case TC::INT:
+      pType = PrimitiveType::INT;
+      break;
+    case TC::CHAR:
+      pType = PrimitiveType::CHAR;
+      break;
+    case TC::VOID:
+      pType = PrimitiveType::VOID;
+      break;
+    default:
+      pType = PrimitiveType::VOID;
+      break;
     }
-
-    // Try to parse more vardecl
-    std::vector<std::shared_ptr<VarDecl>> moreVarDecls = parseVarDecls();
-    output.insert(output.end(), moreVarDecls.begin(), moreVarDecls.end());
+    type = std::shared_ptr<BaseType>(new BaseType(pType));
+    while (accept(TC::ASTERIX)) {
+      expect(TC::ASTERIX);
+      type = std::shared_ptr<PointerType>(new PointerType(type));
+    }
   }
-  return output;
+  return type;
 }
 
-void Parser::parseIncludes() {
-  if (accept(Token::TokenClass::INCLUDE)) {
-    expect(Token::TokenClass::INCLUDE);
-    expect(Token::TokenClass::STRING_LITERAL);
-    parseIncludes();
-  }
+std::shared_ptr<StructType> Parser::parseStructType() {
+  expect(TC::STRUCT);
+  std::string structIdentifier = expect(TC::IDENTIFIER).data;
+  return std::shared_ptr<StructType>(new StructType(structIdentifier));
 }
 
 /* Helpers */
 
-std::shared_ptr<BaseType> Parser::tokenToType(const Token::TokenClass &tc) {
+std::shared_ptr<BaseType> Parser::tokenToType(const TC &tc) {
   switch (tc) {
-  case Token::TokenClass::INT:
+  case TC::INT:
     return std::make_shared<BaseType>(BaseType(PrimitiveType::INT));
-  case Token::TokenClass::CHAR:
+  case TC::CHAR:
     return std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR));
-  case Token::TokenClass::VOID:
+  case TC::VOID:
     return std::make_shared<BaseType>(BaseType(PrimitiveType::VOID));
   default:
     throw std::runtime_error("Parsing: Cannot resolve Token " + tokToStr(tc) +

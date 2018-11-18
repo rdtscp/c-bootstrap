@@ -23,17 +23,16 @@ public:
 
 private:
   Token currToken;
-  std::vector<Token> tokenBuffer;
   Lexer lexer;
+  std::vector<Token> tokenBuffer;
+
+  /* ---- Token Operations ---- */
 
   /* Check if we can expect the provided Token to be next. */
   bool accept(Token::TokenClass expected);
 
   /* Check if we can expect one of the provided Tokens to be next. */
   bool accept(std::vector<Token::TokenClass> expected);
-
-  /* Check if we can expect a Type. */
-  bool acceptType();
 
   /* Expect the next Token to be of a certain type. Throws if not. */
   Token expect(Token::TokenClass expected);
@@ -47,21 +46,32 @@ private:
   /* Populates currToken with the next unconsumed Token. */
   void nextToken();
 
-  /* Parsing */
+  /* ---- Look Ahead ---- */
 
-  std::shared_ptr<Type> expectType();
-  std::vector<std::shared_ptr<VarDecl>> expectParams();
-  std::shared_ptr<VarDecl> expectVarDecl();
+  bool acceptDecl();
 
-  void parseIncludes();
+  bool acceptFunDecl();
+  bool acceptStructTypeDecl();
+  bool acceptVarDecl();
+
+  std::pair<bool, int> acceptType();
+
+  bool acceptStructType();
+
+  /* ---- Parsing ---- */
+
   Program parseProgram();
-  std::vector<std::shared_ptr<FunDecl>> parseFunDecls();
-  std::vector<std::shared_ptr<StructTypeDecl>> parseStructDecls();
-  std::vector<std::shared_ptr<VarDecl>> parseVarDecls();
+  void parseInclude();
+  std::shared_ptr<Decl> parseDecl();
 
-  /* @TODO Parse the rest of the AST. */
+  std::shared_ptr<StructTypeDecl> parseStructTypeDecl();
+  std::shared_ptr<VarDecl> parseVarDecl();
+  std::shared_ptr<FunDecl> parseFunDecl();
 
-  /* Helpers */
+  std::shared_ptr<Type> parseType();
+  std::shared_ptr<StructType> parseStructType();
+
+  /* Helpers ---- */
 
   /* Converts an Token to an Type */
   std::shared_ptr<BaseType> tokenToType(const Token::TokenClass &tc);
