@@ -7,7 +7,7 @@
 
 namespace ACC {
 
-class Block {
+class Block : public Stmt {
 
 public:
   Block(std::vector<std::shared_ptr<Stmt>> blockStmts) {
