@@ -11,7 +11,7 @@ namespace ACC {
 
 class FunDecl;
 
-class VarDecl : public Decl {
+class VarDecl : public Decl, public Stmt {
 
 public:
   std::shared_ptr<Type> type;
@@ -36,6 +36,10 @@ public:
 
     return typesEqual && namesEqual && bytesEqual && parentEqual && fpEqual &&
            spEqual;
+  }
+
+  bool operator!=(const VarDecl &vd) const {
+    return !(*this == vd);
   }
 
   std::string toString() const override { return "VarDecl"; }
