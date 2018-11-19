@@ -144,6 +144,31 @@ TEST(ParserTest, VarDecls) {
   ASSERT_TRUE(true);
 }
 
+TEST(ParserTest, FunDecl) {
+  Scanner scanner(test_prefix + "parser/fundecl.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  Program prog = parser.parse();
+  ASSERT_EQ(prog.varDecls.size(), 1);
+  ASSERT_EQ(prog.funDecls.size(), 1);
+
+  std::vector<std::shared_ptr<Stmt>> blockStmts;
+  std::shared_ptr<Block> expectedBlock(new Block(blockStmts));
+  std::vector<std::shared_ptr<VarDecl>> expectedParams = {
+      std::make_shared<VarDecl>(VarDecl(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+              std::string("argc"))),
+      std::make_shared<VarDecl>(VarDecl(std::make_shared<PointerType>(PointerType(
+                  std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))),
+              std::string("argv")))};
+
+  FunDecl actual = prog.funDecls[0];
+  FunDecl expected(std::make_shared<Block>(Block(blockStmts)), std::string("main"), expectedParams,
+                   std::make_shared<BaseType>(BaseType(PrimitiveType::INT)));
+
+  ASSERT_TRUE(actual == expected);
+}
+
 // The fixture for testing class Project1. From google test primer.
 class Test_Parser : public ::testing::Test {
 protected:
