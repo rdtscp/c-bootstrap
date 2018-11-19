@@ -11,6 +11,7 @@
 #include "ast/PointerType.h"
 #include "ast/PrimitiveType.h"
 #include "ast/Program.h"
+#include "ast/Stmt.h"
 #include "ast/StructType.h"
 #include "ast/StructTypeDecl.h"
 #include "ast/Type.h"
