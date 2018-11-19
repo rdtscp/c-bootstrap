@@ -55,23 +55,37 @@ private:
   bool acceptVarDecl();
 
   std::pair<bool, int> acceptType();
-
   bool acceptStructType();
+
+  bool acceptParam();
+  bool acceptStmt();
+  bool acceptBlock();
+  bool acceptWhile();
+  bool acceptIf();
+  bool acceptReturn();
+  bool acceptAssign();
+  std::pair<bool, int> acceptExpr();
 
   /* ---- Parsing ---- */
 
   Program parseProgram();
+
   void parseInclude();
   std::shared_ptr<Decl> parseDecl();
 
   std::shared_ptr<StructTypeDecl> parseStructTypeDecl();
   std::shared_ptr<VarDecl> parseVarDecl();
   std::shared_ptr<FunDecl> parseFunDecl();
+  std::shared_ptr<VarDecl> parseParam();
 
   std::shared_ptr<Type> parseType();
   std::shared_ptr<StructType> parseStructType();
 
-  /* Helpers ---- */
+  std::shared_ptr<Block> parseBlock();
+
+  std::shared_ptr<Stmt> parseStmt();
+
+  /* ---- Helpers ---- */
 
   /* Converts an Token to an Type */
   std::shared_ptr<BaseType> tokenToType(const Token::TokenClass &tc);

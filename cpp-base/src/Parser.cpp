@@ -96,8 +96,8 @@ bool Parser::acceptStructTypeDecl() {
 bool Parser::acceptVarDecl() {
   std::pair<bool, int> acceptTypeRes = acceptType();
   bool canAcceptType = acceptTypeRes.first;
-
   int numTokens = acceptTypeRes.second;
+
   TC tokenPastType = lookAhead(numTokens).tokenClass;
   bool followedByIDENT = (tokenPastType == TC::IDENTIFIER);
   TC tokenPastIdent = lookAhead(numTokens + 1).tokenClass;
@@ -130,6 +130,58 @@ std::pair<bool, int> Parser::acceptType() {
 
 bool Parser::acceptStructType() {
   return accept(TC::STRUCT) && (lookAhead(1).tokenClass == TC::IDENTIFIER);
+}
+
+bool Parser::acceptParam() {
+  std::pair<bool, int> acceptTypeRes = acceptType();
+  bool canAcceptType = acceptTypeRes.first;
+  int numTokens = acceptTypeRes.second;
+
+  TC tokenPastType = lookAhead(numTokens).tokenClass;
+  bool followedByIDENT = (tokenPastType == TC::IDENTIFIER);
+  return (canAcceptType && followedByIDENT);
+}
+
+bool Parser::acceptStmt() {
+  if (acceptVarDecl())
+    return true;
+  if (acceptBlock())
+    return true;
+  if (acceptWhile())
+    return true;
+  if (acceptIf())
+    return true;
+  if (acceptReturn())
+    return true;
+  if (acceptAssign())
+    return true;
+  if (acceptExpr().first)
+    return true;
+
+  return false;
+}
+
+bool Parser::acceptBlock() { return accept(TC::LBRA); }
+
+bool Parser::acceptWhile() { return accept(TC::WHILE); }
+
+bool Parser::acceptIf() { return accept(TC::IF); }
+
+bool Parser::acceptReturn() { return accept(TC::RETURN); }
+
+bool Parser::acceptAssign() {
+  std::pair<bool, int> acceptExprRes = acceptExpr();
+  bool canAcceptExpr = acceptExprRes.first;
+  int numTokens = acceptExprRes.second;
+
+  TC tokenPastType = lookAhead(numTokens).tokenClass;
+  bool followedByASSIGN = (tokenPastType == TC::ASSIGN);
+  return (canAcceptExpr && followedByASSIGN);
+}
+
+std::pair<bool, int> Parser::acceptExpr() {
+  // TODO
+  return std::pair<bool, int>(false, 1);
 }
 
 /* ---- Parsing ---- */
@@ -193,8 +245,36 @@ std::shared_ptr<VarDecl> Parser::parseVarDecl() {
 }
 
 std::shared_ptr<FunDecl> Parser::parseFunDecl() {
-  throw std::runtime_error(
-      "Parser: Expected a Function Declaration but none was found.");
+  std::shared_ptr<Type> funType = parseType();
+  std::string funIdent = expect(TC::IDENTIFIER).data;
+  expect(TC::LPAR);
+  std::vector<std::shared_ptr<VarDecl>> funParams;
+
+  if (acceptParam())
+    funParams.push_back(parseParam());
+  while (accept(TC::COMMA)) {
+    expect(TC::COMMA);
+    funParams.push_back(parseParam());
+  }
+
+  expect(TC::RPAR);
+
+  std::shared_ptr<Block> funBlock = parseBlock();
+
+  return std::shared_ptr<FunDecl>(
+      new FunDecl(funBlock, funIdent, funParams, funType));
+}
+
+std::shared_ptr<VarDecl> Parser::parseParam() {
+  std::shared_ptr<Type> varType = parseType();
+  std::string varIdentifier = expect(TC::IDENTIFIER).data;
+  if (accept(TC::LSBR)) {
+    expect(TC::LSBR);
+    std::string arraySize = expect(TC::INT_LITERAL).data;
+    expect(TC::RSBR);
+    varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
+  }
+  return std::shared_ptr<VarDecl>(new VarDecl(varType, varIdentifier));
 }
 
 std::shared_ptr<Type> Parser::parseType() {
@@ -235,6 +315,23 @@ std::shared_ptr<StructType> Parser::parseStructType() {
   expect(TC::STRUCT);
   std::string structIdentifier = expect(TC::IDENTIFIER).data;
   return std::shared_ptr<StructType>(new StructType(structIdentifier));
+}
+
+std::shared_ptr<Block> Parser::parseBlock() {
+  expect(TC::LBRA);
+
+  std::vector<std::shared_ptr<Stmt>> blockStmts;
+
+  while (acceptStmt()) {
+    blockStmts.push_back(parseStmt());
+  }
+
+  expect(TC::RBRA);
+  return std::shared_ptr<Block>(new Block(blockStmts));
+}
+
+std::shared_ptr<Stmt> Parser::parseStmt() {
+  return std::shared_ptr<Stmt>(new Stmt());
 }
 
 /* Helpers */
