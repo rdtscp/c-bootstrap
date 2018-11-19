@@ -3,8 +3,5 @@
 [![Build Status](https://travis-ci.com/acwilson96/c-bootstrap.svg?branch=master)](https://travis-ci.com/acwilson96/c-bootstrap)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)
 
-Bootstrapping a simple C based compiler.
-
-## cpp-base
-A simple C compiler built in c++.
-The cpp-base will intially be used to build simple C programs, and then either extended to support simple C++, or a separate C compiler will be written in C and compiled using the cpp-base, and then compile itself and further C programs.
+* Bootstrapping a simple C based compiler written in C++.
+* The compiler will intially be used to build simple C programs, and then extend the grammar enough so that it is able to compile itself.
