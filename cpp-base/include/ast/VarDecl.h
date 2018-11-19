@@ -38,9 +38,7 @@ public:
            spEqual;
   }
 
-  bool operator!=(const VarDecl &vd) const {
-    return !(*this == vd);
-  }
+  bool operator!=(const VarDecl &vd) const { return !(*this == vd); }
 
   std::string toString() const override { return "VarDecl"; }
 };

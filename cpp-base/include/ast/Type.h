@@ -25,6 +25,10 @@ public:
   virtual bool operator==(const Type &t) {
     return (toString() == t.toString());
   }
+
+  virtual bool operator!=(const Type &t) {
+    return (toString() != t.toString());
+  }
 };
 
 }; // namespace ACC
