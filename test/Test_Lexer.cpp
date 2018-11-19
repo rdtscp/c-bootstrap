@@ -4,13 +4,14 @@
 
 #include "gtest/gtest.h"
 
+#include "../include/Lexer.h"
 #include "../include/Scanner.h"
 #include "../include/Token.h"
-#include "../include/Lexer.h"
 
 using namespace ACC;
 
-// std::string test_prefix = "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/cpp-base/test/tests/";
+// std::string test_prefix =
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
 std::string test_prefix = "../../test/tests/";
 
 TEST(LexerTest, AllTokens) {
@@ -98,7 +99,7 @@ TEST(LexerTest, AllTokens) {
 }
 
 TEST(LexerTest, InvalidIdentifier) {
-  Scanner scanner(test_prefix + "lexer/errors.c");  
+  Scanner scanner(test_prefix + "lexer/errors.c");
   Lexer lexer(scanner);
 
   ASSERT_EQ(Token::TokenClass::INT_LITERAL, lexer.nextToken().tokenClass);
@@ -167,7 +168,7 @@ TEST(LexerTest, VarDecls) {
   Scanner scanner(test_prefix + "parser/vardecl.c");
   Lexer lexer(scanner);
 
-	Token::TokenClass currToken = Token::TokenClass::INVALID;
+  Token::TokenClass currToken = Token::TokenClass::INVALID;
   while (currToken != Token::TokenClass::ENDOFFILE) {
     currToken = lexer.nextToken().tokenClass;
   }
