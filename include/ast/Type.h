@@ -20,15 +20,13 @@ class Type {
 public:
   Type() {}
 
+  virtual bool operator==(const Type &t) { return (strVal() == t.strVal()); }
+
+  virtual bool operator!=(const Type &t) { return (strVal() != t.strVal()); }
+
   virtual std::string toString() const { return "Type::T"; }
 
-  virtual bool operator==(const Type &t) {
-    return (toString() == t.toString());
-  }
-
-  virtual bool operator!=(const Type &t) {
-    return (toString() != t.toString());
-  }
+  virtual std::string strVal() const { return "Type::T"; }
 };
 
 }; // namespace ACC

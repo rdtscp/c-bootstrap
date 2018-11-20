@@ -20,7 +20,11 @@ public:
 
   bool operator==(const While &d) const { return true; }
 
-  virtual std::string toString() const { return "While"; }
+  std::string toString() const override {
+    return "while (" + condition->toString() + ")" + body->toString();
+  }
+
+  std::string strVal() const override { return "While"; }
 };
 
 }; // namespace ACC

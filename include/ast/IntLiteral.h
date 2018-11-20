@@ -20,7 +20,9 @@ public:
 
   bool operator==(const IntLiteral &d) const { return true; }
 
-  virtual std::string toString() const { return "IntLiteral(" + value + ")"; }
+  std::string toString() const override { return value; }
+
+  std::string strVal() const override { return "IntLiteral(" + value + ")"; }
 };
 
 }; // namespace ACC

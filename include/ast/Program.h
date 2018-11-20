@@ -33,6 +33,13 @@ public:
         structTypeDecls.push_back(*static_cast<StructTypeDecl *>(decl.get()));
     }
   }
+
+  std::string toString() const {
+    std::string output;
+    for (const std::shared_ptr<Decl> &decl : decls)
+      output += decl->toString();
+    return output;
+  }
 };
 
 }; // namespace ACC

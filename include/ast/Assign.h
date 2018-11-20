@@ -23,7 +23,11 @@ public:
 
   bool operator==(const Assign &d) const { return true; }
 
-  virtual std::string toString() const { return "Assign"; }
+  std::string toString() const override {
+    return lhs->toString() + " = " + rhs->toString();
+  }
+
+  std::string strVal() const override { return "Assign"; }
 };
 
 }; // namespace ACC

@@ -22,7 +22,13 @@ public:
 
   bool operator==(const Return &d) const { return true; }
 
-  virtual std::string toString() const { return "Return"; }
+  std::string toString() const override {
+    if (returnExpr == nullptr)
+      return "return";
+    return "return " + returnExpr->toString();
+  }
+
+  std::string strVal() const override { return "Return"; }
 };
 
 }; // namespace ACC

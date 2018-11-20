@@ -20,7 +20,13 @@ public:
 
   bool operator==(const VarExpr &d) const { return true; }
 
-  virtual std::string toString() const { return "VarExpr(" + identifier + ")"; }
+  std::string toString() const override {
+    return identifier;
+  }
+
+  std::string strVal() const override {
+    return "VarExpr(" + identifier + ")";
+  }
 };
 
 }; // namespace ACC

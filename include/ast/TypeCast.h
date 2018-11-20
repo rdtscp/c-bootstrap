@@ -16,13 +16,18 @@ public:
   std::shared_ptr<Type> type;
   std::shared_ptr<Expr> expr;
 
-  TypeCast(std::shared_ptr<Type> type, std::shared_ptr<Expr> expr) : type(type), expr(expr) {
+  TypeCast(std::shared_ptr<Type> type, std::shared_ptr<Expr> expr)
+      : type(type), expr(expr) {
     // Boilerplate Code.
   }
 
   bool operator==(const TypeCast &d) const { return true; }
 
-  virtual std::string toString() const { return "TypeCast"; }
+  std::string toString() const override {
+    return "(" + type->toString() + ")" + expr->toString();
+  }
+
+  std::string strVal() const override { return "TypeCast"; }
 };
 
 }; // namespace ACC

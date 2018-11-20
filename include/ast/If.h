@@ -27,7 +27,15 @@ public:
 
   bool operator==(const If &d) const { return true; }
 
-  virtual std::string toString() const { return "If"; }
+  std::string toString() const override {
+    std::string output = "if (" + ifCondition->toString() + ")";
+    output += ifBody->toString();
+    if (elseBody != nullptr)
+      output += " else " + elseBody->toString();
+    return output;
+  }
+
+  std::string strVal() const override { return "If"; }
 };
 
 }; // namespace ACC

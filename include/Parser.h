@@ -66,6 +66,21 @@ private:
   bool acceptAssign();
   std::pair<bool, int> acceptExpr();
 
+  bool acceptArrayAccess();
+  bool acceptBinOp();
+  bool acceptCharLiteral();
+  bool acceptFieldAccess();
+  bool acceptFunCall();
+  bool acceptIntLiteral();
+  bool acceptOp();
+  bool acceptParenthExpr();
+  bool acceptSizeOf();
+  bool acceptStringLiteral();
+  bool acceptTypeCast();
+  bool acceptUnaryMinus();
+  bool acceptValueAt();
+  bool acceptVarExpr();
+
   /* ---- Parsing ---- */
 
   Program parseProgram();
@@ -84,6 +99,26 @@ private:
   std::shared_ptr<Block> parseBlock();
 
   std::shared_ptr<Stmt> parseStmt();
+  std::shared_ptr<While> parseWhile();
+  std::shared_ptr<If> parseIf();
+  std::shared_ptr<Return> parseReturn();
+  std::shared_ptr<Assign> parseAssign();
+  std::shared_ptr<Expr> parseExpr();
+
+
+  std::shared_ptr<ArrayAccess> parseArrayAccess();
+  std::shared_ptr<BinOp> parseBinOp();
+  std::shared_ptr<CharLiteral> parseCharLiteral();
+  std::shared_ptr<FieldAccess> parseFieldAccess();
+  std::shared_ptr<FunCall> parseFunCall();
+  std::shared_ptr<IntLiteral> parseIntLiteral();
+  Op parseOp();
+  std::shared_ptr<Expr> parseParenthExpr();
+  std::shared_ptr<SizeOf> parseSizeOf();
+  std::shared_ptr<StringLiteral> parseStringLiteral();
+  std::shared_ptr<TypeCast> parseTypeCast();
+  std::shared_ptr<ValueAt> parseValueAt();
+  std::shared_ptr<VarExpr> parseVarExpr();
 
   /* ---- Helpers ---- */
 

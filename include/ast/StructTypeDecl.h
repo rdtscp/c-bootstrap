@@ -25,7 +25,15 @@ public:
     structType = structType_ptr;
   }
 
-  std::string toString() const override { return "StructTypeDecl"; }
+  std::string toString() const override {
+    std::string output = structType->toString() + " {";
+    for (const std::shared_ptr<VarDecl>& varDecl: varDecls)
+      output += varDecl->toString();
+    output += "}";
+    return output;
+  }
+
+  std::string strVal() const override { return "StructTypeDecl"; }
 };
 
 }; // namespace ACC

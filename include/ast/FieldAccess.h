@@ -22,9 +22,8 @@ public:
 
   bool operator==(const FieldAccess &d) const { return true; }
 
-  virtual std::string toString() const {
-    return "FieldAccess";
-  }
+  std::string toString() const override { return object->toString() + "." + field; }
+  std::string strVal() const override { return "FieldAccess"; }
 };
 
 }; // namespace ACC

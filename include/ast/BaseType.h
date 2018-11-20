@@ -31,6 +31,8 @@ public:
       return "BaseType::T";
     }
   }
+
+  std::string strVal() const override { return toString(); }
 };
 
 }; // namespace ACC

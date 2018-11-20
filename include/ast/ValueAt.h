@@ -20,7 +20,9 @@ public:
 
   bool operator==(const ValueAt &d) const { return true; }
 
-  virtual std::string toString() const { return "ValueAt"; }
+  std::string toString() const override { return "*" + derefExpr->toString(); }
+
+  std::string strVal() const override { return "ValueAt"; }
 };
 
 }; // namespace ACC

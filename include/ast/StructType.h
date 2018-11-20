@@ -20,6 +20,10 @@ public:
   std::string toString() const override {
     return "struct " + identifier;
   }
+
+  std::string strVal() const override {
+    return "struct " + identifier;
+  }
 };
 
 }; // namespace ACC

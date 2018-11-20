@@ -22,9 +22,11 @@ public:
 
   bool operator==(const ArrayAccess &d) const { return true; }
 
-  virtual std::string toString() const {
-    return "ArrayAccess";
+  virtual std::string toString() const override {
+    return array->toString() + "[" + index->toString() + "]";
   }
+
+  std::string strVal() const override { return "ArrayAccess"; }
 };
 
 }; // namespace ACC

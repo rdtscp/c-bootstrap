@@ -40,7 +40,11 @@ public:
 
   bool operator!=(const VarDecl &vd) const { return !(*this == vd); }
 
-  std::string toString() const override { return "VarDecl"; }
+  std::string toString() const override {
+    return type->toString() + " " + identifer;
+  }
+
+  std::string strVal() const override { return "VarDecl"; }
 };
 
 }; // namespace ACC

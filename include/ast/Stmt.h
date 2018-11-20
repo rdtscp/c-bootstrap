@@ -14,9 +14,11 @@ public:
     // Boilerplate Code.
   }
 
-  bool operator==(const Stmt &d) const { return true; }
+  bool operator==(const Stmt &s) const { return false; }
 
   virtual std::string toString() const { return "Stmt"; }
+
+  virtual std::string strVal() const { return "Stmt"; }
 };
 
 }; // namespace ACC

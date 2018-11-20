@@ -54,7 +54,18 @@ public:
     return true;
   }
 
-  std::string toString() const override { return "FunDecl"; }
+  std::string toString() const override {
+    std::string output = funType->toString() + " ";
+    output += funName + "(";
+    for (const std::shared_ptr<VarDecl>& param: funParams)
+      output += param->toString() + ", ";
+    output += ")";
+    output += " " + funBlock->toString();
+    return output;
+  }
+
+  std::string strVal() const override { return "FunDecl"; }
+
 };
 
 }; // namespace ACC

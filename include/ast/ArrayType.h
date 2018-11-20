@@ -24,6 +24,10 @@ public:
   std::string toString() const override {
     return arrayType->toString() + "[" + arraySize + "]";
   }
+
+  std::string strVal() const override {
+    return arrayType->strVal() + "[" + arraySize + "]";
+  }
 };
 
 }; // namespace ACC

@@ -18,9 +18,12 @@ public:
     // Boilerplate Code.
   }
 
-  bool operator==(const CharLiteral &d) const { return true; }
+  bool operator==(const CharLiteral &cl) const { return value == cl.value; }
 
-  virtual std::string toString() const { return "CharLiteral(" + value + ")"; }
+  virtual std::string toString() const override { return "'" + value + "'"; }
+
+  std::string strVal() const override { return "CharLiteral(" + value + ")"; }
+
 };
 
 }; // namespace ACC

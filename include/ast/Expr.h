@@ -16,9 +16,11 @@ public:
     // Boilerplate Code.
   }
 
-  bool operator==(const Expr &d) const { return true; }
+  bool operator==(const Expr &d) const { return false; }
 
-  virtual std::string toString() const { return "Expr"; }
+  std::string toString() const override { return "Expr"; }
+
+  std::string strVal() const override { return "Expr"; }
 };
 
 }; // namespace ACC

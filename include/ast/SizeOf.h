@@ -21,7 +21,9 @@ public:
 
   bool operator==(const SizeOf &d) const { return true; }
 
-  virtual std::string toString() const { return "SizeOf"; }
+  std::string toString() const override { return "sizeof(" + type->toString() + ")"; }
+
+  std::string strVal() const override { return "SizeOf"; }
 };
 
 }; // namespace ACC
