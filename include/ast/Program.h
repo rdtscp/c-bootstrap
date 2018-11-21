@@ -25,11 +25,11 @@ public:
 
   Program(const std::vector<std::shared_ptr<Decl>> &decls) : decls(decls) {
     for (const std::shared_ptr<Decl> decl : decls) {
-      if (decl->toString() == "FunDecl")
+      if (decl->strVal() == "FunDecl")
         funDecls.push_back(*static_cast<FunDecl *>(decl.get()));
-      if (decl->toString() == "VarDecl")
+      if (decl->strVal() == "VarDecl")
         varDecls.push_back(*static_cast<VarDecl *>(decl.get()));
-      if (decl->toString() == "StructTypeDecl")
+      if (decl->strVal() == "StructTypeDecl")
         structTypeDecls.push_back(*static_cast<StructTypeDecl *>(decl.get()));
     }
   }
