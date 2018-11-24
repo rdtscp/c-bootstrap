@@ -17,11 +17,17 @@ public:
 
   PointerType(std::shared_ptr<Type> type_ptr) { pointedType = type_ptr; }
 
-  std::string toString() const override {
-    return pointedType->toString() + "*";
+  bool operator==(Type &t) const override {
+    if (t.astClass() == astClass())
+      return *this == *static_cast<PointerType *>(&t);
+    return false;
   }
+  bool operator!=(Type &t) const override { return !(*this == t); }
 
-  std::string strVal() const override { return pointedType->toString() + "*"; }
+  bool operator==(const PointerType &rhs) const { return *pointedType == *rhs.pointedType; }
+  bool operator!=(const PointerType &rhs) const { return !(*this==rhs); }
+
+  std::string astClass() const override { return "PointerType"; }
 };
 
 }; // namespace ACC

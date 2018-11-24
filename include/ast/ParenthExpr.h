@@ -20,10 +20,7 @@ public:
 
   bool operator==(const ParenthExpr &d) const { return true; }
 
-  std::string toString() const override { return "(" + innerExpr->toString() + ")"; }
-
-  std::string strVal() const override { return "ParenthExpr"; }
-
+  std::string astClass() const override { return "ParenthExpr"; }
 };
 
 }; // namespace ACC

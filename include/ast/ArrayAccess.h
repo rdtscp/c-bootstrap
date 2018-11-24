@@ -3,6 +3,7 @@
 #ifndef ARRAYACCESS_H
 #define ARRAYACCESS_H
 
+#include <memory>
 #include <string>
 
 #include "Expr.h"
@@ -22,11 +23,7 @@ public:
 
   bool operator==(const ArrayAccess &d) const { return true; }
 
-  virtual std::string toString() const override {
-    return array->toString() + "[" + index->toString() + "]";
-  }
-
-  std::string strVal() const override { return "ArrayAccess"; }
+  std::string astClass() const override { return "ArrayAccess"; }
 };
 
 }; // namespace ACC

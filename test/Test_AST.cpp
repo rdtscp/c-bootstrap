@@ -13,15 +13,8 @@ using namespace ACC;
 // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
 std::string test_prefix = "../../test/tests/";
 
-TEST(ASTTest, TypeComparisons) {
-  Type parentType;
-  Type parentType2;
-
-  ASSERT_TRUE(parentType == parentType2);
-}
 
 TEST(ASTTest, BaseTypeComparisons) {
-  Type parentType;
 
   BaseType charType(PrimitiveType::CHAR);
   BaseType intType(PrimitiveType::INT);
@@ -31,7 +24,6 @@ TEST(ASTTest, BaseTypeComparisons) {
   BaseType intType2(PrimitiveType::INT);
   BaseType voidType2(PrimitiveType::VOID);
 
-  ASSERT_FALSE(parentType == charType);
   ASSERT_FALSE(charType == intType);
   ASSERT_FALSE(intType == voidType);
 
@@ -41,8 +33,6 @@ TEST(ASTTest, BaseTypeComparisons) {
 }
 
 TEST(ASTTest, ArrayTypeComparisons) {
-  Type parentType;
-
   ArrayType charArray(
       std::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)), "5");
   ArrayType intArray(
@@ -57,7 +47,6 @@ TEST(ASTTest, ArrayTypeComparisons) {
   ArrayType voidArray2(
       std::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)), "5");
 
-  ASSERT_FALSE(parentType == charArray);
   ASSERT_FALSE(charArray == intArray);
   ASSERT_FALSE(intArray == voidArray);
 
@@ -67,8 +56,6 @@ TEST(ASTTest, ArrayTypeComparisons) {
 }
 
 TEST(ASTTest, PointerTypeComparisons) {
-  Type parentType;
-
   PointerType charPtr(
       std::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)));
   PointerType intPtr(
@@ -83,7 +70,6 @@ TEST(ASTTest, PointerTypeComparisons) {
   PointerType voidPtr2(
       std::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)));
 
-  ASSERT_FALSE(parentType == charPtr);
   ASSERT_FALSE(charPtr == intPtr);
   ASSERT_FALSE(intPtr == voidPtr);
 
@@ -93,13 +79,10 @@ TEST(ASTTest, PointerTypeComparisons) {
 }
 
 TEST(ASTTest, StructTypeComparisons) {
-  Type parentType;
-
   StructType structType(std::string("struct1"));
   StructType structType2(std::string("struct2"));
   StructType structType3(std::string("struct2"));
 
-  ASSERT_FALSE(parentType == structType);
   ASSERT_FALSE(structType == structType2);
 
   ASSERT_TRUE(structType2 == structType3);

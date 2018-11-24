@@ -20,10 +20,7 @@ public:
 
   bool operator==(const CharLiteral &cl) const { return value == cl.value; }
 
-  virtual std::string toString() const override { return "'" + value + "'"; }
-
-  std::string strVal() const override { return "CharLiteral(" + value + ")"; }
-
+  std::string astClass() const override { return "CharLiteral"; }
 };
 
 }; // namespace ACC

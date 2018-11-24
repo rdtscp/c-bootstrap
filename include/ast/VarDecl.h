@@ -26,25 +26,26 @@ public:
     type = type_ptr;
   }
 
-  bool operator==(const VarDecl &vd) const {
-    bool typesEqual = (*type == *vd.type);
-    bool namesEqual = (identifer == vd.identifer);
-    bool bytesEqual = (numBytes == vd.numBytes);
-    bool parentEqual = true; // @TODO Implement FunDecl Comparisons.
-    bool fpEqual = (fpOffset == vd.fpOffset);
-    bool spEqual = (spOffset == vd.spOffset);
-
-    return typesEqual && namesEqual && bytesEqual && parentEqual && fpEqual &&
-           spEqual;
+  bool operator==(Decl &rhs) const override {
+    if (rhs.astClass() == astClass())
+      return *this == *static_cast<VarDecl *>(&rhs);
+    return false;
   }
+  bool operator!=(Decl &rhs) const override { return !(*this == rhs); }
 
-  bool operator!=(const VarDecl &vd) const { return !(*this == vd); }
+  bool operator==(const VarDecl &rhs) const {
+    if (*type != *rhs.type)
+      return false;
 
-  std::string toString() const override {
-    return type->toString() + " " + identifer;
+    if (identifer != rhs.identifer)
+      return false;
+
+    return true;
   }
+  bool operator!=(const VarDecl &rhs) const { return !(*this == rhs); }
 
-  std::string strVal() const override { return "VarDecl"; }
+
+  std::string astClass() const override { return "VarDecl"; }
 };
 
 }; // namespace ACC

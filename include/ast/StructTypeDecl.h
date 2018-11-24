@@ -25,15 +25,29 @@ public:
     structType = structType_ptr;
   }
 
-  std::string toString() const override {
-    std::string output = structType->toString() + " {";
-    for (const std::shared_ptr<VarDecl>& varDecl: varDecls)
-      output += varDecl->toString();
-    output += "}";
-    return output;
+  bool operator==(Decl &rhs) const override {
+    if (rhs.astClass() == astClass())
+      return *this == *static_cast<StructTypeDecl *>(&rhs);
+    return false;
   }
+  bool operator!=(Decl &rhs) const override { return !(*this == rhs); }
 
-  std::string strVal() const override { return "StructTypeDecl"; }
+  bool operator==(const StructTypeDecl &rhs) const {
+    if (*structType != *rhs.structType)
+      return false;
+
+    if (varDecls.size() != rhs.varDecls.size())
+      return false;
+
+    for (int i = 0; i < varDecls.size(); i++)
+      if (*varDecls[i] != *rhs.varDecls[i])
+        return false;
+
+    return true;
+  }
+  bool operator!=(const StructTypeDecl &rhs) const { return !(*this == rhs); }
+
+  std::string astClass() const override { return "StructTypeDecl"; }
 };
 
 }; // namespace ACC

@@ -23,11 +23,7 @@ public:
 
   bool operator==(const Assign &d) const { return true; }
 
-  std::string toString() const override {
-    return lhs->toString() + " = " + rhs->toString();
-  }
-
-  std::string strVal() const override { return "Assign"; }
+  std::string astClass() const override { return "Assign"; }
 };
 
 }; // namespace ACC

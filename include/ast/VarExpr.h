@@ -14,19 +14,11 @@ class VarExpr : public Expr {
 public:
   std::string identifier;
 
-  VarExpr(std::string identifier) : identifier(identifier) {
-    // Boilerplate Code.
-  }
+  VarExpr(std::string identifier) : identifier(identifier) {}
 
   bool operator==(const VarExpr &d) const { return true; }
 
-  std::string toString() const override {
-    return identifier;
-  }
-
-  std::string strVal() const override {
-    return "VarExpr(" + identifier + ")";
-  }
+  std::string astClass() const override { return "VarExpr"; }
 };
 
 }; // namespace ACC

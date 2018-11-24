@@ -23,15 +23,7 @@ public:
 
   bool operator==(const FunCall &d) const { return true; }
 
-  std::string toString() const override {
-    std::string output = funName + "(";
-    for (const std::shared_ptr<Expr> &arg : funArgs)
-      output += arg->toString() + ",";
-    output += ")";
-    return output;
-  }
-
-  std::string strVal() const override { return "FunCall"; }
+  std::string astClass() const override { return "FunCall"; }
 };
 
 }; // namespace ACC

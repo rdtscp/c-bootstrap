@@ -14,15 +14,11 @@ class StringLiteral : public Expr {
 public:
   std::string value;
 
-  StringLiteral(std::string literal) : value(literal) {
-    // Boilerplate Code.
-  }
+  StringLiteral(std::string literal) : value(literal) {}
 
   bool operator==(const StringLiteral &d) const { return true; }
 
-  std::string toString() const override { return "\"" + value + "\""; }
-
-  std::string strVal() const override { return "StringLiteral(" + value + ")"; }
+  std::string astClass() const override { return "StringLiteral"; }
 };
 
 }; // namespace ACC

@@ -3,21 +3,14 @@
 #ifndef DECL_H
 #define DECL_H
 
+#include "../ASTNode.h"
+
 namespace ACC {
 
-class Decl {
-
+class Decl : public ASTNode {
 public:
-  Decl() {
-    // Boilerplate Code.
-  }
-
-  bool operator==(const Decl &d) const { return false; }
-
-  virtual std::string toString() const { return "Decl"; }
-
-  virtual std::string strVal() const { return "Decl"; }
-
+  virtual bool operator==(Decl &rhs) const = 0;
+  virtual bool operator!=(Decl &rhs) const = 0;
 };
 
 }; // namespace ACC

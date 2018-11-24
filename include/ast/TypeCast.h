@@ -23,11 +23,7 @@ public:
 
   bool operator==(const TypeCast &d) const { return true; }
 
-  std::string toString() const override {
-    return "(" + type->toString() + ")" + expr->toString();
-  }
-
-  std::string strVal() const override { return "TypeCast"; }
+  std::string astClass() const override { return "TypeCast"; }
 };
 
 }; // namespace ACC

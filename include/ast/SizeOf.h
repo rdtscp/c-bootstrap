@@ -15,15 +15,11 @@ class SizeOf : public Expr {
 public:
   std::shared_ptr<Type> type;
 
-  SizeOf(std::shared_ptr<Type> type) : type(type) {
-    // Boilerplate Code.
-  }
+  SizeOf(std::shared_ptr<Type> type) : type(type) {}
 
   bool operator==(const SizeOf &d) const { return true; }
 
-  std::string toString() const override { return "sizeof(" + type->toString() + ")"; }
-
-  std::string strVal() const override { return "SizeOf"; }
+  std::string astClass() const override { return "SizeOf"; }
 };
 
 }; // namespace ACC

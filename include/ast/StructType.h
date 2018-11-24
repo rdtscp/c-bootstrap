@@ -17,13 +17,17 @@ public:
 
   StructType(const std::string &identifier) : identifier(identifier) {}
 
-  std::string toString() const override {
-    return "struct " + identifier;
+  bool operator==(Type &rhs) const override {
+    if (rhs.astClass() == astClass())
+      return *this == *static_cast<StructType *>(&rhs);
+    return false;
   }
+  bool operator!=(Type &rhs) const override { return !(*this == rhs); }
 
-  std::string strVal() const override {
-    return "struct " + identifier;
-  }
+  bool operator==(const StructType &rhs) const { return identifier == rhs.identifier; }
+  bool operator!=(const StructType &rhs) const { return !(*this==rhs); }
+
+  std::string astClass() const override { return "StructType"; }
 };
 
 }; // namespace ACC

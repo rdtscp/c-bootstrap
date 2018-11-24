@@ -21,13 +21,19 @@ public:
     arrayType = type_ptr;
   }
 
-  std::string toString() const override {
-    return arrayType->toString() + "[" + arraySize + "]";
+  bool operator==(Type &t) const override {
+    if (t.astClass() == astClass())
+      return *this == *static_cast<ArrayType *>(&t);
+    return false;
   }
+  bool operator!=(Type &t) const override { return !(*this == t); }
 
-  std::string strVal() const override {
-    return arrayType->strVal() + "[" + arraySize + "]";
+  bool operator==(const ArrayType &rhs) const {
+    return (*arrayType == *rhs.arrayType && arraySize == rhs.arraySize);
   }
+  bool operator!=(const ArrayType &rhs) const { return !(*this == rhs); }
+
+  std::string astClass() const override { return "ArrayType"; }
 };
 
 }; // namespace ACC

@@ -24,11 +24,7 @@ public:
 
   bool operator==(const BinOp &d) const { return true; }
 
-  std::string toString() const override {
-    return lhs->toString() + opToStr(operation) + rhs->toString();
-  }
-
-  std::string strVal() const override { return "BinOp"; }
+  std::string astClass() const override { return "BinOp"; }
 
   std::string opToStr(const Op op) const {
     switch (op) {

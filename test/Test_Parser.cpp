@@ -4,6 +4,8 @@
 
 #include "gtest/gtest.h"
 
+#include "../include/passes/SourcePass.h"
+
 #include "../include/Lexer.h"
 #include "../include/Parser.h"
 #include "../include/Scanner.h"
@@ -71,16 +73,23 @@ TEST(ParserTest, StructDecl) {
   Parser parser(lexer);
 
   Program actual = parser.parse();
-  ASSERT_EQ(actual.structTypeDecls.size(), 1);
-  ASSERT_EQ(actual.decls.size(), 2);
 
-  ASSERT_EQ(actual.structTypeDecls[0].structType->identifier, "FooStruct");
-  ASSERT_EQ(actual.structTypeDecls[0].varDecls.size(), 1);
-  ASSERT_EQ(actual.structTypeDecls[0].varDecls[0]->identifer, "fooInt");
+  std::vector<std::shared_ptr<Decl>> expectedDecls = {
+      std::shared_ptr<StructTypeDecl>(new StructTypeDecl(
+          std::shared_ptr<StructType>(new StructType("FooStruct")),
+          {std::shared_ptr<VarDecl>(new VarDecl(
+              std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+              "fooInt"))})),
+      std::shared_ptr<VarDecl>(
+          new VarDecl(std::shared_ptr<StructType>(new StructType("FooStruct")),
+                      "myFooStruct"))};
 
-  std::shared_ptr<StructType> varType(new StructType("FooStruct"));
+  int actualSize = actual.decls.size();
+  int expectSize = expectedDecls.size();
+  ASSERT_EQ(actual.decls.size(), expectedDecls.size());
 
-  ASSERT_TRUE(actual.varDecls[0] == VarDecl(varType, "myFooStruct"));
+  for (int i = 0; i < expectedDecls.size(); i++)
+    ASSERT_TRUE(*actual.decls[i] == *expectedDecls[i]);
 }
 
 TEST(ParserTest, VarDecls) {
@@ -89,86 +98,75 @@ TEST(ParserTest, VarDecls) {
   Parser parser(lexer);
 
   Program actual = parser.parse();
-  ASSERT_EQ(actual.funDecls.size(), 0);
-  ASSERT_EQ(actual.structTypeDecls.size(), 1);
-  ASSERT_EQ(actual.varDecls.size(), 13);
-  ASSERT_EQ(actual.decls.size(), 14);
 
-  ASSERT_EQ(actual.structTypeDecls[0].structType->identifier, "FooStruct");
-  ASSERT_EQ(actual.structTypeDecls[0].varDecls.size(), 1);
-  ASSERT_EQ(actual.structTypeDecls[0].varDecls[0]->identifer, "fooInt");
+  std::vector<std::shared_ptr<Decl>> expectedDecls = {
+      std::shared_ptr<StructTypeDecl>(new StructTypeDecl(
+          std::shared_ptr<StructType>(new StructType("FooStruct")),
+          {std::shared_ptr<VarDecl>(new VarDecl(
+              std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+              "fooInt"))})),
+      std::shared_ptr<VarDecl>(new VarDecl(
+          std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+          "myInt")),
+      std::shared_ptr<VarDecl>(new VarDecl(
+          std::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+          "myChar")),
+      std::shared_ptr<VarDecl>(new VarDecl(
+          std::shared_ptr<PointerType>(new PointerType(
+              std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)))),
+          "myIntPtr")),
+      std::shared_ptr<VarDecl>(new VarDecl(
+          std::shared_ptr<PointerType>(new PointerType(
+              std::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)))),
+          "myCharPtr")),
+      std::shared_ptr<VarDecl>(new VarDecl(
+          std::shared_ptr<PointerType>(new PointerType(
+              std::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)))),
+          "myVoidPtr")),
+      std::shared_ptr<VarDecl>(
+          new VarDecl(std::shared_ptr<PointerType>(
+                          new PointerType(std::shared_ptr<PointerType>(
+                              new PointerType(std::shared_ptr<BaseType>(
+                                  new BaseType(PrimitiveType::INT)))))),
+                      "myIntPtrPtr")),
+      std::shared_ptr<VarDecl>(
+          new VarDecl(std::shared_ptr<PointerType>(
+                          new PointerType(std::shared_ptr<PointerType>(
+                              new PointerType(std::shared_ptr<BaseType>(
+                                  new BaseType(PrimitiveType::CHAR)))))),
+                      "myCharPtrPtr")),
+      std::shared_ptr<VarDecl>(
+          new VarDecl(std::shared_ptr<PointerType>(
+                          new PointerType(std::shared_ptr<PointerType>(
+                              new PointerType(std::shared_ptr<BaseType>(
+                                  new BaseType(PrimitiveType::VOID)))))),
+                      "myVoidPtrPtr")),
+      std::shared_ptr<VarDecl>(new VarDecl(
+          std::shared_ptr<ArrayType>(new ArrayType(
+              std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+              "5")),
+          "myIntArr")),
+      std::shared_ptr<VarDecl>(new VarDecl(
+          std::shared_ptr<ArrayType>(new ArrayType(
+              std::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+              "5")),
+          "myCharArr")),
+      std::shared_ptr<VarDecl>(
+          new VarDecl(std::shared_ptr<StructType>(new StructType("FooStruct")),
+                      "myFooStruct")),
+      std::shared_ptr<VarDecl>(new VarDecl(
+          std::shared_ptr<PointerType>(new PointerType(
+              std::shared_ptr<StructType>(new StructType("FooStruct")))),
+          "myFooStructPtr")),
+      std::shared_ptr<VarDecl>(new VarDecl(
+          std::shared_ptr<ArrayType>(new ArrayType(
+              std::shared_ptr<StructType>(new StructType("FooStruct")), "5")),
+          "myFooStructArr"))};
 
-  ASSERT_TRUE(
-      instanceOf<BaseType>(*actual.structTypeDecls[0].varDecls[0]->type.get()));
-  BaseType *bt = static_cast<BaseType *>(
-      actual.structTypeDecls[0].varDecls[0]->type.get());
-  ASSERT_EQ(PrimitiveType::INT, bt->primitiveType);
-  // ASSERT_EQ(static_cast<BaseType>(*actual.structTypeDecls[0].varDecls[0].type.get()).primitiveType,
-  // PrimitiveType::INT);
+  ASSERT_EQ(actual.decls.size(), expectedDecls.size());
 
-  Type *struct0Field0Type = actual.structTypeDecls[0].varDecls[0]->type.get();
-
-  std::vector<VarDecl> expectedVarDecls = {
-      VarDecl(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-              std::string("myInt")),
-      VarDecl(std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-              std::string("myChar")),
-
-      VarDecl(std::make_shared<PointerType>(PointerType(
-                  std::make_shared<BaseType>(BaseType(PrimitiveType::INT)))),
-              std::string("myIntPtr")),
-      VarDecl(std::make_shared<PointerType>(PointerType(
-                  std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))),
-              std::string("myCharPtr")),
-      VarDecl(std::make_shared<PointerType>(PointerType(
-                  std::make_shared<BaseType>(BaseType(PrimitiveType::VOID)))),
-              std::string("myVoidPtr")),
-
-      VarDecl(std::make_shared<PointerType>(std::make_shared<PointerType>(
-                  PointerType(std::make_shared<BaseType>(
-                      BaseType(PrimitiveType::INT))))),
-              std::string("myIntPtrPtr")),
-      VarDecl(std::make_shared<PointerType>(std::make_shared<PointerType>(
-                  PointerType(std::make_shared<BaseType>(
-                      BaseType(PrimitiveType::CHAR))))),
-              std::string("myCharPtrPtr")),
-      VarDecl(std::make_shared<PointerType>(std::make_shared<PointerType>(
-                  PointerType(std::make_shared<BaseType>(
-                      BaseType(PrimitiveType::VOID))))),
-              std::string("myVoidPtrPtr")),
-
-      VarDecl(
-          std::make_shared<ArrayType>(
-              std::make_shared<BaseType>(BaseType(PrimitiveType::INT)), "5"),
-          std::string("myIntArr")),
-      VarDecl(
-          std::make_shared<ArrayType>(
-              std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)), "5"),
-          std::string("myCharArr")),
-
-      VarDecl(std::make_shared<StructType>(StructType("FooStruct")),
-              std::string("myFooStruct")),
-      VarDecl(std::make_shared<PointerType>(
-                  std::make_shared<StructType>(StructType("FooStruct"))),
-              std::string("myFooStructPtr")),
-      VarDecl(std::make_shared<ArrayType>(
-                  std::make_shared<StructType>(StructType("FooStruct")), "5"),
-              std::string("myFooStructArr"))};
-
-  std::vector<VarDecl> actualVarDecls;
-  for (const VarDecl &varDecl : actual.varDecls) {
-    actualVarDecls.push_back(varDecl);
-  }
-
-  ASSERT_EQ(actualVarDecls.size(), expectedVarDecls.size());
-
-  for (int i = 0; i < actualVarDecls.size(); i++) {
-    const VarDecl &currActual = actualVarDecls[i];
-    const VarDecl &currExpect = expectedVarDecls[i];
-    ASSERT_TRUE(currActual == currExpect);
-  }
-
-  ASSERT_TRUE(true);
+  for (int i = 0; i < expectedDecls.size(); i++)
+    ASSERT_TRUE(*actual.decls[i] == *expectedDecls[i]);
 }
 
 TEST(ParserTest, FunDecl) {
@@ -176,27 +174,28 @@ TEST(ParserTest, FunDecl) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  Program prog = parser.parse();
-  ASSERT_EQ(prog.varDecls.size(), 1);
-  ASSERT_EQ(prog.funDecls.size(), 1);
+  Program actual = parser.parse();
+  ASSERT_EQ(actual.decls.size(), 2);
+  std::vector<std::shared_ptr<Decl>> expectedDecls = {
+      std::shared_ptr<VarDecl>(new VarDecl(
+          std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+          "myGlobalInt")),
+      std::shared_ptr<FunDecl>(new FunDecl(
+          std::shared_ptr<Block>(new Block({})), "main",
+          {std::shared_ptr<VarDecl>(new VarDecl(
+               std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+               "argc")),
+           std::shared_ptr<VarDecl>(
+               new VarDecl(std::shared_ptr<PointerType>(
+                               new PointerType(std::shared_ptr<BaseType>(
+                                   new BaseType(PrimitiveType::CHAR)))),
+                           "argv"))},
+          std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT))))};
 
-  std::vector<std::shared_ptr<Stmt>> blockStmts;
-  std::shared_ptr<Block> expectedBlock(new Block(blockStmts));
-  std::vector<std::shared_ptr<VarDecl>> expectedParams = {
-      std::make_shared<VarDecl>(
-          VarDecl(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                  std::string("argc"))),
-      std::make_shared<VarDecl>(VarDecl(
-          std::make_shared<PointerType>(PointerType(
-              std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))),
-          std::string("argv")))};
+  ASSERT_EQ(actual.decls.size(), expectedDecls.size());
 
-  FunDecl actual = prog.funDecls[0];
-  FunDecl expected(std::make_shared<Block>(Block(blockStmts)),
-                   std::string("main"), expectedParams,
-                   std::make_shared<BaseType>(BaseType(PrimitiveType::INT)));
-
-  ASSERT_TRUE(actual == expected);
+  for (int i = 0; i < expectedDecls.size(); i++)
+    ASSERT_TRUE(*actual.decls[i] == *expectedDecls[i]);
 }
 
 TEST(ParserTest, BinOp) {
@@ -204,26 +203,27 @@ TEST(ParserTest, BinOp) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  Program prog = parser.parse();
-  ASSERT_EQ(prog.funDecls.size(), 1);
+  Program actual = parser.parse();
+  ASSERT_EQ(actual.decls.size(), 1);
+  std::vector<std::shared_ptr<Decl>> expectedDecls = {
+      std::shared_ptr<FunDecl>(new FunDecl(
+          std::shared_ptr<Block>(new Block(
+              {std::shared_ptr<VarDecl>(new VarDecl(
+                   std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+                   "x")),
+               std::shared_ptr<Assign>(new Assign(
+                   std::shared_ptr<VarExpr>(new VarExpr("x")),
+                   std::shared_ptr<BinOp>(new BinOp(
+                       std::shared_ptr<IntLiteral>(new IntLiteral("1")),
+                       Op::ADD,
+                       std::shared_ptr<IntLiteral>(new IntLiteral("2"))))))})),
+          "main", {},
+          std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT))))};
 
-  std::vector<std::shared_ptr<Stmt>> blockStmts{
-      std::shared_ptr<VarDecl>(new VarDecl(
-          std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)), "x")),
-      std::shared_ptr<Assign>(new Assign(
-          std::shared_ptr<VarExpr>(new VarExpr("x")),
-          std::shared_ptr<BinOp>(new BinOp(
-              std::shared_ptr<IntLiteral>(new IntLiteral("1")), Op::ADD,
-              std::shared_ptr<IntLiteral>(new IntLiteral("2"))))))};
-  std::shared_ptr<Block> expectedBlock(new Block(blockStmts));
-  std::vector<std::shared_ptr<VarDecl>> expectedParams = {};
+  ASSERT_EQ(actual.decls.size(), expectedDecls.size());
 
-  FunDecl actual = prog.funDecls[0];
-  FunDecl expected(std::make_shared<Block>(Block(blockStmts)),
-                   std::string("main"), expectedParams,
-                   std::make_shared<BaseType>(BaseType(PrimitiveType::INT)));
-
-  ASSERT_TRUE(actual == expected);
+  for (int i = 0; i < expectedDecls.size(); i++)
+    ASSERT_TRUE(*actual.decls[i] == *expectedDecls[i]);
 }
 
 // The fixture for testing class Project1. From google test primer.

@@ -17,22 +17,17 @@ public:
 
   BaseType(PrimitiveType pType) : primitiveType(pType) {}
 
-  BaseType(const BaseType &bt) { primitiveType = bt.primitiveType; }
-
-  std::string toString() const override {
-    switch (primitiveType) {
-    case PrimitiveType::INT:
-      return "int";
-    case PrimitiveType::CHAR:
-      return "char";
-    case PrimitiveType::VOID:
-      return "void";
-    default:
-      return "BaseType::T";
-    }
+  bool operator==(Type &t) const override {
+    if (t.astClass() == astClass())
+      return *this == *static_cast<BaseType *>(&t);
+    return false;
   }
+  bool operator!=(Type &t) const override { return !(*this == t); }
 
-  std::string strVal() const override { return toString(); }
+  bool operator==(const BaseType &rhs) const { return primitiveType == rhs.primitiveType; }
+  bool operator!=(const BaseType &rhs) const { return !(*this==rhs); }
+
+  std::string astClass() const override { return "BaseType"; }
 };
 
 }; // namespace ACC

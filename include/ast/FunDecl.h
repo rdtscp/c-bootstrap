@@ -14,58 +14,48 @@ namespace ACC {
 
 class FunDecl : public Decl {
 
+public:
   std::shared_ptr<Block> funBlock;
   std::string funName;
   std::vector<std::shared_ptr<VarDecl>> funParams;
   std::shared_ptr<Type> funType;
 
-public:
   FunDecl(std::shared_ptr<Block> funBlock, std::string funName,
           std::vector<std::shared_ptr<VarDecl>> funParams,
           std::shared_ptr<Type> funType)
       : funBlock(funBlock), funName(funName), funParams(funParams),
-        funType(funType) {
-    // Boilerplate Code.
+        funType(funType) {}
+
+  bool operator==(Decl &rhs) const override {
+    if (rhs.astClass() == astClass())
+      return *this == *static_cast<FunDecl *>(&rhs);
+    return false;
   }
+  bool operator!=(Decl &rhs) const override { return !(*this == rhs); }
 
-  bool operator==(const FunDecl &fd) const {
-    /* Check Block */
-    // TODO
-
-    /* Check Name */
-    if (fd.funName != funName)
+  bool operator==(const FunDecl &rhs) const {
+    if (*funType != *rhs.funType)
       return false;
 
-    /* Check Params */
-    if (fd.funParams.size() != funParams.size())
+    if (funName != rhs.funName)
       return false;
-    for (int i=0; i < funParams.size(); i++) {
-      VarDecl lhsParam = *funParams[i];
-      VarDecl rhsParam = *fd.funParams[i];
 
-      if (lhsParam != rhsParam)
+    if (funParams.size() != rhs.funParams.size())
+      return false;
+
+    for (int i = 0; i < funParams.size(); i++)
+      if (*funParams[i] != *rhs.funParams[i])
         return false;
-    }
 
-    /* Check Type */
-    if (*funType != *fd.funType)
-      return false;
+    /* Check Block*/
 
     return true;
   }
+  bool operator!=(const FunDecl &rhs) const { return !(*this == rhs); }
 
-  std::string toString() const override {
-    std::string output = funType->toString() + " ";
-    output += funName + "(";
-    for (const std::shared_ptr<VarDecl>& param: funParams)
-      output += param->toString() + ", ";
-    output += ")";
-    output += " " + funBlock->toString();
-    return output;
-  }
+  std::string astClass() const override { return "FunDecl"; }
 
-  std::string strVal() const override { return "FunDecl"; }
-
+  // void accept(ASTVisitor &v) const override { v.visit(*this); }
 };
 
 }; // namespace ACC
