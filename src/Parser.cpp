@@ -399,100 +399,100 @@ std::shared_ptr<Expr> Parser::parseExpr() {
     return std::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr));
   }
 
-  return parseExpr2();
+  return parseBoolExpr();
 }
 
-std::shared_ptr<Expr> Parser::parseExpr2() {
-  std::shared_ptr<Expr> lhs = parseExpr3();
+std::shared_ptr<Expr> Parser::parseBoolExpr() {
+  std::shared_ptr<Expr> lhs = parseEqualExpr();
   if (accept(TC::OR)) {
     expect(TC::OR);
-    std::shared_ptr<Expr> rhs = parseExpr3();
+    std::shared_ptr<Expr> rhs = parseEqualExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::OR, rhs));
   }
   if (accept(TC::AND)) {
     expect(TC::AND);
-    std::shared_ptr<Expr> rhs = parseExpr3();
+    std::shared_ptr<Expr> rhs = parseEqualExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::AND, rhs));
   }
   return lhs;
 }
 
-std::shared_ptr<Expr> Parser::parseExpr3() {
-  std::shared_ptr<Expr> lhs = parseExpr4();
+std::shared_ptr<Expr> Parser::parseEqualExpr() {
+  std::shared_ptr<Expr> lhs = parseCompExpr();
   if (accept(TC::NE)) {
     expect(TC::NE);
-    std::shared_ptr<Expr> rhs = parseExpr4();
+    std::shared_ptr<Expr> rhs = parseCompExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::NE, rhs));
   }
   if (accept(TC::EQ)) {
     expect(TC::EQ);
-    std::shared_ptr<Expr> rhs = parseExpr4();
+    std::shared_ptr<Expr> rhs = parseCompExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::EQ, rhs));
   }
   return lhs;
 }
 
-std::shared_ptr<Expr> Parser::parseExpr4() {
-  std::shared_ptr<Expr> lhs = parseExpr5();
+std::shared_ptr<Expr> Parser::parseCompExpr() {
+  std::shared_ptr<Expr> lhs = parseAddExpr();
   if (accept(TC::LT)) {
     expect(TC::LT);
-    std::shared_ptr<Expr> rhs = parseExpr5();
+    std::shared_ptr<Expr> rhs = parseAddExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::LT, rhs));
   }
   if (accept(TC::GT)) {
     expect(TC::GT);
-    std::shared_ptr<Expr> rhs = parseExpr5();
+    std::shared_ptr<Expr> rhs = parseAddExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::GT, rhs));
   }
   if (accept(TC::LE)) {
     expect(TC::LE);
-    std::shared_ptr<Expr> rhs = parseExpr5();
+    std::shared_ptr<Expr> rhs = parseAddExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::LE, rhs));
   }
   if (accept(TC::GE)) {
     expect(TC::GE);
-    std::shared_ptr<Expr> rhs = parseExpr5();
+    std::shared_ptr<Expr> rhs = parseAddExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::GE, rhs));
   }
   return lhs;
 }
 
-std::shared_ptr<Expr> Parser::parseExpr5() {
-  std::shared_ptr<Expr> lhs = parseExpr6();
+std::shared_ptr<Expr> Parser::parseAddExpr() {
+  std::shared_ptr<Expr> lhs = parseMulExpr();
   if (accept(TC::PLUS)) {
     expect(TC::PLUS);
-    std::shared_ptr<Expr> rhs = parseExpr6();
+    std::shared_ptr<Expr> rhs = parseMulExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::ADD, rhs));
   }
   if (accept(TC::MINUS)) {
     expect(TC::MINUS);
-    std::shared_ptr<Expr> rhs = parseExpr6();
+    std::shared_ptr<Expr> rhs = parseMulExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::SUB, rhs));
   }
   return lhs;
 }
 
-std::shared_ptr<Expr> Parser::parseExpr6() {
-  std::shared_ptr<Expr> lhs = parseExpr7();
+std::shared_ptr<Expr> Parser::parseMulExpr() {
+  std::shared_ptr<Expr> lhs = parseUnaryExpr();
   if (accept(TC::ASTERIX)) {
     expect(TC::ASTERIX);
-    std::shared_ptr<Expr> rhs = parseExpr7();
+    std::shared_ptr<Expr> rhs = parseUnaryExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::MUL, rhs));
   }
   if (accept(TC::DIV)) {
     expect(TC::DIV);
-    std::shared_ptr<Expr> rhs = parseExpr7();
+    std::shared_ptr<Expr> rhs = parseUnaryExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::DIV, rhs));
   }
   if (accept(TC::REM)) {
     expect(TC::REM);
-    std::shared_ptr<Expr> rhs = parseExpr7();
+    std::shared_ptr<Expr> rhs = parseUnaryExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::MOD, rhs));
   }
   return lhs;
 }
 
-std::shared_ptr<Expr> Parser::parseExpr7() {
+std::shared_ptr<Expr> Parser::parseUnaryExpr() {
   if (accept(TC::SIZEOF)) {
     expect(TC::SIZEOF);
     expect(TC::LPAR);
@@ -502,27 +502,27 @@ std::shared_ptr<Expr> Parser::parseExpr7() {
   }
   if (accept(TC::ASTERIX)) {
     expect(TC::ASTERIX);
-    std::shared_ptr<Expr> rhs = parseExpr8();
+    std::shared_ptr<Expr> rhs = parseObjExpr();
     return std::shared_ptr<ValueAt>(new ValueAt(rhs));
   }
   if (accept(TC::LPAR)) {
     expect(TC::LPAR);
     std::shared_ptr<Type> castType = parseType();
     expect(TC::RPAR);
-    std::shared_ptr<Expr> expToCast = parseExpr8();
+    std::shared_ptr<Expr> expToCast = parseObjExpr();
     return std::shared_ptr<TypeCast>(new TypeCast(castType, expToCast));
   }
   if (accept(TC::MINUS)) {
     expect(TC::MINUS);
     std::shared_ptr<IntLiteral> lhs(new IntLiteral("0"));
-    std::shared_ptr<Expr> rhs = parseExpr8();
+    std::shared_ptr<Expr> rhs = parseObjExpr();
     return std::shared_ptr<BinOp>(new BinOp(lhs, Op::SUB, rhs));
   }
 
-  return parseExpr8();
+  return parseObjExpr();
 }
 
-std::shared_ptr<Expr> Parser::parseExpr8() {
+std::shared_ptr<Expr> Parser::parseObjExpr() {
   if (accept(TC::IDENTIFIER)) {
     std::string ident = expect(TC::IDENTIFIER).data;
     if (accept(TC::LPAR)) {
@@ -530,10 +530,10 @@ std::shared_ptr<Expr> Parser::parseExpr8() {
 
       std::vector<std::shared_ptr<Expr>> params;
       if (acceptExpr())
-        params.push_back(parseExpr9());
+        params.push_back(parseLitExpr());
       while (accept(TC::COMMA)) {
         expect(TC::COMMA);
-        params.push_back(parseExpr9());
+        params.push_back(parseLitExpr());
       }
 
       expect(TC::RPAR);
@@ -542,7 +542,7 @@ std::shared_ptr<Expr> Parser::parseExpr8() {
     return std::shared_ptr<VarExpr>(new VarExpr(ident));
   }
 
-  std::shared_ptr<Expr> lhs = parseExpr9();
+  std::shared_ptr<Expr> lhs = parseLitExpr();
   if (accept(TC::DOT)) {
     expect(TC::DOT);
     std::string fieldIdent = expect(TC::IDENTIFIER).data;
@@ -550,7 +550,7 @@ std::shared_ptr<Expr> Parser::parseExpr8() {
   }
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
-    std::shared_ptr<Expr> index = parseExpr9();
+    std::shared_ptr<Expr> index = parseLitExpr();
     expect(TC::RSBR);
     return std::shared_ptr<Expr>(new ArrayAccess(lhs, index));
   }
@@ -558,7 +558,7 @@ std::shared_ptr<Expr> Parser::parseExpr8() {
   return lhs;
 }
 
-std::shared_ptr<Expr> Parser::parseExpr9() {
+std::shared_ptr<Expr> Parser::parseLitExpr() {
   if (accept(TC::INT_LITERAL))
     return std::shared_ptr<IntLiteral>(
         new IntLiteral(expect(TC::INT_LITERAL).data));

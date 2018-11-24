@@ -32,52 +32,53 @@ stmt         -> vardecl
               | "while" "(" exp ")" stmt
               | "if" "(" exp ")" stmt ["else" stmt]
               | "return" [exp] ";"
-              | exp "=" exp ";"
-              | exp ";"
+              | expr "=" expr ";"
+              | expr ";"
 
 block        -> "{" stmt* "}"
 
-exp          -> "(" exp2 ")"
-              | exp2
+expr         -> "(" boolExpr ")"
+              | boolExpr
 
-exp2         -> exp3
-              | exp3 "||" exp3
-              | exp3 "&&" exp3
+boolExpr     -> equalExpr
+              | equalExpr "||" equalExpr
+              | equalExpr "&&" equalExpr
 
-exp3         -> exp4
-              | exp4 "!=" exp4
-              | exp4 "==" exp4
+equalExpr    -> compExpr
+              | compExpr "!=" compExpr
+              | compExpr "==" compExpr
 
-exp4         -> exp5
-              | exp5 "<" exp5
-              | exp5 ">" exp5
-              | exp5 "<=" exp5
-              | exp5 ">=" exp5
+compExpr     -> addExpr
+              | addExpr "<" addExpr
+              | addExpr ">" addExpr
+              | addExpr "<=" addExpr
+              | addExpr ">=" addExpr
 
-exp5         -> exp6
-              | exp6 "+" exp6
-              | exp6 "-" exp6
+addExpr      -> mulExpr
+              | mulExpr "+" mulExpr
+              | mulExpr "-" mulExpr
 
-exp6         -> exp7
-              | exp7 "*" exp7
-              | exp7 "/" exp7
-              | exp7 "%" exp7
+mulExpr      -> unaryExpr
+              | unaryExpr "*" unaryExpr
+              | unaryExpr "/" unaryExpr
+              | unaryExpr "%" unaryExpr
 
-exp7         -> "sizeof" "(" type ")"
-              | "*" exp8
-              | "(" type ")" exp8
-              | "-" exp8
-              | exp8
+unaryExpr    -> "sizeof" "(" type ")"
+              | "*" objExpr
+              | "(" type ")" objExpr
+              | "-" objExpr
+              | objExpr
 
-exp8         -> IDENT "(" exp9 ("," exp9)* ")"
-              | IDENT "(" exp9 ")"
+objExpr      -> IDENT "(" litExpr ("," litExpr)* ")"
+              | IDENT "(" litExpr ")"
               | IDENT "(" ")"
               | IDENT
-              | exp9 "." IDENT
-              | exp9 "[" exp9 "]"
-              | exp9
+              | litExpr "." IDENT
+              | litExpr "[" litExpr "]"
+              | litExpr
 
-exp9         -> INT_LITERAL
+litExpr      -> INT_LITERAL
               | CHAR_LITERAL
               | STRING_LITERAL
+              | exp
 ```

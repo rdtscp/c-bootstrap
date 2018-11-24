@@ -91,14 +91,14 @@ private:
   std::shared_ptr<Assign> parseAssign();
   
   std::shared_ptr<Expr> parseExpr();
-  std::shared_ptr<Expr> parseExpr2();
-  std::shared_ptr<Expr> parseExpr3();
-  std::shared_ptr<Expr> parseExpr4();
-  std::shared_ptr<Expr> parseExpr5();
-  std::shared_ptr<Expr> parseExpr6();
-  std::shared_ptr<Expr> parseExpr7();
-  std::shared_ptr<Expr> parseExpr8();
-  std::shared_ptr<Expr> parseExpr9();
+  std::shared_ptr<Expr> parseBoolExpr();
+  std::shared_ptr<Expr> parseEqualExpr();
+  std::shared_ptr<Expr> parseCompExpr();
+  std::shared_ptr<Expr> parseAddExpr();
+  std::shared_ptr<Expr> parseMulExpr();
+  std::shared_ptr<Expr> parseUnaryExpr();
+  std::shared_ptr<Expr> parseObjExpr();
+  std::shared_ptr<Expr> parseLitExpr();
 
 
   /* ---- Helpers ---- */
