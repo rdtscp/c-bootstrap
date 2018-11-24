@@ -9,46 +9,75 @@
 ### Mini-C/C++ Grammar
 Progressively changing to adopt new features of the language(s).
 ```
-program    -> (include)* (decl)* EOF
+program      -> (include)* (decl)* EOF
 
-include    -> "#include" STRING_LITERAL
+include      -> "#include" STRING_LITERAL
 
-decl       -> (structdecl)* (vardecl)* (fundecl)*
+decl         -> (structdecl)* (vardecl)* (fundecl)*
 
-structdecl -> structtype "{" (vardecl)+ "}" ";"
+structdecl   -> structtype "{" (vardecl)+ "}" ";"
 
-vardecl    -> type IDENT ";"
-            | type IDENT "[" INT_LITERAL "]" ";"
+vardecl      -> type IDENT ";"
+              | type IDENT "[" INT_LITERAL "]" ";"
 
-fundecl    -> type IDENT "(" params ")" block
+fundecl      -> type IDENT "(" params ")" block
 
-type       -> ("int" | "char" | "void" | structtype) (ASTERIX)*
-structtype -> "struct" IDENT
+type         -> ("int" | "char" | "void" | structtype) (ASTERIX)*
+structtype   -> "struct" IDENT
 
-params     -> [ type IDENT ("," type IDENT)* ]
+params       -> [ type IDENT ("," type IDENT)* ]
 
-stmt       -> vardecl
-            | block
-            | "while" "(" exp ")" stmt
-            | "if" "(" exp ")" stmt ["else" stmt]
-            | "return" [exp] ";"
-            | exp "=" exp ";"
-            | exp ";"
+stmt         -> vardecl
+              | block
+              | "while" "(" exp ")" stmt
+              | "if" "(" exp ")" stmt ["else" stmt]
+              | "return" [exp] ";"
+              | exp "=" exp ";"
+              | exp ";"
 
-block      -> "{" stmt* "}"
+block        -> "{" stmt* "}"
 
-exp        -> "(" exp ")"
-            | (IDENT | INT_LITERAL)
-            | "-" exp
-            | CHAR_LITERAL
-            | STRING_LITERAL
-            | exp ( ">" | "<" | ">=" | "<=" | "!=" | "==" | "+" | "-" | "/" | "*" | "%" | "||" | "&&" ) exp  # binary operators
-            | arrayaccess | fieldaccess | valueat | funcall | sizeof | typecast
+exp          -> "(" exp2 ")"
+              | exp2
 
-funcall      -> IDENT "(" [ exp ("," exp)* ] ")"
-arrayaccess  -> exp "[" exp "]"
-fieldaccess  -> exp "." IDENT
-valueat      -> "*" exp
-sizeof       -> "sizeof" "(" type ")"
-typecast     -> "(" type ")" exp
+exp2         -> exp3
+              | exp3 "||" exp3
+              | exp3 "&&" exp3
+
+exp3         -> exp4
+              | exp4 "!=" exp4
+              | exp4 "==" exp4
+
+exp4         -> exp5
+              | exp5 "<" exp5
+              | exp5 ">" exp5
+              | exp5 "<=" exp5
+              | exp5 ">=" exp5
+
+exp5         -> exp6
+              | exp6 "+" exp6
+              | exp6 "-" exp6
+
+exp6         -> exp7
+              | exp7 "*" exp7
+              | exp7 "/" exp7
+              | exp7 "%" exp7
+
+exp7         -> "sizeof" "(" type ")"
+              | "*" exp8
+              | "(" type ")" exp8
+              | "-" exp8
+              | exp8
+
+exp8         -> IDENT "(" exp9 ("," exp9)* ")"
+              | IDENT "(" exp9 ")"
+              | IDENT "(" ")"
+              | IDENT
+              | exp9 "." IDENT
+              | exp9 "[" exp9 "]"
+              | exp9
+
+exp9         -> INT_LITERAL
+              | CHAR_LITERAL
+              | STRING_LITERAL
 ```
