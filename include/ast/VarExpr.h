@@ -16,8 +16,7 @@ public:
 
   VarExpr(std::string identifier) : identifier(identifier) {}
 
-  bool operator==(const VarExpr &d) const { return true; }
-
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "VarExpr"; }
 };
 

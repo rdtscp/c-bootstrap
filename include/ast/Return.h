@@ -15,8 +15,7 @@ public:
   Return() {}
   Return(std::shared_ptr<Expr> returnExpr) : returnExpr(returnExpr) {}
 
-  bool operator==(const Return &d) const { return true; }
-
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "Return"; }
 };
 

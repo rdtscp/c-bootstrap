@@ -16,8 +16,7 @@ public:
 
   IntLiteral(std::string literal) : value(literal) {}
 
-  bool operator==(const IntLiteral &d) const { return true; }
-
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "IntLiteral"; }
 };
 

@@ -19,8 +19,7 @@ public:
   FunCall(std::string funName, std::vector<std::shared_ptr<Expr>> funArgs)
       : funName(funName), funArgs(funArgs) {}
 
-  bool operator==(const FunCall &d) const { return true; }
-
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "FunCall"; }
 };
 

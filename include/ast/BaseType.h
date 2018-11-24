@@ -27,6 +27,7 @@ public:
   bool operator==(const BaseType &rhs) const { return primitiveType == rhs.primitiveType; }
   bool operator!=(const BaseType &rhs) const { return !(*this==rhs); }
 
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "BaseType"; }
 };
 

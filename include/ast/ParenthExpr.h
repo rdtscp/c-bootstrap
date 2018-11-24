@@ -16,8 +16,7 @@ public:
 
   ParenthExpr(std::shared_ptr<Expr> innerExpr) : innerExpr(innerExpr) {}
 
-  bool operator==(const ParenthExpr &d) const { return true; }
-
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "ParenthExpr"; }
 };
 

@@ -19,8 +19,7 @@ public:
   ArrayAccess(std::shared_ptr<Expr> array, std::shared_ptr<Expr> index)
       : array(array), index(index) {}
 
-  bool operator==(const ArrayAccess &d) const { return true; }
-
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "ArrayAccess"; }
 };
 

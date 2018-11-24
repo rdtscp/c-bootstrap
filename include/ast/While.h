@@ -16,8 +16,7 @@ public:
   While(std::shared_ptr<Stmt> body, std::shared_ptr<Expr> condition)
       : body(body), condition(condition) {}
 
-  bool operator==(const While &d) const { return true; }
-
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "While"; }
 };
 

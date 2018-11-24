@@ -53,6 +53,7 @@ public:
   }
   bool operator!=(const FunDecl &rhs) const { return !(*this == rhs); }
 
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "FunDecl"; }
 
   // void accept(ASTVisitor &v) const override { v.visit(*this); }

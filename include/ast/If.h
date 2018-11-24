@@ -21,8 +21,7 @@ public:
      std::shared_ptr<Stmt> elseBody)
       : ifBody(ifBody), ifCondition(ifCondition), elseBody(elseBody) {}
 
-  bool operator==(const If &d) const { return true; }
-
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "If"; }
 };
 

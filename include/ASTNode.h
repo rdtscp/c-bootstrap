@@ -5,10 +5,13 @@
 
 #include <string>
 
+#include "ASTVisitor.h"
+
 namespace ACC {
 
 class ASTNode {
 public:
+  virtual void accept(ASTVisitor &v) = 0;
   virtual std::string astClass() const = 0;
 };
 

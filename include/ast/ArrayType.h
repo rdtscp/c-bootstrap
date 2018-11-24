@@ -31,6 +31,7 @@ public:
   }
   bool operator!=(const ArrayType &rhs) const { return !(*this == rhs); }
 
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "ArrayType"; }
 };
 

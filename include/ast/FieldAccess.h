@@ -18,8 +18,7 @@ public:
   FieldAccess(std::shared_ptr<Expr> object, std::string field)
       : object(object), field(field) {}
 
-  bool operator==(const FieldAccess &d) const { return true; }
-
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "FieldAccess"; }
 };
 

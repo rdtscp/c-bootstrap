@@ -27,6 +27,7 @@ public:
   bool operator==(const StructType &rhs) const { return identifier == rhs.identifier; }
   bool operator!=(const StructType &rhs) const { return !(*this==rhs); }
 
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "StructType"; }
 };
 

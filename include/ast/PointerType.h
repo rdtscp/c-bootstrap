@@ -29,6 +29,7 @@ public:
   }
   bool operator!=(const PointerType &rhs) const { return !(*this == rhs); }
 
+  void accept(ASTVisitor &v) override { v.visit(*this); }
   std::string astClass() const override { return "PointerType"; }
 }; // namespace ACC
 }; // namespace ACC
