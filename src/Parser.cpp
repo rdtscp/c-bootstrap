@@ -378,8 +378,10 @@ std::shared_ptr<Return> Parser::parseReturn() {
   expect(TC::RETURN);
   if (acceptExpr()) {
     std::shared_ptr<Expr> returnExpr = parseExpr();
+    expect(TC::SC);
     return std::shared_ptr<Return>(new Return(returnExpr));
   } else {
+    expect(TC::SC);
     return std::shared_ptr<Return>(new Return());
   }
 }
@@ -505,7 +507,7 @@ std::shared_ptr<Expr> Parser::parseUnaryExpr() {
     std::shared_ptr<Expr> rhs = parseObjExpr();
     return std::shared_ptr<ValueAt>(new ValueAt(rhs));
   }
-  if (accept(TC::LPAR)) {
+  if (accept(TC::LPAR) && (acceptType(1).first == true)) {
     expect(TC::LPAR);
     std::shared_ptr<Type> castType = parseType();
     expect(TC::RPAR);
