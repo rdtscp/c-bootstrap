@@ -14,9 +14,7 @@ public:
   std::shared_ptr<Expr> condition;
 
   While(std::shared_ptr<Stmt> body, std::shared_ptr<Expr> condition)
-      : body(body), condition(condition) {
-    // Boilerplate Code.
-  }
+      : body(body), condition(condition) {}
 
   bool operator==(const While &d) const { return true; }
 

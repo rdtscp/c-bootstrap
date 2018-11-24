@@ -14,9 +14,7 @@ class IntLiteral : public Expr {
 public:
   std::string value;
 
-  IntLiteral(std::string literal) : value(literal) {
-    // Boilerplate Code.
-  }
+  IntLiteral(std::string literal) : value(literal) {}
 
   bool operator==(const IntLiteral &d) const { return true; }
 

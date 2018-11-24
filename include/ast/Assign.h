@@ -17,9 +17,7 @@ public:
   std::shared_ptr<Expr> rhs;
 
   Assign(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs)
-      : lhs(lhs), rhs(rhs) {
-    // Boilerplate Code.
-  }
+      : lhs(lhs), rhs(rhs) {}
 
   bool operator==(const Assign &d) const { return true; }
 

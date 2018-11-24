@@ -17,9 +17,7 @@ public:
   std::shared_ptr<Expr> index;
 
   ArrayAccess(std::shared_ptr<Expr> array, std::shared_ptr<Expr> index)
-      : array(array), index(index) {
-    // Boilerplate Code.
-  }
+      : array(array), index(index) {}
 
   bool operator==(const ArrayAccess &d) const { return true; }
 

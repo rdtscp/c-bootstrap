@@ -16,10 +16,8 @@ public:
   std::string arraySize;
   std::shared_ptr<Type> arrayType;
 
-  ArrayType(std::shared_ptr<Type> type_ptr, const std::string &arraySize)
-      : arraySize(arraySize) {
-    arrayType = type_ptr;
-  }
+  ArrayType(std::shared_ptr<Type> arrayType, const std::string &arraySize)
+      : arraySize(arraySize), arrayType(arrayType) {}
 
   bool operator==(Type &t) const override {
     if (t.astClass() == astClass())

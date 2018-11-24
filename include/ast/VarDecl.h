@@ -21,10 +21,9 @@ public:
   int fpOffset;
   int spOffset;
 
-  VarDecl(std::shared_ptr<Type> type_ptr, std::string p_identifer)
-      : identifer(p_identifer), numBytes(0), fpOffset(0), spOffset(0) {
-    type = type_ptr;
-  }
+  VarDecl(std::shared_ptr<Type> type, std::string p_identifer)
+      : identifer(p_identifer), numBytes(0), fpOffset(0), spOffset(0),
+        type(type) {}
 
   bool operator==(Decl &rhs) const override {
     if (rhs.astClass() == astClass())
@@ -43,7 +42,6 @@ public:
     return true;
   }
   bool operator!=(const VarDecl &rhs) const { return !(*this == rhs); }
-
 
   std::string astClass() const override { return "VarDecl"; }
 };

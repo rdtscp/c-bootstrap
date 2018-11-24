@@ -19,11 +19,9 @@ public:
   int allocSize;
   int compactSize;
 
-  StructTypeDecl(std::shared_ptr<StructType> structType_ptr,
+  StructTypeDecl(std::shared_ptr<StructType> structType,
                  const std::vector<std::shared_ptr<VarDecl>> &varDecls)
-      : varDecls(varDecls) {
-    structType = structType_ptr;
-  }
+      : structType(structType), varDecls(varDecls) {}
 
   bool operator==(Decl &rhs) const override {
     if (rhs.astClass() == astClass())

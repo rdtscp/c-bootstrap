@@ -15,7 +15,7 @@ class PointerType : public Type {
 public:
   std::shared_ptr<Type> pointedType;
 
-  PointerType(std::shared_ptr<Type> type_ptr) { pointedType = type_ptr; }
+  PointerType(std::shared_ptr<Type> pointedType) : pointedType(pointedType) {}
 
   bool operator==(Type &t) const override {
     if (t.astClass() == astClass())
@@ -24,12 +24,13 @@ public:
   }
   bool operator!=(Type &t) const override { return !(*this == t); }
 
-  bool operator==(const PointerType &rhs) const { return *pointedType == *rhs.pointedType; }
-  bool operator!=(const PointerType &rhs) const { return !(*this==rhs); }
+  bool operator==(const PointerType &rhs) const {
+    return *pointedType == *rhs.pointedType;
+  }
+  bool operator!=(const PointerType &rhs) const { return !(*this == rhs); }
 
   std::string astClass() const override { return "PointerType"; }
-};
-
+}; // namespace ACC
 }; // namespace ACC
 
 #endif

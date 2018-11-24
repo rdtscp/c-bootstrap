@@ -17,9 +17,7 @@ public:
   std::shared_ptr<Expr> expr;
 
   TypeCast(std::shared_ptr<Type> type, std::shared_ptr<Expr> expr)
-      : type(type), expr(expr) {
-    // Boilerplate Code.
-  }
+      : type(type), expr(expr) {}
 
   bool operator==(const TypeCast &d) const { return true; }
 

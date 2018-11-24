@@ -14,9 +14,7 @@ class ParenthExpr : public Expr {
 public:
   std::shared_ptr<Expr> innerExpr;
 
-  ParenthExpr(std::shared_ptr<Expr> innerExpr) : innerExpr(innerExpr) {
-    // Boilerplate Code.
-  }
+  ParenthExpr(std::shared_ptr<Expr> innerExpr) : innerExpr(innerExpr) {}
 
   bool operator==(const ParenthExpr &d) const { return true; }
 

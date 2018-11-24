@@ -18,9 +18,7 @@ public:
   std::shared_ptr<Expr> rhs;
 
   BinOp(std::shared_ptr<Expr> lhs, Op operation, std::shared_ptr<Expr> rhs)
-      : lhs(lhs), operation(operation), rhs(rhs) {
-    // Boilerplate Code.
-  }
+      : lhs(lhs), operation(operation), rhs(rhs) {}
 
   bool operator==(const BinOp &d) const { return true; }
 

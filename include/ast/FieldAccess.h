@@ -16,9 +16,7 @@ public:
   std::string field;
 
   FieldAccess(std::shared_ptr<Expr> object, std::string field)
-      : object(object), field(field) {
-    // Boilerplate Code.
-  }
+      : object(object), field(field) {}
 
   bool operator==(const FieldAccess &d) const { return true; }
 

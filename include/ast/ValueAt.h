@@ -14,9 +14,7 @@ class ValueAt : public Expr {
 public:
   std::shared_ptr<Expr> derefExpr;
 
-  ValueAt(std::shared_ptr<Expr> derefExpr) : derefExpr(derefExpr) {
-    // Boilerplate Code.
-  }
+  ValueAt(std::shared_ptr<Expr> derefExpr) : derefExpr(derefExpr) {}
 
   bool operator==(const ValueAt &d) const { return true; }
 

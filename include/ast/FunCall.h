@@ -17,9 +17,7 @@ public:
   std::vector<std::shared_ptr<Expr>> funArgs;
 
   FunCall(std::string funName, std::vector<std::shared_ptr<Expr>> funArgs)
-      : funName(funName), funArgs(funArgs) {
-    // Boilerplate Code.
-  }
+      : funName(funName), funArgs(funArgs) {}
 
   bool operator==(const FunCall &d) const { return true; }
 
