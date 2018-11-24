@@ -4,7 +4,6 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/passes/SourcePass.h"
 
 #include "../include/Lexer.h"
 #include "../include/Parser.h"
