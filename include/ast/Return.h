@@ -15,7 +15,7 @@ public:
   Return() {}
   Return(std::shared_ptr<Expr> returnExpr) : returnExpr(returnExpr) {}
 
-  void accept(ASTVisitor &v) override { v.visit(*this); }
+  std::string accept(ASTVisitor &v) override { return v.visit(*this); }
   std::string astClass() const override { return "Return"; }
 };
 

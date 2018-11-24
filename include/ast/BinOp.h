@@ -20,7 +20,7 @@ public:
   BinOp(std::shared_ptr<Expr> lhs, Op operation, std::shared_ptr<Expr> rhs)
       : lhs(lhs), operation(operation), rhs(rhs) {}
 
-  void accept(ASTVisitor &v) override { v.visit(*this); }
+  std::string accept(ASTVisitor &v) override { return v.visit(*this); }
   std::string astClass() const override { return "BinOp"; }
 
   std::string opToStr(const Op op) const {

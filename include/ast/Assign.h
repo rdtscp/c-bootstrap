@@ -19,7 +19,7 @@ public:
   Assign(std::shared_ptr<Expr> lhs, std::shared_ptr<Expr> rhs)
       : lhs(lhs), rhs(rhs) {}
 
-  void accept(ASTVisitor &v) override { v.visit(*this); }
+  std::string accept(ASTVisitor &v) override { return v.visit(*this); }
   std::string astClass() const override { return "Assign"; }
 };
 

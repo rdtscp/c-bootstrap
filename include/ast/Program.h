@@ -18,7 +18,7 @@ public:
 
   Program(const std::vector<std::shared_ptr<Decl>> &decls) : decls(decls) {}
 
-  void accept(ASTVisitor &v) override { v.visit(*this); }
+  std::string accept(ASTVisitor &v) override { return v.visit(*this); }
   std::string astClass() const override { return "Program"; }
 };
 

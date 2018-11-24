@@ -16,7 +16,7 @@ public:
 
   StringLiteral(std::string literal) : value(literal) {}
 
-  void accept(ASTVisitor &v) override { v.visit(*this); }
+  std::string accept(ASTVisitor &v) override { return v.visit(*this); }
   std::string astClass() const override { return "StringLiteral"; }
 };
 

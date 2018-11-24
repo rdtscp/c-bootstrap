@@ -17,7 +17,7 @@ public:
 
   SizeOf(std::shared_ptr<Type> type) : type(type) {}
 
-  void accept(ASTVisitor &v) override { v.visit(*this); }
+  std::string accept(ASTVisitor &v) override { return v.visit(*this); }
   std::string astClass() const override { return "SizeOf"; }
 };
 

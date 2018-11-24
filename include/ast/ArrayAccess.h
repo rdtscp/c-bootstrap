@@ -19,7 +19,7 @@ public:
   ArrayAccess(std::shared_ptr<Expr> array, std::shared_ptr<Expr> index)
       : array(array), index(index) {}
 
-  void accept(ASTVisitor &v) override { v.visit(*this); }
+  std::string accept(ASTVisitor &v) override { return v.visit(*this); }
   std::string astClass() const override { return "ArrayAccess"; }
 };
 
