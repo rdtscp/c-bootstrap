@@ -21,12 +21,11 @@ Program Parser::parse() {
 bool Parser::accept(TC expected) { return expected == currToken.tokenClass; }
 
 bool Parser::accept(std::vector<TC> expected) {
-  bool output = false;
   for (const TC token : expected) {
-    bool curr = accept(token);
-    output |= curr;
+    if (accept(token))
+      return true;
   }
-  return output;
+  return false;
 }
 
 Token Parser::expect(TC expected) {
@@ -98,18 +97,17 @@ bool Parser::acceptVarDecl() {
   bool canAcceptType = acceptTypeRes.first;
   int numTokens = acceptTypeRes.second;
 
-  TC tokenPastType = lookAhead(numTokens).tokenClass;
-  bool followedByIDENT = (tokenPastType == TC::IDENTIFIER);
-  TC tokenPastIdent = lookAhead(numTokens + 1).tokenClass;
-  bool followedBySC = (tokenPastIdent == TC::SC);
-  bool followedByLSBR = (tokenPastIdent == TC::LSBR);
+  Token tokenPastType = lookAhead(numTokens);
+  bool followedByIDENT = (tokenPastType.tokenClass == TC::IDENTIFIER);
+  Token tokenPastIdent = lookAhead(numTokens + 1);
+  bool followedBySC = (tokenPastIdent.tokenClass == TC::SC);
+  bool followedByLSBR = (tokenPastIdent.tokenClass == TC::LSBR);
   return (canAcceptType && followedByIDENT && (followedBySC || followedByLSBR));
 }
 
-std::pair<bool, int> Parser::acceptType() {
-  int numTokens = 1;
+std::pair<bool, int> Parser::acceptType(int startAhead) {
+  int numTokens = startAhead + 1;
   if (accept({TC::INT, TC::CHAR, TC::VOID})) {
-    numTokens = 1;
     TC lookAheadToken = lookAhead(numTokens).tokenClass;
     while (lookAheadToken == TC::ASTERIX) {
       numTokens++;
@@ -155,7 +153,7 @@ bool Parser::acceptStmt() {
     return true;
   if (acceptAssign())
     return true;
-  if (acceptExpr().first)
+  if (acceptExpr())
     return true;
 
   return false;
@@ -169,19 +167,11 @@ bool Parser::acceptIf() { return accept(TC::IF); }
 
 bool Parser::acceptReturn() { return accept(TC::RETURN); }
 
-bool Parser::acceptAssign() {
-  std::pair<bool, int> acceptExprRes = acceptExpr();
-  bool canAcceptExpr = acceptExprRes.first;
-  int numTokens = acceptExprRes.second;
+bool Parser::acceptAssign() { return acceptExpr(); }
 
-  TC tokenPastType = lookAhead(numTokens).tokenClass;
-  bool followedByASSIGN = (tokenPastType == TC::ASSIGN);
-  return (canAcceptExpr && followedByASSIGN);
-}
-
-std::pair<bool, int> Parser::acceptExpr() {
-  // TODO
-  return std::pair<bool, int>(false, 1);
+bool Parser::acceptExpr() {
+  return accept({TC::LPAR, TC::SIZEOF, TC::ASTERIX, TC::MINUS, TC::IDENTIFIER,
+                 TC::INT_LITERAL, TC::CHAR_LITERAL, TC::STRING_LITERAL});
 }
 
 /* ---- Parsing ---- */
@@ -331,7 +321,259 @@ std::shared_ptr<Block> Parser::parseBlock() {
 }
 
 std::shared_ptr<Stmt> Parser::parseStmt() {
-  return std::shared_ptr<Stmt>(new Stmt());
+  if (acceptVarDecl())
+    return parseVarDecl();
+
+  if (acceptBlock())
+    return parseBlock();
+
+  if (acceptWhile())
+    return parseWhile();
+
+  if (acceptIf())
+    return parseIf();
+
+  if (acceptReturn())
+    return parseReturn();
+
+  std::shared_ptr<Expr> expr = parseExpr();
+
+  if (accept(TC::ASSIGN)) {
+    expect(TC::ASSIGN);
+    std::shared_ptr<Expr> rhs = parseExpr();
+    expect(TC::SC);
+    return std::shared_ptr<Assign>(new Assign(expr, rhs));
+  }
+
+  expect(TC::SC);
+  return expr;
+}
+
+std::shared_ptr<While> Parser::parseWhile() {
+  expect(TC::WHILE);
+  expect(TC::LPAR);
+  std::shared_ptr<Expr> whileCondition = parseExpr();
+  expect(TC::RPAR);
+  std::shared_ptr<Stmt> whileBody = parseStmt();
+
+  return std::shared_ptr<While>(new While(whileBody, whileCondition));
+}
+
+std::shared_ptr<If> Parser::parseIf() {
+  expect(TC::IF);
+  expect(TC::LPAR);
+  std::shared_ptr<Expr> ifCondition = parseExpr();
+  expect(TC::RPAR);
+  std::shared_ptr<Stmt> ifBody = parseStmt();
+  if (accept(TC::ELSE)) {
+    expect(TC::ELSE);
+    std::shared_ptr<Stmt> elseBody = parseStmt();
+    return std::shared_ptr<If>(new If(ifCondition, ifBody, elseBody));
+  } else {
+    return std::shared_ptr<If>(new If(ifCondition, ifBody));
+  }
+}
+
+std::shared_ptr<Return> Parser::parseReturn() {
+  expect(TC::RETURN);
+  if (acceptExpr()) {
+    std::shared_ptr<Expr> returnExpr = parseExpr();
+    return std::shared_ptr<Return>(new Return(returnExpr));
+  } else {
+    return std::shared_ptr<Return>(new Return());
+  }
+}
+
+std::shared_ptr<Assign> Parser::parseAssign() {
+  std::shared_ptr<Expr> lhs = parseExpr();
+  expect(TC::ASSIGN);
+  std::shared_ptr<Expr> rhs = parseExpr();
+  return std::shared_ptr<Assign>(new Assign(lhs, rhs));
+}
+
+std::shared_ptr<Expr> Parser::parseExpr() {
+  if (accept(TC::LPAR) && (acceptType(1).first == false)) {
+    expect(TC::LPAR);
+    std::shared_ptr<Expr> innerExpr = parseExpr();
+    expect(TC::RPAR);
+    return std::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr));
+  }
+
+  return parseExpr2();
+}
+
+std::shared_ptr<Expr> Parser::parseExpr2() {
+  std::shared_ptr<Expr> lhs = parseExpr3();
+  if (accept(TC::OR)) {
+    expect(TC::OR);
+    std::shared_ptr<Expr> rhs = parseExpr3();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::OR, rhs));
+  }
+  if (accept(TC::AND)) {
+    expect(TC::AND);
+    std::shared_ptr<Expr> rhs = parseExpr3();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::AND, rhs));
+  }
+  return lhs;
+}
+
+std::shared_ptr<Expr> Parser::parseExpr3() {
+  std::shared_ptr<Expr> lhs = parseExpr4();
+  if (accept(TC::NE)) {
+    expect(TC::NE);
+    std::shared_ptr<Expr> rhs = parseExpr4();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::NE, rhs));
+  }
+  if (accept(TC::EQ)) {
+    expect(TC::EQ);
+    std::shared_ptr<Expr> rhs = parseExpr4();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::EQ, rhs));
+  }
+  return lhs;
+}
+
+std::shared_ptr<Expr> Parser::parseExpr4() {
+  std::shared_ptr<Expr> lhs = parseExpr5();
+  if (accept(TC::LT)) {
+    expect(TC::LT);
+    std::shared_ptr<Expr> rhs = parseExpr5();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::LT, rhs));
+  }
+  if (accept(TC::GT)) {
+    expect(TC::GT);
+    std::shared_ptr<Expr> rhs = parseExpr5();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::GT, rhs));
+  }
+  if (accept(TC::LE)) {
+    expect(TC::LE);
+    std::shared_ptr<Expr> rhs = parseExpr5();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::LE, rhs));
+  }
+  if (accept(TC::GE)) {
+    expect(TC::GE);
+    std::shared_ptr<Expr> rhs = parseExpr5();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::GE, rhs));
+  }
+  return lhs;
+}
+
+std::shared_ptr<Expr> Parser::parseExpr5() {
+  std::shared_ptr<Expr> lhs = parseExpr6();
+  if (accept(TC::PLUS)) {
+    expect(TC::PLUS);
+    std::shared_ptr<Expr> rhs = parseExpr6();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::ADD, rhs));
+  }
+  if (accept(TC::MINUS)) {
+    expect(TC::MINUS);
+    std::shared_ptr<Expr> rhs = parseExpr6();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::SUB, rhs));
+  }
+  return lhs;
+}
+
+std::shared_ptr<Expr> Parser::parseExpr6() {
+  std::shared_ptr<Expr> lhs = parseExpr7();
+  if (accept(TC::ASTERIX)) {
+    expect(TC::ASTERIX);
+    std::shared_ptr<Expr> rhs = parseExpr7();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::MUL, rhs));
+  }
+  if (accept(TC::DIV)) {
+    expect(TC::DIV);
+    std::shared_ptr<Expr> rhs = parseExpr7();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::DIV, rhs));
+  }
+  if (accept(TC::REM)) {
+    expect(TC::REM);
+    std::shared_ptr<Expr> rhs = parseExpr7();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::MOD, rhs));
+  }
+  return lhs;
+}
+
+std::shared_ptr<Expr> Parser::parseExpr7() {
+  if (accept(TC::SIZEOF)) {
+    expect(TC::SIZEOF);
+    expect(TC::LPAR);
+    std::shared_ptr<Type> type = parseType();
+    expect(TC::RPAR);
+    return std::shared_ptr<SizeOf>(new SizeOf(type));
+  }
+  if (accept(TC::ASTERIX)) {
+    expect(TC::ASTERIX);
+    std::shared_ptr<Expr> rhs = parseExpr8();
+    return std::shared_ptr<ValueAt>(new ValueAt(rhs));
+  }
+  if (accept(TC::LPAR)) {
+    expect(TC::LPAR);
+    std::shared_ptr<Type> castType = parseType();
+    expect(TC::RPAR);
+    std::shared_ptr<Expr> expToCast = parseExpr8();
+    return std::shared_ptr<TypeCast>(new TypeCast(castType, expToCast));
+  }
+  if (accept(TC::MINUS)) {
+    expect(TC::MINUS);
+    std::shared_ptr<IntLiteral> lhs(new IntLiteral("0"));
+    std::shared_ptr<Expr> rhs = parseExpr8();
+    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::SUB, rhs));
+  }
+
+  return parseExpr8();
+}
+
+std::shared_ptr<Expr> Parser::parseExpr8() {
+  if (accept(TC::IDENTIFIER)) {
+    std::string ident = expect(TC::IDENTIFIER).data;
+    if (accept(TC::LPAR)) {
+      expect(TC::LPAR);
+
+      std::vector<std::shared_ptr<Expr>> params;
+      if (acceptExpr())
+        params.push_back(parseExpr9());
+      while (accept(TC::COMMA)) {
+        expect(TC::COMMA);
+        params.push_back(parseExpr9());
+      }
+
+      expect(TC::RPAR);
+      return std::shared_ptr<FunCall>(new FunCall(ident, params));
+    }
+    return std::shared_ptr<VarExpr>(new VarExpr(ident));
+  }
+
+  std::shared_ptr<Expr> lhs = parseExpr9();
+  if (accept(TC::DOT)) {
+    expect(TC::DOT);
+    std::string fieldIdent = expect(TC::IDENTIFIER).data;
+    return std::shared_ptr<FieldAccess>(new FieldAccess(lhs, fieldIdent));
+  }
+  if (accept(TC::LSBR)) {
+    expect(TC::LSBR);
+    std::shared_ptr<Expr> index = parseExpr9();
+    expect(TC::RSBR);
+    return std::shared_ptr<Expr>(new ArrayAccess(lhs, index));
+  }
+
+  return lhs;
+}
+
+std::shared_ptr<Expr> Parser::parseExpr9() {
+  if (accept(TC::INT_LITERAL))
+    return std::shared_ptr<IntLiteral>(
+        new IntLiteral(expect(TC::INT_LITERAL).data));
+  if (accept(TC::CHAR_LITERAL))
+    return std::shared_ptr<CharLiteral>(
+        new CharLiteral(expect(TC::CHAR_LITERAL).data));
+  if (accept(TC::STRING_LITERAL))
+    return std::shared_ptr<StringLiteral>(
+        new StringLiteral(expect(TC::STRING_LITERAL).data));
+
+  if (acceptExpr())
+    return parseExpr();
+
+  throw std::runtime_error("Parsing: Expected an Expression at " +
+                           currToken.position.toString());
 }
 
 /* Helpers */

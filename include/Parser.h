@@ -54,7 +54,7 @@ private:
   bool acceptStructTypeDecl();
   bool acceptVarDecl();
 
-  std::pair<bool, int> acceptType();
+  std::pair<bool, int> acceptType(int startAhead=0);
   bool acceptStructType();
 
   bool acceptParam();
@@ -64,22 +64,8 @@ private:
   bool acceptIf();
   bool acceptReturn();
   bool acceptAssign();
-  std::pair<bool, int> acceptExpr();
 
-  bool acceptArrayAccess();
-  bool acceptBinOp();
-  bool acceptCharLiteral();
-  bool acceptFieldAccess();
-  bool acceptFunCall();
-  bool acceptIntLiteral();
-  bool acceptOp();
-  bool acceptParenthExpr();
-  bool acceptSizeOf();
-  bool acceptStringLiteral();
-  bool acceptTypeCast();
-  bool acceptUnaryMinus();
-  bool acceptValueAt();
-  bool acceptVarExpr();
+  bool acceptExpr();
 
   /* ---- Parsing ---- */
 
@@ -103,22 +89,17 @@ private:
   std::shared_ptr<If> parseIf();
   std::shared_ptr<Return> parseReturn();
   std::shared_ptr<Assign> parseAssign();
+  
   std::shared_ptr<Expr> parseExpr();
+  std::shared_ptr<Expr> parseExpr2();
+  std::shared_ptr<Expr> parseExpr3();
+  std::shared_ptr<Expr> parseExpr4();
+  std::shared_ptr<Expr> parseExpr5();
+  std::shared_ptr<Expr> parseExpr6();
+  std::shared_ptr<Expr> parseExpr7();
+  std::shared_ptr<Expr> parseExpr8();
+  std::shared_ptr<Expr> parseExpr9();
 
-
-  std::shared_ptr<ArrayAccess> parseArrayAccess();
-  std::shared_ptr<BinOp> parseBinOp();
-  std::shared_ptr<CharLiteral> parseCharLiteral();
-  std::shared_ptr<FieldAccess> parseFieldAccess();
-  std::shared_ptr<FunCall> parseFunCall();
-  std::shared_ptr<IntLiteral> parseIntLiteral();
-  Op parseOp();
-  std::shared_ptr<Expr> parseParenthExpr();
-  std::shared_ptr<SizeOf> parseSizeOf();
-  std::shared_ptr<StringLiteral> parseStringLiteral();
-  std::shared_ptr<TypeCast> parseTypeCast();
-  std::shared_ptr<ValueAt> parseValueAt();
-  std::shared_ptr<VarExpr> parseVarExpr();
 
   /* ---- Helpers ---- */
 
