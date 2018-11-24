@@ -94,6 +94,10 @@ public:
   Token(TokenClass tokenClass, int lineNum, int colNum, std::string data = "")
       : tokenClass(tokenClass), position(Position(lineNum, colNum)),
         data(data) {}
+
+  bool operator==(const Token& t) {
+    return tokenClass == t.tokenClass;
+  }
 };
 
 static std::string tokToStr(const Token::TokenClass &tok) {
