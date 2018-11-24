@@ -1,7 +1,18 @@
 int myGlobalInt;
 
-int main(int argc, char *argv) {}
+int foo() {
+  int x;
+  x = 2 * (3 + 4);
+  return x;
+}
 
-int foo() {}
+int bar() {
+  int x;
+  x = 2 * 3 + 4;
+  return x + foo();
+}
 
-int bar() {}
+int main(int argc, char *argv) {
+  myGlobalInt = bar();
+  return 1;
+}

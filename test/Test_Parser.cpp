@@ -12,9 +12,9 @@
 
 using namespace ACC;
 
-// std::string test_prefix =
-    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-std::string test_prefix = "../../test/tests/";
+std::string test_prefix =
+"/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+// std::string test_prefix = "../../test/tests/";
 
 TEST(ParserTest, AllTokens) {
   Scanner scanner(test_prefix + "lexer/alltokens.c");
@@ -223,6 +223,15 @@ TEST(ParserTest, BinOp) {
 
   for (int i = 0; i < expectedDecls.size(); i++)
     ASSERT_TRUE(*actual.decls[i] == *expectedDecls[i]);
+}
+
+TEST(ParserTest, ComplexBinOp) {
+  Scanner scanner(test_prefix + "parser/fundecls.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  Program actual = parser.parse();
+  /* TODO Test AST */
 }
 
 // The fixture for testing class Project1. From google test primer.
