@@ -217,7 +217,6 @@ Token Lexer::nextToken() {
     // No keyword Token has been returned.
     // Now Lex an IDENTIFIER.
     char peek;
-    literal += scanner.next();
     while (true) {
       peek = scanner.peek();
       // If the next character is whitespace, the IDENTIFIER has been

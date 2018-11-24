@@ -176,6 +176,32 @@ TEST(LexerTest, VarDecls) {
   ASSERT_TRUE(true);
 }
 
+TEST(LexerTest, SingleLetterVar) {
+  Scanner scanner(test_prefix + "lexer/singlelettervar.c");
+  Lexer lexer(scanner);
+
+  std::vector<Token> expectedTokens = {
+    Token(Token::TokenClass::INT, 1, 1),
+    Token(Token::TokenClass::IDENTIFIER, 1, 4),
+    Token(Token::TokenClass::SC, 1, 5),
+    Token(Token::TokenClass::ENDOFFILE, 1, 6)
+  };
+
+  std::vector<Token> actualTokens;
+  Token currToken(Token::TokenClass::INVALID, 0, 0);
+  while (currToken.tokenClass != Token::TokenClass::ENDOFFILE) {
+    currToken = lexer.nextToken();
+    actualTokens.push_back(currToken);
+  }
+
+  ASSERT_EQ(actualTokens.size(), expectedTokens.size());
+  for (int i=0; i < actualTokens.size(); i++) {
+    ASSERT_TRUE(actualTokens[i] == expectedTokens[i]);
+  }
+
+  ASSERT_TRUE(true);
+}
+
 // The fixture for testing class Project1. From google test primer.
 class Test_Lexer : public ::testing::Test {
 protected:
