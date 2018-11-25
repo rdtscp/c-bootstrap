@@ -54,7 +54,7 @@ private:
   bool acceptStructTypeDecl();
   bool acceptVarDecl();
 
-  std::pair<bool, int> acceptType(int startAhead=0);
+  bool acceptType();
   bool acceptStructType();
 
   bool acceptParam();

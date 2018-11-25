@@ -74,71 +74,81 @@ void Parser::nextToken() {
 /* ---- Look Ahead ---- */
 
 bool Parser::acceptDecl() {
-  return acceptStructTypeDecl() || acceptVarDecl() || acceptFunDecl();
+  if (acceptStructTypeDecl())
+    return true;
+
+  if (acceptVarDecl())
+    return true;
+
+  if (acceptFunDecl())
+    return true;
+
+  return false;
 }
 
 bool Parser::acceptFunDecl() {
-  std::pair<bool, int> acceptTypeRes = acceptType();
-  bool canAcceptType = acceptTypeRes.first;
-  int numTokens = acceptTypeRes.second;
-  TC expctIdentLoc = lookAhead(numTokens).tokenClass;
-  TC expctLPARLoc = lookAhead(numTokens + 1).tokenClass;
-  return (canAcceptType && (expctIdentLoc == TC::IDENTIFIER) &&
-          (expctLPARLoc) == TC::LPAR);
+
+  if (acceptStructType())
+    return lookAhead(2).tokenClass == TC::IDENTIFIER &&
+           lookAhead(3).tokenClass == TC::LPAR;
+
+  if (acceptType()) {
+    Token oneAhead = lookAhead(1);
+    Token twoAhead = lookAhead(2);
+    bool hasIDENT = (oneAhead.tokenClass == TC::IDENTIFIER);
+    bool hasLPAR = (twoAhead.tokenClass == TC::LPAR);
+    return hasIDENT && hasLPAR;
+  }
+
+  return false;
 }
 
 bool Parser::acceptStructTypeDecl() {
-  Token twoAhead = lookAhead(2);
-  return acceptStructType() && (twoAhead.tokenClass == TC::LBRA);
+  if (!acceptStructType())
+    return false;
+  if (lookAhead(2).tokenClass != TC::LBRA)
+    return false;
+
+  return true;
 }
 
 bool Parser::acceptVarDecl() {
-  std::pair<bool, int> acceptTypeRes = acceptType();
-  bool canAcceptType = acceptTypeRes.first;
-  int numTokens = acceptTypeRes.second;
+  int lookAheadOffset = 1;
+  if (!accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT}))
+    return false;
 
-  Token tokenPastType = lookAhead(numTokens);
-  bool followedByIDENT = (tokenPastType.tokenClass == TC::IDENTIFIER);
-  Token tokenPastIdent = lookAhead(numTokens + 1);
-  bool followedBySC = (tokenPastIdent.tokenClass == TC::SC);
-  bool followedByLSBR = (tokenPastIdent.tokenClass == TC::LSBR);
-  return (canAcceptType && followedByIDENT && (followedBySC || followedByLSBR));
+  if (accept(TC::STRUCT))
+    lookAheadOffset++;
+
+  while (lookAhead(lookAheadOffset).tokenClass == TC::ASTERIX)
+    lookAheadOffset++;
+
+  if (lookAhead(lookAheadOffset).tokenClass != TC::IDENTIFIER)
+    return false;
+
+  lookAheadOffset++;
+  if (lookAhead(lookAheadOffset).tokenClass != TC::SC &&
+      lookAhead(lookAheadOffset).tokenClass != TC::LSBR)
+    return false;
+
+  return true;
 }
 
-std::pair<bool, int> Parser::acceptType(int startAhead) {
-  int numTokens = startAhead + 1;
-  if (accept({TC::INT, TC::CHAR, TC::VOID})) {
-    TC lookAheadToken = lookAhead(numTokens).tokenClass;
-    while (lookAheadToken == TC::ASTERIX) {
-      numTokens++;
-      lookAheadToken = lookAhead(numTokens).tokenClass;
-    }
-  } else if (acceptStructType()) {
-    numTokens = 2;
-    TC lookAheadToken = lookAhead(numTokens).tokenClass;
-    while (lookAheadToken == TC::ASTERIX) {
-      numTokens++;
-      lookAheadToken = lookAhead(numTokens).tokenClass;
-    }
-  } else {
-    return std::pair<bool, int>(false, numTokens);
-  }
-  return std::pair<bool, int>(true, numTokens);
+bool Parser::acceptType() {
+  return accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT});
 }
 
 bool Parser::acceptStructType() {
-  return accept(TC::STRUCT) && (lookAhead(1).tokenClass == TC::IDENTIFIER);
+  if (!accept(TC::STRUCT))
+    return false;
+
+  if (lookAhead(1).tokenClass != TC::IDENTIFIER)
+    return false;
+
+  return true;
 }
 
-bool Parser::acceptParam() {
-  std::pair<bool, int> acceptTypeRes = acceptType();
-  bool canAcceptType = acceptTypeRes.first;
-  int numTokens = acceptTypeRes.second;
-
-  TC tokenPastType = lookAhead(numTokens).tokenClass;
-  bool followedByIDENT = (tokenPastType == TC::IDENTIFIER);
-  return (canAcceptType && followedByIDENT);
-}
+bool Parser::acceptParam() { return acceptType(); }
 
 bool Parser::acceptStmt() {
   if (acceptVarDecl())
@@ -217,8 +227,7 @@ std::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
 
   expect(TC::RBRA);
   expect(TC::SC);
-  return std::make_shared<StructTypeDecl>(
-      StructTypeDecl(structType, fields));
+  return std::make_shared<StructTypeDecl>(StructTypeDecl(structType, fields));
 }
 
 std::shared_ptr<VarDecl> Parser::parseVarDecl() {
@@ -394,7 +403,10 @@ std::shared_ptr<Assign> Parser::parseAssign() {
 }
 
 std::shared_ptr<Expr> Parser::parseExpr() {
-  if (accept(TC::LPAR) && (acceptType(1).first == false)) {
+  if (accept(TC::LPAR) && (lookAhead(1).tokenClass != TC::INT &&
+                           lookAhead(1).tokenClass != TC::CHAR &&
+                           lookAhead(1).tokenClass != TC::VOID &&
+                           lookAhead(1).tokenClass != TC::STRUCT)) {
     expect(TC::LPAR);
     std::shared_ptr<Expr> innerExpr = parseExpr();
     expect(TC::RPAR);
@@ -507,7 +519,10 @@ std::shared_ptr<Expr> Parser::parseUnaryExpr() {
     std::shared_ptr<Expr> rhs = parseObjExpr();
     return std::make_shared<ValueAt>(ValueAt(rhs));
   }
-  if (accept(TC::LPAR) && (acceptType(1).first == true)) {
+  if (accept(TC::LPAR) && (lookAhead(1).tokenClass == TC::INT ||
+                           lookAhead(1).tokenClass == TC::CHAR ||
+                           lookAhead(1).tokenClass == TC::VOID ||
+                           lookAhead(1).tokenClass == TC::STRUCT)) {
     expect(TC::LPAR);
     std::shared_ptr<Type> castType = parseType();
     expect(TC::RPAR);
