@@ -53,10 +53,10 @@ public:
   }
   bool operator!=(const FunDecl &rhs) const { return !(*this == rhs); }
 
+  std::string getIdentifier() const override { return funName; }
+
   std::string accept(ASTVisitor &v) override { return v.visit(*this); }
   std::string astClass() const override { return "FunDecl"; }
-
-  // void accept(ASTVisitor &v) const override { v.visit(*this); }
 };
 
 }; // namespace ACC

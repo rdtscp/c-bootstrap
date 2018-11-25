@@ -45,6 +45,8 @@ public:
   }
   bool operator!=(const StructTypeDecl &rhs) const { return !(*this == rhs); }
 
+  std::string getIdentifier() const override { return "struct " + structType->identifier; }
+
   std::string accept(ASTVisitor &v) override { return v.visit(*this); }
   std::string astClass() const override { return "StructTypeDecl"; }
 };

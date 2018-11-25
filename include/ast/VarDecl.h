@@ -43,6 +43,8 @@ public:
   }
   bool operator!=(const VarDecl &rhs) const { return !(*this == rhs); }
 
+  std::string getIdentifier() const override { return identifer; }
+
   std::string accept(ASTVisitor &v) override { return v.visit(*this); }
   std::string astClass() const override { return "VarDecl"; }
 };
