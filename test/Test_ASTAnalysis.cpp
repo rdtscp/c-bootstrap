@@ -21,7 +21,7 @@ TEST(ASTAnalysisTest, DotGraph) {
   Parser parser(lexer);
   Program progAST = parser.parse();
 
-  std::cout.rdbuf( NULL );
+  std::cout.rdbuf(NULL);
   DotGraph dotGraph(progAST, &std::cout);
   dotGraph.print();
 }
@@ -32,10 +32,46 @@ TEST(ASTAnalysisTest, NameAnalysis) {
   Parser parser(lexer);
   Program progAST = parser.parse();
 
-  std::cout.rdbuf( NULL );
+  std::cout.rdbuf(NULL);
   NameAnalysis nameAnalysis(progAST, &std::cout);
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
+}
+
+TEST(ASTAnalysisTest, DuplicateFunction) {
+  Scanner scanner(test_prefix + "sem/dupefun.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+  Program progAST = parser.parse();
+
+  std::cout.rdbuf(NULL);
+  NameAnalysis nameAnalysis(progAST, &std::cout);
+  nameAnalysis.run();
+  ASSERT_NE(0, nameAnalysis.errorCount);
+}
+
+TEST(ASTAnalysisTest, DuplicateVariable) {
+  Scanner scanner(test_prefix + "sem/dupevar.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+  Program progAST = parser.parse();
+
+  std::cout.rdbuf(NULL);
+  NameAnalysis nameAnalysis(progAST, &std::cout);
+  nameAnalysis.run();
+  ASSERT_NE(0, nameAnalysis.errorCount);
+}
+
+TEST(ASTAnalysisTest, AmbiguousIdentifier) {
+  Scanner scanner(test_prefix + "sem/ambig.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+  Program progAST = parser.parse();
+
+  std::cout.rdbuf(NULL);
+  NameAnalysis nameAnalysis(progAST, &std::cout);
+  nameAnalysis.run();
+  ASSERT_NE(0, nameAnalysis.errorCount);
 }
 
 // The fixture for testing class Project1. From google test primer.
