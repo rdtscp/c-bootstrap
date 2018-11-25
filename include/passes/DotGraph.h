@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef SOURCEPASS_H
-#define SOURCEPASS_H
+#ifndef DOTGRAPH_H
+#define DOTGRAPH_H
 
 #include <iostream>
 
