@@ -16,17 +16,14 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(ASTAnalysisTest, DotGraph) {
-  Scanner scanner(test_prefix + "lexer/alltokens.c");
+  Scanner scanner(test_prefix + "parser/fundecls.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
   Program progAST = parser.parse();
 
-  DotGraph dotGraph(progAST);
+  std::cout.rdbuf( NULL );
+  DotGraph dotGraph(progAST, &std::cout);
   dotGraph.print();
-
-  // ASTAnalysis asta(progAST);
-  // asta.addPass(SourcePass());
-  // asta.runAnalysis();
 }
 
 // The fixture for testing class Project1. From google test primer.

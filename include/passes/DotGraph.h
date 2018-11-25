@@ -13,11 +13,15 @@ namespace ACC {
 class DotGraph : public ASTVisitor {
 
 public:
-  DotGraph(const Program &progAST) : progAST(progAST) {}
+  DotGraph(const Program &progAST, std::ostream *out_stream)
+      : progAST(progAST) {
+    output = out_stream;
+  }
   void print() { visit(progAST); }
 
 private:
   int nodeCount = 0;
+  std::ostream *output;
   const Program &progAST;
 
   void declare(const std::string &nodeID, const std::string &label) {
@@ -25,10 +29,10 @@ private:
   }
 
   void join(const std::string &lhs, const std::string &rhs) {
-    std::cout << lhs << " -> " << rhs << std::endl;
+    *output << lhs << " -> " << rhs << std::endl;
   }
 
-  void put(const std::string &str) { std::cout << str << std::endl; }
+  void put(const std::string &str) { *output << str << std::endl; }
 
   /* ---- Visit AST ---- */
 

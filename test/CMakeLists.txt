@@ -39,3 +39,13 @@ TARGET_LINK_LIBRARIES(runParserUnitTests
     Lexer
 )
 add_test(ParserUnitTests runParserUnitTests)
+
+ADD_EXECUTABLE(runASTAnalysisUnitTests Test_ASTAnalysis.cpp  main.cpp)
+TARGET_LINK_LIBRARIES(runASTAnalysisUnitTests
+    libgtest
+    libgmock
+    Parser
+    Scanner
+    Lexer
+)
+add_test(ASTAnalysisUnitTests runASTAnalysisUnitTests)
