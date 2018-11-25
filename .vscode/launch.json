@@ -14,7 +14,8 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": true,
-      "MIMode": "lldb"
+      "MIMode": "lldb",
+      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
     },
     {
       "name": "(lldb) Parser Unit Tests",
@@ -26,7 +27,8 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": true,
-      "MIMode": "lldb"
+      "MIMode": "lldb",
+      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
     },
     {
       "name": "(lldb) Lexer Unit Tests",
@@ -38,7 +40,8 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": true,
-      "MIMode": "lldb"
+      "MIMode": "lldb",
+      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
     },
     {
       "name": "(lldb) Scanner Unit Tests",
@@ -50,7 +53,8 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": true,
-      "MIMode": "lldb"
+      "MIMode": "lldb",
+      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
     },
     {
       "name": "(lldb) AST Unit Tests",
@@ -62,7 +66,8 @@
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": true,
-      "MIMode": "lldb"
+      "MIMode": "lldb",
+      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
     }
   ]
 }
