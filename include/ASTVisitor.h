@@ -35,7 +35,7 @@ class While;
 
 class ASTVisitor {
 
-private:
+public:
   virtual std::string visit(const ArrayAccess &aa) = 0;
   virtual std::string visit(const ArrayType &at) = 0;
   virtual std::string visit(const Assign &as) = 0;
