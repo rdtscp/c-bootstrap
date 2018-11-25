@@ -88,16 +88,20 @@ bool Parser::acceptDecl() {
 
 bool Parser::acceptFunDecl() {
 
-  if (acceptStructType())
-    return lookAhead(2).tokenClass == TC::IDENTIFIER &&
-           lookAhead(3).tokenClass == TC::LPAR;
+  if (acceptStructType()) {
+    int lookAheadOffset = 2;
+    while (lookAhead(lookAheadOffset).tokenClass == TC::ASTERIX)
+      lookAheadOffset++;
+    return lookAhead(lookAheadOffset).tokenClass == TC::IDENTIFIER &&
+           lookAhead(lookAheadOffset + 1).tokenClass == TC::LPAR;
+  }
 
   if (acceptType()) {
-    Token oneAhead = lookAhead(1);
-    Token twoAhead = lookAhead(2);
-    bool hasIDENT = (oneAhead.tokenClass == TC::IDENTIFIER);
-    bool hasLPAR = (twoAhead.tokenClass == TC::LPAR);
-    return hasIDENT && hasLPAR;
+    int lookAheadOffset = 1;
+    while (lookAhead(lookAheadOffset).tokenClass == TC::ASTERIX)
+      lookAheadOffset++;
+    return lookAhead(lookAheadOffset).tokenClass == TC::IDENTIFIER &&
+           lookAhead(lookAheadOffset + 1).tokenClass == TC::LPAR;
   }
 
   return false;
