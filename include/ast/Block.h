@@ -26,7 +26,7 @@ public:
     if (local == nullptr && outerBlock != nullptr)
       return outerBlock->find(identifier);
 
-    return nullptr;
+    return local;
   }
 
   std::shared_ptr<Decl> findCurrent(const std::string &identifier) {
