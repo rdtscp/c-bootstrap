@@ -24,10 +24,18 @@ public:
   }
   bool operator!=(Type &t) const override { return !(*this == t); }
 
-  bool operator==(const BaseType &rhs) const { return primitiveType == rhs.primitiveType; }
-  bool operator!=(const BaseType &rhs) const { return !(*this==rhs); }
+  bool operator==(const BaseType &rhs) const {
+    return primitiveType == rhs.primitiveType;
+  }
+  bool operator!=(const BaseType &rhs) const { return !(*this == rhs); }
 
-  std::string accept(ASTVisitor &v) override { return v.visit(*this); }
+  void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
+  std::string accept(ASTVisitor<std::string> &v) override {
+    return v.visit(*this);
+  }
+  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override {
+    return v.visit(*this);
+  }
   std::string astClass() const override { return "BaseType"; }
 };
 

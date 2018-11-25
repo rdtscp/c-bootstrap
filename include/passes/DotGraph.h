@@ -10,7 +10,7 @@
 
 namespace ACC {
 
-class DotGraph : public ASTVisitor {
+class DotGraph : public ASTVisitor<std::string> {
 
 public:
   DotGraph(Program &progAST, std::ostream *out_stream = &std::cout)

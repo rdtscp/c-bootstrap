@@ -33,34 +33,34 @@ class VarDecl;
 class VarExpr;
 class While;
 
-class ASTVisitor {
+template <typename T> class ASTVisitor {
 
 public:
-  virtual std::string visit(ArrayAccess &aa) = 0;
-  virtual std::string visit(ArrayType &at) = 0;
-  virtual std::string visit(Assign &as) = 0;
-  virtual std::string visit(BaseType &bt) = 0;
-  virtual std::string visit(BinOp &bo) = 0;
-  virtual std::string visit(Block &b) = 0;
-  virtual std::string visit(CharLiteral &cl) = 0;
-  virtual std::string visit(FieldAccess &fa) = 0;
-  virtual std::string visit(FunCall &fc) = 0;
-  virtual std::string visit(FunDecl &fd) = 0;
-  virtual std::string visit(If &i) = 0;
-  virtual std::string visit(IntLiteral &il) = 0;
-  virtual std::string visit(ParenthExpr &pe) = 0;
-  virtual std::string visit(PointerType &pt) = 0;
-  virtual std::string visit(Program &p) = 0;
-  virtual std::string visit(Return &r) = 0;
-  virtual std::string visit(SizeOf &so) = 0;
-  virtual std::string visit(StringLiteral &sl) = 0;
-  virtual std::string visit(StructType &st) = 0;
-  virtual std::string visit(StructTypeDecl &std) = 0;
-  virtual std::string visit(TypeCast &tc) = 0;
-  virtual std::string visit(ValueAt &va) = 0;
-  virtual std::string visit(VarDecl &vd) = 0;
-  virtual std::string visit(VarExpr &ve) = 0;
-  virtual std::string visit(While &w) = 0;
+  virtual T visit(ArrayAccess &aa) = 0;
+  virtual T visit(ArrayType &at) = 0;
+  virtual T visit(Assign &as) = 0;
+  virtual T visit(BaseType &bt) = 0;
+  virtual T visit(BinOp &bo) = 0;
+  virtual T visit(Block &b) = 0;
+  virtual T visit(CharLiteral &cl) = 0;
+  virtual T visit(FieldAccess &fa) = 0;
+  virtual T visit(FunCall &fc) = 0;
+  virtual T visit(FunDecl &fd) = 0;
+  virtual T visit(If &i) = 0;
+  virtual T visit(IntLiteral &il) = 0;
+  virtual T visit(ParenthExpr &pe) = 0;
+  virtual T visit(PointerType &pt) = 0;
+  virtual T visit(Program &p) = 0;
+  virtual T visit(Return &r) = 0;
+  virtual T visit(SizeOf &so) = 0;
+  virtual T visit(StringLiteral &sl) = 0;
+  virtual T visit(StructType &st) = 0;
+  virtual T visit(StructTypeDecl &std) = 0;
+  virtual T visit(TypeCast &tc) = 0;
+  virtual T visit(ValueAt &va) = 0;
+  virtual T visit(VarDecl &vd) = 0;
+  virtual T visit(VarExpr &ve) = 0;
+  virtual T visit(While &w) = 0;
 };
 
 }; // namespace ACC

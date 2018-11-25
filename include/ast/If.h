@@ -21,7 +21,13 @@ public:
      std::shared_ptr<Stmt> elseBody)
       : ifBody(ifBody), ifCondition(ifCondition), elseBody(elseBody) {}
 
-  std::string accept(ASTVisitor &v) override { return v.visit(*this); }
+  void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
+  std::string accept(ASTVisitor<std::string> &v) override {
+    return v.visit(*this);
+  }
+  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override {
+    return v.visit(*this);
+  }
   std::string astClass() const override { return "If"; }
 };
 
