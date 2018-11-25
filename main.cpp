@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 
+#include "include/ASTPasses.h"
 #include "include/Lexer.h"
 #include "include/Parser.h"
 #include "include/Scanner.h"
@@ -21,7 +22,13 @@ int main(int argc, char const *argv[]) {
 
   ACC::Parser parser(lexer);
 
-  ACC::Program prog = parser.parse();
+  ACC::Program progAST = parser.parse();
+
+  ACC::NameAnalysis nameAnalysis(progAST, &std::cout);
+  nameAnalysis.run();
+  if (nameAnalysis.errorCount > 0)
+    std::cout << "Compiler found " << nameAnalysis.errorCount
+              << " Error(s) related to naming conflicts." << std::endl;
 
   return 0;
 }
