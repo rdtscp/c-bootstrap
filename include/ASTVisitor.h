@@ -36,31 +36,31 @@ class While;
 class ASTVisitor {
 
 public:
-  virtual std::string visit(const ArrayAccess &aa) = 0;
-  virtual std::string visit(const ArrayType &at) = 0;
-  virtual std::string visit(const Assign &as) = 0;
-  virtual std::string visit(const BaseType &bt) = 0;
-  virtual std::string visit(const BinOp &bo) = 0;
-  virtual std::string visit(const Block &b) = 0;
-  virtual std::string visit(const CharLiteral &cl) = 0;
-  virtual std::string visit(const FieldAccess &fa) = 0;
-  virtual std::string visit(const FunCall &fc) = 0;
-  virtual std::string visit(const FunDecl &fd) = 0;
-  virtual std::string visit(const If &i) = 0;
-  virtual std::string visit(const IntLiteral &il) = 0;
-  virtual std::string visit(const ParenthExpr &pe) = 0;
-  virtual std::string visit(const PointerType &pt) = 0;
-  virtual std::string visit(const Program &p) = 0;
-  virtual std::string visit(const Return &r) = 0;
-  virtual std::string visit(const SizeOf &so) = 0;
-  virtual std::string visit(const StringLiteral &sl) = 0;
-  virtual std::string visit(const StructType &st) = 0;
-  virtual std::string visit(const StructTypeDecl &std) = 0;
-  virtual std::string visit(const TypeCast &tc) = 0;
-  virtual std::string visit(const ValueAt &va) = 0;
-  virtual std::string visit(const VarDecl &vd) = 0;
-  virtual std::string visit(const VarExpr &ve) = 0;
-  virtual std::string visit(const While &w) = 0;
+  virtual std::string visit(ArrayAccess &aa) = 0;
+  virtual std::string visit(ArrayType &at) = 0;
+  virtual std::string visit(Assign &as) = 0;
+  virtual std::string visit(BaseType &bt) = 0;
+  virtual std::string visit(BinOp &bo) = 0;
+  virtual std::string visit(Block &b) = 0;
+  virtual std::string visit(CharLiteral &cl) = 0;
+  virtual std::string visit(FieldAccess &fa) = 0;
+  virtual std::string visit(FunCall &fc) = 0;
+  virtual std::string visit(FunDecl &fd) = 0;
+  virtual std::string visit(If &i) = 0;
+  virtual std::string visit(IntLiteral &il) = 0;
+  virtual std::string visit(ParenthExpr &pe) = 0;
+  virtual std::string visit(PointerType &pt) = 0;
+  virtual std::string visit(Program &p) = 0;
+  virtual std::string visit(Return &r) = 0;
+  virtual std::string visit(SizeOf &so) = 0;
+  virtual std::string visit(StringLiteral &sl) = 0;
+  virtual std::string visit(StructType &st) = 0;
+  virtual std::string visit(StructTypeDecl &std) = 0;
+  virtual std::string visit(TypeCast &tc) = 0;
+  virtual std::string visit(ValueAt &va) = 0;
+  virtual std::string visit(VarDecl &vd) = 0;
+  virtual std::string visit(VarExpr &ve) = 0;
+  virtual std::string visit(While &w) = 0;
 };
 
 }; // namespace ACC
