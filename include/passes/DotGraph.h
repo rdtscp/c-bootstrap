@@ -48,7 +48,9 @@ private:
 
     return arrayAccessID;
   }
-  std::string visit(ArrayType &at) override { return "undef"; }
+  std::string visit(ArrayType &at) override {
+    return at.arrayType->accept(*this) + "[" + at.arraySize + "]";
+  }
   std::string visit(Assign &as) override {
     std::string assignID = "Assign" + std::to_string(nodeCount++);
     declare(assignID, "=");
@@ -61,7 +63,16 @@ private:
 
     return assignID;
   }
-  std::string visit(BaseType &bt) override { return "undef"; }
+  std::string visit(BaseType &bt) override {
+    switch (bt.primitiveType) {
+    case PrimitiveType::CHAR:
+      return "char";
+    case PrimitiveType::INT:
+      return "int";
+    case PrimitiveType::VOID:
+      return "void";
+    }
+  }
   std::string visit(BinOp &bo) override {
     std::string binOpID = "BinOp" + std::to_string(nodeCount++);
     declare(binOpID, "BinOp");
@@ -158,7 +169,7 @@ private:
   }
   std::string visit(If &i) override {
     std::string ifID = "If" + std::to_string(nodeCount++);
-    declare(ifID, "if () {} else {}");
+    declare(ifID, "if then else");
 
     join(ifID, i.ifCondition->accept(*this));
     join(ifID, i.ifBody->accept(*this));
@@ -176,7 +187,9 @@ private:
   std::string visit(ParenthExpr &pe) override {
     return pe.innerExpr->accept(*this);
   }
-  std::string visit(PointerType &pt) override { return "undef"; }
+  std::string visit(PointerType &pt) override {
+    return pt.pointedType->accept(*this) + "*";
+  }
   std::string visit(Program &p) override {
     std::cout << "digraph prog {" << std::endl;
     for (const auto decl : p.decls) {
@@ -203,17 +216,36 @@ private:
   }
   std::string visit(StringLiteral &sl) override {
     std::string strID = "StringLiteral" + std::to_string(nodeCount++);
-    declare(strID, "\"" + sl.value + "\"");
+    declare(strID, "\\\"" + sl.value + "\\\"");
     return strID;
   }
-  std::string visit(StructType &st) override { return "undef"; }
-  std::string visit(StructTypeDecl &std) override { return "undef"; }
-  std::string visit(TypeCast &tc) override { return "undef"; }
-  std::string visit(ValueAt &va) override { return "undef"; }
+  std::string visit(StructType &st) override {
+    return "struct " + st.identifier;
+  }
+  std::string visit(StructTypeDecl &std) override {
+    std::string structTypeDeclID =
+        "StructTypeDecl" + std::to_string(nodeCount++);
+    declare(structTypeDeclID, std.structType->accept(*this) + " = {}");
+    for (const auto field : std.varDecls)
+      join(structTypeDeclID, field->accept(*this));
+    return structTypeDeclID;
+  }
+  std::string visit(TypeCast &tc) override {
+    std::string typecastID = "TypeCast" + std::to_string(nodeCount++);
+    declare(typecastID, "(" + tc.type->accept(*this) + ")");
+    join(typecastID, tc.expr->accept(*this));
+    return typecastID;
+  }
+  std::string visit(ValueAt &va) override {
+    std::string derefID = "Deref" + std::to_string(nodeCount++);
+    declare(derefID, "\"Deref\"");
+    join(derefID, va.derefExpr->accept(*this));
+    return derefID;
+  }
   std::string visit(VarDecl &vd) override {
     nodeCount++;
     std::string varDeclID = "VarDecl" + std::to_string(nodeCount++);
-    declare(varDeclID, "let " + vd.identifer + ";");
+    declare(varDeclID, vd.type->accept(*this) + " " + vd.identifer + ";");
     return varDeclID;
   }
   std::string visit(VarExpr &ve) override {
@@ -221,7 +253,13 @@ private:
     declare(varID, ve.identifier);
     return varID;
   }
-  std::string visit(While &w) override { return "undef"; }
+  std::string visit(While &w) override {
+    std::string whileID = "While" + std::to_string(nodeCount++);
+    declare(whileID, "while()");
+    join(whileID, w.condition->accept(*this));
+    join(whileID, w.body->accept(*this));
+    return whileID;
+  }
 };
 
 }; // namespace ACC
