@@ -217,8 +217,8 @@ std::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
 
   expect(TC::RBRA);
   expect(TC::SC);
-  return std::shared_ptr<StructTypeDecl>(
-      new StructTypeDecl(structType, fields));
+  return std::make_shared<StructTypeDecl>(
+      StructTypeDecl(structType, fields));
 }
 
 std::shared_ptr<VarDecl> Parser::parseVarDecl() {
@@ -231,7 +231,7 @@ std::shared_ptr<VarDecl> Parser::parseVarDecl() {
     varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
   expect(TC::SC);
-  return std::shared_ptr<VarDecl>(new VarDecl(varType, varIdentifier));
+  return std::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
 }
 
 std::shared_ptr<FunDecl> Parser::parseFunDecl() {
@@ -251,8 +251,8 @@ std::shared_ptr<FunDecl> Parser::parseFunDecl() {
 
   std::shared_ptr<Block> funBlock = parseBlock();
 
-  return std::shared_ptr<FunDecl>(
-      new FunDecl(funBlock, funIdent, funParams, funType));
+  return std::make_shared<FunDecl>(
+      FunDecl(funBlock, funIdent, funParams, funType));
 }
 
 std::shared_ptr<VarDecl> Parser::parseParam() {
@@ -264,7 +264,7 @@ std::shared_ptr<VarDecl> Parser::parseParam() {
     expect(TC::RSBR);
     varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
-  return std::shared_ptr<VarDecl>(new VarDecl(varType, varIdentifier));
+  return std::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
 }
 
 std::shared_ptr<Type> Parser::parseType() {
@@ -304,7 +304,7 @@ std::shared_ptr<Type> Parser::parseType() {
 std::shared_ptr<StructType> Parser::parseStructType() {
   expect(TC::STRUCT);
   std::string structIdentifier = expect(TC::IDENTIFIER).data;
-  return std::shared_ptr<StructType>(new StructType(structIdentifier));
+  return std::make_shared<StructType>(StructType(structIdentifier));
 }
 
 std::shared_ptr<Block> Parser::parseBlock() {
@@ -317,7 +317,7 @@ std::shared_ptr<Block> Parser::parseBlock() {
   }
 
   expect(TC::RBRA);
-  return std::shared_ptr<Block>(new Block(blockStmts));
+  return std::make_shared<Block>(Block(blockStmts));
 }
 
 std::shared_ptr<Stmt> Parser::parseStmt() {
@@ -342,7 +342,7 @@ std::shared_ptr<Stmt> Parser::parseStmt() {
     expect(TC::ASSIGN);
     std::shared_ptr<Expr> rhs = parseExpr();
     expect(TC::SC);
-    return std::shared_ptr<Assign>(new Assign(expr, rhs));
+    return std::make_shared<Assign>(Assign(expr, rhs));
   }
 
   expect(TC::SC);
@@ -356,7 +356,7 @@ std::shared_ptr<While> Parser::parseWhile() {
   expect(TC::RPAR);
   std::shared_ptr<Stmt> whileBody = parseStmt();
 
-  return std::shared_ptr<While>(new While(whileBody, whileCondition));
+  return std::make_shared<While>(While(whileBody, whileCondition));
 }
 
 std::shared_ptr<If> Parser::parseIf() {
@@ -368,9 +368,9 @@ std::shared_ptr<If> Parser::parseIf() {
   if (accept(TC::ELSE)) {
     expect(TC::ELSE);
     std::shared_ptr<Stmt> elseBody = parseStmt();
-    return std::shared_ptr<If>(new If(ifCondition, ifBody, elseBody));
+    return std::make_shared<If>(If(ifCondition, ifBody, elseBody));
   } else {
-    return std::shared_ptr<If>(new If(ifCondition, ifBody));
+    return std::make_shared<If>(If(ifCondition, ifBody));
   }
 }
 
@@ -379,10 +379,10 @@ std::shared_ptr<Return> Parser::parseReturn() {
   if (acceptExpr()) {
     std::shared_ptr<Expr> returnExpr = parseExpr();
     expect(TC::SC);
-    return std::shared_ptr<Return>(new Return(returnExpr));
+    return std::make_shared<Return>(Return(returnExpr));
   } else {
     expect(TC::SC);
-    return std::shared_ptr<Return>(new Return());
+    return std::make_shared<Return>(Return());
   }
 }
 
@@ -390,7 +390,7 @@ std::shared_ptr<Assign> Parser::parseAssign() {
   std::shared_ptr<Expr> lhs = parseExpr();
   expect(TC::ASSIGN);
   std::shared_ptr<Expr> rhs = parseExpr();
-  return std::shared_ptr<Assign>(new Assign(lhs, rhs));
+  return std::make_shared<Assign>(Assign(lhs, rhs));
 }
 
 std::shared_ptr<Expr> Parser::parseExpr() {
@@ -398,7 +398,7 @@ std::shared_ptr<Expr> Parser::parseExpr() {
     expect(TC::LPAR);
     std::shared_ptr<Expr> innerExpr = parseExpr();
     expect(TC::RPAR);
-    return std::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr));
+    return std::make_shared<ParenthExpr>(ParenthExpr(innerExpr));
   }
 
   return parseBoolExpr();
@@ -409,12 +409,12 @@ std::shared_ptr<Expr> Parser::parseBoolExpr() {
   if (accept(TC::OR)) {
     expect(TC::OR);
     std::shared_ptr<Expr> rhs = parseEqualExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::OR, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::OR, rhs));
   }
   if (accept(TC::AND)) {
     expect(TC::AND);
     std::shared_ptr<Expr> rhs = parseEqualExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::AND, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::AND, rhs));
   }
   return lhs;
 }
@@ -424,12 +424,12 @@ std::shared_ptr<Expr> Parser::parseEqualExpr() {
   if (accept(TC::NE)) {
     expect(TC::NE);
     std::shared_ptr<Expr> rhs = parseCompExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::NE, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::NE, rhs));
   }
   if (accept(TC::EQ)) {
     expect(TC::EQ);
     std::shared_ptr<Expr> rhs = parseCompExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::EQ, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::EQ, rhs));
   }
   return lhs;
 }
@@ -439,22 +439,22 @@ std::shared_ptr<Expr> Parser::parseCompExpr() {
   if (accept(TC::LT)) {
     expect(TC::LT);
     std::shared_ptr<Expr> rhs = parseAddExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::LT, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::LT, rhs));
   }
   if (accept(TC::GT)) {
     expect(TC::GT);
     std::shared_ptr<Expr> rhs = parseAddExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::GT, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::GT, rhs));
   }
   if (accept(TC::LE)) {
     expect(TC::LE);
     std::shared_ptr<Expr> rhs = parseAddExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::LE, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::LE, rhs));
   }
   if (accept(TC::GE)) {
     expect(TC::GE);
     std::shared_ptr<Expr> rhs = parseAddExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::GE, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::GE, rhs));
   }
   return lhs;
 }
@@ -464,12 +464,12 @@ std::shared_ptr<Expr> Parser::parseAddExpr() {
   if (accept(TC::PLUS)) {
     expect(TC::PLUS);
     std::shared_ptr<Expr> rhs = parseMulExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::ADD, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::ADD, rhs));
   }
   if (accept(TC::MINUS)) {
     expect(TC::MINUS);
     std::shared_ptr<Expr> rhs = parseMulExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::SUB, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs));
   }
   return lhs;
 }
@@ -479,17 +479,17 @@ std::shared_ptr<Expr> Parser::parseMulExpr() {
   if (accept(TC::ASTERIX)) {
     expect(TC::ASTERIX);
     std::shared_ptr<Expr> rhs = parseUnaryExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::MUL, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::MUL, rhs));
   }
   if (accept(TC::DIV)) {
     expect(TC::DIV);
     std::shared_ptr<Expr> rhs = parseUnaryExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::DIV, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::DIV, rhs));
   }
   if (accept(TC::REM)) {
     expect(TC::REM);
     std::shared_ptr<Expr> rhs = parseUnaryExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::MOD, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::MOD, rhs));
   }
   return lhs;
 }
@@ -500,25 +500,25 @@ std::shared_ptr<Expr> Parser::parseUnaryExpr() {
     expect(TC::LPAR);
     std::shared_ptr<Type> type = parseType();
     expect(TC::RPAR);
-    return std::shared_ptr<SizeOf>(new SizeOf(type));
+    return std::make_shared<SizeOf>(SizeOf(type));
   }
   if (accept(TC::ASTERIX)) {
     expect(TC::ASTERIX);
     std::shared_ptr<Expr> rhs = parseObjExpr();
-    return std::shared_ptr<ValueAt>(new ValueAt(rhs));
+    return std::make_shared<ValueAt>(ValueAt(rhs));
   }
   if (accept(TC::LPAR) && (acceptType(1).first == true)) {
     expect(TC::LPAR);
     std::shared_ptr<Type> castType = parseType();
     expect(TC::RPAR);
     std::shared_ptr<Expr> expToCast = parseObjExpr();
-    return std::shared_ptr<TypeCast>(new TypeCast(castType, expToCast));
+    return std::make_shared<TypeCast>(TypeCast(castType, expToCast));
   }
   if (accept(TC::MINUS)) {
     expect(TC::MINUS);
     std::shared_ptr<IntLiteral> lhs(new IntLiteral("0"));
     std::shared_ptr<Expr> rhs = parseObjExpr();
-    return std::shared_ptr<BinOp>(new BinOp(lhs, Op::SUB, rhs));
+    return std::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs));
   }
 
   return parseObjExpr();
@@ -539,22 +539,22 @@ std::shared_ptr<Expr> Parser::parseObjExpr() {
       }
 
       expect(TC::RPAR);
-      return std::shared_ptr<FunCall>(new FunCall(ident, params));
+      return std::make_shared<FunCall>(FunCall(ident, params));
     }
-    return std::shared_ptr<VarExpr>(new VarExpr(ident));
+    return std::make_shared<VarExpr>(VarExpr(ident));
   }
 
   std::shared_ptr<Expr> lhs = parseLitExpr();
   if (accept(TC::DOT)) {
     expect(TC::DOT);
     std::string fieldIdent = expect(TC::IDENTIFIER).data;
-    return std::shared_ptr<FieldAccess>(new FieldAccess(lhs, fieldIdent));
+    return std::make_shared<FieldAccess>(FieldAccess(lhs, fieldIdent));
   }
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
     std::shared_ptr<Expr> index = parseLitExpr();
     expect(TC::RSBR);
-    return std::shared_ptr<Expr>(new ArrayAccess(lhs, index));
+    return std::make_shared<ArrayAccess>(ArrayAccess(lhs, index));
   }
 
   return lhs;
@@ -562,14 +562,14 @@ std::shared_ptr<Expr> Parser::parseObjExpr() {
 
 std::shared_ptr<Expr> Parser::parseLitExpr() {
   if (accept(TC::INT_LITERAL))
-    return std::shared_ptr<IntLiteral>(
-        new IntLiteral(expect(TC::INT_LITERAL).data));
+    return std::make_shared<IntLiteral>(
+        IntLiteral(expect(TC::INT_LITERAL).data));
   if (accept(TC::CHAR_LITERAL))
-    return std::shared_ptr<CharLiteral>(
-        new CharLiteral(expect(TC::CHAR_LITERAL).data));
+    return std::make_shared<CharLiteral>(
+        CharLiteral(expect(TC::CHAR_LITERAL).data));
   if (accept(TC::STRING_LITERAL))
-    return std::shared_ptr<StringLiteral>(
-        new StringLiteral(expect(TC::STRING_LITERAL).data));
+    return std::make_shared<StringLiteral>(
+        StringLiteral(expect(TC::STRING_LITERAL).data));
 
   if (acceptExpr())
     return parseExpr();
