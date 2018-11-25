@@ -22,14 +22,14 @@ public:
       : blockStmts(newBlockStmts) {}
 
   std::shared_ptr<Decl> find(const std::string &identifier) {
-    std::shared_ptr<Decl> local = findCurrent(identifier);
+    std::shared_ptr<Decl> local = findLocal(identifier);
     if (local == nullptr && outerBlock != nullptr)
       return outerBlock->find(identifier);
 
     return local;
   }
 
-  std::shared_ptr<Decl> findCurrent(const std::string &identifier) {
+  std::shared_ptr<Decl> findLocal(const std::string &identifier) {
     if (blockDecls.find(identifier) != blockDecls.end())
       return blockDecls.find(identifier)->second;
 
