@@ -36,21 +36,16 @@ private:
 
   /* ---- Visit AST ---- */
 
-  void visit(ArrayAccess &aa) override {
-    aa.array->accept(*this);
-    
-  }
-  void visit(ArrayType &at) override {  }
+  void visit(ArrayAccess &aa) override { aa.array->accept(*this); }
+  void visit(ArrayType &at) override {}
   void visit(Assign &as) override {
     as.lhs->accept(*this);
     as.rhs->accept(*this);
-    
   }
-  void visit(BaseType &bt) override {  }
+  void visit(BaseType &bt) override {}
   void visit(BinOp &bo) override {
     bo.lhs->accept(*this);
     bo.rhs->accept(*this);
-    
   }
   void visit(Block &b) override {
     if (b.outerBlock == nullptr) {
@@ -60,20 +55,17 @@ private:
     for (const auto &stmt : b.blockStmts)
       stmt->accept(*this);
     currScope = b.outerBlock;
-    
   }
-  void visit(CharLiteral &cl) override {  }
+  void visit(CharLiteral &cl) override {}
   void visit(FieldAccess &fa) override {
     fa.object->accept(*this);
     // TODO Assert Struct has said Field.
-    
   }
   void visit(FunCall &fc) override {
     if (currScope->find(fc.funName) == nullptr)
       return error("Attempted to call undeclared function: " + fc.funName);
     for (const auto &arg : fc.funArgs)
       arg->accept(*this);
-    
   }
   void visit(FunDecl &fd) override {
     if (currScope->findLocal(fd.getIdentifier()))
@@ -89,37 +81,30 @@ private:
       param->accept(*this);
     fd.funBlock->accept(*this);
     currScope = fd.funBlock->outerBlock;
-    
   }
   void visit(If &i) override {
     i.ifCondition->accept(*this);
     i.ifBody->accept(*this);
     if (i.elseBody)
       i.elseBody->accept(*this);
-    
   }
-  void visit(IntLiteral &il) override {  }
-  void visit(ParenthExpr &pe) override {
-    pe.innerExpr->accept(*this);
-    
-  }
-  void visit(PointerType &pt) override {  }
+  void visit(IntLiteral &il) override {}
+  void visit(ParenthExpr &pe) override { pe.innerExpr->accept(*this); }
+  void visit(PointerType &pt) override {}
   void visit(Program &p) override {
     currScope = std::make_shared<Block>(Block({}));
     for (const std::shared_ptr<Decl> &decl : p.decls) {
       decl->accept(*this);
     }
     p.setGlobalScope(currScope);
-    
   }
   void visit(Return &r) override {
     if (r.returnExpr)
       r.returnExpr->accept(*this);
-    
   }
-  void visit(SizeOf &so) override {  }
-  void visit(StringLiteral &sl) override {  }
-  void visit(StructType &st) override {  }
+  void visit(SizeOf &so) override {}
+  void visit(StringLiteral &sl) override {}
+  void visit(StructType &st) override {}
   void visit(StructTypeDecl &std) override {
     if (currScope->findLocal(std.getIdentifier()))
       return error("Attempted to declare a Struct with an identifier that is "
@@ -138,35 +123,24 @@ private:
                      field->getIdentifier());
       structTypeFields.insert(field->identifer);
     }
-
-    
   }
-  void visit(TypeCast &tc) override {
-    tc.expr->accept(*this);
-    
-  }
-  void visit(ValueAt &va) override {
-    va.derefExpr->accept(*this);
-    
-  }
+  void visit(TypeCast &tc) override { tc.expr->accept(*this); }
+  void visit(ValueAt &va) override { va.derefExpr->accept(*this); }
   void visit(VarDecl &vd) override {
     if (currScope->findLocal(vd.getIdentifier()))
       return error("Attempted to declare a Variable with an identifier that is "
                    "already in use: " +
                    vd.getIdentifier());
     currScope->insertDecl(std::make_shared<VarDecl>(vd));
-    
   }
   void visit(VarExpr &ve) override {
     if (currScope->find(ve.identifier) == nullptr)
       return error("Attempted to reference undeclared variable: " +
                    ve.identifier);
-    
   }
   void visit(While &w) override {
     w.condition->accept(*this);
     w.body->accept(*this);
-    
   }
 };
 
