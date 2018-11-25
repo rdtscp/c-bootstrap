@@ -74,15 +74,20 @@ std::pair<bool, std::string> Lexer::tryLexKeyword(const std::string &keyword) {
   bool keywordMatch = false;
   std::string literal(1, keyword[0]);
 
-  for (int i = 1; i < keyword.length(); i++)
+  for (int i = 1; i < keyword.length(); i++) {
+    char peek = scanner.peek();
+    if (scanner.peek() != keyword[i])
+      return std::pair<bool, std::string>(false, literal);
+
     literal += scanner.next();
+  }
 
   char peek = scanner.peek();
   if ((literal == keyword) && (!isalpha(peek)) && (!isdigit(peek)) &&
       (peek != '_'))
     keywordMatch = true;
 
-  return std::pair(keywordMatch, literal);
+  return std::pair<bool, std::string>(keywordMatch, literal);
 }
 
 Token Lexer::nextToken() {
