@@ -202,6 +202,18 @@ TEST(LexerTest, SingleLetterVar) {
   ASSERT_TRUE(true);
 }
 
+TEST(LexerTest, FunDecl) {
+  Scanner scanner(test_prefix + "parser/fundecl.c");
+  Lexer lexer(scanner);
+
+  Token::TokenClass currToken = Token::TokenClass::INVALID;
+  while (currToken != Token::TokenClass::ENDOFFILE) {
+    currToken = lexer.nextToken().tokenClass;
+  }
+
+  ASSERT_TRUE(true);
+}
+
 // The fixture for testing class Project1. From google test primer.
 class Test_Lexer : public ::testing::Test {
 protected:
