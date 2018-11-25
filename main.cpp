@@ -9,9 +9,15 @@
 #include "include/AST.h"
 
 int main(int argc, char const *argv[]) {
+  bool outputGraph = false;
   if (argc < 2) {
     std::cout << "Provide Filename" << std::endl;
     return 1;
+  }
+  if (argc == 3) {
+    std::string arg2(argv[2]);
+    if (arg2 == "-p" || arg2 == "--print")
+      outputGraph = true;
   }
 
   std::string filename(argv[1]);
@@ -23,6 +29,11 @@ int main(int argc, char const *argv[]) {
   ACC::Parser parser(lexer);
 
   ACC::Program progAST = parser.parse();
+
+  if (outputGraph) {
+    ACC::DotGraph dotGraph(progAST);
+    dotGraph.print();
+  }
 
   ACC::NameAnalysis nameAnalysis(progAST, &std::cout);
   nameAnalysis.run();
