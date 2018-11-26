@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <set>
+#include <vector>
 
 #include "../AST.h"
 #include "../ASTVisitor.h"
@@ -16,15 +17,22 @@ class NameAnalysis : public ASTVisitor<void> {
 
 public:
   int errorCount = 0;
+  std::vector<std::string> errors;
 
   NameAnalysis(Program &progAST, std::ostream *out_stream = &std::cout)
-      : progAST(progAST) {
-    output = out_stream;
-  }
+      : progAST(progAST) {}
+
   void error(std::string error) {
     errorCount++;
-    *output << error << std::endl;
+    errors.push_back(error);
   }
+
+  void printErrors() {
+    std::cout << "Name Analysis Errors:" << std::endl;
+    for (const auto &error : errors)
+      std::cout << "\t" << error << std::endl;
+  }
+
   void run() { visit(progAST); }
 
 private:
