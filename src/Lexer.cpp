@@ -132,7 +132,7 @@ Token Lexer::nextToken() {
       char val = c;
       scanner.next();
       return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
-                   scanner.column, std::to_string(val));
+                   scanner.column, std::string(1, val));
     }
   }
   // Recognise IDENTIFIERS & Keyword Tokens.
