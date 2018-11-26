@@ -35,11 +35,16 @@ int main(int argc, char const *argv[]) {
     dotGraph.print();
   }
 
-  ACC::NameAnalysis nameAnalysis(progAST, &std::cout);
+  ACC::NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   if (nameAnalysis.errorCount > 0)
-    std::cout << "Compiler found " << nameAnalysis.errorCount
-              << " Error(s) related to naming conflicts." << std::endl;
+    nameAnalysis.printErrors();
+  else {
+    ACC::TypeAnalysis typeAnalysis(progAST);
+    typeAnalysis.run();
+    if (typeAnalysis.errorCount > 0)
+      typeAnalysis.printErrors();
+  }
 
   return 0;
 }

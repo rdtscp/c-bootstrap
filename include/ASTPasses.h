@@ -5,5 +5,6 @@
 
 #include "passes/DotGraph.h"
 #include "passes/NameAnalysis.h"
+#include "passes/TypeAnalysis.h"
 
 #endif
