@@ -12,7 +12,7 @@
 using namespace ACC;
 
 // std::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
 std::string test_prefix = "../../test/tests/";
 
 TEST(ASTAnalysisTest, DotGraph) {
@@ -72,6 +72,36 @@ TEST(ASTAnalysisTest, AmbiguousIdentifier) {
   NameAnalysis nameAnalysis(progAST, &std::cout);
   nameAnalysis.run();
   ASSERT_NE(0, nameAnalysis.errorCount);
+}
+
+TEST(ASTAnalysisTest, Fibonacci) {
+  Scanner scanner(test_prefix + "fibonacci.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+  Program progAST = parser.parse();
+
+  std::cout.rdbuf(NULL);
+  NameAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+  TypeAnalysis typeAnalysis(progAST);
+  typeAnalysis.run();
+  ASSERT_EQ(0, typeAnalysis.errorCount);
+}
+
+TEST(ASTAnalysisTest, TicTacToe) {
+  Scanner scanner(test_prefix + "tictactoe.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+  Program progAST = parser.parse();
+
+  std::cout.rdbuf(NULL);
+  NameAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+  TypeAnalysis typeAnalysis(progAST);
+  typeAnalysis.run();
+  ASSERT_EQ(0, typeAnalysis.errorCount);
 }
 
 // The fixture for testing class Project1. From google test primer.
