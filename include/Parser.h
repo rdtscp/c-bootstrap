@@ -71,7 +71,6 @@ private:
 
   Program parseProgram();
 
-  void parseInclude();
   std::shared_ptr<Decl> parseDecl();
 
   std::shared_ptr<StructTypeDecl> parseStructTypeDecl();

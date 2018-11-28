@@ -191,20 +191,12 @@ bool Parser::acceptExpr() {
 /* ---- Parsing ---- */
 
 Program Parser::parseProgram() {
-  while (accept(TC::INCLUDE))
-    parseInclude();
-
   std::vector<std::shared_ptr<Decl>> decls;
   while (acceptDecl())
     decls.push_back(parseDecl());
 
   expect(TC::ENDOFFILE);
   return Program(decls);
-}
-
-void Parser::parseInclude() {
-  expect(TC::INCLUDE);
-  expect(TC::STRING_LITERAL);
 }
 
 std::shared_ptr<Decl> Parser::parseDecl() {
