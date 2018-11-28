@@ -6,6 +6,7 @@
 #include <string>
 #include <utility>
 
+#include "Preprocessor.h"
 #include "Scanner.h"
 #include "Token.h"
 
@@ -20,11 +21,12 @@ public:
   Token nextToken();
 
 private:
+  Preprocessor preprocessor;
   Scanner scanner;
 
   Token lexStringLiteral();
   void passComment();
-  std::pair<bool, std::string> tryLexKeyword(const std::string& keyword);
+  std::pair<bool, std::string> tryLexKeyword(const std::string &keyword);
 };
 
 }; // namespace ACC

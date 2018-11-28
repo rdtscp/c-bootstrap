@@ -7,7 +7,8 @@
 
 using namespace ACC;
 
-Lexer::Lexer(const Scanner &scanner) : scanner(scanner) {}
+Lexer::Lexer(const Scanner &in_scanner)
+    : scanner(in_scanner), preprocessor(scanner) {}
 
 Token Lexer::lexStringLiteral() {
   std::string literal;
@@ -254,7 +255,112 @@ Token Lexer::nextToken() {
                  literal);
   }
 
-  // Recognise INCLUDE token.
+  // Recognise Pre-Processing Instructions.
+  if (c == '#') {
+
+    c = scanner.next();
+    if (c == 'd') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("define");
+      if (!lexResult.first)
+        throw std::runtime_error(
+            "Pre-Processing: Unexpected Preprocessing Directive at Line " +
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column));
+      c = scanner.next();
+      if (c != ' ')
+        throw std::runtime_error(
+            "Pre-Processing: Unexpected Preprocessing Directive at Line " +
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column));
+      std::string definition;
+      while (isalpha(c) || c == '_') {
+        c = scanner.next();
+        definition += c;
+      }
+      preprocessor.preprocessDefinition(definition);
+    }
+    if (c == 'i' && scanner.peek() == 'f') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("ifndef");
+      if (!lexResult.first)
+        throw std::runtime_error(
+            "Pre-Processing: Unexpected Preprocessing Directive at Line " +
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column));
+      c = scanner.next();
+      if (c != ' ')
+        throw std::runtime_error(
+            "Pre-Processing: Unexpected Preprocessing Directive at Line " +
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column));
+      std::string definition;
+      while (isalpha(c) || c == '_') {
+        c = scanner.next();
+        definition += c;
+      }
+      preprocessor.preprocessIfNDef(definition);
+    }
+    if (c == 'i' && scanner.peek() == 'n') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("include");
+      if (!lexResult.first)
+        throw std::runtime_error(
+            "Pre-Processing: Unexpected Preprocessing Directive at Line " +
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column));
+      c = scanner.next();
+      if (c != ' ')
+        throw std::runtime_error(
+            "Pre-Processing: Unexpected Preprocessing Directive at Line " +
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column));
+      c = scanner.next();
+      bool localFile = true;
+      std::string filename;
+      if (c == '<') {
+        c = scanner.next();
+        while (c != '>') {
+          filename += c;
+          c = scanner.next();
+          if (c == '\0')
+            throw std::runtime_error(
+                "Lexer: Unexpected EOF, Line " + std::to_string(scanner.line) +
+                ", Column " + std::to_string(scanner.column));
+        }
+        localFile = false;
+      }
+      if (c == '"') {
+        c = scanner.next();
+        while (c != '"') {
+          filename += c;
+          c = scanner.next();
+          if (c == '\0')
+            throw std::runtime_error(
+                "Lexer: Unexpected EOF, Line " + std::to_string(scanner.line) +
+                ", Column " + std::to_string(scanner.column));
+        }
+        localFile = false;
+      }
+      preprocessor.preprocessInclude(localFile, filename);
+      return nextToken();
+    }
+  }
+  if (c == '#' && scanner.peek() == 'd') {
+    scanner.next();
+    std::pair<bool, std::string> lexResult = tryLexKeyword("include");
+
+    c = lexResult.second[lexResult.second.length() - 1];
+
+    if (lexResult.first)
+      return Token(Token::TokenClass::INCLUDE, scanner.line, scanner.column);
+  }
+  if (c == '#' && scanner.peek() == 'd') {
+    scanner.next();
+    std::pair<bool, std::string> lexResult = tryLexKeyword("include");
+
+    c = lexResult.second[lexResult.second.length() - 1];
+
+    if (lexResult.first)
+      return Token(Token::TokenClass::INCLUDE, scanner.line, scanner.column);
+  }
   if (c == '#' && scanner.peek() == 'i') {
     scanner.next();
     std::pair<bool, std::string> lexResult = tryLexKeyword("include");
