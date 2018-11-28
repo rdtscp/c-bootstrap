@@ -44,9 +44,6 @@ public:
     SIZEOF, // "sizeof"
     CONST,  // "const"
 
-    // include
-    INCLUDE, // "#include"
-
     // literals
     STRING_LITERAL, // \".*\"  any sequence of characters enclosed within two
                     // double quote " (please be aware of the escape character

@@ -343,33 +343,6 @@ Token Lexer::nextToken() {
       return nextToken();
     }
   }
-  if (c == '#' && scanner.peek() == 'd') {
-    scanner.next();
-    std::pair<bool, std::string> lexResult = tryLexKeyword("include");
-
-    c = lexResult.second[lexResult.second.length() - 1];
-
-    if (lexResult.first)
-      return Token(Token::TokenClass::INCLUDE, scanner.line, scanner.column);
-  }
-  if (c == '#' && scanner.peek() == 'd') {
-    scanner.next();
-    std::pair<bool, std::string> lexResult = tryLexKeyword("include");
-
-    c = lexResult.second[lexResult.second.length() - 1];
-
-    if (lexResult.first)
-      return Token(Token::TokenClass::INCLUDE, scanner.line, scanner.column);
-  }
-  if (c == '#' && scanner.peek() == 'i') {
-    scanner.next();
-    std::pair<bool, std::string> lexResult = tryLexKeyword("include");
-
-    c = lexResult.second[lexResult.second.length() - 1];
-
-    if (lexResult.first)
-      return Token(Token::TokenClass::INCLUDE, scanner.line, scanner.column);
-  }
 
   /* Recognise Two Symbol Tokens. */
   if (c == '=' && scanner.peek() == '=') {

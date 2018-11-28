@@ -10,9 +10,9 @@
 
 using namespace ACC;
 
-// std::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-std::string test_prefix = "../../test/tests/";
+std::string test_prefix =
+"/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+// std::string test_prefix = "../../test/tests/";
 
 TEST(LexerTest, AllTokens) {
   Scanner scanner(test_prefix + "lexer/alltokens.c");
@@ -37,7 +37,6 @@ TEST(LexerTest, AllTokens) {
                                              Token::TokenClass::RETURN,
                                              Token::TokenClass::STRUCT,
                                              Token::TokenClass::SIZEOF,
-                                             Token::TokenClass::INCLUDE,
                                              Token::TokenClass::IDENTIFIER,
                                              Token::TokenClass::STRING_LITERAL,
                                              Token::TokenClass::STRING_LITERAL,
