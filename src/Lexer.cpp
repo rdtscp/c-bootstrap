@@ -337,7 +337,7 @@ Token Lexer::nextToken() {
                 "Lexer: Unexpected EOF, Line " + std::to_string(scanner.line) +
                 ", Column " + std::to_string(scanner.column));
         }
-        localFile = false;
+        localFile = true;
       }
       preprocessor.preprocessInclude(localFile, filename);
       return nextToken();

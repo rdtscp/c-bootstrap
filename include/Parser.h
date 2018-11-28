@@ -16,14 +16,14 @@ namespace ACC {
 class Parser {
 
 public:
-  Parser(const Lexer &lexer);
+  Parser(Lexer &lexer);
 
   /* Parses the Tokens into an AST with root node Program. */
   Program parse();
 
 private:
   Token currToken;
-  Lexer lexer;
+  Lexer &lexer;
   std::vector<Token> tokenBuffer;
 
   /* ---- Token Operations ---- */
@@ -88,7 +88,7 @@ private:
   std::shared_ptr<If> parseIf();
   std::shared_ptr<Return> parseReturn();
   std::shared_ptr<Assign> parseAssign();
-  
+
   std::shared_ptr<Expr> parseExpr();
   std::shared_ptr<Expr> parseBoolExpr();
   std::shared_ptr<Expr> parseEqualExpr();
@@ -98,7 +98,6 @@ private:
   std::shared_ptr<Expr> parseUnaryExpr();
   std::shared_ptr<Expr> parseObjExpr();
   std::shared_ptr<Expr> parseLitExpr();
-
 
   /* ---- Helpers ---- */
 

@@ -137,8 +137,6 @@ static std::string tokToStr(const Token::TokenClass &tok) {
     return "STRUCT";
   case Token::TokenClass::SIZEOF:
     return "SIZEOF";
-  case Token::TokenClass::INCLUDE:
-    return "INCLUDE";
   case Token::TokenClass::STRING_LITERAL:
     return "STRING_LITERAL";
   case Token::TokenClass::INT_LITERAL:
