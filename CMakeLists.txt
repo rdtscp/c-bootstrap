@@ -11,6 +11,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
   add_library(Parser SHARED src/Parser.cpp)
 
   target_link_libraries(Lexer Scanner)
+  target_link_libraries(Preprocessor Scanner)
   target_link_libraries(Lexer Preprocessor)
   target_link_libraries(Parser Lexer)
 
@@ -78,6 +79,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
   add_library(Parser SHARED src/Parser.cpp)
 
   target_link_libraries(Lexer Scanner)
+  target_link_libraries(Preprocessor Scanner)
   target_link_libraries(Lexer Preprocessor)
   target_link_libraries(Parser Lexer)
 

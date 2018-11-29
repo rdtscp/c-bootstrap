@@ -3,6 +3,7 @@
 #ifndef PREPROCESSOR_H
 #define PREPROCESSOR_H
 
+#include <memory>
 #include <set>
 #include <string>
 
@@ -19,7 +20,7 @@ public:
 
   void preprocessIfNDef(const std::string &definition);
 
-  void preprocessInclude(const bool localFile, const std::string &filepath);
+  void preprocessInclude(const bool localFile, const std::string &filename);
 
 private:
   std::set<std::string> definitions;

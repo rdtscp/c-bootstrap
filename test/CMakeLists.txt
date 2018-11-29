@@ -30,6 +30,17 @@ Lexer
 )
 add_test(LexerUnitTests runLexerUnitTests)
 
+ADD_EXECUTABLE(runPreprocessorUnitTests Test_Preprocessor.cpp main.cpp)
+TARGET_LINK_LIBRARIES(runPreprocessorUnitTests
+libgtest
+libgmock
+Parser
+Preprocessor
+Scanner
+Lexer
+)
+add_test(PreprocessorUnitTests runPreprocessorUnitTests)
+
 ADD_EXECUTABLE(runParserUnitTests Test_Parser.cpp  main.cpp)
 TARGET_LINK_LIBRARIES(runParserUnitTests
     libgtest
