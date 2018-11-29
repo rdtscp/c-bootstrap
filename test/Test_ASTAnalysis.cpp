@@ -12,11 +12,11 @@
 using namespace ACC;
 
 // std::string test_prefix =
-    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
 std::string test_prefix = "../../test/tests/";
 
 TEST(ASTAnalysisTest, DotGraph) {
-  Scanner scanner(test_prefix + "parser/fundecls.c");
+  Scanner scanner("fundecls.c", test_prefix + "parser/");
   Lexer lexer(scanner);
   Parser parser(lexer);
   Program progAST = parser.parse();
@@ -27,7 +27,7 @@ TEST(ASTAnalysisTest, DotGraph) {
 }
 
 TEST(ASTAnalysisTest, NameAnalysis) {
-  Scanner scanner(test_prefix + "parser/fundecls.c");
+  Scanner scanner("fundecls.c", test_prefix + "parser/");
   Lexer lexer(scanner);
   Parser parser(lexer);
   Program progAST = parser.parse();
@@ -39,7 +39,7 @@ TEST(ASTAnalysisTest, NameAnalysis) {
 }
 
 TEST(ASTAnalysisTest, DuplicateFunction) {
-  Scanner scanner(test_prefix + "sem/dupefun.c");
+  Scanner scanner("dupefun.c", test_prefix + "sem/");
   Lexer lexer(scanner);
   Parser parser(lexer);
   Program progAST = parser.parse();
@@ -51,7 +51,7 @@ TEST(ASTAnalysisTest, DuplicateFunction) {
 }
 
 TEST(ASTAnalysisTest, DuplicateVariable) {
-  Scanner scanner(test_prefix + "sem/dupevar.c");
+  Scanner scanner("dupevar.c", test_prefix + "sem/");
   Lexer lexer(scanner);
   Parser parser(lexer);
   Program progAST = parser.parse();
@@ -63,7 +63,7 @@ TEST(ASTAnalysisTest, DuplicateVariable) {
 }
 
 TEST(ASTAnalysisTest, AmbiguousIdentifier) {
-  Scanner scanner(test_prefix + "sem/ambig.c");
+  Scanner scanner("ambig.c", test_prefix + "sem/");
   Lexer lexer(scanner);
   Parser parser(lexer);
   Program progAST = parser.parse();
@@ -75,7 +75,7 @@ TEST(ASTAnalysisTest, AmbiguousIdentifier) {
 }
 
 TEST(ASTAnalysisTest, Fibonacci) {
-  Scanner scanner(test_prefix + "fibonacci.c");
+  Scanner scanner("fibonacci.c", test_prefix);
   Lexer lexer(scanner);
   Parser parser(lexer);
   Program progAST = parser.parse();
@@ -90,7 +90,7 @@ TEST(ASTAnalysisTest, Fibonacci) {
 }
 
 TEST(ASTAnalysisTest, TicTacToe) {
-  Scanner scanner(test_prefix + "tictactoe.c");
+  Scanner scanner("tictactoe.c", test_prefix);
   Lexer lexer(scanner);
   Parser parser(lexer);
   Program progAST = parser.parse();

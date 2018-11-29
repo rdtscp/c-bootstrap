@@ -10,12 +10,12 @@
 
 using namespace ACC;
 
-std::string test_prefix =
-"/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-// std::string test_prefix = "../../test/tests/";
+// std::string test_prefix =
+    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+std::string test_prefix = "../../test/tests/";
 
 TEST(LexerTest, AllTokens) {
-  Scanner scanner(test_prefix + "lexer/alltokens.c");
+  Scanner scanner("alltokens.c", test_prefix + "lexer/");
   Lexer lexer(scanner);
 
   std::vector<Token::TokenClass> expected = {Token::TokenClass::IDENTIFIER,
@@ -98,7 +98,7 @@ TEST(LexerTest, AllTokens) {
 }
 
 TEST(LexerTest, InvalidIdentifier) {
-  Scanner scanner(test_prefix + "lexer/errors.c");
+  Scanner scanner("errors.c", test_prefix + "lexer/");
   Lexer lexer(scanner);
 
   ASSERT_EQ(Token::TokenClass::INT_LITERAL, lexer.nextToken().tokenClass);
@@ -106,7 +106,7 @@ TEST(LexerTest, InvalidIdentifier) {
 }
 
 TEST(LexerTest, InvalidIncludes) {
-  Scanner scanner(test_prefix + "lexer/inclood.c");
+  Scanner scanner("inclood.c", test_prefix + "lexer/");
   Lexer lexer(scanner);
 
   try {
@@ -129,7 +129,7 @@ TEST(LexerTest, InvalidIncludes) {
 }
 
 TEST(LexerTest, InvalidIncludes2) {
-  Scanner scanner(test_prefix + "lexer/include_error.c");
+  Scanner scanner("include_error.c", test_prefix + "lexer/");
   Lexer lexer(scanner);
 
   try {
@@ -152,7 +152,7 @@ TEST(LexerTest, InvalidIncludes2) {
 }
 
 TEST(LexerTest, NestedComments) {
-  Scanner scanner(test_prefix + "lexer/nested_comments.c");
+  Scanner scanner("nested_comments.c", test_prefix + "lexer/");
   Lexer lexer(scanner);
 
   Token::TokenClass currToken = Token::TokenClass::INVALID;
@@ -164,7 +164,7 @@ TEST(LexerTest, NestedComments) {
 }
 
 TEST(LexerTest, VarDecls) {
-  Scanner scanner(test_prefix + "parser/vardecl.c");
+  Scanner scanner("vardecl.c", test_prefix + "parser/");
   Lexer lexer(scanner);
 
   Token::TokenClass currToken = Token::TokenClass::INVALID;
@@ -176,15 +176,14 @@ TEST(LexerTest, VarDecls) {
 }
 
 TEST(LexerTest, SingleLetterVar) {
-  Scanner scanner(test_prefix + "lexer/singlelettervar.c");
+  Scanner scanner("singlelettervar.c", test_prefix + "lexer/");
   Lexer lexer(scanner);
 
   std::vector<Token> expectedTokens = {
-    Token(Token::TokenClass::INT, 1, 1),
-    Token(Token::TokenClass::IDENTIFIER, 1, 4),
-    Token(Token::TokenClass::SC, 1, 5),
-    Token(Token::TokenClass::ENDOFFILE, 1, 6)
-  };
+      Token(Token::TokenClass::INT, 1, 1),
+      Token(Token::TokenClass::IDENTIFIER, 1, 4),
+      Token(Token::TokenClass::SC, 1, 5),
+      Token(Token::TokenClass::ENDOFFILE, 1, 6)};
 
   std::vector<Token> actualTokens;
   Token currToken(Token::TokenClass::INVALID, 0, 0);
@@ -194,7 +193,7 @@ TEST(LexerTest, SingleLetterVar) {
   }
 
   ASSERT_EQ(actualTokens.size(), expectedTokens.size());
-  for (int i=0; i < actualTokens.size(); i++) {
+  for (int i = 0; i < actualTokens.size(); i++) {
     ASSERT_TRUE(actualTokens[i] == expectedTokens[i]);
   }
 
@@ -202,7 +201,7 @@ TEST(LexerTest, SingleLetterVar) {
 }
 
 TEST(LexerTest, FunDecl) {
-  Scanner scanner(test_prefix + "parser/fundecl.c");
+  Scanner scanner("fundecl.c", test_prefix + "parser/");
   Lexer lexer(scanner);
 
   Token::TokenClass currToken = Token::TokenClass::INVALID;

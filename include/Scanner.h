@@ -3,6 +3,7 @@
 #ifndef SCANNER_H
 #define SCANNER_H
 
+#include <memory>
 #include <string>
 
 namespace ACC {
@@ -13,15 +14,27 @@ public:
   int column;
   int line;
 
-  Scanner(const std::string &filename);
+  Scanner(const std::string &filename,
+          const std::string &filepath = std::string(""));
 
   char next();
 
   char peek();
 
+  void startIncluding(const std::shared_ptr<Scanner> &newIncludeScanner);
+
+  std::string getFile() const;
+
+  std::string getFilename() const;
+
+  std::string getFilepath() const;
+
 private:
   std::string::const_iterator currChar;
   std::string file;
+  const std::string filename;
+  const std::string filepath;
+  std::shared_ptr<Scanner> includeScanner = nullptr;
 };
 
 }; // namespace ACC
