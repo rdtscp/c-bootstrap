@@ -16,7 +16,7 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(PreprocessorTest, IncludeWorks) {
-  Scanner scanner("prog.c", test_prefix + "preprocessor/");
+  Scanner scanner(test_prefix + "preprocessor/prog.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
   Program progAST = parser.parse();

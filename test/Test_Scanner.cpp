@@ -15,7 +15,7 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(ScannerTest, TestAPI) {
-  Scanner scanner("scanner.c", test_prefix + "scanner/");
+  Scanner scanner(test_prefix + "scanner/scanner.c");
 
   std::string output;
   ASSERT_EQ(scanner.column, 1);
@@ -59,7 +59,7 @@ TEST(ScannerTest, TestAPI) {
 }
 
 TEST(ScannerTest, FetchingPastEOF) {
-  Scanner scanner("eof.c", test_prefix + "scanner/");
+  Scanner scanner(test_prefix + "scanner/eof.c");
   ASSERT_EQ(scanner.next(), 'c');
   ASSERT_EQ(scanner.next(), 'h');
   ASSERT_EQ(scanner.next(), 'a');
@@ -75,7 +75,7 @@ TEST(ScannerTest, FetchingPastEOF) {
 }
 
 TEST(ScannerTest, PeekingPastEOF) {
-  Scanner scanner("eof.c", test_prefix + "scanner/");
+  Scanner scanner(test_prefix + "scanner/eof.c");
   ASSERT_EQ(scanner.next(), 'c');
   ASSERT_EQ(scanner.peek(), 'h');
   ASSERT_EQ(scanner.next(), 'h');

@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace ACC {
 
@@ -14,8 +15,7 @@ public:
   int column;
   int line;
 
-  Scanner(const std::string &filename,
-          const std::string &filepath = std::string(""));
+  Scanner(const std::string &abspath);
 
   char next();
 
@@ -32,8 +32,7 @@ public:
 private:
   std::string::const_iterator currChar;
   std::string file;
-  const std::string filename;
-  const std::string filepath;
+  const std::string abspath;
   std::shared_ptr<Scanner> includeScanner = nullptr;
 };
 

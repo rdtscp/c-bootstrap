@@ -4,7 +4,6 @@
 
 #include "gtest/gtest.h"
 
-
 #include "../include/Lexer.h"
 #include "../include/Parser.h"
 #include "../include/Scanner.h"
@@ -17,7 +16,7 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(ParserTest, AllTokens) {
-  Scanner scanner("alltokens.c", test_prefix + "lexer/");
+  Scanner scanner(test_prefix + "lexer/alltokens.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -37,7 +36,7 @@ TEST(ParserTest, AllTokens) {
 }
 
 TEST(ParserTest, InvalidIdentifier) {
-  Scanner scanner("errors.c", test_prefix + "lexer/");
+  Scanner scanner(test_prefix + "lexer/errors.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -57,7 +56,7 @@ TEST(ParserTest, InvalidIdentifier) {
 }
 
 TEST(ParserTest, NestedComments) {
-  Scanner scanner("nested_comments.c", test_prefix + "lexer/");
+  Scanner scanner(test_prefix + "lexer/nested_comments.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -67,7 +66,7 @@ TEST(ParserTest, NestedComments) {
 }
 
 TEST(ParserTest, StructDecl) {
-  Scanner scanner("structdecl.c", test_prefix + "parser/");
+  Scanner scanner(test_prefix + "parser/structdecl.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -92,7 +91,7 @@ TEST(ParserTest, StructDecl) {
 }
 
 TEST(ParserTest, VarDecls) {
-  Scanner scanner("vardecl.c", test_prefix + "parser/");
+  Scanner scanner(test_prefix + "parser/vardecl.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -162,7 +161,7 @@ TEST(ParserTest, VarDecls) {
 }
 
 TEST(ParserTest, FunDecl) {
-  Scanner scanner("fundecl.c", test_prefix + "parser/");
+  Scanner scanner(test_prefix + "parser/fundecl.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -190,7 +189,7 @@ TEST(ParserTest, FunDecl) {
 }
 
 TEST(ParserTest, BinOp) {
-  Scanner scanner("binop.c", test_prefix + "parser/");
+  Scanner scanner(test_prefix + "parser/binop.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -217,7 +216,7 @@ TEST(ParserTest, BinOp) {
 }
 
 TEST(ParserTest, ComplexBinOp) {
-  Scanner scanner("fundecls.c", test_prefix + "parser/");
+  Scanner scanner(test_prefix + "parser/fundecls.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
 

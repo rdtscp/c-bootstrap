@@ -4,9 +4,9 @@
 
 using namespace ACC;
 
-Scanner::Scanner(const std::string &filename, const std::string &filepath)
-    : column(1), line(1), filename(filename), filepath(filepath) {
-  std::ifstream t(filepath + filename);
+Scanner::Scanner(const std::string &abspath)
+    : column(1), line(1), abspath(abspath) {
+  std::ifstream t(abspath);
   file = std::string((std::istreambuf_iterator<char>(t)),
                      std::istreambuf_iterator<char>());
   currChar = file.begin();
@@ -52,6 +52,37 @@ void Scanner::startIncluding(
 
 std::string Scanner::getFile() const { return file; }
 
-std::string Scanner::getFilename() const { return filename; }
+std::string Scanner::getFilename() const {
+  std::vector<std::string> directories;
+  std::string currDir;
+  for (const char currChar : abspath) {
+    if (currChar == '/') {
+      directories.push_back(currDir);
+    } else {
+      currDir += currChar;
+    }
+  }
+  directories.push_back(currDir);
 
-std::string Scanner::getFilepath() const { return filepath; }
+  return directories[directories.size() - 1];
+}
+
+std::string Scanner::getFilepath() const {
+  std::vector<std::string> directories;
+  std::string currDir;
+  for (const char currChar : abspath) {
+    if (currChar == '/') {
+      directories.push_back(currDir);
+      currDir = "";
+    } else {
+      currDir += currChar;
+    }
+  }
+  directories.push_back(currDir);
+
+  std::string filepath;
+  for (int i = 0; i < directories.size() - 1; i++)
+    filepath += directories[i] + '/';
+
+  return filepath;
+}

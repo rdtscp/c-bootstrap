@@ -20,9 +20,10 @@ int main(int argc, char const *argv[]) {
       outputGraph = true;
   }
 
-  std::string filename(argv[1]);
 
-  ACC::Scanner scanner(filename);
+  std::string abspath(argv[1]);
+
+  ACC::Scanner scanner(abspath);
 
   ACC::Lexer lexer(scanner);
 

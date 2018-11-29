@@ -1,6 +1,3 @@
-#include <iostream>
-
-
 #include "../include/Preprocessor.h"
 
 using namespace ACC;
@@ -34,8 +31,7 @@ void Preprocessor::preprocessIfNDef(const std::string &definition) {
 void Preprocessor::preprocessInclude(const bool localFile,
                                      const std::string &filename) {
   if (localFile) {
-    std::cout << "Include: " << filename << std::endl;
-    std::shared_ptr<Scanner> includeScanner(new Scanner(filename, scanner.getFilepath()));
+    std::shared_ptr<Scanner> includeScanner(new Scanner(scanner.getFilepath() + filename));
     this->scanner.startIncluding(includeScanner);
   } else {
     throw std::runtime_error("Pre-Processing: Include Directive only Supports "
