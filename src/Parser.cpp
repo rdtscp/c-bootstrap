@@ -8,7 +8,7 @@
 using namespace ACC;
 using TC = Token::TokenClass;
 
-Parser::Parser(const Lexer &lexer)
+Parser::Parser(Lexer &lexer)
     : currToken(TC::INVALID, -1, -1), lexer(lexer) {}
 
 Program Parser::parse() {
