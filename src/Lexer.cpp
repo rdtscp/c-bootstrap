@@ -273,11 +273,21 @@ Token Lexer::nextToken() {
             std::to_string(scanner.line) + ", Column " +
             std::to_string(scanner.column));
       std::string definition;
+      c = scanner.next();
       while (isalpha(c) || c == '_') {
-        c = scanner.next();
         definition += c;
+        c = scanner.next();
       }
       preprocessor.preprocessDefinition(definition);
+    }
+    if (c == 'e' && scanner.peek() == 'n') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("endif");
+      if (!lexResult.first)
+        throw std::runtime_error(
+            "Pre-Processing: Unexpected Preprocessing Directive at Line " +
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column));
+      c = scanner.next();
     }
     if (c == 'i' && scanner.peek() == 'f') {
       std::pair<bool, std::string> lexResult = tryLexKeyword("ifndef");
@@ -293,9 +303,10 @@ Token Lexer::nextToken() {
             std::to_string(scanner.line) + ", Column " +
             std::to_string(scanner.column));
       std::string definition;
+      c = scanner.next();
       while (isalpha(c) || c == '_') {
-        c = scanner.next();
         definition += c;
+        c = scanner.next();
       }
       preprocessor.preprocessIfNDef(definition);
     }
@@ -340,8 +351,8 @@ Token Lexer::nextToken() {
         localFile = true;
       }
       preprocessor.preprocessInclude(localFile, filename);
-      return nextToken();
     }
+    return nextToken();
   }
 
   /* Recognise Two Symbol Tokens. */

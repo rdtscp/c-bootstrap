@@ -10,19 +10,23 @@ void Preprocessor::preprocessDefinition(const std::string &definition) {
 
 void Preprocessor::preprocessIfNDef(const std::string &definition) {
   if (definitions.find(definition) != definitions.end()) {
-    char curr, peek;
-    do {
-      curr = this->scanner.next();
-      peek = this->scanner.peek();
-    } while (curr != '#' && peek != 'e');
+    char curr;
+    while (true) {
+      curr = scanner.next();
+      if (curr == '#' && scanner.peek() == 'e')
+        break;
+      if (curr == '\0')
+        throw std::runtime_error(
+            "Pre-Processing: Expected #endif Directive but found EOF.");
+    }
     std::string expected = "endif";
     for (int i = 0; i < expected.length(); i++) {
-      curr = this->scanner.next();
+      curr = scanner.next();
       if (curr != expected[i]) {
         throw std::runtime_error(
             "Pre-Processing: Expected #endif Directive at Line " +
-            std::to_string(this->scanner.line) + ", Column " +
-            std::to_string(this->scanner.column));
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column));
       }
     }
   }
@@ -31,8 +35,9 @@ void Preprocessor::preprocessIfNDef(const std::string &definition) {
 void Preprocessor::preprocessInclude(const bool localFile,
                                      const std::string &filename) {
   if (localFile) {
-    std::shared_ptr<Scanner> includeScanner(new Scanner(scanner.getFilepath() + filename));
-    this->scanner.startIncluding(includeScanner);
+    std::shared_ptr<Scanner> includeScanner(
+        new Scanner(scanner.getFilepath() + filename));
+    scanner.startIncluding(includeScanner);
   } else {
     throw std::runtime_error("Pre-Processing: Include Directive only Supports "
                              "Local Includes Temporarily");
