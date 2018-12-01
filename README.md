@@ -7,11 +7,12 @@
 * The compiler will intially be used to build simple C programs, and then extend the grammar enough so that it is able to compile itself.
 
 ### Pre-Processor Grammar
- * #define
- * #endif
- * #ifndef
- * #include
-
+```
+ #define
+ #endif
+ #ifndef
+ #include
+```
 ### Mini-C/C++ Grammar
 Progressively changing to adopt new features of the language(s).
 ```

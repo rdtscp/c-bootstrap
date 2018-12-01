@@ -47,7 +47,10 @@ char Scanner::peek() {
 
 void Scanner::startIncluding(
     const std::shared_ptr<Scanner> &newIncludeScanner) {
-  includeScanner = newIncludeScanner;
+  if (includeScanner != nullptr)
+    includeScanner->startIncluding(newIncludeScanner);
+  else
+    includeScanner = newIncludeScanner;
 }
 
 std::string Scanner::getFile() const { return file; }

@@ -16,14 +16,27 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(PreprocessorTest, IncludeWorks) {
-  // Scanner scanner(test_prefix + "preprocessor/prog.c");
-  // Lexer lexer(scanner);
-  // Parser parser(lexer);
-  // Program progAST = parser.parse();
+  Scanner scanner(test_prefix + "preprocessor/prog.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+  Program progAST = parser.parse();
 
-  // NameAnalysis nameAnalysis(progAST, &std::cout);
-  // nameAnalysis.run();
-  // ASSERT_EQ(0, nameAnalysis.errorCount);
+  NameAnalysis nameAnalysis(progAST, &std::cout);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+}
+
+TEST(PreprocessorTest, NestedIncludes) {
+  Scanner scanner(test_prefix + "preprocessor/prog3.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+  Program progAST = parser.parse();
+
+  NameAnalysis nameAnalysis(progAST, &std::cout);
+  nameAnalysis.run();
+
+  ASSERT_EQ(progAST.decls.size(), 3);
+  ASSERT_EQ(0, nameAnalysis.errorCount);
 }
 
 TEST(PreprocessorTest, IfNDef) {
