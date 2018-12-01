@@ -1,3 +1,3 @@
-int foo() {
-  return 1;
-}
+#include "header2.h"
+
+int foo() { return 1; }

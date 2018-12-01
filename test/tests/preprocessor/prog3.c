@@ -1,5 +1,3 @@
-#include "header2.h"
+#include "header.h"
 
-int main() {
-  return foo() + bar();
-}
+int main() { return foo() + bar(); }

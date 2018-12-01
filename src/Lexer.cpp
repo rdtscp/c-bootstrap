@@ -352,6 +352,24 @@ Token Lexer::nextToken() {
       }
       preprocessor.preprocessInclude(localFile, filename);
     }
+    if (c == 'p' && scanner.peek() == 'r') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("pragma");
+      if (!lexResult.first)
+        throw std::runtime_error(
+            "Pre-Processing: Unexpected Preprocessing Directive at Line " +
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column));
+      c = scanner.next();
+      c = scanner.next();
+      lexResult = tryLexKeyword("once");
+      if (!lexResult.first)
+        throw std::runtime_error(
+            "Pre-Processing: Unexpected Preprocessing Directive at Line " +
+            std::to_string(scanner.line) + ", Column " +
+            std::to_string(scanner.column));
+      preprocessor.preprocessPragmaOnce(scanner.getFilepath() +
+                                        scanner.getFilename());
+    }
     return nextToken();
   }
 

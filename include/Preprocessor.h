@@ -22,8 +22,11 @@ public:
 
   void preprocessInclude(const bool localFile, const std::string &filename);
 
+  void preprocessPragmaOnce(const std::string &filename);
+
 private:
   std::set<std::string> definitions;
+  std::set<std::string> files;
   Scanner &scanner;
 };
 

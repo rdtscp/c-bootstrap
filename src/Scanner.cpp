@@ -53,9 +53,16 @@ void Scanner::startIncluding(
     includeScanner = newIncludeScanner;
 }
 
-std::string Scanner::getFile() const { return file; }
+std::string Scanner::getFile() const {
+  if (includeScanner)
+    return includeScanner->file;
+  return file;
+}
 
 std::string Scanner::getFilename() const {
+  if (includeScanner)
+    return includeScanner->getFilename();
+
   std::vector<std::string> directories;
   std::string currDir;
   for (const char currChar : abspath) {
@@ -71,6 +78,9 @@ std::string Scanner::getFilename() const {
 }
 
 std::string Scanner::getFilepath() const {
+  if (includeScanner)
+    return includeScanner->getFilepath();
+
   std::vector<std::string> directories;
   std::string currDir;
   for (const char currChar : abspath) {

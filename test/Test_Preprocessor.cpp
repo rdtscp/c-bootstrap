@@ -11,9 +11,9 @@
 
 using namespace ACC;
 
-// std::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-std::string test_prefix = "../../test/tests/";
+std::string test_prefix =
+"/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+// std::string test_prefix = "../../test/tests/";
 
 TEST(PreprocessorTest, IncludeWorks) {
   Scanner scanner(test_prefix + "preprocessor/prog.c");
@@ -49,6 +49,19 @@ TEST(PreprocessorTest, IfNDef) {
   nameAnalysis.run();
 
   ASSERT_EQ(progAST.decls.size(), 2);
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+}
+
+TEST(PreprocessorTest, PragmaOnce) {
+  Scanner scanner(test_prefix + "preprocessor/prog4.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+  Program progAST = parser.parse();
+
+  NameAnalysis nameAnalysis(progAST, &std::cout);
+  nameAnalysis.run();
+
+  ASSERT_EQ(progAST.decls.size(), 3);
   ASSERT_EQ(0, nameAnalysis.errorCount);
 }
 

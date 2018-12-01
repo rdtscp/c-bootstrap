@@ -42,5 +42,14 @@ void Preprocessor::preprocessInclude(const bool localFile,
     throw std::runtime_error("Pre-Processing: Include Directive only Supports "
                              "Local Includes Temporarily");
   }
-  // bar
+}
+
+void Preprocessor::preprocessPragmaOnce(const std::string &filename) {
+  if (files.find(filename) != files.end()) {
+    const std::string abspath = scanner.getFilepath() + scanner.getFilename();
+    while ((scanner.getFilepath() + scanner.getFilename()) == abspath) {
+      scanner.next();
+    }
+  } else
+    files.insert(filename);
 }
