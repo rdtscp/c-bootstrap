@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9.2)
+cmake_minimum_required(VERSION 3.6.2)
 set (CMAKE_CXX_STANDARD 17)
 
 project(cpp_base)
@@ -33,8 +33,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
 
   # Don't Install Google Test if its already installed.
   IF(NOT GTEST_INSTALLED MATCHES TRUE)
-    include(GoogleTest)
-    
+  
     find_package(Threads REQUIRED)
     
     # Enable ExternalProject CMake module
@@ -51,7 +50,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
     
     # Get GTest source and binary directories from CMake project
     ExternalProject_Get_Property(gtest source_dir binary_dir)
-    
+
     # Create a libgtest target to be used as a dependency by test programs
     add_library(libgtest IMPORTED STATIC GLOBAL)
     add_dependencies(libgtest gtest)
