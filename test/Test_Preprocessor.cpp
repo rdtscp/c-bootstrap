@@ -21,7 +21,7 @@ TEST(PreprocessorTest, IncludeWorks) {
   Parser parser(lexer);
   Program progAST = parser.parse();
 
-  NameAnalysis nameAnalysis(progAST, &std::cout);
+  NameAnalysis nameAnalysis(progAST);;
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 }
@@ -32,7 +32,7 @@ TEST(PreprocessorTest, NestedIncludes) {
   Parser parser(lexer);
   Program progAST = parser.parse();
 
-  NameAnalysis nameAnalysis(progAST, &std::cout);
+  NameAnalysis nameAnalysis(progAST);;
   nameAnalysis.run();
 
   ASSERT_EQ(progAST.decls.size(), 3);
@@ -45,7 +45,7 @@ TEST(PreprocessorTest, IfNDef) {
   Parser parser(lexer);
   Program progAST = parser.parse();
 
-  NameAnalysis nameAnalysis(progAST, &std::cout);
+  NameAnalysis nameAnalysis(progAST);;
   nameAnalysis.run();
 
   ASSERT_EQ(progAST.decls.size(), 2);
@@ -58,7 +58,7 @@ TEST(PreprocessorTest, PragmaOnce) {
   Parser parser(lexer);
   Program progAST = parser.parse();
 
-  NameAnalysis nameAnalysis(progAST, &std::cout);
+  NameAnalysis nameAnalysis(progAST);;
   nameAnalysis.run();
 
   ASSERT_EQ(progAST.decls.size(), 3);

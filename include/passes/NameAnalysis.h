@@ -19,8 +19,7 @@ public:
   int errorCount = 0;
   std::vector<std::string> errors;
 
-  NameAnalysis(Program &progAST, std::ostream *out_stream = &std::cout)
-      : progAST(progAST) {}
+  NameAnalysis(Program &progAST) : progAST(progAST) {}
 
   void error(std::string error) {
     errorCount++;
@@ -28,9 +27,9 @@ public:
   }
 
   void printErrors() {
-    std::cout << "Name Analysis Errors:" << std::endl;
+    std::cerr << "Name Analysis Errors:" << std::endl;
     for (const auto &error : errors)
-      std::cout << "\t" << error << std::endl;
+      std::cerr << "\t" << error << std::endl;
   }
 
   void run() { visit(progAST); }

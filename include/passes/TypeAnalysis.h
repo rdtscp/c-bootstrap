@@ -28,9 +28,9 @@ public:
   }
 
   void printErrors() {
-    std::cout << "Type Analysis Errors:" << std::endl;
+    std::cerr << "Type Analysis Errors:" << std::endl;
     for (const auto &error : errors)
-      std::cout << "\t" << error << std::endl;
+      std::cerr << "\t" << error << std::endl;
   }
 
   void run() { visit(progAST); }

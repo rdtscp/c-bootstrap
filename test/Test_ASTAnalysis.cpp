@@ -22,7 +22,7 @@ TEST(ASTAnalysisTest, DotGraph) {
   Program progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
-  DotGraph dotGraph(progAST, &std::cout);
+  DotGraph dotGraph(progAST);
   dotGraph.print();
 }
 
@@ -33,7 +33,7 @@ TEST(ASTAnalysisTest, NameAnalysis) {
   Program progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
-  NameAnalysis nameAnalysis(progAST, &std::cout);
+  NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 }
@@ -45,7 +45,7 @@ TEST(ASTAnalysisTest, DuplicateFunction) {
   Program progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
-  NameAnalysis nameAnalysis(progAST, &std::cout);
+  NameAnalysis nameAnalysis(progAST);;
   nameAnalysis.run();
   ASSERT_NE(0, nameAnalysis.errorCount);
 }
@@ -57,7 +57,7 @@ TEST(ASTAnalysisTest, DuplicateVariable) {
   Program progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
-  NameAnalysis nameAnalysis(progAST, &std::cout);
+  NameAnalysis nameAnalysis(progAST);;
   nameAnalysis.run();
   ASSERT_NE(0, nameAnalysis.errorCount);
 }
@@ -69,7 +69,7 @@ TEST(ASTAnalysisTest, AmbiguousIdentifier) {
   Program progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
-  NameAnalysis nameAnalysis(progAST, &std::cout);
+  NameAnalysis nameAnalysis(progAST);;
   nameAnalysis.run();
   ASSERT_NE(0, nameAnalysis.errorCount);
 }
