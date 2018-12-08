@@ -50,6 +50,13 @@ const static Register fp(30, "fp");
 const static Register ra(31, "ra");
 
 }; // namespace MIPS
+
+namespace x86 {
+
+class Register {};
+
+}; // namespace x86
+
 }; // namespace ACC
 
 #endif
