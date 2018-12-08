@@ -185,7 +185,7 @@ private:
     return std::make_shared<PointerType>(pt);
   }
   std::shared_ptr<Type> visit(Program &p) override {
-    currScope = p.getGlobalScope();
+    currScope = p.globalScope;
     for (const std::shared_ptr<Decl> &decl : p.decls)
       decl->accept(*this);
     return nullptr;

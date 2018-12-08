@@ -103,7 +103,7 @@ private:
     for (const std::shared_ptr<Decl> &decl : p.decls) {
       decl->accept(*this);
     }
-    p.setGlobalScope(currScope);
+    p.globalScope = currScope;
   }
   void visit(Return &r) override {
     if (r.returnExpr)

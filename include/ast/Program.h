@@ -15,19 +15,9 @@ class Program : public ASTNode {
 
 public:
   std::vector<std::shared_ptr<Decl>> decls;
+  std::shared_ptr<Block> globalScope = nullptr;
 
   Program(const std::vector<std::shared_ptr<Decl>> &decls) : decls(decls) {}
-
-  std::shared_ptr<Block> getGlobalScope() {
-    if (globalScope == nullptr)
-      throw std::runtime_error(
-          "Compiler Error: Attempted to get global scope before it was set.");
-    return globalScope;
-  }
-
-  void setGlobalScope(const std::shared_ptr<Block> &block) {
-    globalScope = block;
-  }
 
   void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
   std::string accept(ASTVisitor<std::string> &v) override {
@@ -37,9 +27,6 @@ public:
     return v.visit(*this);
   }
   std::string astClass() const override { return "Program"; }
-
-private:
-  std::shared_ptr<Block> globalScope = nullptr;
 };
 
 }; // namespace ACC
