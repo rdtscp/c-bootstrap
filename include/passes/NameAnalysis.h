@@ -102,6 +102,10 @@ private:
     for (const std::shared_ptr<Decl> &decl : p.decls) {
       decl->accept(*this);
     }
+    /* Check for main() function */
+    std::shared_ptr<Decl> mainDecl = currScope->find("main");
+    if (mainDecl == nullptr || mainDecl->astClass() != "FunDecl")
+      error("Program did not contain a main() Function.");
     p.globalScope = currScope;
   }
   void visit(Return &r) override {

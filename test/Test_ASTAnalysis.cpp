@@ -74,6 +74,18 @@ TEST(ASTAnalysisTest, AmbiguousIdentifier) {
   ASSERT_NE(0, nameAnalysis.errorCount);
 }
 
+TEST(ASTAnalysisTest, NoMainFunc) {
+  Scanner scanner(test_prefix + "sem/nomain.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+  Program progAST = parser.parse();
+
+  std::cout.rdbuf(NULL);
+  NameAnalysis nameAnalysis(progAST);;
+  nameAnalysis.run();
+  ASSERT_NE(0, nameAnalysis.errorCount);
+}
+
 TEST(ASTAnalysisTest, Fibonacci) {
   Scanner scanner(test_prefix + "fibonacci.c");
   Lexer lexer(scanner);
