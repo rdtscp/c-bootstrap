@@ -64,19 +64,8 @@ private:
     out << std::endl;
   }
 
-  void SW(const MIPS::Register &regCtnt, const int addr, const int offset = 0) {
-    out << "SW " << regCtnt.toString() << ", " << offset << "(" << addr << ")";
-    out << "\t# " << offset << "(" << addr << ") = " << regCtnt.toString();
-    out << std::endl;
-  }
-
-  void SW(const MIPS::Register &regCtnt, const MIPS::Register &addr,
-          const int offset = 0) {
-    out << "SW " << regCtnt.toString() << ", " << offset << "("
-        << addr.toString() << ")";
-    out << "\t# " << offset << "(" << addr.toString()
-        << ") = " << regCtnt.toString();
-    out << std::endl;
+  void JAL(const std::string &blockName) {
+    out << "JAL " << blockName << std::endl;
   }
 
   void LW(const MIPS::Register &destReg, const int addr, const int offset = 0) {
@@ -95,6 +84,20 @@ private:
     out << std::endl;
   }
 
+  void SW(const MIPS::Register &regCtnt, const int addr, const int offset = 0) {
+    out << "SW " << regCtnt.toString() << ", " << offset << "(" << addr << ")";
+    out << "\t# " << offset << "(" << addr << ") = " << regCtnt.toString();
+    out << std::endl;
+  }
+
+  void SW(const MIPS::Register &regCtnt, const MIPS::Register &addr,
+          const int offset = 0) {
+    out << "SW " << regCtnt.toString() << ", " << offset << "("
+        << addr.toString() << ")";
+    out << "\t# " << offset << "(" << addr.toString()
+        << ") = " << regCtnt.toString();
+    out << std::endl;
+  }
   /* ---- Register Management ---- */
 
   void freeAllRegs() {
@@ -204,6 +207,8 @@ private:
     std::stack<MIPS::Register> reinstateFreeRegs = freeRegs;
     writeRegsState();
     freeAllRegs();
+
+    JAL("mainFuncDecl");
 
     for (const std::shared_ptr<Decl> &decl : p.decls)
       decl->accept(*this);
