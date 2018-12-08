@@ -13,6 +13,7 @@ class VarExpr : public Expr {
 
 public:
   std::string identifier;
+  std::shared_ptr<VarDecl> variableDecl;
 
   VarExpr(std::string identifier) : identifier(identifier) {}
 
