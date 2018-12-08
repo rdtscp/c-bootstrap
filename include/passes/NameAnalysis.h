@@ -66,7 +66,6 @@ private:
   void visit(CharLiteral &cl) override {}
   void visit(FieldAccess &fa) override {
     fa.object->accept(*this);
-    // TODO Assert Struct has said Field.
   }
   void visit(FunCall &fc) override {
     if (currScope->find(fc.funName) == nullptr)
