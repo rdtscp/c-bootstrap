@@ -22,6 +22,9 @@ public:
   std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override {
     return v.visit(*this);
   }
+  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override {
+    return v.visit(*this);
+  }
   std::string astClass() const override { return "Return"; }
 };
 
