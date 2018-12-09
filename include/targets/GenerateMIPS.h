@@ -3,6 +3,7 @@
 #ifndef GENERATEMIPS_H
 #define GENERATEMIPS_H
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <memory>
