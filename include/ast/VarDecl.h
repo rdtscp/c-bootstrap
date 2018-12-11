@@ -20,8 +20,7 @@ public:
   std::shared_ptr<FunDecl> parentFunc;
 
   VarDecl(std::shared_ptr<Type> type, std::string p_identifer)
-      : identifer(p_identifer), numBytes(0), fpOffset(0), spOffset(0),
-        type(type) {
+      : identifer(p_identifer), numBytes(0), type(type) {
     numBytes = type->getBytes();
   }
 
