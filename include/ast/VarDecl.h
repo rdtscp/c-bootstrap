@@ -16,13 +16,12 @@ class VarDecl : public Decl, public Stmt {
 public:
   std::shared_ptr<Type> type;
   std::string identifer;
-  int numBytes;
   std::shared_ptr<FunDecl> parentFunc;
 
+  int fpOffset;
+
   VarDecl(std::shared_ptr<Type> type, std::string p_identifer)
-      : identifer(p_identifer), numBytes(0), type(type) {
-    numBytes = type->getBytes();
-  }
+      : identifer(p_identifer), type(type) {}
 
   bool operator==(Decl &rhs) const override {
     if (rhs.astClass() == astClass())
@@ -41,6 +40,8 @@ public:
     return true;
   }
   bool operator!=(const VarDecl &rhs) const { return !(*this == rhs); }
+
+  int getBytes() const { return type->getBytes(); }
 
   std::string getIdentifier() const override { return identifer; }
 
