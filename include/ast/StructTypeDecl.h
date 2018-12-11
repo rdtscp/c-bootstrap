@@ -62,6 +62,17 @@ public:
   std::string astClass() const override { return "StructTypeDecl"; }
 };
 
+int StructType::getBytes() const {
+  int aggregateBytes = 0;
+  if (typeDefinition == nullptr)
+    return aggregateBytes;
+
+  for (const std::shared_ptr<VarDecl> &structField : typeDefinition->varDecls)
+    aggregateBytes += structField->type->getBytes();
+
+  return aggregateBytes;
+}
+
 }; // namespace ACC
 
 #endif

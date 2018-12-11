@@ -201,6 +201,12 @@ private:
   }
   std::shared_ptr<Type> visit(StringLiteral &sl) override { return nullptr; }
   std::shared_ptr<Type> visit(StructType &st) override {
+    std::shared_ptr<Decl> findDecl = currScope->find(st.identifier);
+    if (findDecl->astClass() != "StructTypeDecl")
+      return error("Attempted to use a StructType that was not declared.");
+
+    st.typeDefinition = std::make_shared<StructTypeDecl>(
+        *static_cast<StructTypeDecl *>(findDecl.get()));
     return std::make_shared<StructType>(st);
   }
   std::shared_ptr<Type> visit(StructTypeDecl &std) override { return nullptr; }

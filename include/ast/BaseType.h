@@ -29,6 +29,17 @@ public:
   }
   bool operator!=(const BaseType &rhs) const { return !(*this == rhs); }
 
+  int getBytes() const override {
+    switch (primitiveType) {
+    case PrimitiveType::CHAR:
+      return 1;
+    case PrimitiveType::INT:
+      return 4;
+    case PrimitiveType::VOID:
+      return 4;
+    }
+  }
+
   void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
   std::string accept(ASTVisitor<std::string> &v) override {
     return v.visit(*this);

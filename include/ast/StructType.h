@@ -7,6 +7,7 @@
 #include <string>
 
 #include "Type.h"
+#include "StructTypeDecl.h"
 
 namespace ACC {
 
@@ -14,8 +15,11 @@ class StructType : public Type {
 
 public:
   std::string identifier;
+  std::shared_ptr<StructTypeDecl> typeDefinition;
 
   StructType(const std::string &identifier) : identifier(identifier) {}
+
+  int getBytes() const override; /* Defined in StructTypeDecl.h */
 
   bool operator==(Type &rhs) const override {
     if (rhs.astClass() == astClass())

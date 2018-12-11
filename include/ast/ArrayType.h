@@ -31,6 +31,11 @@ public:
   }
   bool operator!=(const ArrayType &rhs) const { return !(*this == rhs); }
 
+  int getBytes() const override {
+    int elementSize = arrayType->getBytes();
+    return std::stoi(arraySize) * elementSize;
+  }
+
   void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
   std::string accept(ASTVisitor<std::string> &v) override {
     return v.visit(*this);
