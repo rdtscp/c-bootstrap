@@ -40,7 +40,7 @@ Token Lexer::lexStringLiteral() {
     }
   }
   return Token(Token::TokenClass::STRING_LITERAL, scanner.line, scanner.column,
-               literal);
+               scanner.getFilename(), literal);
 }
 
 void Lexer::passComment() {
@@ -97,7 +97,8 @@ Token Lexer::nextToken() {
 
   // Find EOF.
   if (c == '\0')
-    return Token(Token::TokenClass::ENDOFFILE, scanner.line, scanner.column);
+    return Token(Token::TokenClass::ENDOFFILE, scanner.line, scanner.column,
+                 scanner.getFilename());
 
   // Skip through Comments.
   if (c == '/' && (scanner.peek() == '*' || scanner.peek() == '/')) {
@@ -124,7 +125,8 @@ Token Lexer::nextToken() {
           char val = c;
           scanner.next();
           return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
-                       scanner.column, std::to_string('\\' + val));
+                       scanner.column, scanner.getFilename(),
+                       std::to_string('\\' + val));
         }
       }
     }
@@ -133,7 +135,7 @@ Token Lexer::nextToken() {
       char val = c;
       scanner.next();
       return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
-                   scanner.column, std::string(1, val));
+                   scanner.column, scanner.getFilename(), std::string(1, val));
     }
   }
   // Recognise IDENTIFIERS & Keyword Tokens.
@@ -145,7 +147,8 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::CHAR, scanner.line, scanner.column);
+        return Token(Token::TokenClass::CHAR, scanner.line, scanner.column,
+                     scanner.getFilename());
     }
     // Check for CONST Token.
     if (c == 'c' && scanner.peek() == 'o') {
@@ -153,7 +156,8 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::CONST, scanner.line, scanner.column);
+        return Token(Token::TokenClass::CONST, scanner.line, scanner.column,
+                     scanner.getFilename());
     }
     // Check for ELSE Token.
     else if (c == 'e' && scanner.peek() == 'l') {
@@ -161,7 +165,8 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::ELSE, scanner.line, scanner.column);
+        return Token(Token::TokenClass::ELSE, scanner.line, scanner.column,
+                     scanner.getFilename());
     }
     // Check for IF Token.
     else if (c == 'i' && scanner.peek() == 'f') {
@@ -169,7 +174,8 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::IF, scanner.line, scanner.column);
+        return Token(Token::TokenClass::IF, scanner.line, scanner.column,
+                     scanner.getFilename());
     }
     // Check for INT token.
     else if (c == 'i' && scanner.peek() == 'n') {
@@ -177,7 +183,8 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::INT, scanner.line, scanner.column);
+        return Token(Token::TokenClass::INT, scanner.line, scanner.column,
+                     scanner.getFilename());
     }
     // Check for RETURN Token.
     else if (c == 'r' && scanner.peek() == 'e') {
@@ -185,7 +192,8 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::RETURN, scanner.line, scanner.column);
+        return Token(Token::TokenClass::RETURN, scanner.line, scanner.column,
+                     scanner.getFilename());
     }
     // Check for SIZEOF Token.
     else if (c == 's' && scanner.peek() == 'i') {
@@ -193,7 +201,8 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::SIZEOF, scanner.line, scanner.column);
+        return Token(Token::TokenClass::SIZEOF, scanner.line, scanner.column,
+                     scanner.getFilename());
     }
     // Check for STRUCT Token.
     else if (c == 's' && scanner.peek() == 't') {
@@ -201,7 +210,8 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::STRUCT, scanner.line, scanner.column);
+        return Token(Token::TokenClass::STRUCT, scanner.line, scanner.column,
+                     scanner.getFilename());
     }
     // Check for WHILE Token.
     else if (c == 'w' && scanner.peek() == 'h') {
@@ -209,7 +219,8 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::WHILE, scanner.line, scanner.column);
+        return Token(Token::TokenClass::WHILE, scanner.line, scanner.column,
+                     scanner.getFilename());
     }
     // Check for VOID Token.
     else if (c == 'v' && scanner.peek() == 'o') {
@@ -217,7 +228,8 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::VOID, scanner.line, scanner.column);
+        return Token(Token::TokenClass::VOID, scanner.line, scanner.column,
+                     scanner.getFilename());
     }
 
     // No keyword Token has been returned.
@@ -229,13 +241,13 @@ Token Lexer::nextToken() {
       // identified.
       if (std::isspace(peek)) {
         return Token(Token::TokenClass::IDENTIFIER, scanner.line,
-                     scanner.column, literal);
+                     scanner.column, scanner.getFilename(), literal);
       }
       // If the next character is an illegal characater for an IDENTIFIER, we
       // have finished finding the token.
       if (!isalpha(peek) && !isdigit(peek) && peek != '_') {
         return Token(Token::TokenClass::IDENTIFIER, scanner.line,
-                     scanner.column, literal);
+                     scanner.column, scanner.getFilename(), literal);
       }
       // We are still Lexing the token.
       c = scanner.next();
@@ -252,7 +264,7 @@ Token Lexer::nextToken() {
       c = scanner.next();
     }
     return Token(Token::TokenClass::INT_LITERAL, scanner.line, scanner.column,
-                 literal);
+                 scanner.getFilename(), literal);
   }
 
   // Recognise Pre-Processing Instructions.
@@ -376,66 +388,90 @@ Token Lexer::nextToken() {
   /* Recognise Two Symbol Tokens. */
   if (c == '=' && scanner.peek() == '=') {
     scanner.next();
-    return Token(Token::TokenClass::EQ, scanner.line, scanner.column);
+    return Token(Token::TokenClass::EQ, scanner.line, scanner.column,
+                 scanner.getFilename());
   }
   if (c == '!' && scanner.peek() == '=') {
     scanner.next();
-    return Token(Token::TokenClass::NE, scanner.line, scanner.column);
+    return Token(Token::TokenClass::NE, scanner.line, scanner.column,
+                 scanner.getFilename());
   }
   if (c == '<' && scanner.peek() == '=') {
     scanner.next();
-    return Token(Token::TokenClass::LE, scanner.line, scanner.column);
+    return Token(Token::TokenClass::LE, scanner.line, scanner.column,
+                 scanner.getFilename());
   }
   if (c == '>' && scanner.peek() == '=') {
     scanner.next();
-    return Token(Token::TokenClass::GE, scanner.line, scanner.column);
+    return Token(Token::TokenClass::GE, scanner.line, scanner.column,
+                 scanner.getFilename());
   }
   if (c == '&' && scanner.peek() == '&') {
     scanner.next();
-    return Token(Token::TokenClass::AND, scanner.line, scanner.column);
+    return Token(Token::TokenClass::AND, scanner.line, scanner.column,
+                 scanner.getFilename());
   }
   if (c == '|' && scanner.peek() == '|') {
     scanner.next();
-    return Token(Token::TokenClass::OR, scanner.line, scanner.column);
+    return Token(Token::TokenClass::OR, scanner.line, scanner.column,
+                 scanner.getFilename());
   }
 
   /* Recognise One Symbol Tokens. */
   if (c == '=')
-    return Token(Token::TokenClass::ASSIGN, scanner.line, scanner.column);
+    return Token(Token::TokenClass::ASSIGN, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '{')
-    return Token(Token::TokenClass::LBRA, scanner.line, scanner.column);
+    return Token(Token::TokenClass::LBRA, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '}')
-    return Token(Token::TokenClass::RBRA, scanner.line, scanner.column);
+    return Token(Token::TokenClass::RBRA, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '(')
-    return Token(Token::TokenClass::LPAR, scanner.line, scanner.column);
+    return Token(Token::TokenClass::LPAR, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == ')')
-    return Token(Token::TokenClass::RPAR, scanner.line, scanner.column);
+    return Token(Token::TokenClass::RPAR, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '[')
-    return Token(Token::TokenClass::LSBR, scanner.line, scanner.column);
+    return Token(Token::TokenClass::LSBR, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == ']')
-    return Token(Token::TokenClass::RSBR, scanner.line, scanner.column);
+    return Token(Token::TokenClass::RSBR, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == ';')
-    return Token(Token::TokenClass::SC, scanner.line, scanner.column);
+    return Token(Token::TokenClass::SC, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == ',')
-    return Token(Token::TokenClass::COMMA, scanner.line, scanner.column);
+    return Token(Token::TokenClass::COMMA, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '+')
-    return Token(Token::TokenClass::PLUS, scanner.line, scanner.column);
+    return Token(Token::TokenClass::PLUS, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '-')
-    return Token(Token::TokenClass::MINUS, scanner.line, scanner.column);
+    return Token(Token::TokenClass::MINUS, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '*')
-    return Token(Token::TokenClass::ASTERIX, scanner.line, scanner.column);
+    return Token(Token::TokenClass::ASTERIX, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '%')
-    return Token(Token::TokenClass::REM, scanner.line, scanner.column);
+    return Token(Token::TokenClass::REM, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '.')
-    return Token(Token::TokenClass::DOT, scanner.line, scanner.column);
+    return Token(Token::TokenClass::DOT, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '/')
-    return Token(Token::TokenClass::DIV, scanner.line, scanner.column);
+    return Token(Token::TokenClass::DIV, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '>')
-    return Token(Token::TokenClass::GT, scanner.line, scanner.column);
+    return Token(Token::TokenClass::GT, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '<')
-    return Token(Token::TokenClass::LT, scanner.line, scanner.column);
+    return Token(Token::TokenClass::LT, scanner.line, scanner.column,
+                 scanner.getFilename());
   if (c == '&')
-    return Token(Token::TokenClass::REF, scanner.line, scanner.column);
+    return Token(Token::TokenClass::REF, scanner.line, scanner.column,
+                 scanner.getFilename());
 
   // Skip Whitespace.
   if (std::isspace(c))

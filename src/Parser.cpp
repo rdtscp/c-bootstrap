@@ -9,7 +9,7 @@ using namespace ACC;
 using TC = Token::TokenClass;
 
 Parser::Parser(Lexer &lexer)
-    : currToken(TC::INVALID, -1, -1), lexer(lexer) {}
+    : currToken(TC::INVALID, -1, -1, ""), lexer(lexer) {}
 
 Program Parser::parse() {
   nextToken();
@@ -236,6 +236,8 @@ std::shared_ptr<VarDecl> Parser::parseVarDecl() {
     varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
   expect(TC::SC);
+  std::shared_ptr<VarDecl> vd(new VarDecl(varType, varIdentifier));
+  // lexer.logASTNode(vd);
   return std::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
 }
 

@@ -85,16 +85,15 @@ public:
   TokenClass tokenClass;
 
   Token()
-      : tokenClass(Token::TokenClass::INVALID), position(Position(-1, -1)),
+      : tokenClass(Token::TokenClass::INVALID), position(Position(-1, -1, "")),
         data("") {}
 
-  Token(TokenClass tokenClass, int lineNum, int colNum, std::string data = "")
-      : tokenClass(tokenClass), position(Position(lineNum, colNum)),
+  Token(TokenClass tokenClass, int lineNum, int colNum, std::string file,
+        std::string data = "")
+      : tokenClass(tokenClass), position(Position(lineNum, colNum, file)),
         data(data) {}
 
-  bool operator==(const Token& t) {
-    return tokenClass == t.tokenClass;
-  }
+  bool operator==(const Token &t) { return tokenClass == t.tokenClass; }
 };
 
 static std::string tokToStr(const Token::TokenClass &tok) {

@@ -10,7 +10,7 @@ namespace ACC {
 class Position {
 
 public:
-  Position(int line, int column) : line(line), column(column) {}
+  Position(int line, int column, std::string file) : line(line), column(column), file(file) {}
 
   std::string toString() {
     std::string output = std::to_string(line) + ":" + std::to_string(column);
@@ -20,6 +20,7 @@ public:
 private:
   int column;
   int line;
+  std::string file;
 };
 
 }; // namespace ACC
