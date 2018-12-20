@@ -12,24 +12,32 @@
 
 using namespace ACC;
 
-// std::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-std::string test_prefix = "../../test/tests/";
+std::string test_prefix =
+"/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+// std::string test_prefix = "../../test/tests/";
 
-TEST(GenerationTest, MIPS_Fibonacci) {
+TEST(CodeGenerationTest, MIPS_Fibonacci) {
   Scanner scanner(test_prefix + "fibonacci.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
   Program progAST = parser.parse();
 
+  NameAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+  
+  TypeAnalysis typeAnalysis(progAST);
+  typeAnalysis.run();
+  ASSERT_EQ(0, typeAnalysis.errorCount);
+  
   GenerateMIPS mipsGenerator(progAST, "./fibonacci_mips.asm");
   mipsGenerator.run();
 }
 
 // The fixture for testing class Project1. From google test primer.
-class Test_Generation : public ::testing::Test {
+class Test_CodeGeneration : public ::testing::Test {
 protected:
-  Test_Generation() {
+  Test_CodeGeneration() {
     // You can do set-up work for each test here.
   }
 

@@ -4,8 +4,6 @@
 #define GENERATEMIPS_H
 
 #include <algorithm>
-#include <fstream>
-#include <iostream>
 #include <memory>
 #include <set>
 #include <stack>
@@ -13,7 +11,7 @@
 
 #include "../AST.h"
 #include "../ASTVisitor.h"
-#include "Registers.h"
+#include "MIPS.h"
 
 namespace ACC {
 
@@ -24,7 +22,7 @@ public:
   std::vector<std::string> errors;
 
   GenerateMIPS(Program &progAST, std::string outputFile) : progAST(progAST) {
-    out.open(outputFile);
+    MIPS::mipsOutput.open(outputFile);
   }
 
   void error(std::string error) {
@@ -41,106 +39,102 @@ public:
   void run() {
     freeAllRegs();
     visit(progAST);
-    out.close();
+    MIPS::mipsOutput.close();
   }
 
 private:
-  int nodeCount = 0;
-  std::ofstream out;
   Program &progAST;
 
   std::shared_ptr<Block> currScope;
-  std::stack<MIPS::Register> freeRegs;
+  int currFpOffset = 0;
 
-  /* ---- MIPS Operations ---- */
-
-  void comment(const std::string &comment) {
-    out << "#" << comment << std::endl;
-  }
-
-  void ADDI(const MIPS::Register &dest, const MIPS::Register &src,
-            const int val) {
-    out << "ADDI " << dest.toString() << ", " << src.toString() << ", " << val;
-    out << "\t# " << dest.toString() << " = " << src.toString() << " + " << val;
-    out << std::endl;
-  }
-
-  void JAL(const std::string &blockName) {
-    out << "JAL " << blockName << std::endl;
-  }
-
-  void LW(const MIPS::Register &destReg, const int addr, const int offset = 0) {
-    out << "LW " << destReg.toString() << ", " << offset << "(" << addr << ")";
-    out << "\t# " << destReg.toString() << " = " << offset << "(" << addr
-        << ")";
-    out << std::endl;
-  }
-
-  void LW(const MIPS::Register &destReg, const MIPS::Register &addr,
-          const int offset = 0) {
-    out << "LW " << destReg.toString() << ", " << offset << "("
-        << addr.toString() << ")";
-    out << "\t# " << destReg.toString() << " = " << offset << "(" << addr
-        << ")";
-    out << std::endl;
-  }
-
-  void SW(const MIPS::Register &regCtnt, const int addr, const int offset = 0) {
-    out << "SW " << regCtnt.toString() << ", " << offset << "(" << addr << ")";
-    out << "\t# " << offset << "(" << addr << ") = " << regCtnt.toString();
-    out << std::endl;
-  }
-
-  void SW(const MIPS::Register &regCtnt, const MIPS::Register &addr,
-          const int offset = 0) {
-    out << "SW " << regCtnt.toString() << ", " << offset << "("
-        << addr.toString() << ")";
-    out << "\t# " << offset << "(" << addr.toString()
-        << ") = " << regCtnt.toString();
-    out << std::endl;
-  }
   /* ---- Register Management ---- */
 
+  std::stack<MIPS::Register> freeArgsRegs;
+  std::stack<MIPS::Register> freeSaveRegs;
+  std::stack<MIPS::Register> freeTempRegs;
+
   void freeAllRegs() {
-    for (auto rit = MIPS::tmpRegs.rbegin(); rit < MIPS::tmpRegs.rend(); rit++)
-      freeRegs.push(*rit);
+    freeAllArgsRegs();
+    freeAllSaveRegs();
+    freeAllTempRegs();
+  }
+
+  void freeAllArgsRegs() {
+    for (auto rit = MIPS::argsRegs.rbegin(); rit < MIPS::argsRegs.rend(); rit++)
+      freeArgsRegs.push(*rit);
+  }
+
+  void freeAllSaveRegs() {
+    for (auto rit = MIPS::saveRegs.rbegin(); rit < MIPS::saveRegs.rend(); rit++)
+      freeSaveRegs.push(*rit);
+  }
+
+  void freeAllTempRegs() {
+    for (auto rit = MIPS::tempRegs.rbegin(); rit < MIPS::tempRegs.rend(); rit++)
+      freeTempRegs.push(*rit);
   }
 
   void freeRegister(MIPS::Register reg) {
-    if (reg == MIPS::v0)
-      return;
-    freeRegs.push(reg);
+    switch (reg.name[0]) {
+    case 'a':
+      freeArgsRegs.push(reg);
+      break;
+    case 's':
+      freeSaveRegs.push(reg);
+      break;
+    case 't':
+      freeTempRegs.push(reg);
+      break;
+    default:
+      break;
+    }
   }
 
-  MIPS::Register getRegister() {
-    if (freeRegs.size() > 0) {
-      MIPS::Register reg = freeRegs.top();
-      freeRegs.pop();
+  MIPS::Register getArgsRegister() {
+    if (freeArgsRegs.size() > 0) {
+      MIPS::Register reg = freeArgsRegs.top();
+      freeArgsRegs.pop();
       return reg;
     }
-    throw std::runtime_error(
-        "MIPS Generation: Attempted to re-use an already allocated Register.ƒ");
+    throw std::runtime_error("MIPS Generation: Attempted to re-use an already "
+                             "allocated Args Register.");
   }
 
-  void writeRegsState() {
-    comment(" ~~~ Writing Reg State to Stack ~~~ ");
-    for (const MIPS::Register &reg : MIPS::tmpRegs) {
-      ADDI(MIPS::sp, MIPS::sp, -4);
-      SW(reg, MIPS::sp);
+  MIPS::Register getSaveRegister() {
+    if (freeSaveRegs.size() > 0) {
+      MIPS::Register reg = freeSaveRegs.top();
+      freeSaveRegs.pop();
+      return reg;
     }
-    comment(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ");
+    throw std::runtime_error("MIPS Generation: Attempted to re-use an already "
+                             "allocated Save Register.");
   }
 
-  void readRegsState() {
-    std::vector<MIPS::Register> tmpRegsReverse = MIPS::tmpRegs;
-    std::reverse(std::begin(tmpRegsReverse), std::end(tmpRegsReverse));
-
-    comment(" ~~~ Reading Reg State from Stack ~~~ ");
-    for (const MIPS::Register &reg : MIPS::tmpRegs) {
-      LW(reg, MIPS::sp);
-      ADDI(MIPS::sp, MIPS::sp, 4);
+  MIPS::Register getTempRegister() {
+    if (freeTempRegs.size() > 0) {
+      MIPS::Register reg = freeTempRegs.top();
+      freeTempRegs.pop();
+      return reg;
     }
-    comment(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ");
+    throw std::runtime_error("MIPS Generation: Attempted to re-use an already "
+                             "allocated Temp Register.");
+  }
+
+  /* ---- MIPS Memory ---- */
+
+  void alloc(const int bytes) {
+    MIPS::comment(" !--- Cannot Allocate on Heap yet ----! ");
+  }
+
+  void stackPush(const MIPS::Register &src) {
+    MIPS::ADDI(MIPS::sp, MIPS::sp, -4);
+    MIPS::SW(src, MIPS::sp);
+  }
+
+  void stackPop(const MIPS::Register &dest) {
+    MIPS::LW(dest, MIPS::sp);
+    MIPS::ADDI(MIPS::sp, MIPS::sp, 4);
   }
 
   /* ---- Visit AST ---- */
@@ -165,6 +159,16 @@ private:
     currScope = std::make_shared<Block>(b);
     for (const auto &stmt : b.blockStmts)
       stmt->accept(*this);
+
+    /* Clean up the stack. */
+    for (const auto &ident_decl : b.blockDecls) {
+      std::shared_ptr<Decl> currDecl = ident_decl.second;
+      if (currDecl->astClass() == "VarDecl") {
+        /* ---- Deconstruct VarDecl ---- */
+        MIPS::ADDI(MIPS::sp, MIPS::sp, 4);
+        MIPS::SW(MIPS::zero, MIPS::sp);
+      }
+    }
     currScope = b.outerBlock;
     return MIPS::Register();
   }
@@ -174,16 +178,48 @@ private:
     return MIPS::Register();
   }
   MIPS::Register visit(FunCall &fc) override {
+
     for (const auto &arg : fc.funArgs)
       arg->accept(*this);
     return MIPS::Register();
   }
   MIPS::Register visit(FunDecl &fd) override {
+    std::vector<MIPS::Register> saveRegs = MIPS::saveRegs;
     currScope = fd.funBlock;
 
-    for (const auto &param : fd.funParams)
-      param->accept(*this);
+    if (fd.getIdentifier() == "main")
+      MIPS::JAL("mainFuncDecl");
+
+    MIPS::BLOCK(fd.getIdentifier() + "FunDecl");
+
+    /* ---- Save Caller's $fp ---- */
+    stackPush(MIPS::fp);
+
+    /* ---- Save Registers [ $s0-$s7 ] && $ra ---- */
+    for (const MIPS::Register &saveReg : saveRegs)
+      stackPush(saveReg);
+    stackPush(MIPS::ra);
+
+    /* ---- Construct Arguments ---- */
+    // @TODO
+
+    /* ---- Execute Function ---- */
+
     fd.funBlock->accept(*this);
+
+    /* -------------------------- */
+
+    /* ---- Deconstruct Arguments ---- */
+    // @TODO
+
+    /* ---- Load Registers [ $s0-$s7 ] && $ra ---- */
+    stackPop(MIPS::ra);
+    std::reverse(std::begin(saveRegs), std::end(saveRegs));
+    for (const MIPS::Register &saveReg : saveRegs)
+      stackPop(saveReg);
+
+    /* ---- Load Caller's $fp ---- */
+    stackPop(MIPS::fp);
 
     currScope = fd.funBlock->outerBlock;
     return MIPS::Register();
@@ -202,20 +238,13 @@ private:
   }
   MIPS::Register visit(PointerType &pt) override { return MIPS::Register(); }
   MIPS::Register visit(Program &p) override {
-    out << "# ---- Generating MIPS for Program ---- " << std::endl;
     currScope = p.globalScope;
 
-    std::stack<MIPS::Register> reinstateFreeRegs = freeRegs;
-    writeRegsState();
     freeAllRegs();
-
-    JAL("mainFuncDecl");
 
     for (const std::shared_ptr<Decl> &decl : p.decls)
       decl->accept(*this);
 
-    readRegsState();
-    freeRegs = reinstateFreeRegs;
     return MIPS::Register();
   }
   MIPS::Register visit(Return &r) override {
@@ -234,15 +263,27 @@ private:
     va.derefExpr->accept(*this);
     return MIPS::Register();
   }
-  MIPS::Register visit(VarDecl &vd) override { return MIPS::Register(); }
-  MIPS::Register visit(VarExpr &ve) override { return MIPS::Register(); }
+  MIPS::Register visit(VarDecl &vd) override {
+    MIPS::comment("Allocating for VarDecl: " + vd.getIdentifier());
+    int bytesRequired = vd.getBytes();
+    MIPS::ADDI(MIPS::sp, MIPS::sp, -bytesRequired);
+    currFpOffset -= bytesRequired;
+    vd.fpOffset = currFpOffset;
+    return MIPS::Register();
+  }
+  MIPS::Register visit(VarExpr &ve) override {
+    /* Find this Variable's Location in the Stack, and Load It. */
+    int fpOffset = ve.variableDecl->fpOffset;
+    MIPS::Register valReg = getTempRegister();
+    MIPS::LW(valReg, MIPS::fp, fpOffset);
+    return valReg;
+  }
   MIPS::Register visit(While &w) override {
     w.condition->accept(*this);
     w.body->accept(*this);
     return MIPS::Register();
   }
-};
-
+}; // namespace ACC
 }; // namespace ACC
 
 #endif
