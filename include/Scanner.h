@@ -23,7 +23,7 @@ public:
 
   void startIncluding(const std::shared_ptr<Scanner> &newIncludeScanner);
 
-  std::string getFile() const;
+  std::string getFileContents() const;
 
   std::string getFilename() const;
 
