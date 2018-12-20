@@ -228,8 +228,10 @@ private:
     if (identDecl->astClass() != "VarDecl")
       return error("Attempted to reference " + identDecl->astClass() +
                    " as a variable.");
-    return std::make_shared<VarDecl>(*static_cast<VarDecl *>(identDecl.get()))
-        ->type;
+    std::shared_ptr<VarDecl> veDecl =
+        std::make_shared<VarDecl>(*static_cast<VarDecl *>(identDecl.get()));
+    ve.variableDecl = veDecl;
+    return veDecl->type;
   }
   std::shared_ptr<Type> visit(While &w) override {
     std::shared_ptr<Type> conditionType = w.condition->accept(*this);
