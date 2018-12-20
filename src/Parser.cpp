@@ -196,7 +196,9 @@ Program Parser::parseProgram() {
     decls.push_back(parseDecl());
 
   expect(TC::ENDOFFILE);
-  return Program(decls);
+  Program p(decls);
+  p.position = currToken.position;
+  return p;
 }
 
 std::shared_ptr<Decl> Parser::parseDecl() {
@@ -223,7 +225,11 @@ std::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
 
   expect(TC::RBRA);
   expect(TC::SC);
-  return std::make_shared<StructTypeDecl>(StructTypeDecl(structType, fields));
+
+  std::shared_ptr<StructTypeDecl> newNode =
+      std::make_shared<StructTypeDecl>(StructTypeDecl(structType, fields));
+  newNode->Decl::position = currToken.position;
+  return newNode;
 }
 
 std::shared_ptr<VarDecl> Parser::parseVarDecl() {
@@ -237,8 +243,10 @@ std::shared_ptr<VarDecl> Parser::parseVarDecl() {
   }
   expect(TC::SC);
   std::shared_ptr<VarDecl> vd(new VarDecl(varType, varIdentifier));
-  // lexer.logASTNode(vd);
-  return std::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
+  std::shared_ptr<VarDecl> newNode =
+      std::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
+  newNode->Decl::position = currToken.position;
+  return newNode;
 }
 
 std::shared_ptr<FunDecl> Parser::parseFunDecl() {
@@ -258,8 +266,10 @@ std::shared_ptr<FunDecl> Parser::parseFunDecl() {
 
   std::shared_ptr<Block> funBlock = parseBlock();
 
-  return std::make_shared<FunDecl>(
+  std::shared_ptr<FunDecl> newNode = std::make_shared<FunDecl>(
       FunDecl(funBlock, funIdent, funParams, funType));
+  newNode->Decl::position = currToken.position;
+  return newNode;
 }
 
 std::shared_ptr<VarDecl> Parser::parseParam() {
@@ -271,7 +281,10 @@ std::shared_ptr<VarDecl> Parser::parseParam() {
     expect(TC::RSBR);
     varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
-  return std::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
+  std::shared_ptr<VarDecl> newNode =
+      std::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
+  newNode->Decl::position = currToken.position;
+  return newNode;
 }
 
 std::shared_ptr<Type> Parser::parseType() {
@@ -305,13 +318,17 @@ std::shared_ptr<Type> Parser::parseType() {
       type = std::shared_ptr<PointerType>(new PointerType(type));
     }
   }
+  type->position = currToken.position;
   return type;
 }
 
 std::shared_ptr<StructType> Parser::parseStructType() {
   expect(TC::STRUCT);
   std::string structIdentifier = expect(TC::IDENTIFIER).data;
-  return std::make_shared<StructType>(StructType(structIdentifier));
+  std::shared_ptr<StructType> newNode =
+      std::make_shared<StructType>(StructType(structIdentifier));
+  newNode->position = currToken.position;
+  return newNode;
 }
 
 std::shared_ptr<Block> Parser::parseBlock() {
@@ -324,7 +341,9 @@ std::shared_ptr<Block> Parser::parseBlock() {
   }
 
   expect(TC::RBRA);
-  return std::make_shared<Block>(Block(blockStmts));
+  std::shared_ptr<Block> newNode = std::make_shared<Block>(Block(blockStmts));
+  newNode->position = currToken.position;
+  return newNode;
 }
 
 std::shared_ptr<Stmt> Parser::parseStmt() {
@@ -349,10 +368,14 @@ std::shared_ptr<Stmt> Parser::parseStmt() {
     expect(TC::ASSIGN);
     std::shared_ptr<Expr> rhs = parseExpr();
     expect(TC::SC);
-    return std::make_shared<Assign>(Assign(expr, rhs));
+    std::shared_ptr<Assign> newNode =
+        std::make_shared<Assign>(Assign(expr, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
 
   expect(TC::SC);
+  expr->position = currToken.position;
   return expr;
 }
 
@@ -363,7 +386,10 @@ std::shared_ptr<While> Parser::parseWhile() {
   expect(TC::RPAR);
   std::shared_ptr<Stmt> whileBody = parseStmt();
 
-  return std::make_shared<While>(While(whileBody, whileCondition));
+  std::shared_ptr<While> newNode =
+      std::make_shared<While>(While(whileBody, whileCondition));
+  newNode->position = currToken.position;
+  return newNode;
 }
 
 std::shared_ptr<If> Parser::parseIf() {
@@ -375,9 +401,14 @@ std::shared_ptr<If> Parser::parseIf() {
   if (accept(TC::ELSE)) {
     expect(TC::ELSE);
     std::shared_ptr<Stmt> elseBody = parseStmt();
-    return std::make_shared<If>(If(ifCondition, ifBody, elseBody));
+    std::shared_ptr<If> newNode =
+        std::make_shared<If>(If(ifCondition, ifBody, elseBody));
+    newNode->position = currToken.position;
+    return newNode;
   } else {
-    return std::make_shared<If>(If(ifCondition, ifBody));
+    std::shared_ptr<If> newNode = std::make_shared<If>(If(ifCondition, ifBody));
+    newNode->position = currToken.position;
+    return newNode;
   }
 }
 
@@ -386,10 +417,15 @@ std::shared_ptr<Return> Parser::parseReturn() {
   if (acceptExpr()) {
     std::shared_ptr<Expr> returnExpr = parseExpr();
     expect(TC::SC);
-    return std::make_shared<Return>(Return(returnExpr));
+    std::shared_ptr<Return> newNode =
+        std::make_shared<Return>(Return(returnExpr));
+    newNode->position = currToken.position;
+    return newNode;
   } else {
     expect(TC::SC);
-    return std::make_shared<Return>(Return());
+    std::shared_ptr<Return> newNode = std::make_shared<Return>(Return());
+    newNode->position = currToken.position;
+    return newNode;
   }
 }
 
@@ -397,7 +433,9 @@ std::shared_ptr<Assign> Parser::parseAssign() {
   std::shared_ptr<Expr> lhs = parseExpr();
   expect(TC::ASSIGN);
   std::shared_ptr<Expr> rhs = parseExpr();
-  return std::make_shared<Assign>(Assign(lhs, rhs));
+  std::shared_ptr<Assign> newNode = std::make_shared<Assign>(Assign(lhs, rhs));
+  newNode->position = currToken.position;
+  return newNode;
 }
 
 std::shared_ptr<Expr> Parser::parseExpr() {
@@ -408,7 +446,10 @@ std::shared_ptr<Expr> Parser::parseExpr() {
     expect(TC::LPAR);
     std::shared_ptr<Expr> innerExpr = parseExpr();
     expect(TC::RPAR);
-    return std::make_shared<ParenthExpr>(ParenthExpr(innerExpr));
+    std::shared_ptr<ParenthExpr> newNode =
+        std::make_shared<ParenthExpr>(ParenthExpr(innerExpr));
+    newNode->position = currToken.position;
+    return newNode;
   }
 
   return parseBoolExpr();
@@ -419,12 +460,18 @@ std::shared_ptr<Expr> Parser::parseBoolExpr() {
   if (accept(TC::OR)) {
     expect(TC::OR);
     std::shared_ptr<Expr> rhs = parseEqualExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::OR, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::OR, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   if (accept(TC::AND)) {
     expect(TC::AND);
     std::shared_ptr<Expr> rhs = parseEqualExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::AND, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::AND, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   return lhs;
 }
@@ -434,12 +481,18 @@ std::shared_ptr<Expr> Parser::parseEqualExpr() {
   if (accept(TC::NE)) {
     expect(TC::NE);
     std::shared_ptr<Expr> rhs = parseCompExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::NE, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::NE, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   if (accept(TC::EQ)) {
     expect(TC::EQ);
     std::shared_ptr<Expr> rhs = parseCompExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::EQ, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::EQ, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   return lhs;
 }
@@ -449,22 +502,34 @@ std::shared_ptr<Expr> Parser::parseCompExpr() {
   if (accept(TC::LT)) {
     expect(TC::LT);
     std::shared_ptr<Expr> rhs = parseAddExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::LT, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::LT, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   if (accept(TC::GT)) {
     expect(TC::GT);
     std::shared_ptr<Expr> rhs = parseAddExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::GT, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::GT, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   if (accept(TC::LE)) {
     expect(TC::LE);
     std::shared_ptr<Expr> rhs = parseAddExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::LE, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::LE, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   if (accept(TC::GE)) {
     expect(TC::GE);
     std::shared_ptr<Expr> rhs = parseAddExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::GE, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::GE, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   return lhs;
 }
@@ -474,12 +539,14 @@ std::shared_ptr<Expr> Parser::parseAddExpr() {
   if (accept(TC::PLUS)) {
     expect(TC::PLUS);
     std::shared_ptr<Expr> rhs = parseMulExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::ADD, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::ADD, rhs));
   }
   if (accept(TC::MINUS)) {
     expect(TC::MINUS);
     std::shared_ptr<Expr> rhs = parseMulExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs));
   }
   return lhs;
 }
@@ -489,17 +556,26 @@ std::shared_ptr<Expr> Parser::parseMulExpr() {
   if (accept(TC::ASTERIX)) {
     expect(TC::ASTERIX);
     std::shared_ptr<Expr> rhs = parseUnaryExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::MUL, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::MUL, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   if (accept(TC::DIV)) {
     expect(TC::DIV);
     std::shared_ptr<Expr> rhs = parseUnaryExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::DIV, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::DIV, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   if (accept(TC::REM)) {
     expect(TC::REM);
     std::shared_ptr<Expr> rhs = parseUnaryExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::MOD, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::MOD, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   return lhs;
 }
@@ -510,12 +586,16 @@ std::shared_ptr<Expr> Parser::parseUnaryExpr() {
     expect(TC::LPAR);
     std::shared_ptr<Type> type = parseType();
     expect(TC::RPAR);
-    return std::make_shared<SizeOf>(SizeOf(type));
+    std::shared_ptr<SizeOf> newNode = std::make_shared<SizeOf>(SizeOf(type));
+    newNode->position = currToken.position;
+    return newNode;
   }
   if (accept(TC::ASTERIX)) {
     expect(TC::ASTERIX);
     std::shared_ptr<Expr> rhs = parseObjExpr();
-    return std::make_shared<ValueAt>(ValueAt(rhs));
+    std::shared_ptr<ValueAt> newNode = std::make_shared<ValueAt>(ValueAt(rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   if (accept(TC::LPAR) && (lookAhead(1).tokenClass == TC::INT ||
                            lookAhead(1).tokenClass == TC::CHAR ||
@@ -525,13 +605,19 @@ std::shared_ptr<Expr> Parser::parseUnaryExpr() {
     std::shared_ptr<Type> castType = parseType();
     expect(TC::RPAR);
     std::shared_ptr<Expr> expToCast = parseObjExpr();
-    return std::make_shared<TypeCast>(TypeCast(castType, expToCast));
+    std::shared_ptr<TypeCast> newNode =
+        std::make_shared<TypeCast>(TypeCast(castType, expToCast));
+    newNode->position = currToken.position;
+    return newNode;
   }
   if (accept(TC::MINUS)) {
     expect(TC::MINUS);
     std::shared_ptr<IntLiteral> lhs(new IntLiteral("0"));
     std::shared_ptr<Expr> rhs = parseObjExpr();
-    return std::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs));
+    std::shared_ptr<BinOp> newNode =
+        std::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
 
   return parseObjExpr();
@@ -552,38 +638,59 @@ std::shared_ptr<Expr> Parser::parseObjExpr() {
       }
 
       expect(TC::RPAR);
-      return std::make_shared<FunCall>(FunCall(ident, params));
+      std::shared_ptr<FunCall> newNode =
+          std::make_shared<FunCall>(FunCall(ident, params));
+      newNode->position = currToken.position;
+      return newNode;
     }
-    return std::make_shared<VarExpr>(VarExpr(ident));
+    std::shared_ptr<VarExpr> newNode =
+        std::make_shared<VarExpr>(VarExpr(ident));
+    newNode->position = currToken.position;
+    return newNode;
   }
 
   std::shared_ptr<Expr> lhs = parseLitExpr();
   if (accept(TC::DOT)) {
     expect(TC::DOT);
     std::string fieldIdent = expect(TC::IDENTIFIER).data;
-    return std::make_shared<FieldAccess>(FieldAccess(lhs, fieldIdent));
+    std::shared_ptr<FieldAccess> newNode =
+        std::make_shared<FieldAccess>(FieldAccess(lhs, fieldIdent));
+    newNode->position = currToken.position;
+    return newNode;
   }
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
     std::shared_ptr<Expr> index = parseLitExpr();
     expect(TC::RSBR);
-    return std::make_shared<ArrayAccess>(ArrayAccess(lhs, index));
+    std::shared_ptr<ArrayAccess> newNode =
+        std::make_shared<ArrayAccess>(ArrayAccess(lhs, index));
+    newNode->position = currToken.position;
+    return newNode;
   }
 
   return lhs;
 }
 
 std::shared_ptr<Expr> Parser::parseLitExpr() {
-  if (accept(TC::INT_LITERAL))
-    return std::make_shared<IntLiteral>(
-        IntLiteral(expect(TC::INT_LITERAL).data));
-  if (accept(TC::CHAR_LITERAL))
-    return std::make_shared<CharLiteral>(
+  if (accept(TC::INT_LITERAL)) {
+    std::shared_ptr<IntLiteral> newNode =
+        std::make_shared<IntLiteral>(IntLiteral(expect(TC::INT_LITERAL).data));
+    newNode->position = currToken.position;
+    return newNode;
+  }
+  if (accept(TC::CHAR_LITERAL)) {
+    std::shared_ptr<CharLiteral> newNode = std::make_shared<CharLiteral>(
         CharLiteral(expect(TC::CHAR_LITERAL).data));
-  if (accept(TC::STRING_LITERAL))
-    return std::make_shared<StringLiteral>(
-        StringLiteral(expect(TC::STRING_LITERAL).data));
 
+    newNode->position = currToken.position;
+    return newNode;
+  }
+  if (accept(TC::STRING_LITERAL)) {
+    std::shared_ptr<StringLiteral> newNode = std::make_shared<StringLiteral>(
+        StringLiteral(expect(TC::STRING_LITERAL).data));
+    newNode->position = currToken.position;
+    return newNode;
+  }
   if (acceptExpr())
     return parseExpr();
 

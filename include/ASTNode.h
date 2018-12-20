@@ -6,7 +6,8 @@
 #include <string>
 
 #include "ASTVisitor.h"
-#include "targets/Registers.h"
+#include "Position.h"
+#include "targets/MIPS.h"
 
 namespace ACC {
 
@@ -14,9 +15,7 @@ class Type;
 
 class ASTNode {
 public:
-  std::string file;
-  std::string line;
-  std::string column;
+  Position position;
 
   virtual void accept(ASTVisitor<void> &v) = 0;
   virtual std::string accept(ASTVisitor<std::string> &v) = 0;
