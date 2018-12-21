@@ -15,9 +15,22 @@ class Program : public ASTNode {
 
 public:
   std::vector<std::shared_ptr<Decl>> decls;
+  std::vector<std::shared_ptr<FunDecl>> funDecls;
+  std::vector<std::shared_ptr<VarDecl>> globalVars;
   std::shared_ptr<Block> globalScope = nullptr;
 
-  Program(const std::vector<std::shared_ptr<Decl>> &decls) : decls(decls) {}
+  Program(const std::vector<std::shared_ptr<Decl>> &decls) : decls(decls) {
+    for (const std::shared_ptr<Decl> decl : decls) {
+      if (decl->astClass() == "FunDecl") {
+        funDecls.push_back(
+            std::make_shared<FunDecl>(*static_cast<FunDecl *>(decl.get())));
+      }
+      if (decl->astClass() == "VarDecl") {
+        globalVars.push_back(
+            std::make_shared<VarDecl>(*static_cast<VarDecl *>(decl.get())));
+      }
+    }
+  }
 
   void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
   std::string accept(ASTVisitor<std::string> &v) override {
@@ -31,7 +44,6 @@ public:
   }
   std::string astClass() const override { return "Program"; }
 };
-
 }; // namespace ACC
 
 #endif
