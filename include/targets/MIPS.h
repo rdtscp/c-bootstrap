@@ -62,6 +62,13 @@ const static Register ra(31, "ra");
 static void comment(const std::string &comment) {
   mipsOutput << "#" << comment << std::endl;
 }
+
+static void alloc(const std::string &varName, const int size) {
+  mipsOutput << varName <<  ": .space " << size << std::endl;
+}
+
+static void write(const std::string &str) { mipsOutput << str << std::endl; }
+
 static void ADDI(const MIPS::Register &dest, const MIPS::Register &src,
                  const int val) {
   mipsOutput << "ADDI " << dest.toString() << ", " << src.toString() << ", "
