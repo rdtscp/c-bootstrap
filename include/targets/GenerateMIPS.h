@@ -181,14 +181,12 @@ private:
 
     for (const auto &arg : fc.funArgs)
       arg->accept(*this);
+    MIPS::JAL(fc.funName  + "FunDecl");
     return MIPS::Register();
   }
   MIPS::Register visit(FunDecl &fd) override {
     std::vector<MIPS::Register> saveRegs = MIPS::saveRegs;
     currScope = fd.funBlock;
-
-    if (fd.getIdentifier() == "main")
-      MIPS::JAL("mainFuncDecl");
 
     MIPS::BLOCK(fd.getIdentifier() + "FunDecl");
 
@@ -242,8 +240,14 @@ private:
 
     freeAllRegs();
 
-    for (const std::shared_ptr<Decl> &decl : p.decls)
-      decl->accept(*this);
+    MIPS::write(".data");
+    for (std::shared_ptr<VarDecl> globalVar : p.globalVars)
+      MIPS::alloc(globalVar->getIdentifier(), globalVar->getBytes());
+
+    MIPS::write(".text");
+    MIPS::JAL("mainFunDecl");
+    for (std::shared_ptr<FunDecl> func : p.funDecls)
+      func->accept(*this);
 
     return MIPS::Register();
   }
