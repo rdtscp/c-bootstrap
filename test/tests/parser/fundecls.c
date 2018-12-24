@@ -14,5 +14,5 @@ int bar() {
 
 int main(int argc, char *argv) {
   myGlobalInt = bar();
-  return 1;
+  return myGlobalInt;
 }
