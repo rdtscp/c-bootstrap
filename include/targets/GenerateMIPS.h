@@ -31,7 +31,7 @@ public:
   }
 
   void printErrors() const {
-    std::cerr << "Name Analysis Errors:" << std::endl;
+    std::cerr << "FATAL MIPS Generation Errors:" << std::endl;
     for (const auto &error : errors)
       std::cerr << "\t" << error << std::endl;
   }
@@ -218,6 +218,9 @@ private:
 
     /* ---- Load Caller's $fp ---- */
     stackPop(MIPS::fp);
+
+    /* ---- Return to $ra ---- */
+    MIPS::write("JR $ra");
 
     currScope = fd.funBlock->outerBlock;
     return MIPS::Register();
