@@ -13,6 +13,9 @@ namespace ACC {
 
 namespace X86 {
 
+/* ---- X86 Config ---- */
+static bool macOS = true;
+
 /* ---- X86 Output ---- */
 static std::ofstream x86Output;
 
@@ -50,6 +53,30 @@ static void write(std::string str) { x86Output << str << std::endl; }
 
 static void comment(const std::string &comment) {
   x86Output << ";" << comment << std::endl;
+}
+
+static void block(std::string blockName) {
+  if (macOS)
+    blockName = "_" + blockName;
+  x86Output << "\n" << blockName << ":" << std::endl;
+}
+
+static void push(const Register &reg) {
+  x86Output << "push " << reg << std::endl;
+}
+
+static void pop(const Register &reg) {
+  x86Output << "pop " << reg << std::endl;
+}
+
+static void call(std::string ident) {
+  
+}
+
+static void ret() { x86Output << "ret" << std::endl; }
+
+static void mov(const Register &dst, const Register &src) {
+  x86Output << "mov " << dst << ", " << src << std::endl;
 }
 
 }; // namespace X86
