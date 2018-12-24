@@ -36,15 +36,17 @@ std::ostream &operator<<(std::ostream &stream, const Register &reg) {
 }
 
 static Register eax(32, "eax");
-static Register eax(32, "ebx");
-static Register eax(32, "ecx");
-static Register eax(32, "edx");
-static Register eax(32, "esi");
-static Register eax(32, "edi");
-static Register eax(32, "esp");
-static Register eax(32, "ebp");
+static Register ebx(32, "ebx");
+static Register ecx(32, "ecx");
+static Register edx(32, "edx");
+static Register esi(32, "esi");
+static Register edi(32, "edi");
+static Register esp(32, "esp");
+static Register ebp(32, "ebp");
 
 /* ---- X86 Operations ---- */
+
+static void write(std::string str) { x86Output << str << std::endl; }
 
 static void comment(const std::string &comment) {
   x86Output << ";" << comment << std::endl;
