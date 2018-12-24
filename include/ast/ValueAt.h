@@ -26,6 +26,9 @@ public:
   MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override {
     return v.visit(*this);
   }
+  X86::Register accept(ASTVisitor<X86::Register> &v) override {
+    return v.visit(*this);
+  }
   std::string astClass() const override { return "ValueAt"; }
 };
 
