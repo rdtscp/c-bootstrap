@@ -19,7 +19,7 @@ public:
   int errorCount = 0;
   std::vector<std::string> errors;
 
-  TypeAnalysis(Program &progAST);
+  TypeAnalysis(std::shared_ptr<Program> progAST);
 
   std::shared_ptr<Type> error(std::string error);
 
@@ -30,7 +30,7 @@ public:
 private:
   int nodeCount = 0;
   std::ostream *output;
-  Program &progAST;
+  std::shared_ptr<Program> progAST;
 
   std::shared_ptr<Block> currScope;
 

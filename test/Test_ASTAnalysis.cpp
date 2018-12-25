@@ -21,7 +21,7 @@ TEST(ASTAnalysisTest, DotGraph) {
   Scanner scanner(test_prefix + "parser/fundecls.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
   DotGraph dotGraph(progAST);
@@ -32,7 +32,7 @@ TEST(ASTAnalysisTest, NameAnalysis) {
   Scanner scanner(test_prefix + "parser/fundecls.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
   NameAnalysis nameAnalysis(progAST);
@@ -44,7 +44,7 @@ TEST(ASTAnalysisTest, DuplicateFunction) {
   Scanner scanner(test_prefix + "sem/dupefun.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
   NameAnalysis nameAnalysis(progAST);;
@@ -56,7 +56,7 @@ TEST(ASTAnalysisTest, DuplicateVariable) {
   Scanner scanner(test_prefix + "sem/dupevar.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
   NameAnalysis nameAnalysis(progAST);;
@@ -68,7 +68,7 @@ TEST(ASTAnalysisTest, AmbiguousIdentifier) {
   Scanner scanner(test_prefix + "sem/ambig.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
   NameAnalysis nameAnalysis(progAST);;
@@ -80,7 +80,7 @@ TEST(ASTAnalysisTest, NoMainFunc) {
   Scanner scanner(test_prefix + "sem/nomain.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
   NameAnalysis nameAnalysis(progAST);;
@@ -92,7 +92,7 @@ TEST(ASTAnalysisTest, Fibonacci) {
   Scanner scanner(test_prefix + "fibonacci.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
   NameAnalysis nameAnalysis(progAST);
@@ -107,7 +107,7 @@ TEST(ASTAnalysisTest, TicTacToe) {
   Scanner scanner(test_prefix + "tictactoe.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   std::cout.rdbuf(NULL);
   NameAnalysis nameAnalysis(progAST);

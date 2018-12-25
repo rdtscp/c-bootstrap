@@ -37,7 +37,7 @@ int main(int argc, char const *argv[]) {
 
   ACC::Parser parser(lexer);
 
-  ACC::Program progAST = parser.parse();
+  std::shared_ptr<ACC::Program> progAST = parser.parse();
 
   if (outputGraph) {
     ACC::DotGraph dotGraph(progAST);

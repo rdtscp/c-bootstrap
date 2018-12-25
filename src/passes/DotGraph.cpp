@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-DotGraph::DotGraph(Program &progAST) : progAST(progAST) {}
-void DotGraph::print() { visit(progAST); }
+DotGraph::DotGraph(std::shared_ptr<Program> progAST) : progAST(progAST) {}
+void DotGraph::print() { visit(*progAST); }
 
 void DotGraph::declare(const std::string &nodeID, const std::string &label) {
   put(nodeID + " [label=\"" + label + "\"];");

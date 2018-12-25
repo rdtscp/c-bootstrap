@@ -21,7 +21,7 @@ public:
   int errorCount = 0;
   std::vector<std::string> errors;
 
-  GenerateX86(Program &progAST, std::string outputFile) : progAST(progAST) {
+  GenerateX86(std::shared_ptr<Program> progAST, std::string outputFile) : progAST(progAST) {
     X86::x86Output.open(outputFile);
   }
 
@@ -37,12 +37,12 @@ public:
   }
 
   void run() {
-    visit(progAST);
+    visit(*progAST);
     X86::x86Output.close();
   }
 
 private:
-  Program &progAST;
+  std::shared_ptr<Program> progAST;
 
   std::shared_ptr<Block> currScope;
   int blockCount = 0;

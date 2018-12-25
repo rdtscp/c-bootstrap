@@ -13,12 +13,12 @@ namespace ACC {
 class DotGraph : public ASTVisitor<std::string> {
 
 public:
-  DotGraph(Program &progAST);
+  DotGraph(std::shared_ptr<Program> progAST);
   void print();
 
 private:
   int nodeCount = 0;
-  Program &progAST;
+  std::shared_ptr<Program> progAST;
 
   void declare(const std::string &nodeID, const std::string &label);
 

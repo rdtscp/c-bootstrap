@@ -19,7 +19,7 @@ public:
   Parser(Lexer &lexer);
 
   /* Parses the Tokens into an AST with root node Program. */
-  Program parse();
+  std::shared_ptr<Program> parse();
 
 private:
   Token currToken;
@@ -69,7 +69,7 @@ private:
 
   /* ---- Parsing ---- */
 
-  Program parseProgram();
+  std::shared_ptr<Program> parseProgram();
 
   std::shared_ptr<Decl> parseDecl();
 

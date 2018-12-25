@@ -24,7 +24,7 @@ TEST(CodeGenerationTest, MIPS_Fibonacci) {
   Scanner scanner(test_prefix + "fibonacci.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
@@ -42,7 +42,7 @@ TEST(CodeGenerationTest, X86_fundeclsc) {
   Scanner scanner(test_prefix + "parser/fundecls.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();

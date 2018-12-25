@@ -11,7 +11,7 @@ using TC = Token::TokenClass;
 Parser::Parser(Lexer &lexer)
     : currToken(TC::INVALID, -1, -1, ""), lexer(lexer) {}
 
-Program Parser::parse() {
+std::shared_ptr<Program> Parser::parse() {
   nextToken();
   return parseProgram();
 }
@@ -190,14 +190,14 @@ bool Parser::acceptExpr() {
 
 /* ---- Parsing ---- */
 
-Program Parser::parseProgram() {
+std::shared_ptr<Program> Parser::parseProgram() {
   std::vector<std::shared_ptr<Decl>> decls;
   while (acceptDecl())
     decls.push_back(parseDecl());
 
   expect(TC::ENDOFFILE);
-  Program p(decls);
-  p.position = currToken.position;
+  std::shared_ptr<Program> p = std::make_shared<Program>(Program(decls));
+  p->position = currToken.position;
   return p;
 }
 

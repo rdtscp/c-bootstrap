@@ -21,7 +21,7 @@ public:
   int errorCount = 0;
   std::vector<std::string> errors;
 
-  GenerateMIPS(Program &progAST, std::string outputFile);
+  GenerateMIPS(std::shared_ptr<Program> progAST, std::string outputFile);
 
   void error(std::string error);
 
@@ -30,7 +30,7 @@ public:
   void run();
 
 private:
-  Program &progAST;
+  std::shared_ptr<Program> progAST;
 
   std::shared_ptr<Block> currScope;
   int currFpOffset = 0;

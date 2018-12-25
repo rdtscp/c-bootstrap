@@ -1,7 +1,8 @@
 #include "../../include/passes/TypeAnalysis.h"
 
 using namespace ACC;
-TypeAnalysis::TypeAnalysis(Program &progAST) : progAST(progAST) {}
+TypeAnalysis::TypeAnalysis(std::shared_ptr<Program> progAST)
+    : progAST(progAST) {}
 
 std::shared_ptr<Type> TypeAnalysis::error(std::string error) {
   errorCount++;
@@ -15,7 +16,7 @@ void TypeAnalysis::printErrors() {
     std::cerr << "\t" << error << std::endl;
 }
 
-void TypeAnalysis::run() { visit(progAST); }
+void TypeAnalysis::run() { visit(*progAST); }
 
 /* ---- Visit AST ---- */
 
@@ -174,9 +175,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(Return &r) {
 std::shared_ptr<Type> TypeAnalysis::visit(SizeOf &so) {
   return std::make_shared<BaseType>(BaseType(PrimitiveType::INT));
 }
-std::shared_ptr<Type> TypeAnalysis::visit(StringLiteral &sl) {
-  return nullptr;
-}
+std::shared_ptr<Type> TypeAnalysis::visit(StringLiteral &sl) { return nullptr; }
 std::shared_ptr<Type> TypeAnalysis::visit(StructType &st) {
   std::shared_ptr<Decl> findDecl = currScope->find(st.identifier);
   if (findDecl->astClass() != "StructTypeDecl")
@@ -189,9 +188,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(StructType &st) {
 std::shared_ptr<Type> TypeAnalysis::visit(StructTypeDecl &std) {
   return nullptr;
 }
-std::shared_ptr<Type> TypeAnalysis::visit(TypeCast &tc) {
-  return tc.type;
-}
+std::shared_ptr<Type> TypeAnalysis::visit(TypeCast &tc) { return tc.type; }
 std::shared_ptr<Type> TypeAnalysis::visit(ValueAt &va) {
   std::shared_ptr<Type> exprType = va.derefExpr->accept(*this);
   if (exprType->astClass() != "PointerType")
@@ -202,9 +199,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(ValueAt &va) {
              *static_cast<PointerType *>(exprType.get()))
       ->pointedType;
 }
-std::shared_ptr<Type> TypeAnalysis::visit(VarDecl &vd) {
-  return nullptr;
-}
+std::shared_ptr<Type> TypeAnalysis::visit(VarDecl &vd) { return nullptr; }
 std::shared_ptr<Type> TypeAnalysis::visit(VarExpr &ve) {
   std::shared_ptr<Decl> identDecl = currScope->find(ve.identifier);
 

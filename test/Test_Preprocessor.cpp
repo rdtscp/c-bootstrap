@@ -21,7 +21,7 @@ TEST(PreprocessorTest, IncludeWorks) {
   Scanner scanner(test_prefix + "preprocessor/prog.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   NameAnalysis nameAnalysis(progAST);;
   nameAnalysis.run();
@@ -32,12 +32,12 @@ TEST(PreprocessorTest, NestedIncludes) {
   Scanner scanner(test_prefix + "preprocessor/prog3.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   NameAnalysis nameAnalysis(progAST);;
   nameAnalysis.run();
 
-  ASSERT_EQ(progAST.decls.size(), 3);
+  ASSERT_EQ(progAST->decls.size(), 3);
   ASSERT_EQ(0, nameAnalysis.errorCount);
 }
 
@@ -45,12 +45,12 @@ TEST(PreprocessorTest, IfNDef) {
   Scanner scanner(test_prefix + "preprocessor/prog2.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   NameAnalysis nameAnalysis(progAST);;
   nameAnalysis.run();
 
-  ASSERT_EQ(progAST.decls.size(), 2);
+  ASSERT_EQ(progAST->decls.size(), 2);
   ASSERT_EQ(0, nameAnalysis.errorCount);
 }
 
@@ -58,12 +58,12 @@ TEST(PreprocessorTest, PragmaOnce) {
   Scanner scanner(test_prefix + "preprocessor/prog4.c");
   Lexer lexer(scanner);
   Parser parser(lexer);
-  Program progAST = parser.parse();
+  std::shared_ptr<Program> progAST = parser.parse();
 
   NameAnalysis nameAnalysis(progAST);;
   nameAnalysis.run();
 
-  ASSERT_EQ(progAST.decls.size(), 3);
+  ASSERT_EQ(progAST->decls.size(), 3);
   ASSERT_EQ(0, nameAnalysis.errorCount);
 }
 

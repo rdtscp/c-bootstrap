@@ -3,7 +3,7 @@
 
 using namespace ACC;
 
-GenerateMIPS::GenerateMIPS(Program &progAST, std::string outputFile)
+GenerateMIPS::GenerateMIPS(std::shared_ptr<Program> progAST, std::string outputFile)
     : progAST(progAST) {
   MIPS::mipsOutput.open(outputFile);
 }
@@ -21,7 +21,7 @@ void GenerateMIPS::printErrors() const {
 
 void GenerateMIPS::run() {
   freeAllRegs();
-  GenerateMIPS::visit(progAST);
+  GenerateMIPS::visit(*progAST);
   MIPS::mipsOutput.close();
 }
 void GenerateMIPS::freeAllRegs() {

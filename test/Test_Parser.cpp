@@ -60,7 +60,7 @@ TEST(ParserTest, NestedComments) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  Program p = parser.parse();
+  std::shared_ptr<Program> p = parser.parse();
 
   ASSERT_TRUE(true);
 }
@@ -70,7 +70,7 @@ TEST(ParserTest, StructDecl) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  Program actual = parser.parse();
+  std::shared_ptr<Program> actual = parser.parse();
 
   std::vector<std::shared_ptr<Decl>> expectedDecls = {
       std::make_shared<StructTypeDecl>(StructTypeDecl(
@@ -82,12 +82,12 @@ TEST(ParserTest, StructDecl) {
           VarDecl(std::make_shared<StructType>(StructType("FooStruct")),
                   "myFooStruct"))};
 
-  int actualSize = actual.decls.size();
+  int actualSize = actual->decls.size();
   int expectSize = expectedDecls.size();
-  ASSERT_EQ(actual.decls.size(), expectedDecls.size());
+  ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
   for (int i = 0; i < expectedDecls.size(); i++)
-    ASSERT_TRUE(*actual.decls[i] == *expectedDecls[i]);
+    ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
 TEST(ParserTest, VarDecls) {
@@ -95,7 +95,7 @@ TEST(ParserTest, VarDecls) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  Program actual = parser.parse();
+  std::shared_ptr<Program> actual = parser.parse();
 
   std::vector<std::shared_ptr<Decl>> expectedDecls = {
       std::make_shared<StructTypeDecl>(StructTypeDecl(
@@ -154,10 +154,10 @@ TEST(ParserTest, VarDecls) {
               std::make_shared<StructType>(StructType("FooStruct")), "5")),
           "myFooStructArr"))};
 
-  ASSERT_EQ(actual.decls.size(), expectedDecls.size());
+  ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
   for (int i = 0; i < expectedDecls.size(); i++)
-    ASSERT_TRUE(*actual.decls[i] == *expectedDecls[i]);
+    ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
 TEST(ParserTest, FunDecl) {
@@ -165,8 +165,8 @@ TEST(ParserTest, FunDecl) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  Program actual = parser.parse();
-  ASSERT_EQ(actual.decls.size(), 2);
+  std::shared_ptr<Program> actual = parser.parse();
+  ASSERT_EQ(actual->decls.size(), 2);
   std::vector<std::shared_ptr<Decl>> expectedDecls = {
       std::make_shared<VarDecl>(
           VarDecl(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
@@ -182,10 +182,10 @@ TEST(ParserTest, FunDecl) {
                "argv"))},
           std::make_shared<BaseType>(BaseType(PrimitiveType::INT))))};
 
-  ASSERT_EQ(actual.decls.size(), expectedDecls.size());
+  ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
   for (int i = 0; i < expectedDecls.size(); i++)
-    ASSERT_TRUE(*actual.decls[i] == *expectedDecls[i]);
+    ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
 TEST(ParserTest, BinOp) {
@@ -193,8 +193,8 @@ TEST(ParserTest, BinOp) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  Program actual = parser.parse();
-  ASSERT_EQ(actual.decls.size(), 1);
+  std::shared_ptr<Program> actual = parser.parse();
+  ASSERT_EQ(actual->decls.size(), 1);
   std::vector<std::shared_ptr<Decl>> expectedDecls = {
       std::make_shared<FunDecl>(FunDecl(
           std::make_shared<Block>(Block(
@@ -209,10 +209,10 @@ TEST(ParserTest, BinOp) {
           "main", {},
           std::make_shared<BaseType>(BaseType(PrimitiveType::INT))))};
 
-  ASSERT_EQ(actual.decls.size(), expectedDecls.size());
+  ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
   for (int i = 0; i < expectedDecls.size(); i++)
-    ASSERT_TRUE(*actual.decls[i] == *expectedDecls[i]);
+    ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
 TEST(ParserTest, ComplexBinOp) {
@@ -220,7 +220,7 @@ TEST(ParserTest, ComplexBinOp) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  Program actual = parser.parse();
+  std::shared_ptr<Program> actual = parser.parse();
   /* TODO Test AST */
 }
 

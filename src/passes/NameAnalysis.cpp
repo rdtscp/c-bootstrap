@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-NameAnalysis::NameAnalysis(Program &progAST) : progAST(progAST) {}
+NameAnalysis::NameAnalysis(std::shared_ptr<Program> progAST) : progAST(progAST) {}
 
 void NameAnalysis::error(std::string error) {
   errorCount++;
@@ -15,7 +15,7 @@ void NameAnalysis::printErrors() {
     std::cerr << "\t" << error << std::endl;
 }
 
-void NameAnalysis::run() { visit(progAST); }
+void NameAnalysis::run() { visit(*progAST); }
 
 /* ---- Visit AST ---- */
 
