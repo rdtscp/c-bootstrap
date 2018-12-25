@@ -13,9 +13,9 @@
 
 using namespace ACC;
 
-std::string test_prefix =
-"/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-// std::string test_prefix = "../../test/tests/";
+// std::string test_prefix =
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+std::string test_prefix = "../../test/tests/";
 
 TEST(PreprocessorTest, IncludeWorks) {
   Scanner scanner(test_prefix + "preprocessor/prog.c");
