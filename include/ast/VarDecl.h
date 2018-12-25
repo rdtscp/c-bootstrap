@@ -6,6 +6,8 @@
 #include <memory>
 
 #include "Decl.h"
+#include "Stmt.h"
+#include "Type.h"
 
 namespace ACC {
 
@@ -22,47 +24,26 @@ public:
 
   int fpOffset = 0;
 
-  VarDecl(std::shared_ptr<Type> type, std::string p_identifer)
-      : identifer(p_identifer), type(type) {}
+  VarDecl(std::shared_ptr<Type> type, std::string p_identifer);
 
-  std::shared_ptr<VarDecl> getptr() { return shared_from_this(); }
+  std::shared_ptr<VarDecl> getptr();
 
-  bool operator==(Decl &rhs) const override {
-    if (rhs.astClass() == astClass())
-      return *this == *static_cast<VarDecl *>(&rhs);
-    return false;
-  }
-  bool operator!=(Decl &rhs) const override { return !(*this == rhs); }
+  bool operator==(Decl &rhs) const override;
+  bool operator!=(Decl &rhs) const override;
 
-  bool operator==(const VarDecl &rhs) const {
-    if (*type != *rhs.type)
-      return false;
+  bool operator==(const VarDecl &rhs) const;
+  bool operator!=(const VarDecl &rhs) const;
 
-    if (identifer != rhs.identifer)
-      return false;
+  int getBytes() const;
 
-    return true;
-  }
-  bool operator!=(const VarDecl &rhs) const { return !(*this == rhs); }
+  std::string getIdentifier() const override;
 
-  int getBytes() const { return type->getBytes(); }
-
-  std::string getIdentifier() const override { return identifer; }
-
-  void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
-  std::string accept(ASTVisitor<std::string> &v) override {
-    return v.visit(*this);
-  }
-  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override {
-    return v.visit(*this);
-  }
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override {
-    return v.visit(*this);
-  }
-  X86::Register accept(ASTVisitor<X86::Register> &v) override {
-    return v.visit(*this);
-  }
-  std::string astClass() const override { return "VarDecl"; }
+  void accept(ASTVisitor<void> &v) override;
+  std::string accept(ASTVisitor<std::string> &v) override;
+  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
+  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
+  X86::Register accept(ASTVisitor<X86::Register> &v) override;
+  std::string astClass() const override;
 };
 
 }; // namespace ACC

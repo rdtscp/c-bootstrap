@@ -17,54 +17,16 @@ public:
   Op operation;
   std::shared_ptr<Expr> rhs;
 
-  BinOp(std::shared_ptr<Expr> lhs, Op operation, std::shared_ptr<Expr> rhs)
-      : lhs(lhs), operation(operation), rhs(rhs) {}
+  BinOp(std::shared_ptr<Expr> lhs, Op operation, std::shared_ptr<Expr> rhs);
 
-  void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
-  std::string accept(ASTVisitor<std::string> &v) override {
-    return v.visit(*this);
-  }
-  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override {
-    return v.visit(*this);
-  }
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override {
-    return v.visit(*this);
-  }
-  X86::Register accept(ASTVisitor<X86::Register> &v) override {
-    return v.visit(*this);
-  }
-  std::string astClass() const override { return "BinOp"; }
+  void accept(ASTVisitor<void> &v) override;
+  std::string accept(ASTVisitor<std::string> &v) override;
+  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
+  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
+  X86::Register accept(ASTVisitor<X86::Register> &v) override;
+  std::string astClass() const override;
 
-  std::string opToStr(const Op op) const {
-    switch (op) {
-    case Op::ADD:
-      return " + ";
-    case Op::SUB:
-      return " - ";
-    case Op::MUL:
-      return " * ";
-    case Op::DIV:
-      return " / ";
-    case Op::MOD:
-      return " % ";
-    case Op::GT:
-      return " > ";
-    case Op::LT:
-      return " < ";
-    case Op::GE:
-      return " >= ";
-    case Op::LE:
-      return " <= ";
-    case Op::NE:
-      return " != ";
-    case Op::EQ:
-      return " == ";
-    case Op::OR:
-      return " || ";
-    case Op::AND:
-      return " && ";
-    }
-  }
+  std::string opToStr(const Op op) const;
 };
 
 }; // namespace ACC

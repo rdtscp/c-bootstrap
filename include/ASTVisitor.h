@@ -3,8 +3,6 @@
 #ifndef ASTVISITOR_H
 #define ASTVISITOR_H
 
-#include "AST.h"
-
 namespace ACC {
 
 class ArrayAccess;

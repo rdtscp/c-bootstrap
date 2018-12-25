@@ -6,8 +6,8 @@
 #include <memory>
 #include <string>
 
-#include "Type.h"
 #include "StructTypeDecl.h"
+#include "Type.h"
 
 namespace ACC {
 
@@ -17,36 +17,22 @@ public:
   std::string identifier;
   std::shared_ptr<StructTypeDecl> typeDefinition;
 
-  StructType(const std::string &identifier) : identifier(identifier) {}
+  StructType(const std::string &identifier);
 
-  int getBytes() const override; /* Defined in StructTypeDecl.h */
+  int getBytes() const override;
 
-  bool operator==(Type &rhs) const override {
-    if (rhs.astClass() == astClass())
-      return *this == *static_cast<StructType *>(&rhs);
-    return false;
-  }
-  bool operator!=(Type &rhs) const override { return !(*this == rhs); }
+  bool operator==(Type &rhs) const override;
+  bool operator!=(Type &rhs) const override;
 
-  bool operator==(const StructType &rhs) const {
-    return identifier == rhs.identifier;
-  }
-  bool operator!=(const StructType &rhs) const { return !(*this == rhs); }
+  bool operator==(const StructType &rhs) const;
+  bool operator!=(const StructType &rhs) const;
 
-  void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
-  std::string accept(ASTVisitor<std::string> &v) override {
-    return v.visit(*this);
-  }
-  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override {
-    return v.visit(*this);
-  }
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override {
-    return v.visit(*this);
-  }
-  X86::Register accept(ASTVisitor<X86::Register> &v) override {
-    return v.visit(*this);
-  }
-  std::string astClass() const override { return "StructType"; }
+  void accept(ASTVisitor<void> &v) override;
+  std::string accept(ASTVisitor<std::string> &v) override;
+  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
+  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
+  X86::Register accept(ASTVisitor<X86::Register> &v) override;
+  std::string astClass() const override;
 };
 
 }; // namespace ACC

@@ -1,0 +1,27 @@
+#include "../../include/ast/TypeCast.h"
+
+using namespace ACC;
+
+TypeCast::TypeCast(std::shared_ptr<Type> type, std::shared_ptr<Expr> expr)
+    : type(type), expr(expr) {}
+
+void TypeCast::accept(ASTVisitor<void> &v)  { return v.visit(*this); }
+
+std::string TypeCast::accept(ASTVisitor<std::string> &v)  {
+  return v.visit(*this);
+}
+
+std::shared_ptr<Type>
+TypeCast::accept(ASTVisitor<std::shared_ptr<Type>> &v)  {
+  return v.visit(*this);
+}
+
+MIPS::Register TypeCast::accept(ASTVisitor<MIPS::Register> &v)  {
+  return v.visit(*this);
+}
+
+X86::Register TypeCast::accept(ASTVisitor<X86::Register> &v)  {
+  return v.visit(*this);
+}
+
+std::string TypeCast::astClass() const  { return "TypeCast"; }

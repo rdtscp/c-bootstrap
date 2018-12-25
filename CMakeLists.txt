@@ -5,24 +5,59 @@ project(cpp_base)
 
 IF(CMAKE_BUILD_TYPE MATCHES Release)
   message(" --- Building in Release Mode ---")
-  add_library(Scanner SHARED src/Scanner.cpp)
-  add_library(Preprocessor SHARED src/Preprocessor.cpp)
-  add_library(Lexer SHARED src/Lexer.cpp)
-  add_library(Parser SHARED src/Parser.cpp)
+  
+  add_library(AST SHARED
+    src/ast/ArrayAccess.cpp
+    src/ast/ArrayType.cpp
+    src/ast/Assign.cpp
+    src/ast/BaseType.cpp
+    src/ast/BinOp.cpp
+    src/ast/Block.cpp
+    src/ast/CharLiteral.cpp
+    src/ast/FieldAccess.cpp
+    src/ast/FunCall.cpp
+    src/ast/FunDecl.cpp
+    src/ast/If.cpp
+    src/ast/IntLiteral.cpp
+    src/ast/ParenthExpr.cpp
+    src/ast/PointerType.cpp
+    src/ast/Program.cpp
+    src/ast/Return.cpp
+    src/ast/SizeOf.cpp
+    src/ast/StringLiteral.cpp
+    src/ast/StructType.cpp
+    src/ast/StructTypeDecl.cpp
+    src/ast/TypeCast.cpp
+    src/ast/ValueAt.cpp
+    src/ast/VarDecl.cpp
+    src/ast/VarExpr.cpp
+    src/ast/While.cpp
+  )
   add_library(DotGraph SHARED src/passes/DotGraph.cpp)
   add_library(NameAnalysis SHARED src/passes/NameAnalysis.cpp)
   add_library(TypeAnalysis SHARED src/passes/TypeAnalysis.cpp)
-
   add_library(GenerateMIPS SHARED src/targets/GenerateMIPS.cpp)
-
-
-  target_link_libraries(Lexer Scanner)
+  add_library(GenerateX86 SHARED src/targets/GenerateX86.cpp)
+  add_library(MIPS SHARED src/targets/MIPS.cpp)
+  add_library(X86 SHARED src/targets/X86.cpp)
+  add_library(Lexer SHARED src/Lexer.cpp)
+  add_library(Parser SHARED src/Parser.cpp)
+  add_library(Preprocessor SHARED src/Preprocessor.cpp)
+  add_library(Scanner SHARED src/Scanner.cpp)
+  
+  target_link_libraries(AST MIPS X86)
   target_link_libraries(Preprocessor Scanner)
   target_link_libraries(Lexer Preprocessor)
-  target_link_libraries(Parser Lexer)
+  target_link_libraries(Parser AST Lexer MIPS X86)
+  target_link_libraries(GenerateMIPS AST MIPS X86)
+  target_link_libraries(GenerateX86 AST MIPS X86)
+
+  target_link_libraries(DotGraph AST MIPS X86)
+  target_link_libraries(NameAnalysis AST MIPS X86)
+  target_link_libraries(TypeAnalysis AST MIPS X86)
 
   install(
-    TARGETS GenerateMIPS TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner
+    TARGETS AST DotGraph NameAnalysis TypeAnalysis GenerateMIPS GenerateX86 MIPS X86 Lexer Parser Preprocessor Scanner
     DESTINATION lib
   )
   install(
@@ -31,7 +66,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
   )
 
   add_executable(cpp_base main.cpp)
-  target_link_libraries(cpp_base GenerateMIPS TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner)
+  target_link_libraries(cpp_base AST DotGraph NameAnalysis TypeAnalysis GenerateMIPS GenerateX86  MIPS X86 Lexer Parser Preprocessor Scanner)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -78,23 +113,58 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
     )
   ENDIF(NOT GTEST_INSTALLED MATCHES TRUE)
 
-  add_library(Scanner SHARED src/Scanner.cpp)
-  add_library(Preprocessor SHARED src/Preprocessor.cpp)
-  add_library(Lexer SHARED src/Lexer.cpp)
-  add_library(Parser SHARED src/Parser.cpp)
+  add_library(AST SHARED
+    src/ast/ArrayAccess.cpp
+    src/ast/ArrayType.cpp
+    src/ast/Assign.cpp
+    src/ast/BaseType.cpp
+    src/ast/BinOp.cpp
+    src/ast/Block.cpp
+    src/ast/CharLiteral.cpp
+    src/ast/FieldAccess.cpp
+    src/ast/FunCall.cpp
+    src/ast/FunDecl.cpp
+    src/ast/If.cpp
+    src/ast/IntLiteral.cpp
+    src/ast/ParenthExpr.cpp
+    src/ast/PointerType.cpp
+    src/ast/Program.cpp
+    src/ast/Return.cpp
+    src/ast/SizeOf.cpp
+    src/ast/StringLiteral.cpp
+    src/ast/StructType.cpp
+    src/ast/StructTypeDecl.cpp
+    src/ast/TypeCast.cpp
+    src/ast/ValueAt.cpp
+    src/ast/VarDecl.cpp
+    src/ast/VarExpr.cpp
+    src/ast/While.cpp
+  )
   add_library(DotGraph SHARED src/passes/DotGraph.cpp)
   add_library(NameAnalysis SHARED src/passes/NameAnalysis.cpp)
   add_library(TypeAnalysis SHARED src/passes/TypeAnalysis.cpp)
-
-  add_library(GenerateMIPS SHARED src/targets/GenerateMIPS.cpp)  
-
-  target_link_libraries(Lexer Scanner)
+  add_library(GenerateMIPS SHARED src/targets/GenerateMIPS.cpp)
+  add_library(GenerateX86 SHARED src/targets/GenerateX86.cpp)
+  add_library(MIPS SHARED src/targets/MIPS.cpp)
+  add_library(X86 SHARED src/targets/X86.cpp)
+  add_library(Lexer SHARED src/Lexer.cpp)
+  add_library(Parser SHARED src/Parser.cpp)
+  add_library(Preprocessor SHARED src/Preprocessor.cpp)
+  add_library(Scanner SHARED src/Scanner.cpp)
+  
+  target_link_libraries(AST MIPS X86)
   target_link_libraries(Preprocessor Scanner)
   target_link_libraries(Lexer Preprocessor)
-  target_link_libraries(Parser Lexer)
+  target_link_libraries(Parser AST Lexer MIPS X86)
+  target_link_libraries(GenerateMIPS AST MIPS X86)
+  target_link_libraries(GenerateX86  AST MIPS X86)
+
+  target_link_libraries(DotGraph AST MIPS X86)
+  target_link_libraries(NameAnalysis AST MIPS X86)
+  target_link_libraries(TypeAnalysis AST MIPS X86)
 
   install(
-    TARGETS GenerateMIPS TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner
+    TARGETS AST DotGraph NameAnalysis TypeAnalysis GenerateMIPS GenerateX86 MIPS X86 Lexer Parser Preprocessor Scanner
     DESTINATION lib
   )
   install(
@@ -105,5 +175,5 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
   enable_testing()
   add_subdirectory(test)
   add_executable(cpp_base main.cpp)
-  target_link_libraries(cpp_base GenerateMIPS TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner)
+  target_link_libraries(cpp_base AST DotGraph NameAnalysis TypeAnalysis GenerateMIPS GenerateX86  MIPS X86 Lexer Parser Preprocessor Scanner)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)

@@ -12,8 +12,7 @@
 
 namespace ACC {
 
-class FunDecl : public Decl,
-                public std::enable_shared_from_this<FunDecl> {
+class FunDecl : public Decl, public std::enable_shared_from_this<FunDecl> {
 
 public:
   std::shared_ptr<Block> funBlock;
@@ -23,55 +22,24 @@ public:
 
   FunDecl(std::shared_ptr<Block> funBlock, std::string funName,
           std::vector<std::shared_ptr<VarDecl>> funParams,
-          std::shared_ptr<Type> funType)
-      : funBlock(funBlock), funName(funName), funParams(funParams),
-        funType(funType) {}
+          std::shared_ptr<Type> funType);
 
-  std::shared_ptr<FunDecl> getptr() { return shared_from_this(); }
+  std::shared_ptr<FunDecl> getptr();
 
-  bool operator==(Decl &rhs) const override {
-    if (rhs.astClass() == astClass())
-      return *this == *static_cast<FunDecl *>(&rhs);
-    return false;
-  }
-  bool operator!=(Decl &rhs) const override { return !(*this == rhs); }
+  bool operator==(Decl &rhs) const override;
+  bool operator!=(Decl &rhs) const override;
 
-  bool operator==(const FunDecl &rhs) const {
-    if (*funType != *rhs.funType)
-      return false;
+  bool operator==(const FunDecl &rhs) const;
+  bool operator!=(const FunDecl &rhs) const;
 
-    if (funName != rhs.funName)
-      return false;
+  std::string getIdentifier() const override;
 
-    if (funParams.size() != rhs.funParams.size())
-      return false;
-
-    for (int i = 0; i < funParams.size(); i++)
-      if (*funParams[i] != *rhs.funParams[i])
-        return false;
-
-    /* Check Block*/
-
-    return true;
-  }
-  bool operator!=(const FunDecl &rhs) const { return !(*this == rhs); }
-
-  std::string getIdentifier() const override { return funName; }
-
-  void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
-  std::string accept(ASTVisitor<std::string> &v) override {
-    return v.visit(*this);
-  }
-  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override {
-    return v.visit(*this);
-  }
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override {
-    return v.visit(*this);
-  }
-  X86::Register accept(ASTVisitor<X86::Register> &v) override {
-    return v.visit(*this);
-  }
-  std::string astClass() const override { return "FunDecl"; }
+  void accept(ASTVisitor<void> &v) override;
+  std::string accept(ASTVisitor<std::string> &v) override;
+  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
+  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
+  X86::Register accept(ASTVisitor<X86::Register> &v) override;
+  std::string astClass() const override;
 };
 
 }; // namespace ACC

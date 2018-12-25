@@ -13,27 +13,38 @@ namespace ACC {
 
 namespace MIPS {
 
-/* ---- MIPS Output ---- */
-static std::ofstream mipsOutput;
-
-/* --- MIPS Registers --- */
-
 class Register {
-
 public:
   int num;
   std::string name;
 
-  Register() : num(-1), name("") {}
-  Register(int num, std::string name) : num(num), name(name) {}
-  bool operator==(const Register &rhs) {
-    return (num == rhs.num && name == rhs.name);
-  }
-  std::string toString() const { return "$" + name; }
+  Register();
+  Register(int num, std::string name);
+  bool operator==(const Register &rhs);
+  std::string toString() const;
 };
-std::ostream &operator<<(std::ostream &stream, const Register &reg) {
-  return stream << reg.toString();
-}
+
+class Writer {
+public:
+  Writer(std::string filename);
+
+  void ADDI(const MIPS::Register &dest, const MIPS::Register &src,
+            const int val);
+  void alloc(const std::string &varName, const int size);
+  void BLOCK(const std::string &blockName);
+  void comment(const std::string &comment);
+  void JAL(const std::string &blockName);
+  void LW(const MIPS::Register &destReg, const int addr, const int offset = 0);
+  void LW(const MIPS::Register &destReg, const MIPS::Register &addr,
+          const int offset = 0);
+  void SW(const MIPS::Register &regCtnt, const int addr, const int offset = 0);
+  void SW(const MIPS::Register &regCtnt, const MIPS::Register &addr,
+          const int offset = 0);
+  void write(const std::string &str);
+
+private:
+  std::ofstream mipsOutput;
+};
 
 const static Register zero(0, "zero");
 const static Register v0(2, "v0");
@@ -56,65 +67,6 @@ const static Register gp(28, "gp");
 const static Register sp(29, "sp");
 const static Register fp(30, "fp");
 const static Register ra(31, "ra");
-
-/* ---- MIPS Operations ---- */
-
-static void comment(const std::string &comment) {
-  mipsOutput << "#" << comment << std::endl;
-}
-
-static void alloc(const std::string &varName, const int size) {
-  mipsOutput << varName <<  ": .space " << size << std::endl;
-}
-
-static void write(const std::string &str) { mipsOutput << str << std::endl; }
-
-static void ADDI(const MIPS::Register &dest, const MIPS::Register &src,
-                 const int val) {
-  mipsOutput << "ADDI " << dest.toString() << ", " << src.toString() << ", "
-             << val;
-  mipsOutput << "\t# " << dest.toString() << " = " << src.toString() << " + "
-             << val;
-  mipsOutput << std::endl;
-}
-static void JAL(const std::string &blockName) {
-  mipsOutput << "JAL " << blockName << std::endl;
-}
-static void LW(const MIPS::Register &destReg, const int addr,
-               const int offset = 0) {
-  mipsOutput << "LW " << destReg.toString() << ", " << offset << "(" << addr
-             << ")";
-  mipsOutput << "\t# " << destReg.toString() << " = " << offset << "(" << addr
-             << ")";
-  mipsOutput << std::endl;
-}
-static void LW(const MIPS::Register &destReg, const MIPS::Register &addr,
-               const int offset = 0) {
-  mipsOutput << "LW " << destReg.toString() << ", " << offset << "("
-             << addr.toString() << ")";
-  mipsOutput << "\t# " << destReg.toString() << " = " << offset << "(" << addr
-             << ")";
-  mipsOutput << std::endl;
-}
-static void SW(const MIPS::Register &regCtnt, const int addr,
-               const int offset = 0) {
-  mipsOutput << "SW " << regCtnt.toString() << ", " << offset << "(" << addr
-             << ")";
-  mipsOutput << "\t# " << offset << "(" << addr << ") = " << regCtnt.toString();
-  mipsOutput << std::endl;
-}
-static void SW(const MIPS::Register &regCtnt, const MIPS::Register &addr,
-               const int offset = 0) {
-  mipsOutput << "SW " << regCtnt.toString() << ", " << offset << "("
-             << addr.toString() << ")";
-  mipsOutput << "\t# " << offset << "(" << addr.toString()
-             << ") = " << regCtnt.toString();
-  mipsOutput << std::endl;
-}
-
-static void BLOCK(const std::string &blockName) {
-  mipsOutput << blockName << ":" << std::endl;
-}
 
 }; // namespace MIPS
 

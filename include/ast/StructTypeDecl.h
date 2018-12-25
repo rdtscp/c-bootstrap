@@ -21,63 +21,25 @@ public:
   int compactSize;
 
   StructTypeDecl(std::shared_ptr<StructType> structType,
-                 const std::vector<std::shared_ptr<VarDecl>> &varDecls)
-      : structType(structType), varDecls(varDecls) {}
+                 const std::vector<std::shared_ptr<VarDecl>> &varDecls);
 
-  std::shared_ptr<StructTypeDecl> getptr() { return shared_from_this(); }
+  std::shared_ptr<StructTypeDecl> getptr();
 
-  bool operator==(Decl &rhs) const override {
-    if (rhs.astClass() == astClass())
-      return *this == *static_cast<StructTypeDecl *>(&rhs);
-    return false;
-  }
-  bool operator!=(Decl &rhs) const override { return !(*this == rhs); }
+  bool operator==(Decl &rhs) const override;
+  bool operator!=(Decl &rhs) const override;
 
-  bool operator==(const StructTypeDecl &rhs) const {
-    if (*structType != *rhs.structType)
-      return false;
+  bool operator==(const StructTypeDecl &rhs) const;
+  bool operator!=(const StructTypeDecl &rhs) const;
 
-    if (varDecls.size() != rhs.varDecls.size())
-      return false;
+  std::string getIdentifier() const override;
 
-    for (int i = 0; i < varDecls.size(); i++)
-      if (*varDecls[i] != *rhs.varDecls[i])
-        return false;
-
-    return true;
-  }
-  bool operator!=(const StructTypeDecl &rhs) const { return !(*this == rhs); }
-
-  std::string getIdentifier() const override {
-    return "struct " + structType->identifier;
-  }
-
-  void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
-  std::string accept(ASTVisitor<std::string> &v) override {
-    return v.visit(*this);
-  }
-  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override {
-    return v.visit(*this);
-  }
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override {
-    return v.visit(*this);
-  }
-  X86::Register accept(ASTVisitor<X86::Register> &v) override {
-    return v.visit(*this);
-  }
-  std::string astClass() const override { return "StructTypeDecl"; }
+  void accept(ASTVisitor<void> &v) override;
+  std::string accept(ASTVisitor<std::string> &v) override;
+  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
+  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
+  X86::Register accept(ASTVisitor<X86::Register> &v) override;
+  std::string astClass() const override;
 };
-
-int StructType::getBytes() const {
-  int aggregateBytes = 0;
-  if (typeDefinition == nullptr)
-    return aggregateBytes;
-
-  for (const std::shared_ptr<VarDecl> &structField : typeDefinition->varDecls)
-    aggregateBytes += structField->type->getBytes();
-
-  return aggregateBytes;
-}
 
 }; // namespace ACC
 

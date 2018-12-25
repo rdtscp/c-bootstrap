@@ -5,8 +5,8 @@
 
 #include <iostream>
 
-#include "../AST.h"
 #include "../ASTVisitor.h"
+#include "../AST.h"
 
 namespace ACC {
 

@@ -15,45 +15,22 @@ class BaseType : public Type {
 public:
   PrimitiveType primitiveType;
 
-  BaseType(PrimitiveType pType) : primitiveType(pType) {}
+  BaseType(PrimitiveType pType);
+  
+  bool operator==(Type &t) const override;
+  bool operator!=(Type &t) const override;
 
-  bool operator==(Type &t) const override {
-    if (t.astClass() == astClass())
-      return *this == *static_cast<BaseType *>(&t);
-    return false;
-  }
-  bool operator!=(Type &t) const override { return !(*this == t); }
+  bool operator==(const BaseType &rhs) const;
+  bool operator!=(const BaseType &rhs) const;
 
-  bool operator==(const BaseType &rhs) const {
-    return primitiveType == rhs.primitiveType;
-  }
-  bool operator!=(const BaseType &rhs) const { return !(*this == rhs); }
+  int getBytes() const override;
 
-  int getBytes() const override {
-    switch (primitiveType) {
-    case PrimitiveType::CHAR:
-      return 1;
-    case PrimitiveType::INT:
-      return 4;
-    case PrimitiveType::VOID:
-      return 4;
-    }
-  }
-
-  void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
-  std::string accept(ASTVisitor<std::string> &v) override {
-    return v.visit(*this);
-  }
-  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override {
-    return v.visit(*this);
-  }
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override {
-    return v.visit(*this);
-  }
-  X86::Register accept(ASTVisitor<X86::Register> &v) override {
-    return v.visit(*this);
-  }
-  std::string astClass() const override { return "BaseType"; }
+  void accept(ASTVisitor<void> &v) override;
+  std::string accept(ASTVisitor<std::string> &v) override;
+  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
+  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
+  X86::Register accept(ASTVisitor<X86::Register> &v) override;
+  std::string astClass() const override;
 };
 
 }; // namespace ACC

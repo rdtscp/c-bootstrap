@@ -30,6 +30,7 @@ public:
   void run();
 
 private:
+  MIPS::Writer MIPS;
   std::shared_ptr<Program> progAST;
 
   std::shared_ptr<Block> currScope;

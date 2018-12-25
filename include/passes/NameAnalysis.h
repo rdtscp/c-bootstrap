@@ -8,8 +8,8 @@
 #include <set>
 #include <vector>
 
-#include "../AST.h"
 #include "../ASTVisitor.h"
+#include "../AST.h"
 
 namespace ACC {
 

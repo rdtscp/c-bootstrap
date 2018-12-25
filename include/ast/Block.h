@@ -18,48 +18,24 @@ public:
   std::vector<std::shared_ptr<Stmt>> blockStmts;
   std::shared_ptr<Block> outerBlock = nullptr;
 
-  Block(const std::vector<std::shared_ptr<Stmt>> &newBlockStmts)
-      : blockStmts(newBlockStmts) {}
+  Block(const std::vector<std::shared_ptr<Stmt>> &newBlockStmts);
 
-  std::shared_ptr<Block> getptr() { return shared_from_this(); }
+  std::shared_ptr<Block> getptr();
 
-  std::shared_ptr<Decl> find(const std::string &identifier) {
-    std::shared_ptr<Decl> local = findLocal(identifier);
-    if (local == nullptr && outerBlock != nullptr)
-      return outerBlock->find(identifier);
+  std::shared_ptr<Decl> find(const std::string &identifier);
 
-    return local;
-  }
+  std::shared_ptr<Decl> findLocal(const std::string &identifier);
 
-  std::shared_ptr<Decl> findLocal(const std::string &identifier) {
-    if (blockDecls.find(identifier) != blockDecls.end())
-      return blockDecls.find(identifier)->second;
+  void insertDecl(const std::shared_ptr<Decl> &decl);
 
-    return nullptr;
-  }
+  void setOuterBlock(const std::shared_ptr<Block> &newOuterBlock);
 
-  void insertDecl(const std::shared_ptr<Decl> &decl) {
-    blockDecls[decl->getIdentifier()] = decl;
-  }
-
-  void setOuterBlock(const std::shared_ptr<Block> &newOuterBlock) {
-    outerBlock = newOuterBlock;
-  }
-
-  void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
-  std::string accept(ASTVisitor<std::string> &v) override {
-    return v.visit(*this);
-  }
-  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override {
-    return v.visit(*this);
-  }
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override {
-    return v.visit(*this);
-  }
-  X86::Register accept(ASTVisitor<X86::Register> &v) override {
-    return v.visit(*this);
-  }
-  std::string astClass() const override { return "Block"; }
+  void accept(ASTVisitor<void> &v) override;
+  std::string accept(ASTVisitor<std::string> &v) override;
+  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
+  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
+  X86::Register accept(ASTVisitor<X86::Register> &v) override;
+  std::string astClass() const override;
 };
 
 }; // namespace ACC

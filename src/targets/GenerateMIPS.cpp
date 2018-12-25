@@ -3,10 +3,9 @@
 
 using namespace ACC;
 
-GenerateMIPS::GenerateMIPS(std::shared_ptr<Program> progAST, std::string outputFile)
-    : progAST(progAST) {
-  MIPS::mipsOutput.open(outputFile);
-}
+GenerateMIPS::GenerateMIPS(std::shared_ptr<Program> progAST,
+                           std::string outputFile)
+    : MIPS(outputFile), progAST(progAST) {}
 
 void GenerateMIPS::error(std::string error) {
   errorCount++;
@@ -21,9 +20,9 @@ void GenerateMIPS::printErrors() const {
 
 void GenerateMIPS::run() {
   freeAllRegs();
-  GenerateMIPS::visit(*progAST);
-  MIPS::mipsOutput.close();
+  visit(*progAST);
 }
+
 void GenerateMIPS::freeAllRegs() {
   freeAllArgsRegs();
   freeAllSaveRegs();
@@ -94,17 +93,17 @@ MIPS::Register GenerateMIPS::getTempRegister() {
 /* ---- MIPS Memory ---- */
 
 void GenerateMIPS::alloc(const int bytes) {
-  MIPS::comment(" !--- Cannot Allocate on Heap yet ----! ");
+  MIPS.comment(" !--- Cannot Allocate on Heap yet ----! ");
 }
 
 void GenerateMIPS::stackPush(const MIPS::Register &src) {
-  MIPS::ADDI(MIPS::sp, MIPS::sp, -4);
-  MIPS::SW(src, MIPS::sp);
+  MIPS.ADDI(MIPS::sp, MIPS::sp, -4);
+  MIPS.SW(src, MIPS::sp);
 }
 
 void GenerateMIPS::stackPop(const MIPS::Register &dest) {
-  MIPS::LW(dest, MIPS::sp);
-  MIPS::ADDI(MIPS::sp, MIPS::sp, 4);
+  MIPS.LW(dest, MIPS::sp);
+  MIPS.ADDI(MIPS::sp, MIPS::sp, 4);
 }
 
 /* ---- Visit AST ---- */
@@ -135,8 +134,8 @@ MIPS::Register GenerateMIPS::visit(Block &b) {
     std::shared_ptr<Decl> currDecl = ident_decl.second;
     if (currDecl->astClass() == "VarDecl") {
       /* ---- Deconstruct VarDecl ---- */
-      MIPS::ADDI(MIPS::sp, MIPS::sp, 4);
-      MIPS::SW(MIPS::zero, MIPS::sp);
+      MIPS.ADDI(MIPS::sp, MIPS::sp, 4);
+      MIPS.SW(MIPS::zero, MIPS::sp);
     }
   }
   currScope = b.outerBlock;
@@ -151,14 +150,14 @@ MIPS::Register GenerateMIPS::visit(FunCall &fc) {
 
   for (const auto &arg : fc.funArgs)
     arg->accept(*this);
-  MIPS::JAL(fc.funName + "FunDecl");
+  MIPS.JAL(fc.funName + "FunDecl");
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(FunDecl &fd) {
   std::vector<MIPS::Register> saveRegs = MIPS::saveRegs;
   currScope = fd.funBlock;
 
-  MIPS::BLOCK(fd.getIdentifier() + "FunDecl");
+  MIPS.BLOCK(fd.getIdentifier() + "FunDecl");
 
   /* ---- Save Caller's $fp ---- */
   stackPush(MIPS::fp);
@@ -190,7 +189,7 @@ MIPS::Register GenerateMIPS::visit(FunDecl &fd) {
   stackPop(MIPS::fp);
 
   /* ---- Return to $ra ---- */
-  MIPS::write("JR $ra");
+  MIPS.write("JR $ra");
 
   currScope = fd.funBlock->outerBlock;
   return MIPS::Register();
@@ -213,12 +212,12 @@ MIPS::Register GenerateMIPS::visit(Program &p) {
 
   freeAllRegs();
 
-  MIPS::write(".data");
+  MIPS.write(".data");
   for (std::shared_ptr<VarDecl> globalVar : p.globalVars)
-    MIPS::alloc(globalVar->getIdentifier(), globalVar->getBytes());
+    MIPS.alloc(globalVar->getIdentifier(), globalVar->getBytes());
 
-  MIPS::write(".text");
-  MIPS::JAL("mainFunDecl");
+  MIPS.write(".text");
+  MIPS.JAL("mainFunDecl");
   for (std::shared_ptr<FunDecl> func : p.funDecls)
     func->accept(*this);
 
@@ -245,9 +244,9 @@ MIPS::Register GenerateMIPS::visit(ValueAt &va) {
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(VarDecl &vd) {
-  MIPS::comment("Allocating for VarDecl: " + vd.getIdentifier());
+  MIPS.comment("Allocating for VarDecl: " + vd.getIdentifier());
   int bytesRequired = vd.getBytes();
-  MIPS::ADDI(MIPS::sp, MIPS::sp, -bytesRequired);
+  MIPS.ADDI(MIPS::sp, MIPS::sp, -bytesRequired);
   currFpOffset -= bytesRequired;
   vd.fpOffset = currFpOffset;
   return MIPS::Register();
@@ -256,7 +255,7 @@ MIPS::Register GenerateMIPS::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
   int fpOffset = ve.variableDecl->fpOffset;
   MIPS::Register valReg = getTempRegister();
-  MIPS::LW(valReg, MIPS::fp, fpOffset);
+  MIPS.LW(valReg, MIPS::fp, fpOffset);
   return valReg;
 }
 MIPS::Register GenerateMIPS::visit(While &w) {

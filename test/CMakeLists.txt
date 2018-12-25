@@ -3,78 +3,135 @@ enable_testing()
 # I couldn't make it work with INTERFACE_INCLUDE_DIRECTORIES
 include_directories("${source_dir}/googletest/include")
 
-ADD_EXECUTABLE(runASTUnitTests Test_AST.cpp  main.cpp)
-TARGET_LINK_LIBRARIES(runASTUnitTests
+add_executable(runASTUnitTests Test_AST.cpp  main.cpp)
+target_link_libraries(runASTUnitTests
     libgtest
     libgmock
-)
-add_test(ASTUnitTests runASTUnitTests)
-
-ADD_EXECUTABLE(runScannerUnitTests Test_Scanner.cpp  main.cpp)
-TARGET_LINK_LIBRARIES(runScannerUnitTests
-    libgtest
-    libgmock
-    Parser
-    Scanner
-    Lexer
-)
-add_test(ScannerUnitTests runScannerUnitTests)
-
-ADD_EXECUTABLE(runLexerUnitTests Test_Lexer.cpp main.cpp)
-TARGET_LINK_LIBRARIES(runLexerUnitTests
-    libgtest
-    libgmock
-    Parser
-    Scanner
-    Lexer
-)
-add_test(LexerUnitTests runLexerUnitTests)
-
-ADD_EXECUTABLE(runPreprocessorUnitTests Test_Preprocessor.cpp main.cpp)
-TARGET_LINK_LIBRARIES(runPreprocessorUnitTests
-    libgtest
-    libgmock
-    Parser
-    Preprocessor
-    Scanner
-    Lexer
-    NameAnalysis
-)
-add_test(PreprocessorUnitTests runPreprocessorUnitTests)
-
-ADD_EXECUTABLE(runParserUnitTests Test_Parser.cpp  main.cpp)
-TARGET_LINK_LIBRARIES(runParserUnitTests
-    libgtest
-    libgmock
-    Parser
-    Scanner
-    Lexer
-)
-add_test(ParserUnitTests runParserUnitTests)
-
-ADD_EXECUTABLE(runASTAnalysisUnitTests Test_ASTAnalysis.cpp  main.cpp)
-TARGET_LINK_LIBRARIES(runASTAnalysisUnitTests
-    libgtest
-    libgmock
-    Parser
-    Scanner
-    Lexer
-    DotGraph
-    NameAnalysis
-    TypeAnalysis
-)
-add_test(ASTAnalysisUnitTests runASTAnalysisUnitTests)
-
-ADD_EXECUTABLE(runCodeGenerationUnitTests Test_CodeGeneration.cpp  main.cpp)
-TARGET_LINK_LIBRARIES(runCodeGenerationUnitTests
-    libgtest
-    libgmock
-    Parser
-    Scanner
-    Lexer
+    AST
     DotGraph
     NameAnalysis
     TypeAnalysis
     GenerateMIPS
+    GenerateX86
+    MIPS
+    X86
+    Lexer
+    Parser
+    Preprocessor
+    Scanner
+)
+add_test(ASTUnitTests runASTUnitTests)
+
+add_executable(runScannerUnitTests Test_Scanner.cpp  main.cpp)
+target_link_libraries(runScannerUnitTests
+    libgtest
+    libgmock
+    AST
+    DotGraph
+    NameAnalysis
+    TypeAnalysis
+    GenerateMIPS
+    GenerateX86
+    MIPS
+    X86
+    Lexer
+    Parser
+    Preprocessor
+    Scanner
+)
+add_test(ScannerUnitTests runScannerUnitTests)
+
+add_executable(runLexerUnitTests Test_Lexer.cpp main.cpp)
+target_link_libraries(runLexerUnitTests
+    libgtest
+    libgmock
+    AST
+    DotGraph
+    NameAnalysis
+    TypeAnalysis
+    GenerateMIPS
+    GenerateX86
+    MIPS
+    X86
+    Lexer
+    Parser
+    Preprocessor
+    Scanner
+)
+add_test(LexerUnitTests runLexerUnitTests)
+
+add_executable(runPreprocessorUnitTests Test_Preprocessor.cpp main.cpp)
+target_link_libraries(runPreprocessorUnitTests
+    libgtest
+    libgmock
+    AST
+    DotGraph
+    NameAnalysis
+    TypeAnalysis
+    GenerateMIPS
+    GenerateX86
+    MIPS
+    X86
+    Lexer
+    Parser
+    Preprocessor
+    Scanner
+)
+add_test(PreprocessorUnitTests runPreprocessorUnitTests)
+
+add_executable(runParserUnitTests Test_Parser.cpp  main.cpp)
+target_link_libraries(runParserUnitTests
+    libgtest
+    libgmock
+    AST
+    DotGraph
+    NameAnalysis
+    TypeAnalysis
+    GenerateMIPS
+    GenerateX86
+    MIPS
+    X86
+    Lexer
+    Parser
+    Preprocessor
+    Scanner
+)
+add_test(ParserUnitTests runParserUnitTests)
+
+add_executable(runASTAnalysisUnitTests Test_ASTAnalysis.cpp  main.cpp)
+target_link_libraries(runASTAnalysisUnitTests
+    libgtest
+    libgmock
+    AST
+    DotGraph
+    NameAnalysis
+    TypeAnalysis
+    GenerateMIPS
+    GenerateX86
+    MIPS
+    X86
+    Lexer
+    Parser
+    Preprocessor
+    Scanner
+)
+add_test(ASTAnalysisUnitTests runASTAnalysisUnitTests)
+
+add_executable(runCodeGenerationUnitTests Test_CodeGeneration.cpp  main.cpp)
+target_link_libraries(runCodeGenerationUnitTests
+    libgtest
+    libgmock
+    AST
+    DotGraph
+    NameAnalysis
+    TypeAnalysis
+    GenerateMIPS
+    GenerateX86
+    MIPS
+    X86
+    Lexer
+    Parser
+    Preprocessor
+    Scanner
 )
 add_test(CodeGenerationUnitTests runCodeGenerationUnitTests)

@@ -15,37 +15,27 @@ class PointerType : public Type {
 public:
   std::shared_ptr<Type> pointedType;
 
-  PointerType(std::shared_ptr<Type> pointedType) : pointedType(pointedType) {}
+  PointerType(std::shared_ptr<Type> pointedType);
 
-  bool operator==(Type &t) const override {
-    if (t.astClass() == astClass())
-      return *this == *static_cast<PointerType *>(&t);
-    return false;
-  }
-  bool operator!=(Type &t) const override { return !(*this == t); }
+  bool operator==(Type &t) const override;
 
-  bool operator==(const PointerType &rhs) const {
-    return *pointedType == *rhs.pointedType;
-  }
-  bool operator!=(const PointerType &rhs) const { return !(*this == rhs); }
+  bool operator!=(Type &t) const override;
 
-  int getBytes() const override { return 4; }
+  bool operator==(const PointerType &rhs) const;
+  bool operator!=(const PointerType &rhs) const;
 
-  void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
-  std::string accept(ASTVisitor<std::string> &v) override {
-    return v.visit(*this);
-  }
-  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override {
-    return v.visit(*this);
-  }
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override {
-    return v.visit(*this);
-  }
-  X86::Register accept(ASTVisitor<X86::Register> &v) override {
-    return v.visit(*this);
-  }
-  std::string astClass() const override { return "PointerType"; }
-}; // namespace ACC
+  int getBytes() const override;
+
+  void accept(ASTVisitor<void> &v) override;
+  std::string accept(ASTVisitor<std::string> &v) override;
+
+  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
+
+  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
+  X86::Register accept(ASTVisitor<X86::Register> &v) override;
+  std::string astClass() const override;
+};
+
 }; // namespace ACC
 
 #endif

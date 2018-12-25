@@ -16,40 +16,22 @@ public:
   std::string arraySize;
   std::shared_ptr<Type> arrayType;
 
-  ArrayType(std::shared_ptr<Type> arrayType, const std::string &arraySize)
-      : arraySize(arraySize), arrayType(arrayType) {}
+  ArrayType(std::shared_ptr<Type> arrayType, const std::string &arraySize);
 
-  bool operator==(Type &t) const override {
-    if (t.astClass() == astClass())
-      return *this == *static_cast<ArrayType *>(&t);
-    return false;
-  }
-  bool operator!=(Type &t) const override { return !(*this == t); }
+  bool operator==(Type &t) const override;
+  bool operator!=(Type &t) const override;
 
-  bool operator==(const ArrayType &rhs) const {
-    return (*arrayType == *rhs.arrayType && arraySize == rhs.arraySize);
-  }
-  bool operator!=(const ArrayType &rhs) const { return !(*this == rhs); }
+  bool operator==(const ArrayType &rhs) const;
+  bool operator!=(const ArrayType &rhs) const;
 
-  int getBytes() const override {
-    int elementSize = arrayType->getBytes();
-    return std::stoi(arraySize) * elementSize;
-  }
+  int getBytes() const override;
 
-  void accept(ASTVisitor<void> &v) override { return v.visit(*this); }
-  std::string accept(ASTVisitor<std::string> &v) override {
-    return v.visit(*this);
-  }
-  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override {
-    return v.visit(*this);
-  }
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override {
-    return v.visit(*this);
-  }
-  X86::Register accept(ASTVisitor<X86::Register> &v) override {
-    return v.visit(*this);
-  }
-  std::string astClass() const override { return "ArrayType"; }
+  void accept(ASTVisitor<void> &v) override;
+  std::string accept(ASTVisitor<std::string> &v) override;
+  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
+  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
+  X86::Register accept(ASTVisitor<X86::Register> &v) override;
+  std::string astClass() const override;
 };
 
 }; // namespace ACC
