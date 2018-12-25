@@ -34,9 +34,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(ArrayAccess &aa) {
         "was not of type int. Was of type: " +
         arrayIndex->astClass());
 
-  return std::make_shared<ArrayType>(
-             *static_cast<ArrayType *>(arrayExprType.get()))
-      ->arrayType;
+  return std::static_pointer_cast<ArrayType>(arrayExprType)->arrayType;
 }
 std::shared_ptr<Type> TypeAnalysis::visit(ArrayType &at) {
   return std::make_shared<ArrayType>(at);
@@ -76,8 +74,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(FieldAccess &fa) {
                  "that is not a struct");
 
   std::shared_ptr<StructType> structType =
-      std::make_shared<StructType>(*static_cast<StructType *>(objType.get()));
-
+      std::static_pointer_cast<StructType>(objType);
   std::shared_ptr<Decl> identDecl = currScope->find(structType->identifier);
   if (identDecl == nullptr)
     return error("Type Analysis: Attempted to access field on expression "
@@ -87,8 +84,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(FieldAccess &fa) {
                  "that does not have a StructTypeDecl");
 
   std::shared_ptr<StructTypeDecl> structTypeDecl =
-      std::make_shared<StructTypeDecl>(
-          *static_cast<StructTypeDecl *>(identDecl.get()));
+      std::static_pointer_cast<StructTypeDecl>(identDecl);
 
   for (const auto &field : structTypeDecl->varDecls)
     if (field->identifer == fa.field)
@@ -108,7 +104,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
                  fc.funName);
 
   std::shared_ptr<FunDecl> funDecl =
-      std::make_shared<FunDecl>(*static_cast<FunDecl *>(identDecl.get()));
+      std::static_pointer_cast<FunDecl>(identDecl);
 
   if (funDecl->funParams.size() != fc.funArgs.size())
     return error("Type Analysis: Attempted to call function: " + fc.funName +
@@ -140,7 +136,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(If &i) {
     return error("Type Analysis: Type of While condition is invalid.");
 
   std::shared_ptr<BaseType> condBaseType =
-      std::make_shared<BaseType>(*static_cast<BaseType *>(condType.get()));
+      std::static_pointer_cast<BaseType>(condType);
 
   if (condBaseType->primitiveType != PrimitiveType::INT)
     return error("Type Analysis: Type of While condition is not INT.");
@@ -181,8 +177,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(StructType &st) {
   if (findDecl->astClass() != "StructTypeDecl")
     return error("Attempted to use a StructType that was not declared.");
 
-  st.typeDefinition = std::make_shared<StructTypeDecl>(
-      *static_cast<StructTypeDecl *>(findDecl.get()));
+  st.typeDefinition = std::static_pointer_cast<StructTypeDecl>(findDecl);
   return std::make_shared<StructType>(st);
 }
 std::shared_ptr<Type> TypeAnalysis::visit(StructTypeDecl &std) {
@@ -195,9 +190,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(ValueAt &va) {
     return error("Attempted to dereference variable that wasn't a pointer. "
                  "Was of type: " +
                  exprType->astClass());
-  return std::make_shared<PointerType>(
-             *static_cast<PointerType *>(exprType.get()))
-      ->pointedType;
+  return std::static_pointer_cast<PointerType>(exprType)->pointedType;
 }
 std::shared_ptr<Type> TypeAnalysis::visit(VarDecl &vd) { return nullptr; }
 std::shared_ptr<Type> TypeAnalysis::visit(VarExpr &ve) {
@@ -208,7 +201,6 @@ std::shared_ptr<Type> TypeAnalysis::visit(VarExpr &ve) {
                  " as a variable.");
   std::shared_ptr<VarDecl> veDecl =
       std::static_pointer_cast<VarDecl>(identDecl);
-  // std::make_shared<VarDecl>(*static_cast<VarDecl *>(identDecl.get()));
   ve.variableDecl = veDecl;
   return veDecl->type;
 }
@@ -217,7 +209,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(While &w) {
   if (conditionType->astClass() != "BaseType")
     return error("Type Analysis: Type of While condition is invalid.");
   std::shared_ptr<BaseType> conditionBaseType =
-      std::make_shared<BaseType>(*static_cast<BaseType *>(conditionType.get()));
+      std::static_pointer_cast<BaseType>(conditionType);
   if (conditionBaseType->primitiveType != PrimitiveType::INT)
     return error("Type Analysis: Type of While condition is not INT.");
   w.body->accept(*this);

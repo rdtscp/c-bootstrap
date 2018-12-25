@@ -22,12 +22,10 @@ public:
   Program(const std::vector<std::shared_ptr<Decl>> &decls) : decls(decls) {
     for (const std::shared_ptr<Decl> decl : decls) {
       if (decl->astClass() == "FunDecl") {
-        funDecls.push_back(
-            std::make_shared<FunDecl>(*static_cast<FunDecl *>(decl.get())));
+        funDecls.push_back(std::static_pointer_cast<FunDecl>(decl));
       }
       if (decl->astClass() == "VarDecl") {
-        globalVars.push_back(
-            std::make_shared<VarDecl>(*static_cast<VarDecl *>(decl.get())));
+        globalVars.push_back(std::static_pointer_cast<VarDecl>(decl));
       }
     }
   }
