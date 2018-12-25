@@ -22,22 +22,23 @@ add_test(ScannerUnitTests runScannerUnitTests)
 
 ADD_EXECUTABLE(runLexerUnitTests Test_Lexer.cpp main.cpp)
 TARGET_LINK_LIBRARIES(runLexerUnitTests
-libgtest
-libgmock
-Parser
-Scanner
-Lexer
+    libgtest
+    libgmock
+    Parser
+    Scanner
+    Lexer
 )
 add_test(LexerUnitTests runLexerUnitTests)
 
 ADD_EXECUTABLE(runPreprocessorUnitTests Test_Preprocessor.cpp main.cpp)
 TARGET_LINK_LIBRARIES(runPreprocessorUnitTests
-libgtest
-libgmock
-Parser
-Preprocessor
-Scanner
-Lexer
+    libgtest
+    libgmock
+    Parser
+    Preprocessor
+    Scanner
+    Lexer
+    NameAnalysis
 )
 add_test(PreprocessorUnitTests runPreprocessorUnitTests)
 
@@ -58,6 +59,9 @@ TARGET_LINK_LIBRARIES(runASTAnalysisUnitTests
     Parser
     Scanner
     Lexer
+    DotGraph
+    NameAnalysis
+    TypeAnalysis
 )
 add_test(ASTAnalysisUnitTests runASTAnalysisUnitTests)
 
@@ -68,5 +72,8 @@ TARGET_LINK_LIBRARIES(runCodeGenerationUnitTests
     Parser
     Scanner
     Lexer
+    DotGraph
+    NameAnalysis
+    TypeAnalysis
 )
 add_test(CodeGenerationUnitTests runCodeGenerationUnitTests)

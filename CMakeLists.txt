@@ -9,6 +9,9 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
   add_library(Preprocessor SHARED src/Preprocessor.cpp)
   add_library(Lexer SHARED src/Lexer.cpp)
   add_library(Parser SHARED src/Parser.cpp)
+  add_library(DotGraph SHARED src/passes/DotGraph.cpp)
+  add_library(NameAnalysis SHARED src/passes/NameAnalysis.cpp)
+  add_library(TypeAnalysis SHARED src/passes/TypeAnalysis.cpp)
 
   target_link_libraries(Lexer Scanner)
   target_link_libraries(Preprocessor Scanner)
@@ -16,7 +19,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
   target_link_libraries(Parser Lexer)
 
   install(
-    TARGETS Parser Lexer Preprocessor Scanner
+    TARGETS TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner
     DESTINATION lib
   )
   install(
@@ -25,7 +28,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
   )
 
   add_executable(cpp_base main.cpp)
-  target_link_libraries(cpp_base Parser Lexer Preprocessor Scanner)
+  target_link_libraries(cpp_base TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -76,6 +79,9 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
   add_library(Preprocessor SHARED src/Preprocessor.cpp)
   add_library(Lexer SHARED src/Lexer.cpp)
   add_library(Parser SHARED src/Parser.cpp)
+  add_library(DotGraph SHARED src/passes/DotGraph.cpp)
+  add_library(NameAnalysis SHARED src/passes/NameAnalysis.cpp)
+  add_library(TypeAnalysis SHARED src/passes/TypeAnalysis.cpp)
 
   target_link_libraries(Lexer Scanner)
   target_link_libraries(Preprocessor Scanner)
@@ -83,7 +89,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
   target_link_libraries(Parser Lexer)
 
   install(
-    TARGETS Parser Lexer Preprocessor Scanner
+    TARGETS TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner
     DESTINATION lib
   )
   install(
@@ -94,5 +100,5 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
   enable_testing()
   add_subdirectory(test)
   add_executable(cpp_base main.cpp)
-  target_link_libraries(cpp_base Parser Lexer Preprocessor Scanner)
+  target_link_libraries(cpp_base TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
