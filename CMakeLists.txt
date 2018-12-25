@@ -13,13 +13,16 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
   add_library(NameAnalysis SHARED src/passes/NameAnalysis.cpp)
   add_library(TypeAnalysis SHARED src/passes/TypeAnalysis.cpp)
 
+  add_library(GenerateMIPS SHARED src/targets/GenerateMIPS.cpp)
+
+
   target_link_libraries(Lexer Scanner)
   target_link_libraries(Preprocessor Scanner)
   target_link_libraries(Lexer Preprocessor)
   target_link_libraries(Parser Lexer)
 
   install(
-    TARGETS TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner
+    TARGETS GenerateMIPS TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner
     DESTINATION lib
   )
   install(
@@ -28,7 +31,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
   )
 
   add_executable(cpp_base main.cpp)
-  target_link_libraries(cpp_base TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner)
+  target_link_libraries(cpp_base GenerateMIPS TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -83,13 +86,15 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
   add_library(NameAnalysis SHARED src/passes/NameAnalysis.cpp)
   add_library(TypeAnalysis SHARED src/passes/TypeAnalysis.cpp)
 
+  add_library(GenerateMIPS SHARED src/targets/GenerateMIPS.cpp)  
+
   target_link_libraries(Lexer Scanner)
   target_link_libraries(Preprocessor Scanner)
   target_link_libraries(Lexer Preprocessor)
   target_link_libraries(Parser Lexer)
 
   install(
-    TARGETS TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner
+    TARGETS GenerateMIPS TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner
     DESTINATION lib
   )
   install(
@@ -100,5 +105,5 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
   enable_testing()
   add_subdirectory(test)
   add_executable(cpp_base main.cpp)
-  target_link_libraries(cpp_base TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner)
+  target_link_libraries(cpp_base GenerateMIPS TypeAnalysis NameAnalysis DotGraph Parser Lexer Preprocessor Scanner)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)

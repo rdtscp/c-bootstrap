@@ -4,16 +4,18 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/ASTPasses.h"
+#include "../include/passes/DotGraph.h"
+#include "../include/passes/NameAnalysis.h"
+#include "../include/passes/TypeAnalysis.h"
 #include "../include/Lexer.h"
 #include "../include/Parser.h"
 #include "../include/Scanner.h"
 
 using namespace ACC;
 
-// std::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-std::string test_prefix = "../../test/tests/";
+std::string test_prefix =
+"/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+// std::string test_prefix = "../../test/tests/";
 
 TEST(PreprocessorTest, IncludeWorks) {
   Scanner scanner(test_prefix + "preprocessor/prog.c");

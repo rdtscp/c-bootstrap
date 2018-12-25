@@ -75,5 +75,6 @@ TARGET_LINK_LIBRARIES(runCodeGenerationUnitTests
     DotGraph
     NameAnalysis
     TypeAnalysis
+    GenerateMIPS
 )
 add_test(CodeGenerationUnitTests runCodeGenerationUnitTests)

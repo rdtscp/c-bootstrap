@@ -4,17 +4,21 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/ASTPasses.h"
-#include "../include/CodeGeneration.h"
+#include "../include/passes/DotGraph.h"
+#include "../include/passes/NameAnalysis.h"
+#include "../include/passes/TypeAnalysis.h"
+
 #include "../include/Lexer.h"
 #include "../include/Parser.h"
 #include "../include/Scanner.h"
+#include "../include/targets/GenerateMIPS.h"
+#include "../include/targets/GenerateX86.h"
 
 using namespace ACC;
 
-// std::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-std::string test_prefix = "../../test/tests/";
+std::string test_prefix =
+    "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+// std::string test_prefix = "../../test/tests/";
 
 TEST(CodeGenerationTest, MIPS_Fibonacci) {
   Scanner scanner(test_prefix + "fibonacci.c");
@@ -25,13 +29,31 @@ TEST(CodeGenerationTest, MIPS_Fibonacci) {
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
-  
+
   TypeAnalysis typeAnalysis(progAST);
   typeAnalysis.run();
   ASSERT_EQ(0, typeAnalysis.errorCount);
-  
+
   GenerateMIPS mipsGenerator(progAST, "./fibonacci_mips.asm");
   mipsGenerator.run();
+}
+
+TEST(CodeGenerationTest, X86_fundeclsc) {
+  Scanner scanner(test_prefix + "parser/fundecls.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+  Program progAST = parser.parse();
+
+  NameAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+
+  TypeAnalysis typeAnalysis(progAST);
+  typeAnalysis.run();
+  ASSERT_EQ(0, typeAnalysis.errorCount);
+
+  GenerateX86 x86Generator(progAST, "./fibonacci_mips.s");
+  x86Generator.run();
 }
 
 // The fixture for testing class Project1. From google test primer.

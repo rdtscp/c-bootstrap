@@ -1,6 +1,7 @@
 #include "../../include/passes/NameAnalysis.h"
 
 using namespace ACC;
+
 NameAnalysis::NameAnalysis(Program &progAST) : progAST(progAST) {}
 
 void NameAnalysis::error(std::string error) {
@@ -51,7 +52,7 @@ void NameAnalysis::visit(FunDecl &fd) {
     return error("Attempted to declare a Function with an identifier that is "
                  "already in use: " +
                  fd.getIdentifier());
-  currScope->insertDecl(std::shared_ptr<FunDecl>(&fd));
+  currScope->insertDecl(std::make_shared<FunDecl>(fd));
 
   fd.funBlock->setOuterBlock(currScope);
   currScope = fd.funBlock;
@@ -115,7 +116,7 @@ void NameAnalysis::visit(VarDecl &vd) {
     return error("Attempted to declare a Variable with an identifier that is "
                  "already in use: " +
                  vd.getIdentifier());
-  currScope->insertDecl(std::shared_ptr<VarDecl>(&vd));
+  currScope->insertDecl(std::make_shared<VarDecl>(vd));
 }
 void NameAnalysis::visit(VarExpr &ve) {
   if (currScope->find(ve.identifier) == nullptr)

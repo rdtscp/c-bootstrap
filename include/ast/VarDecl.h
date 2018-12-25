@@ -18,7 +18,7 @@ public:
   std::string identifer;
   std::shared_ptr<FunDecl> parentFunc;
 
-  int fpOffset;
+  int fpOffset = 0;
 
   VarDecl(std::shared_ptr<Type> type, std::string p_identifer)
       : identifer(p_identifer), type(type) {}
