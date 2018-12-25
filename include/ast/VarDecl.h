@@ -11,7 +11,9 @@ namespace ACC {
 
 class FunDecl;
 
-class VarDecl : public Decl, public Stmt {
+class VarDecl : public Decl,
+                public Stmt,
+                public std::enable_shared_from_this<VarDecl> {
 
 public:
   std::shared_ptr<Type> type;
@@ -22,6 +24,8 @@ public:
 
   VarDecl(std::shared_ptr<Type> type, std::string p_identifer)
       : identifer(p_identifer), type(type) {}
+
+  std::shared_ptr<VarDecl> getptr() { return shared_from_this(); }
 
   bool operator==(Decl &rhs) const override {
     if (rhs.astClass() == astClass())

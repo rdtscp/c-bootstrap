@@ -12,7 +12,8 @@
 
 namespace ACC {
 
-class FunDecl : public Decl {
+class FunDecl : public Decl,
+                public std::enable_shared_from_this<FunDecl> {
 
 public:
   std::shared_ptr<Block> funBlock;
@@ -25,6 +26,8 @@ public:
           std::shared_ptr<Type> funType)
       : funBlock(funBlock), funName(funName), funParams(funParams),
         funType(funType) {}
+
+  std::shared_ptr<FunDecl> getptr() { return shared_from_this(); }
 
   bool operator==(Decl &rhs) const override {
     if (rhs.astClass() == astClass())

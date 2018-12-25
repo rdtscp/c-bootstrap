@@ -86,7 +86,7 @@ private:
     return X86::Register();
   }
   X86::Register visit(Block &b) override {
-    currScope = std::make_shared<Block>(b);
+    currScope = b.getptr();
     for (const auto &stmt : b.blockStmts)
       stmt->accept(*this);
 

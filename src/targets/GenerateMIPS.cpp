@@ -126,7 +126,7 @@ MIPS::Register GenerateMIPS::visit(BinOp &bo) {
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(Block &b) {
-  currScope = std::make_shared<Block>(b);
+  currScope = b.getptr();
   for (const auto &stmt : b.blockStmts)
     stmt->accept(*this);
 

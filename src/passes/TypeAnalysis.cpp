@@ -57,7 +57,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(BinOp &bo) {
 std::shared_ptr<Type> TypeAnalysis::visit(Block &b) {
   if (b.outerBlock == nullptr) {
     b.setOuterBlock(currScope);
-    currScope = std::make_shared<Block>(b);
+    currScope = b.getptr();
   }
   for (const auto &stmt : b.blockStmts)
     stmt->accept(*this);

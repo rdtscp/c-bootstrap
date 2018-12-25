@@ -11,7 +11,7 @@
 
 namespace ACC {
 
-class Block : public Stmt {
+class Block : public Stmt, public std::enable_shared_from_this<Block> {
 
 public:
   std::map<std::string, std::shared_ptr<Decl>> blockDecls;
@@ -20,6 +20,8 @@ public:
 
   Block(const std::vector<std::shared_ptr<Stmt>> &newBlockStmts)
       : blockStmts(newBlockStmts) {}
+
+  std::shared_ptr<Block> getptr() { return shared_from_this(); }
 
   std::shared_ptr<Decl> find(const std::string &identifier) {
     std::shared_ptr<Decl> local = findLocal(identifier);

@@ -33,7 +33,7 @@ void NameAnalysis::visit(BinOp &bo) {
 void NameAnalysis::visit(Block &b) {
   if (b.outerBlock == nullptr) {
     b.setOuterBlock(currScope);
-    currScope = std::make_shared<Block>(b);
+    currScope = b.getptr();
   }
   for (const auto &stmt : b.blockStmts)
     stmt->accept(*this);
@@ -52,7 +52,7 @@ void NameAnalysis::visit(FunDecl &fd) {
     return error("Attempted to declare a Function with an identifier that is "
                  "already in use: " +
                  fd.getIdentifier());
-  currScope->insertDecl(std::make_shared<FunDecl>(fd));
+  currScope->insertDecl(fd.getptr());
 
   fd.funBlock->setOuterBlock(currScope);
   currScope = fd.funBlock;
@@ -97,7 +97,7 @@ void NameAnalysis::visit(StructTypeDecl &std) {
                  "already in use: " +
                  std.getIdentifier());
 
-  currScope->insertDecl(std::make_shared<StructTypeDecl>(std));
+  currScope->insertDecl(std.getptr());
 
   /* Check that the fields in this struct are unique */
   std::set<std::string> structTypeFields;
@@ -116,7 +116,7 @@ void NameAnalysis::visit(VarDecl &vd) {
     return error("Attempted to declare a Variable with an identifier that is "
                  "already in use: " +
                  vd.getIdentifier());
-  currScope->insertDecl(std::make_shared<VarDecl>(vd));
+  currScope->insertDecl(vd.getptr());
 }
 void NameAnalysis::visit(VarExpr &ve) {
   if (currScope->find(ve.identifier) == nullptr)

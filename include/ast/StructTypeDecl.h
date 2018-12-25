@@ -11,7 +11,8 @@
 
 namespace ACC {
 
-class StructTypeDecl : public Decl {
+class StructTypeDecl : public Decl,
+                       public std::enable_shared_from_this<StructTypeDecl> {
 
 public:
   std::shared_ptr<StructType> structType;
@@ -22,6 +23,8 @@ public:
   StructTypeDecl(std::shared_ptr<StructType> structType,
                  const std::vector<std::shared_ptr<VarDecl>> &varDecls)
       : structType(structType), varDecls(varDecls) {}
+
+  std::shared_ptr<StructTypeDecl> getptr() { return shared_from_this(); }
 
   bool operator==(Decl &rhs) const override {
     if (rhs.astClass() == astClass())
