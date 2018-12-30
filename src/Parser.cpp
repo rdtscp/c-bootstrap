@@ -541,12 +541,16 @@ std::shared_ptr<Expr> Parser::parseAddExpr() {
     std::shared_ptr<Expr> rhs = parseMulExpr();
     std::shared_ptr<BinOp> newNode =
         std::make_shared<BinOp>(BinOp(lhs, Op::ADD, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   if (accept(TC::MINUS)) {
     expect(TC::MINUS);
     std::shared_ptr<Expr> rhs = parseMulExpr();
     std::shared_ptr<BinOp> newNode =
         std::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs));
+    newNode->position = currToken.position;
+    return newNode;
   }
   return lhs;
 }
