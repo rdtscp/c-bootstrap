@@ -65,21 +65,24 @@ public:
            const std::string &comment = "");
   void block(std::string blockName, const std::string &comment = "");
   void call(const std::string &ident, const std::string &comment = "");
-  void comment(const std::string &comment);
-  void push(const std::shared_ptr<X86::Operand> &op,
-            const std::string &comment = "");
-  void pop(const std::shared_ptr<X86::Operand> &reg,
+  void cmp(const std::shared_ptr<X86::Operand> &reg, const int value,
            const std::string &comment = "");
-  void ret(const std::string &comment = "");
+  void comment(const std::string &comment);
+  void imul(const std::shared_ptr<X86::Operand> &dst,
+            const std::shared_ptr<X86::Operand> &src,
+            const std::string &comment = "");
+  void jeq(const std::string &label, const std::string &comment = "");
+  void jmp(const std::string &label, const std::string &comment = "");
   void mov(const std::shared_ptr<X86::Operand> &dst,
            const std::shared_ptr<X86::Operand> &src,
            const std::string &comment = "");
+  void pop(const std::shared_ptr<X86::Operand> &reg,
+           const std::string &comment = "");
+  void push(const std::shared_ptr<X86::Operand> &op,
+            const std::string &comment = "");
+  void ret(const std::string &comment = "");
   void sub(const std::shared_ptr<X86::Operand> &reg, const int value,
            const std::string &comment = "");
-  void cmp(const std::shared_ptr<X86::Operand> &reg, const int value,
-           const std::string &comment = "");
-  void jeq(const std::string &label, const std::string &comment = "");
-  void jmp(const std::string &label, const std::string &comment = "");
   void write(const std::string &str);
 
 private:

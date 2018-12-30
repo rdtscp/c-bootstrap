@@ -47,8 +47,6 @@ std::string None::toString() const { return "None::INTERNAL_ERROR"; }
 
 Writer::Writer(std::string filename) { x86Output.open(filename); }
 
-void Writer::write(const std::string &str) { x86Output << str << std::endl; }
-
 void Writer::add(const std::shared_ptr<X86::Operand> &op1,
                  const std::shared_ptr<X86::Operand> &op2,
                  const std::string &comment) {
@@ -56,30 +54,36 @@ void Writer::add(const std::shared_ptr<X86::Operand> &op1,
             << std::endl;
 }
 
-void Writer::comment(const std::string &comment) {
-  x86Output << ";" << comment << std::endl;
-}
-
 void Writer::block(std::string blockName, const std::string &comment) {
   x86Output << "\n" << blockName << ":" << std::endl;
-}
-
-void Writer::push(const std::shared_ptr<X86::Operand> &op,
-                  const std::string &comment) {
-  x86Output << "push " << op->toString() << std::endl;
-}
-
-void Writer::pop(const std::shared_ptr<X86::Operand> &op,
-                 const std::string &comment) {
-  x86Output << "pop " << op->toString() << std::endl;
 }
 
 void Writer::call(const std::string &ident, const std::string &comment) {
   x86Output << "call " << ident << "FunDecl" << std::endl;
 }
 
-void Writer::ret(const std::string &comment) {
-  x86Output << "ret" << std::endl;
+void Writer::cmp(const std::shared_ptr<X86::Operand> &op, const int value,
+                 const std::string &comment) {
+  x86Output << "cmp " << op->toString() << ", " << value << std::endl;
+}
+
+void Writer::comment(const std::string &comment) {
+  x86Output << ";" << comment << std::endl;
+}
+
+void Writer::imul(const std::shared_ptr<X86::Operand> &op1,
+                  const std::shared_ptr<X86::Operand> &op2,
+                  const std::string &comment) {
+  x86Output << "imul " << op1->toString() << ", " << op2->toString()
+            << std::endl;
+}
+
+void Writer::jeq(const std::string &label, const std::string &comment) {
+  x86Output << "jeq " << label << std::endl;
+}
+
+void Writer::jmp(const std::string &label, const std::string &comment) {
+  x86Output << "jmp " << label << std::endl;
 }
 
 void Writer::mov(const std::shared_ptr<X86::Operand> &dst,
@@ -93,21 +97,24 @@ void Writer::mov(const std::shared_ptr<X86::Operand> &dst,
               << std::endl;
 }
 
+void Writer::pop(const std::shared_ptr<X86::Operand> &op,
+                 const std::string &comment) {
+  x86Output << "pop " << op->toString() << std::endl;
+}
+
+void Writer::push(const std::shared_ptr<X86::Operand> &op,
+                  const std::string &comment) {
+  x86Output << "push " << op->toString() << std::endl;
+}
+
+void Writer::ret(const std::string &comment) {
+  x86Output << "ret" << std::endl;
+}
+
 void Writer::sub(const std::shared_ptr<X86::Operand> &op, const int value,
                  const std::string &comment) {
   x86Output << "sub " << op->toString() << ", " << value << "\t;" << comment
             << std::endl;
 }
 
-void Writer::cmp(const std::shared_ptr<X86::Operand> &op, const int value,
-                 const std::string &comment) {
-  x86Output << "cmp " << op->toString() << ", " << value << std::endl;
-}
-
-void Writer::jeq(const std::string &label, const std::string &comment) {
-  x86Output << "jeq " << label << std::endl;
-}
-
-void Writer::jmp(const std::string &label, const std::string &comment) {
-  x86Output << "jmp " << label << std::endl;
-}
+void Writer::write(const std::string &str) { x86Output << str << std::endl; }

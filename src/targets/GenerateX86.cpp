@@ -49,6 +49,9 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
   case Op::ADD:
     x86.add(lhsOperand, rhsOperand);
     break;
+  case Op::MUL:
+    x86.imul(lhsOperand, rhsOperand);
+    break;
   default:
     x86.comment("Not Implemented this BinOp Yet");
     break;
