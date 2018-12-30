@@ -4,12 +4,12 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/passes/DotGraph.h"
-#include "../include/passes/NameAnalysis.h"
-#include "../include/passes/TypeAnalysis.h"
 #include "../include/Lexer.h"
 #include "../include/Parser.h"
 #include "../include/Scanner.h"
+#include "../include/passes/DotGraph.h"
+#include "../include/passes/NameAnalysis.h"
+#include "../include/passes/TypeAnalysis.h"
 
 using namespace ACC;
 
@@ -23,7 +23,7 @@ TEST(PreprocessorTest, IncludeWorks) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  NameAnalysis nameAnalysis(progAST);;
+  NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 }
@@ -34,7 +34,7 @@ TEST(PreprocessorTest, NestedIncludes) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  NameAnalysis nameAnalysis(progAST);;
+  NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
 
   ASSERT_EQ(progAST->decls.size(), 3);
@@ -47,7 +47,7 @@ TEST(PreprocessorTest, IfNDef) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  NameAnalysis nameAnalysis(progAST);;
+  NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
 
   ASSERT_EQ(progAST->decls.size(), 2);
@@ -60,7 +60,7 @@ TEST(PreprocessorTest, PragmaOnce) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  NameAnalysis nameAnalysis(progAST);;
+  NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
 
   ASSERT_EQ(progAST->decls.size(), 3);
