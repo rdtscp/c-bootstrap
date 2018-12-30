@@ -21,17 +21,7 @@ void GenerateX86::printErrors() const {
 void GenerateX86::run() { visit(*progAST); }
 
 void GenerateX86::alloc(const VarDecl &vd) {
-  const int size = vd.getBytes();
-
-  std::string allocSize = "DB ?";
-  if (size > 1)
-    allocSize = "DW ?";
-  if (size > 2)
-    allocSize = "DD ?";
-  if (size > 4)
-    allocSize = "DB " + std::to_string(size) + "DUP(?)";
-
-  x86.write(vd.getIdentifier() + " " + allocSize);
+  x86.write(vd.getIdentifier() + ": db " + std::to_string(vd.getBytes()));
 }
 
 /* ---- Visit AST ---- */
@@ -164,14 +154,14 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(PointerType &pt) {
 std::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   currScope = p.globalScope;
 
-  x86.write(".DATA");
   for (std::shared_ptr<VarDecl> globalVar : p.globalVars)
     alloc(*globalVar);
 
-  if (x86.macOS)
-    x86.write(".globl _mainFunDecl");
-  else
-    x86.write(".globl mainFunDecl");
+  x86.write("global _main");
+
+  x86.block("_main");
+  x86.call("main");
+  x86.ret();
 
   for (std::shared_ptr<FunDecl> func : p.funDecls)
     func->accept(*this);
@@ -217,14 +207,15 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(VarExpr &ve) {
   int fpOffset = ve.variableDecl->fpOffset;
   x86.comment("visit(VarExpr) with offset: " + std::to_string(fpOffset));
   if (fpOffset == 0)
-    return std::make_shared<X86::Register>(X86::Register(0, ve.variableDecl->getIdentifier()));
+    return std::make_shared<X86::Register>(
+        X86::Register(0, ve.variableDecl->getIdentifier()));
 
   if (fpOffset > 0)
-    return std::make_shared<X86::Register>(X86::Register(0, "[ebp+" + std::to_string(fpOffset) +
-                                                "]"));
+    return std::make_shared<X86::Register>(
+        X86::Register(0, "[ebp+" + std::to_string(fpOffset) + "]"));
   else
-    return std::make_shared<X86::Register>(X86::Register(0, "[ebp-" + std::to_string(fpOffset) +
-                                                "]"));
+    return std::make_shared<X86::Register>(
+        X86::Register(0, "[ebp-" + std::to_string(fpOffset) + "]"));
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(While &w) {
   w.condition->accept(*this);

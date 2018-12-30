@@ -50,8 +50,6 @@ void Writer::comment(const std::string &comment) {
 }
 
 void Writer::block(std::string blockName, const std::string &comment) {
-  if (macOS)
-    blockName = "_" + blockName;
   x86Output << "\n" << blockName << ":" << std::endl;
 }
 
@@ -64,10 +62,7 @@ void Writer::pop(const Register &reg, const std::string &comment) {
 }
 
 void Writer::call(const std::string &ident, const std::string &comment) {
-  if (macOS)
-    x86Output << "call _" << ident << "FunDecl" << std::endl;
-  else
-    x86Output << "call " << ident << "FunDecl" << std::endl;
+  x86Output << "call " << ident << "FunDecl" << std::endl;
 }
 
 void Writer::ret(const std::string &comment) {

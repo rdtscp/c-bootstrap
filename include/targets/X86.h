@@ -44,7 +44,6 @@ public:
 
 class Writer {
 public:
-  bool macOS = true;
 
   Writer(std::string filename);
 
