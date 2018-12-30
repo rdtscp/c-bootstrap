@@ -13,7 +13,13 @@ namespace ACC {
 
 namespace X86 {
 
-class Register {
+class Operand {
+public:
+  virtual std::string opType() const = 0;
+  virtual std::string toString() const = 0;
+};
+
+class Register : public Operand {
 public:
   int bits;
   std::string name;
@@ -21,7 +27,8 @@ public:
   Register();
   Register(int bits, std::string name);
   bool operator==(const Register &rhs);
-  std::string toString() const;
+  std::string opType() const override;
+  std::string toString() const override;
 };
 
 class Writer {

@@ -13,6 +13,8 @@ bool Register::operator==(const Register &rhs) {
   return (bits == rhs.bits && name == rhs.name);
 }
 
+std::string Register::opType() const { return "Register"; }
+
 std::string Register::toString() const { return name; }
 
 std::ostream &operator<<(std::ostream &stream, const Register &reg) {
