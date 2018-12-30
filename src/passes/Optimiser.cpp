@@ -10,7 +10,6 @@ void Optimiser::optimised(std::string error) {
 }
 
 void Optimiser::printOptimisations() {
-  std::cerr << "Optimisations Made:" << std::endl;
   for (const auto &optimisation : optimisations)
     std::cerr << "\t" << optimisation << std::endl;
 }
@@ -48,9 +47,6 @@ std::shared_ptr<ASTNode> Optimiser::visit(BinOp &bo) {
         std::static_pointer_cast<IntLiteral>(bo.lhs);
     std::shared_ptr<IntLiteral> rhsIntLiteral =
         std::static_pointer_cast<IntLiteral>(bo.rhs);
-
-    std::cout << lhsIntLiteral->value << std::endl;
-    std::cout << rhsIntLiteral->value << std::endl;
 
     int lhsVal = std::stoi(lhsIntLiteral->value);
     int rhsVal = std::stoi(rhsIntLiteral->value);
