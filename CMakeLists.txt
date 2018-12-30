@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.6.2)
 set (CMAKE_CXX_STANDARD 14)
 
-project(cpp_base)
+project(acc)
 
 IF(CMAKE_BUILD_TYPE MATCHES Release)
   message(" --- Building in Release Mode ---")
@@ -65,8 +65,8 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
     DESTINATION include
   )
 
-  add_executable(cpp_base main.cpp)
-  target_link_libraries(cpp_base AST DotGraph NameAnalysis TypeAnalysis GenerateMIPS GenerateX86  MIPS X86 Lexer Parser Preprocessor Scanner)
+  add_executable(acc main.cpp)
+  target_link_libraries(acc AST DotGraph NameAnalysis TypeAnalysis GenerateMIPS GenerateX86  MIPS X86 Lexer Parser Preprocessor Scanner)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -174,6 +174,6 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
 
   enable_testing()
   add_subdirectory(test)
-  add_executable(cpp_base main.cpp)
-  target_link_libraries(cpp_base AST DotGraph NameAnalysis TypeAnalysis GenerateMIPS GenerateX86  MIPS X86 Lexer Parser Preprocessor Scanner)
+  add_executable(acc main.cpp)
+  target_link_libraries(acc AST DotGraph NameAnalysis TypeAnalysis GenerateMIPS GenerateX86  MIPS X86 Lexer Parser Preprocessor Scanner)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)

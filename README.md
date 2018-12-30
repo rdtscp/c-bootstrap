@@ -91,7 +91,7 @@ litExpr      -> INT_LITERAL
 ### macOS Notes
 ```
 # Building Assembly:
-cpp_base main.cpp
+acc main.cpp
 # Building Objects
 nasm -f macho x86.s
 # Link Objects
