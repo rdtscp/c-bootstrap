@@ -20,7 +20,7 @@ MIPS::Register FunCall::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-X86::Register FunCall::accept(ASTVisitor<X86::Register> &v) {
+std::shared_ptr<X86::Operand> FunCall::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
   return v.visit(*this);
 }
 

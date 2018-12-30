@@ -18,7 +18,7 @@ MIPS::Register IntLiteral::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-X86::Register IntLiteral::accept(ASTVisitor<X86::Register> &v) {
+std::shared_ptr<X86::Operand> IntLiteral::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
   return v.visit(*this);
 }
 

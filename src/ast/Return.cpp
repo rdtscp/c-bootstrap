@@ -21,7 +21,7 @@ MIPS::Register Return::accept(ASTVisitor<MIPS::Register> &v)  {
   return v.visit(*this);
 }
 
-X86::Register Return::accept(ASTVisitor<X86::Register> &v)  {
+std::shared_ptr<X86::Operand> Return::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v)  {
   return v.visit(*this);
 }
 

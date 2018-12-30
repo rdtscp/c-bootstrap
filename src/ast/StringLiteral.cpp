@@ -19,7 +19,7 @@ MIPS::Register StringLiteral::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-X86::Register StringLiteral::accept(ASTVisitor<X86::Register> &v) {
+std::shared_ptr<X86::Operand> StringLiteral::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
   return v.visit(*this);
 }
 

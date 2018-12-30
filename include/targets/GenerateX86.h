@@ -15,7 +15,7 @@
 
 namespace ACC {
 
-class GenerateX86 : public ASTVisitor<X86::Register> {
+class GenerateX86 : public ASTVisitor<std::shared_ptr<X86::Operand>> {
 
 public:
   int errorCount = 0;
@@ -43,31 +43,31 @@ private:
 
   /* ---- Visit AST ---- */
 
-  X86::Register visit(ArrayAccess &aa) override;
-  X86::Register visit(ArrayType &at) override;
-  X86::Register visit(Assign &as) override;
-  X86::Register visit(BaseType &bt) override;
-  X86::Register visit(BinOp &bo) override;
-  X86::Register visit(Block &b) override;
-  X86::Register visit(CharLiteral &cl) override;
-  X86::Register visit(FieldAccess &fa) override;
-  X86::Register visit(FunCall &fc) override;
-  X86::Register visit(FunDecl &fd) override;
-  X86::Register visit(If &i) override;
-  X86::Register visit(IntLiteral &il) override;
-  X86::Register visit(ParenthExpr &pe) override;
-  X86::Register visit(PointerType &pt) override;
-  X86::Register visit(Program &p) override;
-  X86::Register visit(Return &r) override;
-  X86::Register visit(SizeOf &so) override;
-  X86::Register visit(StringLiteral &sl) override;
-  X86::Register visit(StructType &st) override;
-  X86::Register visit(StructTypeDecl &std) override;
-  X86::Register visit(TypeCast &tc) override;
-  X86::Register visit(ValueAt &va) override;
-  X86::Register visit(VarDecl &vd) override;
-  X86::Register visit(VarExpr &ve) override;
-  X86::Register visit(While &w) override;
+  std::shared_ptr<X86::Operand> visit(ArrayAccess &aa) override;
+  std::shared_ptr<X86::Operand> visit(ArrayType &at) override;
+  std::shared_ptr<X86::Operand> visit(Assign &as) override;
+  std::shared_ptr<X86::Operand> visit(BaseType &bt) override;
+  std::shared_ptr<X86::Operand> visit(BinOp &bo) override;
+  std::shared_ptr<X86::Operand> visit(Block &b) override;
+  std::shared_ptr<X86::Operand> visit(CharLiteral &cl) override;
+  std::shared_ptr<X86::Operand> visit(FieldAccess &fa) override;
+  std::shared_ptr<X86::Operand> visit(FunCall &fc) override;
+  std::shared_ptr<X86::Operand> visit(FunDecl &fd) override;
+  std::shared_ptr<X86::Operand> visit(If &i) override;
+  std::shared_ptr<X86::Operand> visit(IntLiteral &il) override;
+  std::shared_ptr<X86::Operand> visit(ParenthExpr &pe) override;
+  std::shared_ptr<X86::Operand> visit(PointerType &pt) override;
+  std::shared_ptr<X86::Operand> visit(Program &p) override;
+  std::shared_ptr<X86::Operand> visit(Return &r) override;
+  std::shared_ptr<X86::Operand> visit(SizeOf &so) override;
+  std::shared_ptr<X86::Operand> visit(StringLiteral &sl) override;
+  std::shared_ptr<X86::Operand> visit(StructType &st) override;
+  std::shared_ptr<X86::Operand> visit(StructTypeDecl &std) override;
+  std::shared_ptr<X86::Operand> visit(TypeCast &tc) override;
+  std::shared_ptr<X86::Operand> visit(ValueAt &va) override;
+  std::shared_ptr<X86::Operand> visit(VarDecl &vd) override;
+  std::shared_ptr<X86::Operand> visit(VarExpr &ve) override;
+  std::shared_ptr<X86::Operand> visit(While &w) override;
 };
 }; // namespace ACC
 
