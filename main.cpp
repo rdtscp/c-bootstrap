@@ -17,21 +17,19 @@ int main(int argc, char const *argv[]) {
   bool optimise = false;
   bool outputMIPS = false;
   bool outputX86 = false;
-  if (argc < 2) {
-    std::cout << "Provide Filename" << std::endl;
-    return 1;
-  }
   if (argc < 3) {
-    std::cout << "Provide Target Arch" << std::endl;
+    std::cout << "Usage: acc <filename> { x86 | mips } [ --print |  --opt ]"
+              << std::endl;
+    return 1;
   }
   if (argc == 3) {
     std::string target(argv[2]);
-    if (target == "--mips")
+    if (target == "mips")
       outputMIPS = true;
-    else if (target == "--x86")
+    else if (target == "x86")
       outputX86 = true;
     else {
-      std::cout << "Invalid Target Arch, Must be either --mips or --x86"
+      std::cout << "Invalid Target Arch, Must be either 'mips' or 'x86'"
                 << std::endl;
       return 1;
     }
@@ -45,9 +43,9 @@ int main(int argc, char const *argv[]) {
   }
   if (argc >= 5) {
     std::string flag(argv[4]);
-    if (flag == "-p" || flag == "--print")
+    if (flag == "--print")
       outputGraph = true;
-    if (flag == "-o" || flag == "--opt")
+    if (flag == "--opt")
       optimise = true;
   }
 
@@ -60,11 +58,6 @@ int main(int argc, char const *argv[]) {
   ACC::Parser parser(lexer);
 
   std::shared_ptr<ACC::Program> progAST = parser.parse();
-
-  if (outputGraph) {
-    ACC::DotGraph dotGraph(progAST);
-    dotGraph.print();
-  }
 
   ACC::NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
@@ -87,6 +80,11 @@ int main(int argc, char const *argv[]) {
       optimiser.run();
       optimiser.printOptimisations();
     } while (optimiser.optimisationsCount > 0);
+  }
+
+  if (outputGraph) {
+    ACC::DotGraph dotGraph(progAST);
+    dotGraph.print();
   }
 
   if (outputMIPS) {
