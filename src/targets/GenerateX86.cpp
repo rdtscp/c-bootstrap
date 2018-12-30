@@ -45,11 +45,19 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(BaseType &bt) {
 std::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
   /* Evaluate LHS and Store to Stack */
   std::shared_ptr<X86::Operand> lhsOperand = bo.lhs->accept(*this);
-  x86.push(lhsOperand, "Store LHS to Stack");
+  if (lhsOperand->opType() != "GlobalVariable")
+    x86.push(lhsOperand, "Store LHS to Stack");
+  else
+    x86.comment("LHS is a GlobalVariable: " + lhsOperand->toString());
 
   /* Evaluate RHS and Store in EAX */
   std::shared_ptr<X86::Operand> rhsOperand = bo.rhs->accept(*this);
-  x86.pop(X86::ecx, "Restore LHS from Stack");
+
+  if (lhsOperand->opType() != "GlobalVariable")
+    x86.pop(X86::ecx, "Restore LHS from Stack");
+  else
+    x86.mov(X86::ecx, lhsOperand,
+            "Restore LHS from GlobalVariable: " + lhsOperand->toString());
 
   /* Perform BinOp */
   switch (bo.operation) {

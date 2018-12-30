@@ -96,19 +96,25 @@ void Writer::jmp(const std::string &label, const std::string &comment) {
 void Writer::mov(const std::shared_ptr<X86::Operand> &dst,
                  const std::shared_ptr<X86::Operand> &src,
                  const std::string &comment) {
-  std::string output = "mov " + dst->toString() + ", " + src->toString();
-  if (dst->opType() == "GlobalVariable")
-    output = "mov [" + dst->toString() + "], " + src->toString();
+  if (dst == src)
+    return;
 
+  std::string dstStr = dst->toString();
+  std::string srcStr = src->toString();
+  if (dst->opType() == "GlobalVariable")
+    dstStr = "[" + dstStr + "]";
+  if (src->opType() == "GlobalVariable")
+    srcStr = "[" + srcStr + "]";
+
+  std::string output = "mov " + dstStr + ", " + srcStr;
   if (comment != "")
     output += "\t; " + comment;
-
   write(output);
 }
 
 void Writer::pop(const std::shared_ptr<X86::Operand> &op,
                  const std::string &comment) {
-  std::string output = "pop " + op->toString();
+  std::string output = "pop dword " + op->toString();
   if (comment != "")
     output += "\t; " + comment;
   write(output);
@@ -116,7 +122,7 @@ void Writer::pop(const std::shared_ptr<X86::Operand> &op,
 
 void Writer::push(const std::shared_ptr<X86::Operand> &op,
                   const std::string &comment) {
-  std::string output = "push " + op->toString();
+  std::string output = "push dword " + op->toString();
   if (comment != "")
     output += "\t; " + comment;
   write(output);
