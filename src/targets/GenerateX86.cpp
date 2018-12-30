@@ -28,24 +28,24 @@ void GenerateX86::alloc(const VarDecl &vd) {
 
 std::shared_ptr<X86::Operand> GenerateX86::visit(ArrayAccess &aa) {
   aa.array->accept(*this);
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(ArrayType &at) {
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(Assign &as) {
   std::shared_ptr<X86::Operand> lhsRegRes = as.lhs->accept(*this);
   std::shared_ptr<X86::Operand> rhsResReg = as.rhs->accept(*this);
-  // x86.mov(lhsRegRes, rhsResReg);
-  return std::shared_ptr<X86::Operand>();
+  x86.mov(lhsRegRes, rhsResReg);
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(BaseType &bt) {
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
   bo.lhs->accept(*this);
   bo.rhs->accept(*this);
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
   currScope = b.getptr();
@@ -60,14 +60,14 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
   //   }
   // }
   currScope = b.outerBlock;
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(CharLiteral &cl) {
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(FieldAccess &fa) {
   fa.object->accept(*this);
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(FunCall &fc) {
   std::vector<std::shared_ptr<Expr>> revArgs = fc.funArgs;
@@ -77,7 +77,7 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(FunCall &fc) {
     // x86.push(argReg);
   }
   x86.call(fc.funName);
-  return std::make_shared<X86::Register>(X86::eax);
+  return X86::eax;
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(FunDecl &fd) {
   currScope = fd.funBlock;
@@ -108,7 +108,7 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(FunDecl &fd) {
   x86.write("");
 
   currScope = fd.funBlock->outerBlock;
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>(X86::None());
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(If &i) {
   /* Calculate Names for Blocks */
@@ -139,17 +139,17 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(If &i) {
 
   /* Handle after the If statement. */
   x86.block(endBlockName);
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(IntLiteral &il) {
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(ParenthExpr &pe) {
   pe.innerExpr->accept(*this);
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(PointerType &pt) {
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   currScope = p.globalScope;
@@ -166,31 +166,31 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   for (std::shared_ptr<FunDecl> func : p.funDecls)
     func->accept(*this);
 
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(Return &r) {
   if (r.returnExpr)
     r.returnExpr->accept(*this);
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(SizeOf &so) {
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(StringLiteral &sl) {
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(StructType &st) {
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(StructTypeDecl &std) {
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(TypeCast &tc) {
   return tc.expr->accept(*this);
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(ValueAt &va) {
   va.derefExpr->accept(*this);
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(VarDecl &vd) {
   int bytesRequired = vd.getBytes();
@@ -200,25 +200,25 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(VarDecl &vd) {
   x86.sub(X86::esp, bytesRequired,
           "Allocated for VarDecl: " + vd.getIdentifier() +
               " with fpOffset: " + std::to_string(currFpOffset));
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
   int fpOffset = ve.variableDecl->fpOffset;
   x86.comment("visit(VarExpr) with offset: " + std::to_string(fpOffset));
   if (fpOffset == 0)
-    return std::make_shared<X86::Register>(
-        X86::Register(0, ve.variableDecl->getIdentifier()));
+    return std::make_shared<X86::GlobalVariable>(
+        X86::GlobalVariable(ve.variableDecl->getIdentifier()));
 
   if (fpOffset > 0)
     return std::make_shared<X86::Register>(
         X86::Register(0, "[ebp+" + std::to_string(fpOffset) + "]"));
   else
     return std::make_shared<X86::Register>(
-        X86::Register(0, "[ebp-" + std::to_string(fpOffset) + "]"));
+        X86::Register(0, "[ebp" + std::to_string(fpOffset) + "]"));
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(While &w) {
   w.condition->accept(*this);
   w.body->accept(*this);
-  return std::shared_ptr<X86::Operand>();
+  return std::make_shared<X86::None>();
 }

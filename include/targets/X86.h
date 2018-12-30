@@ -42,9 +42,14 @@ public:
   std::string toString() const override;
 };
 
+class None : public Operand {
+public:
+  std::string opType() const override;
+  std::string toString() const override;
+};
+
 class Writer {
 public:
-
   Writer(std::string filename);
 
   void write(const std::string &str);
@@ -53,20 +58,23 @@ public:
 
   void block(std::string blockName, const std::string &comment = "");
 
-  void push(const X86::Register &reg, const std::string &comment = "");
+  void push(const std::shared_ptr<X86::Operand> &op,
+            const std::string &comment = "");
 
-  void pop(const Register &reg, const std::string &comment = "");
+  void pop(const std::shared_ptr<X86::Operand> &reg,
+           const std::string &comment = "");
 
   void call(const std::string &ident, const std::string &comment = "");
 
   void ret(const std::string &comment = "");
-  void mov(const Register &dst, const Register &src,
+  void mov(const std::shared_ptr<X86::Operand> &dst,
+           const std::shared_ptr<X86::Operand> &src,
            const std::string &comment = "");
 
-  void sub(const Register &reg, const int value,
+  void sub(const std::shared_ptr<X86::Operand> &reg, const int value,
            const std::string &comment = "");
 
-  void cmp(const Register &reg, const int value,
+  void cmp(const std::shared_ptr<X86::Operand> &reg, const int value,
            const std::string &comment = "");
 
   void jeq(const std::string &label, const std::string &comment = "");
@@ -77,16 +85,14 @@ private:
   std::ofstream x86Output;
 };
 
-static Register eax(32, "eax");
-static Register ebx(32, "ebx");
-static Register ecx(32, "ecx");
-static Register edx(32, "edx");
-static Register esi(32, "esi");
-static Register edi(32, "edi");
-static Register esp(32, "esp");
-static Register ebp(32, "ebp");
-
-/* ---- X86 Operations ---- */
+static std::shared_ptr<Register> eax(new Register(32, "eax"));
+static std::shared_ptr<Register> ebx(new Register(32, "ebx"));
+static std::shared_ptr<Register> ecx(new Register(32, "ecx"));
+static std::shared_ptr<Register> edx(new Register(32, "edx"));
+static std::shared_ptr<Register> esi(new Register(32, "esi"));
+static std::shared_ptr<Register> edi(new Register(32, "edi"));
+static std::shared_ptr<Register> esp(new Register(32, "esp"));
+static std::shared_ptr<Register> ebp(new Register(32, "ebp"));
 
 }; // namespace X86
 

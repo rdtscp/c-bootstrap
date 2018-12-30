@@ -17,10 +17,6 @@ std::string Register::opType() const { return "Register"; }
 
 std::string Register::toString() const { return name; }
 
-std::ostream &operator<<(std::ostream &stream, const Register &reg) {
-  return stream << reg.toString();
-}
-
 /* ---- X86::GlobalVariable --- */
 
 GlobalVariable::GlobalVariable() : name("INTERNAL_ERROR") {}
@@ -31,13 +27,15 @@ bool GlobalVariable::operator==(const GlobalVariable &rhs) {
   return (name == rhs.name);
 }
 
-std::string GlobalVariable::opType() const { return "Register"; }
+std::string GlobalVariable::opType() const { return "GlobalVariable"; }
 
 std::string GlobalVariable::toString() const { return name; }
 
-std::ostream &operator<<(std::ostream &stream, const GlobalVariable &gv) {
-  return stream << gv.toString();
-}
+/* ---- X86::None --- */
+
+std::string None::opType() const { return "None"; }
+
+std::string None::toString() const { return "INTERNAL_ERROR"; }
 
 /* ---- X86::Writer ---- */
 
@@ -53,12 +51,14 @@ void Writer::block(std::string blockName, const std::string &comment) {
   x86Output << "\n" << blockName << ":" << std::endl;
 }
 
-void Writer::push(const Register &reg, const std::string &comment) {
-  x86Output << "push " << reg << std::endl;
+void Writer::push(const std::shared_ptr<X86::Operand> &op,
+                  const std::string &comment) {
+  x86Output << "push " << op->toString() << std::endl;
 }
 
-void Writer::pop(const Register &reg, const std::string &comment) {
-  x86Output << "pop " << reg << std::endl;
+void Writer::pop(const std::shared_ptr<X86::Operand> &op,
+                 const std::string &comment) {
+  x86Output << "pop " << op->toString() << std::endl;
 }
 
 void Writer::call(const std::string &ident, const std::string &comment) {
@@ -69,19 +69,26 @@ void Writer::ret(const std::string &comment) {
   x86Output << "ret" << std::endl;
 }
 
-void Writer::mov(const Register &dst, const Register &src,
+void Writer::mov(const std::shared_ptr<X86::Operand> &dst,
+                 const std::shared_ptr<X86::Operand> &src,
                  const std::string &comment) {
-  x86Output << "mov " << dst << ", " << src << std::endl;
+  if (dst->opType() == "GlobalVariable")
+    x86Output << "mov [" << dst->toString() << "], " << src->toString()
+              << std::endl;
+  else
+    x86Output << "mov " << dst->toString() << ", " << src->toString()
+              << std::endl;
 }
 
-void Writer::sub(const Register &reg, const int value,
+void Writer::sub(const std::shared_ptr<X86::Operand> &op, const int value,
                  const std::string &comment) {
-  x86Output << "sub " << reg << ", " << value << "\t;" << comment << std::endl;
+  x86Output << "sub " << op->toString() << ", " << value << "\t;" << comment
+            << std::endl;
 }
 
-void Writer::cmp(const Register &reg, const int value,
+void Writer::cmp(const std::shared_ptr<X86::Operand> &op, const int value,
                  const std::string &comment) {
-  x86Output << "cmp " << reg << ", " << value << std::endl;
+  x86Output << "cmp " << op->toString() << ", " << value << std::endl;
 }
 
 void Writer::jeq(const std::string &label, const std::string &comment) {
