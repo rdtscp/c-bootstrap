@@ -1,18 +1,16 @@
 int myGlobalInt;
 
-int foo() {
+int ten() {
   int x;
-  x = 2 * (3 + 4);
+  x = 2 * (3 + 2);
   return x;
 }
 
-int bar() {
-  int x;
-  x = 4 + 2 * 3;
-  return x + foo();
+int one() {
+  int tenVar;
+  tenVar = 4 + 2 * 3;
+  myGlobalInt = tenVar + ten();
+  return 1;
 }
 
-int main(int argc, char **argv) {
-  myGlobalInt = bar();
-  return myGlobalInt;
-}
+int main(int argc, char **argv) { return myGlobalInt + one(); }
