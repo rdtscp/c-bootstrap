@@ -5,8 +5,6 @@ using namespace ACC::X86;
 
 /* ---- X86::Register --- */
 
-Register::Register() : bits(-1), name("INTERNAL_ERROR") {}
-
 Register::Register(int bits, std::string name) : bits(bits), name(name) {}
 
 bool Register::operator==(const Register &rhs) {
@@ -18,8 +16,6 @@ std::string Register::opType() const { return "Register"; }
 std::string Register::toString() const { return name; }
 
 /* ---- X86::GlobalVariable --- */
-
-GlobalVariable::GlobalVariable() : name("INTERNAL_ERROR") {}
 
 GlobalVariable::GlobalVariable(std::string name) : name(name) {}
 
@@ -35,7 +31,7 @@ std::string GlobalVariable::toString() const { return name; }
 
 std::string None::opType() const { return "None"; }
 
-std::string None::toString() const { return "INTERNAL_ERROR"; }
+std::string None::toString() const { return "None::INTERNAL_ERROR"; }
 
 /* ---- X86::Writer ---- */
 
