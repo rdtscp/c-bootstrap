@@ -17,7 +17,8 @@ std::string Register::toString() const { return name; }
 
 /* ---- X86::GlobalVariable --- */
 
-GlobalVariable::GlobalVariable(std::string name) : name(name) {}
+GlobalVariable::GlobalVariable(std::string name, int size)
+    : name(name), size(size) {}
 
 bool GlobalVariable::operator==(const GlobalVariable &rhs) {
   return (name == rhs.name);
@@ -53,7 +54,7 @@ void Writer::add(const std::shared_ptr<X86::Operand> &op1,
   std::string output = "add " + op1->toString() + ", " + op2->toString() +
                        "\t; eax = " + op1->toString() + " + " + op2->toString();
   if (comment != "")
-    output += "\t" + comment;
+    output += "\t; " + comment;
   write(output);
 }
 
@@ -80,7 +81,7 @@ void Writer::imul(const std::shared_ptr<X86::Operand> &op1,
   std::string output = "imul " + op1->toString() + ", " + op2->toString() +
                        "\t; eax = " + op1->toString() + " * " + op2->toString();
   if (comment != "")
-    output += "\t" + comment;
+    output += "\t; " + comment;
   write(output);
 }
 
@@ -107,12 +108,18 @@ void Writer::mov(const std::shared_ptr<X86::Operand> &dst,
 
 void Writer::pop(const std::shared_ptr<X86::Operand> &op,
                  const std::string &comment) {
-  x86Output << "pop " << op->toString() << std::endl;
+  std::string output = "pop " + op->toString();
+  if (comment != "")
+    output += "\t; " + comment;
+  write(output);
 }
 
 void Writer::push(const std::shared_ptr<X86::Operand> &op,
                   const std::string &comment) {
-  x86Output << "push " << op->toString() << std::endl;
+  std::string output = "push " + op->toString();
+  if (comment != "")
+    output += "\t; " + comment;
+  write(output);
 }
 
 void Writer::ret(const std::string &comment) {

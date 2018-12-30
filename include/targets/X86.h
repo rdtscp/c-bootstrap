@@ -33,8 +33,9 @@ public:
 class GlobalVariable : public Operand {
 public:
   std::string name;
+  int size;
 
-  GlobalVariable(std::string name);
+  GlobalVariable(std::string name, int size);
   bool operator==(const GlobalVariable &rhs);
   std::string opType() const override;
   std::string toString() const override;
