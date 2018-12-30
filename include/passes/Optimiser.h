@@ -1,15 +1,15 @@
 #pragma once
 
-#ifndef NAMEANALYSIS_H
-#define NAMEANALYSIS_H
+#ifndef OPTIMISER_H
+#define OPTIMISER_H
 
 #include <iostream>
 #include <memory>
 #include <set>
 #include <vector>
 
-#include "../ASTVisitor.h"
 #include "../AST.h"
+#include "../ASTVisitor.h"
 
 namespace ACC {
 
@@ -19,7 +19,7 @@ public:
   int optimisationsCount = 0;
   std::vector<std::string> optimisations;
 
-  Optimiser(std::shared_ptr<Program> progAST);
+  Optimiser(std::shared_ptr<Program> &progAST);
 
   void optimised(std::string error);
 
@@ -30,7 +30,7 @@ public:
 private:
   int nodeCount = 0;
   std::ostream *output;
-  std::shared_ptr<Program> progAST;
+  std::shared_ptr<Program> &progAST;
 
   std::shared_ptr<Block> currScope;
 

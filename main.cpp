@@ -7,6 +7,7 @@
 #include "include/Scanner.h"
 #include "include/passes/DotGraph.h"
 #include "include/passes/NameAnalysis.h"
+#include "include/passes/Optimiser.h"
 #include "include/passes/TypeAnalysis.h"
 #include "include/targets/GenerateMIPS.h"
 #include "include/targets/GenerateX86.h"
@@ -57,6 +58,12 @@ int main(int argc, char const *argv[]) {
     typeAnalysis.printErrors();
     return 1;
   }
+
+  ACC::Optimiser optimiser(progAST);
+  do {
+    optimiser.run();
+    optimiser.printOptimisations();
+  } while (optimiser.optimisationsCount > 0);
 
   if (outputMIPS) {
     ACC::GenerateMIPS mipsGenerator(progAST, "mips.asm");

@@ -135,3 +135,23 @@ target_link_libraries(runCodeGenerationUnitTests
     Scanner
 )
 add_test(CodeGenerationUnitTests runCodeGenerationUnitTests)
+
+add_executable(runOptimiserUnitTests Test_Optimiser.cpp  main.cpp)
+target_link_libraries(runOptimiserUnitTests
+    libgtest
+    libgmock
+    AST
+    DotGraph
+    NameAnalysis
+    Optimiser
+    TypeAnalysis
+    GenerateMIPS
+    GenerateX86
+    MIPS
+    X86
+    Lexer
+    Parser
+    Preprocessor
+    Scanner
+)
+add_test(OptimiserUnitTests runOptimiserUnitTests)
