@@ -27,6 +27,16 @@ std::string GlobalVariable::opType() const { return "GlobalVariable"; }
 
 std::string GlobalVariable::toString() const { return name; }
 
+/* ---- X86::IntValue --- */
+
+IntValue::IntValue(std::string val) : val(val) {}
+
+bool IntValue::operator==(const IntValue &rhs) { return (val == rhs.val); }
+
+std::string IntValue::opType() const { return "IntValue"; }
+
+std::string IntValue::toString() const { return val; }
+
 /* ---- X86::None --- */
 
 std::string None::opType() const { return "None"; }
@@ -38,6 +48,13 @@ std::string None::toString() const { return "None::INTERNAL_ERROR"; }
 Writer::Writer(std::string filename) { x86Output.open(filename); }
 
 void Writer::write(const std::string &str) { x86Output << str << std::endl; }
+
+void Writer::add(const std::shared_ptr<X86::Operand> &op1,
+                 const std::shared_ptr<X86::Operand> &op2,
+                 const std::string &comment) {
+  x86Output << "add " << op1->toString() << ", " << op2->toString()
+            << std::endl;
+}
 
 void Writer::comment(const std::string &comment) {
   x86Output << ";" << comment << std::endl;
