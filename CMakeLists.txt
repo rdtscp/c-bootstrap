@@ -68,7 +68,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
   )
 
   add_executable(acc main.cpp)
-  target_link_libraries(acc AST DotGraph NameAnalysis TypeAnalysis GenerateMIPS GenerateX86  MIPS X86 Lexer Parser Preprocessor Scanner)
+  target_link_libraries(acc AST DotGraph NameAnalysis Optimiser TypeAnalysis GenerateMIPS GenerateX86  MIPS X86 Lexer Parser Preprocessor Scanner)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Release)
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
