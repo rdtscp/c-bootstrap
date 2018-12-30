@@ -43,34 +43,22 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(BaseType &bt) {
   return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
+  /* Evaluate LHS and Store to Stack */
   std::shared_ptr<X86::Operand> lhsOperand = bo.lhs->accept(*this);
+  x86.push(lhsOperand, "Store LHS to Stack");
+
+  /* Evaluate RHS and Store in EAX */
   std::shared_ptr<X86::Operand> rhsOperand = bo.rhs->accept(*this);
+  x86.pop(X86::ecx, "Restore LHS from Stack");
+
+  /* Perform BinOp */
   switch (bo.operation) {
   case Op::ADD: {
-    x86.add(X86::eax, lhsOperand);
-    x86.add(X86::eax, rhsOperand);
+    x86.add(X86::eax, X86::ecx);
     break;
   }
   case Op::MUL: {
-    /* Raw Arithmetic. Do computation now. */
-    if (lhsOperand->opType() == "IntValue" &&
-        rhsOperand->opType() == "IntValue") {
-      int lhsVal = std::stoi(lhsOperand->toString());
-      int rhsVal = std::stoi(rhsOperand->toString());
-
-      int newVal = lhsVal * rhsVal;
-      std::string comment = "Precomputed (" + lhsOperand->toString() + " * " +
-                            rhsOperand->toString() + ")";
-
-      x86.mov(X86::eax,
-              std::make_shared<X86::IntValue>(
-                  X86::IntValue(std::to_string(newVal))),
-              comment);
-      break;
-    } else if (rhsOperand->opType() == "Register")
-      x86.imul(rhsOperand, lhsOperand);
-    else
-      x86.imul(lhsOperand, rhsOperand);
+    x86.imul(X86::eax, X86::ecx);
     break;
   }
   default:
@@ -175,7 +163,8 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(If &i) {
   return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(IntLiteral &il) {
-  return std::make_shared<X86::IntValue>(X86::IntValue(il.value));
+  x86.mov(X86::eax, std::make_shared<X86::IntValue>(X86::IntValue(il.value)));
+  return X86::eax;
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);
@@ -245,8 +234,8 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
   int fpOffset = ve.variableDecl->fpOffset;
   if (fpOffset == 0)
-    return std::make_shared<X86::GlobalVariable>(
-        X86::GlobalVariable(ve.variableDecl->getIdentifier()));
+    return std::make_shared<X86::GlobalVariable>(X86::GlobalVariable(
+        ve.variableDecl->getIdentifier(), ve.variableDecl->getBytes()));
 
   if (fpOffset > 0)
     return std::make_shared<X86::Register>(
@@ -259,4 +248,10 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(While &w) {
   w.condition->accept(*this);
   w.body->accept(*this);
   return std::make_shared<X86::None>();
+}
+
+/* ---- Helpers ---- */
+
+std::shared_ptr<X86::Operand> GenerateX86::genIntValue(int value) {
+  return std::make_shared<X86::IntValue>(X86::IntValue(std::to_string(value)));
 }

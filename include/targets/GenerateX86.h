@@ -68,6 +68,9 @@ private:
   std::shared_ptr<X86::Operand> visit(VarDecl &vd) override;
   std::shared_ptr<X86::Operand> visit(VarExpr &ve) override;
   std::shared_ptr<X86::Operand> visit(While &w) override;
+
+  /* ---- Helpers ---- */
+  std::shared_ptr<X86::Operand> genIntValue(int value);
 };
 }; // namespace ACC
 
