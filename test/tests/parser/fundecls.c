@@ -8,7 +8,7 @@ int foo() {
 
 int bar() {
   int x;
-  x = 2 * 3 + 4;
+  x = 4 + 2 * 3;
   return x + foo();
 }
 
