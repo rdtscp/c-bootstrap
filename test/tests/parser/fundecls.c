@@ -12,7 +12,7 @@ int bar() {
   return x + foo();
 }
 
-int main(int argc, char *argv) {
+int main(int argc, char **argv) {
   myGlobalInt = bar();
   return myGlobalInt;
 }
