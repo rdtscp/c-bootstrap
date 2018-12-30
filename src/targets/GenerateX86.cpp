@@ -52,16 +52,31 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
     break;
   }
   case Op::MUL: {
+    /* Raw Arithmetic. Do computation now. */
+    if (lhsOperand->opType() == "IntValue" &&
+        rhsOperand->opType() == "IntValue") {
+      int lhsVal = std::stoi(lhsOperand->toString());
+      int rhsVal = std::stoi(rhsOperand->toString());
 
-    x86.imul(lhsOperand, rhsOperand);
+      int newVal = lhsVal * rhsVal;
+      std::string comment = "Precomputed (" + lhsOperand->toString() + " * " +
+                            rhsOperand->toString() + ")";
+
+      x86.mov(X86::eax,
+              std::make_shared<X86::IntValue>(
+                  X86::IntValue(std::to_string(newVal))),
+              comment);
+      break;
+    } else if (rhsOperand->opType() == "Register")
+      x86.imul(rhsOperand, lhsOperand);
+    else
+      x86.imul(lhsOperand, rhsOperand);
     break;
   }
   default:
     x86.comment("Not Implemented this BinOp Yet");
     break;
   }
-  x86.comment("BinOp with: LHS(" + lhsOperand->toString() + ") and RHS(" +
-              rhsOperand->toString() + ")");
   return X86::eax;
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
@@ -124,6 +139,7 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(FunDecl &fd) {
   x86.ret();
   x86.write("");
 
+  currFpOffset = 0;
   currScope = fd.funBlock->outerBlock;
   return std::make_shared<X86::None>(X86::None());
 }
@@ -162,7 +178,6 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(IntLiteral &il) {
   return std::make_shared<X86::IntValue>(X86::IntValue(il.value));
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(ParenthExpr &pe) {
-  x86.comment("Not Implemented ParenthExpr Yet");
   return pe.innerExpr->accept(*this);
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(PointerType &pt) {
@@ -219,15 +234,16 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(VarDecl &vd) {
   currFpOffset -= bytesRequired;
   vd.fpOffset = currFpOffset;
 
-  x86.sub(X86::esp, bytesRequired,
-          "Allocated for VarDecl: " + vd.getIdentifier() +
-              " with fpOffset: " + std::to_string(currFpOffset));
+  std::string comment = "Allocated " + std::to_string(bytesRequired) +
+                        "B for VarDecl: " + vd.getIdentifier() + " @ [ebp" +
+                        std::to_string(currFpOffset) + "]";
+
+  x86.sub(X86::esp, bytesRequired, comment);
   return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
   int fpOffset = ve.variableDecl->fpOffset;
-  x86.comment("visit(VarExpr) with offset: " + std::to_string(fpOffset));
   if (fpOffset == 0)
     return std::make_shared<X86::GlobalVariable>(
         X86::GlobalVariable(ve.variableDecl->getIdentifier()));
