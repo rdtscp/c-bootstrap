@@ -46,12 +46,16 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
   std::shared_ptr<X86::Operand> lhsOperand = bo.lhs->accept(*this);
   std::shared_ptr<X86::Operand> rhsOperand = bo.rhs->accept(*this);
   switch (bo.operation) {
-  case Op::ADD:
-    x86.add(lhsOperand, rhsOperand);
+  case Op::ADD: {
+    x86.add(X86::eax, lhsOperand);
+    x86.add(X86::eax, rhsOperand);
     break;
-  case Op::MUL:
+  }
+  case Op::MUL: {
+
     x86.imul(lhsOperand, rhsOperand);
     break;
+  }
   default:
     x86.comment("Not Implemented this BinOp Yet");
     break;
@@ -185,8 +189,10 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(Return &r) {
-  if (r.returnExpr)
-    r.returnExpr->accept(*this);
+  if (r.returnExpr) {
+    std::shared_ptr<X86::Operand> rVal = r.returnExpr->accept(*this);
+    x86.mov(X86::eax, rVal);
+  }
   return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(SizeOf &so) {
