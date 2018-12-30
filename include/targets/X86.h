@@ -31,6 +31,17 @@ public:
   std::string toString() const override;
 };
 
+class GlobalVariable : public Operand {
+public:
+  std::string name;
+
+  GlobalVariable();
+  GlobalVariable(std::string name);
+  bool operator==(const GlobalVariable &rhs);
+  std::string opType() const override;
+  std::string toString() const override;
+};
+
 class Writer {
 public:
   bool macOS = true;

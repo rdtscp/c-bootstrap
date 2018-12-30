@@ -5,7 +5,7 @@ using namespace ACC::X86;
 
 /* ---- X86::Register --- */
 
-Register::Register() : bits(-1), name("UNIMPLEMENTED") {}
+Register::Register() : bits(-1), name("INTERNAL_ERROR") {}
 
 Register::Register(int bits, std::string name) : bits(bits), name(name) {}
 
@@ -19,6 +19,24 @@ std::string Register::toString() const { return name; }
 
 std::ostream &operator<<(std::ostream &stream, const Register &reg) {
   return stream << reg.toString();
+}
+
+/* ---- X86::GlobalVariable --- */
+
+GlobalVariable::GlobalVariable() : name("INTERNAL_ERROR") {}
+
+GlobalVariable::GlobalVariable(std::string name) : name(name) {}
+
+bool GlobalVariable::operator==(const GlobalVariable &rhs) {
+  return (name == rhs.name);
+}
+
+std::string GlobalVariable::opType() const { return "Register"; }
+
+std::string GlobalVariable::toString() const { return name; }
+
+std::ostream &operator<<(std::ostream &stream, const GlobalVariable &gv) {
+  return stream << gv.toString();
 }
 
 /* ---- X86::Writer ---- */
