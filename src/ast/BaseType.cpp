@@ -4,6 +4,8 @@ using namespace ACC;
 
 BaseType::BaseType(PrimitiveType pType) : primitiveType(pType) {}
 
+std::shared_ptr<BaseType> BaseType::getptr() { return shared_from_this(); }
+
 bool BaseType::operator==(Type &t) const {
   if (t.astClass() == astClass())
     return *this == *static_cast<BaseType *>(&t);
@@ -41,7 +43,13 @@ MIPS::Register BaseType::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand> BaseType::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+std::shared_ptr<X86::Operand>
+BaseType::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+  return v.visit(*this);
+}
+
+std::shared_ptr<ASTNode>
+BaseType::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 

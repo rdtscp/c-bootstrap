@@ -28,7 +28,13 @@ MIPS::Register Program::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand> Program::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+std::shared_ptr<X86::Operand>
+Program::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+  return v.visit(*this);
+}
+
+std::shared_ptr<ASTNode>
+Program::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 

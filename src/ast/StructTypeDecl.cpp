@@ -56,7 +56,13 @@ MIPS::Register StructTypeDecl::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand> StructTypeDecl::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+std::shared_ptr<X86::Operand>
+StructTypeDecl::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+  return v.visit(*this);
+}
+
+std::shared_ptr<ASTNode>
+StructTypeDecl::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 

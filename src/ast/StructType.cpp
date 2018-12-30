@@ -5,6 +5,8 @@ using namespace ACC;
 StructType::StructType(const std::string &identifier)
     : identifier(identifier) {}
 
+std::shared_ptr<StructType> StructType::getptr() { return shared_from_this(); }
+
 int StructType::getBytes() const {
   int aggregateBytes = 0;
   if (typeDefinition == nullptr)
@@ -46,7 +48,13 @@ MIPS::Register StructType::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand> StructType::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+std::shared_ptr<X86::Operand>
+StructType::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+  return v.visit(*this);
+}
+
+std::shared_ptr<ASTNode>
+StructType::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 

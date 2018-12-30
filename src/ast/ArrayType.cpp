@@ -6,6 +6,8 @@ ArrayType::ArrayType(std::shared_ptr<Type> arrayType,
                      const std::string &arraySize)
     : arraySize(arraySize), arrayType(arrayType) {}
 
+std::shared_ptr<ArrayType> ArrayType::getptr() { return shared_from_this(); }
+
 bool ArrayType::operator==(Type &t) const {
   if (t.astClass() == astClass())
     return *this == *static_cast<ArrayType *>(&t);
@@ -41,7 +43,13 @@ MIPS::Register ArrayType::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand> ArrayType::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+std::shared_ptr<X86::Operand>
+ArrayType::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+  return v.visit(*this);
+}
+
+std::shared_ptr<ASTNode>
+ArrayType::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 

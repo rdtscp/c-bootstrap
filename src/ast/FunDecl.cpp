@@ -43,7 +43,9 @@ std::string FunDecl::getIdentifier() const { return funName; }
 
 void FunDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string FunDecl::accept(ASTVisitor<std::string> &v) { return v.visit(*this); }
+std::string FunDecl::accept(ASTVisitor<std::string> &v) {
+  return v.visit(*this);
+}
 
 std::shared_ptr<Type> FunDecl::accept(ASTVisitor<std::shared_ptr<Type>> &v) {
   return v.visit(*this);
@@ -53,7 +55,13 @@ MIPS::Register FunDecl::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand> FunDecl::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+std::shared_ptr<X86::Operand>
+FunDecl::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+  return v.visit(*this);
+}
+
+std::shared_ptr<ASTNode>
+FunDecl::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 

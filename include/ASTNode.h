@@ -25,6 +25,8 @@ public:
   virtual MIPS::Register accept(ASTVisitor<MIPS::Register> &v) = 0;
   virtual std::shared_ptr<X86::Operand>
   accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) = 0;
+  virtual std::shared_ptr<ASTNode>
+  accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) = 0;
   virtual std::string astClass() const = 0;
 };
 

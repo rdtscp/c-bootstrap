@@ -5,6 +5,10 @@ using namespace ACC;
 PointerType::PointerType(std::shared_ptr<Type> pointedType)
     : pointedType(pointedType) {}
 
+std::shared_ptr<PointerType> PointerType::getptr() {
+  return shared_from_this();
+}
+
 bool PointerType::operator==(Type &t) const {
   if (t.astClass() == astClass())
     return *this == *static_cast<PointerType *>(&t);
@@ -38,7 +42,13 @@ MIPS::Register PointerType::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand> PointerType::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+std::shared_ptr<X86::Operand>
+PointerType::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+  return v.visit(*this);
+}
+
+std::shared_ptr<ASTNode>
+PointerType::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 

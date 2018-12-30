@@ -5,25 +5,33 @@ using namespace ACC;
 ParenthExpr::ParenthExpr(std::shared_ptr<Expr> innerExpr)
     : innerExpr(innerExpr) {}
 
-void ParenthExpr::accept(ASTVisitor<void> &v)  {
-  return v.visit(*this);
+std::shared_ptr<ParenthExpr> ParenthExpr::getptr() {
+  return shared_from_this();
 }
 
-std::string ParenthExpr::accept(ASTVisitor<std::string> &v)  {
+void ParenthExpr::accept(ASTVisitor<void> &v) { return v.visit(*this); }
+
+std::string ParenthExpr::accept(ASTVisitor<std::string> &v) {
   return v.visit(*this);
 }
 
 std::shared_ptr<Type>
-ParenthExpr::accept(ASTVisitor<std::shared_ptr<Type>> &v)  {
+ParenthExpr::accept(ASTVisitor<std::shared_ptr<Type>> &v) {
   return v.visit(*this);
 }
 
-MIPS::Register ParenthExpr::accept(ASTVisitor<MIPS::Register> &v)  {
+MIPS::Register ParenthExpr::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand> ParenthExpr::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v)  {
+std::shared_ptr<X86::Operand>
+ParenthExpr::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
   return v.visit(*this);
 }
 
-std::string ParenthExpr::astClass() const  { return "ParenthExpr"; }
+std::shared_ptr<ASTNode>
+ParenthExpr::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
+  return v.visit(*this);
+}
+
+std::string ParenthExpr::astClass() const { return "ParenthExpr"; }

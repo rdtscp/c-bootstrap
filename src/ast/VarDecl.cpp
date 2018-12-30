@@ -5,7 +5,7 @@ using namespace ACC;
 VarDecl::VarDecl(std::shared_ptr<Type> type, std::string p_identifer)
     : identifer(p_identifer), type(type) {}
 
-std::shared_ptr<VarDecl> VarDecl::getptr() { return shared_from_this(); }
+std::shared_ptr<VarDecl::Decl> VarDecl::getptr() { return shared_from_this(); }
 
 bool VarDecl::operator==(Decl &rhs) const {
   if (rhs.astClass() == astClass())
@@ -44,7 +44,13 @@ MIPS::Register VarDecl::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand> VarDecl::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+std::shared_ptr<X86::Operand>
+VarDecl::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+  return v.visit(*this);
+}
+
+std::shared_ptr<ASTNode>
+VarDecl::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 

@@ -35,6 +35,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
   )
   add_library(DotGraph SHARED src/passes/DotGraph.cpp)
   add_library(NameAnalysis SHARED src/passes/NameAnalysis.cpp)
+  add_library(Optimiser SHARED src/passes/Optimiser.cpp)
   add_library(TypeAnalysis SHARED src/passes/TypeAnalysis.cpp)
   add_library(GenerateMIPS SHARED src/targets/GenerateMIPS.cpp)
   add_library(GenerateX86 SHARED src/targets/GenerateX86.cpp)
@@ -54,10 +55,11 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
 
   target_link_libraries(DotGraph AST MIPS X86)
   target_link_libraries(NameAnalysis AST MIPS X86)
+  target_link_libraries(Optimiser AST MIPS X86)
   target_link_libraries(TypeAnalysis AST MIPS X86)
 
   install(
-    TARGETS AST DotGraph NameAnalysis TypeAnalysis GenerateMIPS GenerateX86 MIPS X86 Lexer Parser Preprocessor Scanner
+    TARGETS AST DotGraph NameAnalysis Optimiser TypeAnalysis GenerateMIPS GenerateX86 MIPS X86 Lexer Parser Preprocessor Scanner
     DESTINATION lib
   )
   install(
@@ -142,6 +144,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
   )
   add_library(DotGraph SHARED src/passes/DotGraph.cpp)
   add_library(NameAnalysis SHARED src/passes/NameAnalysis.cpp)
+  add_library(Optimiser SHARED src/passes/Optimiser.cpp)
   add_library(TypeAnalysis SHARED src/passes/TypeAnalysis.cpp)
   add_library(GenerateMIPS SHARED src/targets/GenerateMIPS.cpp)
   add_library(GenerateX86 SHARED src/targets/GenerateX86.cpp)
@@ -161,10 +164,11 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
 
   target_link_libraries(DotGraph AST MIPS X86)
   target_link_libraries(NameAnalysis AST MIPS X86)
+  target_link_libraries(Optimiser AST MIPS X86)
   target_link_libraries(TypeAnalysis AST MIPS X86)
 
   install(
-    TARGETS AST DotGraph NameAnalysis TypeAnalysis GenerateMIPS GenerateX86 MIPS X86 Lexer Parser Preprocessor Scanner
+    TARGETS AST DotGraph NameAnalysis Optimiser TypeAnalysis GenerateMIPS GenerateX86 MIPS X86 Lexer Parser Preprocessor Scanner
     DESTINATION lib
   )
   install(
@@ -175,5 +179,5 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
   enable_testing()
   add_subdirectory(test)
   add_executable(acc main.cpp)
-  target_link_libraries(acc AST DotGraph NameAnalysis TypeAnalysis GenerateMIPS GenerateX86  MIPS X86 Lexer Parser Preprocessor Scanner)
+  target_link_libraries(acc AST DotGraph NameAnalysis Optimiser TypeAnalysis GenerateMIPS GenerateX86  MIPS X86 Lexer Parser Preprocessor Scanner)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)

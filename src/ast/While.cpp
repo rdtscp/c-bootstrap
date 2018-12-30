@@ -5,23 +5,28 @@ using namespace ACC;
 While::While(std::shared_ptr<Stmt> body, std::shared_ptr<Expr> condition)
     : body(body), condition(condition) {}
 
-void While::accept(ASTVisitor<void> &v)  { return v.visit(*this); }
+std::shared_ptr<While> While::getptr() { return shared_from_this(); }
 
-std::string While::accept(ASTVisitor<std::string> &v)  {
+void While::accept(ASTVisitor<void> &v) { return v.visit(*this); }
+
+std::string While::accept(ASTVisitor<std::string> &v) { return v.visit(*this); }
+
+std::shared_ptr<Type> While::accept(ASTVisitor<std::shared_ptr<Type>> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<Type>
-While::accept(ASTVisitor<std::shared_ptr<Type>> &v)  {
+MIPS::Register While::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-MIPS::Register While::accept(ASTVisitor<MIPS::Register> &v)  {
+std::shared_ptr<X86::Operand>
+While::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand> While::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v)  {
+std::shared_ptr<ASTNode>
+While::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string While::astClass() const  { return "While"; }
+std::string While::astClass() const { return "While"; }
