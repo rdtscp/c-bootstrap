@@ -21,21 +21,21 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(CodeGenerationTest, MIPS_Fibonacci) {
-  Scanner scanner(test_prefix + "fibonacci.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
-  std::shared_ptr<Program> progAST = parser.parse();
+  // Scanner scanner(test_prefix + "fibonacci.c");
+  // Lexer lexer(scanner);
+  // Parser parser(lexer);
+  // std::shared_ptr<Program> progAST = parser.parse();
 
-  NameAnalysis nameAnalysis(progAST);
-  nameAnalysis.run();
-  ASSERT_EQ(0, nameAnalysis.errorCount);
+  // NameAnalysis nameAnalysis(progAST);
+  // nameAnalysis.run();
+  // ASSERT_EQ(0, nameAnalysis.errorCount);
 
-  TypeAnalysis typeAnalysis(progAST);
-  typeAnalysis.run();
-  ASSERT_EQ(0, typeAnalysis.errorCount);
+  // TypeAnalysis typeAnalysis(progAST);
+  // typeAnalysis.run();
+  // ASSERT_EQ(0, typeAnalysis.errorCount);
 
-  GenerateMIPS mipsGenerator(progAST, "./fibonacci_mips.asm");
-  mipsGenerator.run();
+  // GenerateMIPS mipsGenerator(progAST, "./fibonacci_mips.asm");
+  // mipsGenerator.run();
 }
 
 TEST(CodeGenerationTest, X86_fundeclsc) {
