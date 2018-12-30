@@ -4,12 +4,12 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/passes/DotGraph.h"
-#include "../include/passes/NameAnalysis.h"
-#include "../include/passes/TypeAnalysis.h"
 #include "../include/Lexer.h"
 #include "../include/Parser.h"
 #include "../include/Scanner.h"
+#include "../include/passes/DotGraph.h"
+#include "../include/passes/NameAnalysis.h"
+#include "../include/passes/TypeAnalysis.h"
 
 using namespace ACC;
 
@@ -23,7 +23,6 @@ TEST(ASTAnalysisTest, DotGraph) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  std::cout.rdbuf(NULL);
   DotGraph dotGraph(progAST);
   dotGraph.print();
 }
@@ -34,7 +33,6 @@ TEST(ASTAnalysisTest, NameAnalysis) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  std::cout.rdbuf(NULL);
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
@@ -46,8 +44,8 @@ TEST(ASTAnalysisTest, DuplicateFunction) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  std::cout.rdbuf(NULL);
-  NameAnalysis nameAnalysis(progAST);;
+  NameAnalysis nameAnalysis(progAST);
+  ;
   nameAnalysis.run();
   ASSERT_NE(0, nameAnalysis.errorCount);
 }
@@ -58,8 +56,8 @@ TEST(ASTAnalysisTest, DuplicateVariable) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  std::cout.rdbuf(NULL);
-  NameAnalysis nameAnalysis(progAST);;
+  NameAnalysis nameAnalysis(progAST);
+  ;
   nameAnalysis.run();
   ASSERT_NE(0, nameAnalysis.errorCount);
 }
@@ -70,8 +68,8 @@ TEST(ASTAnalysisTest, AmbiguousIdentifier) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  std::cout.rdbuf(NULL);
-  NameAnalysis nameAnalysis(progAST);;
+  NameAnalysis nameAnalysis(progAST);
+  ;
   nameAnalysis.run();
   ASSERT_NE(0, nameAnalysis.errorCount);
 }
@@ -82,8 +80,7 @@ TEST(ASTAnalysisTest, NoMainFunc) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  std::cout.rdbuf(NULL);
-  NameAnalysis nameAnalysis(progAST);;
+  NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   ASSERT_NE(0, nameAnalysis.errorCount);
 }
@@ -94,7 +91,6 @@ TEST(ASTAnalysisTest, Fibonacci) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  std::cout.rdbuf(NULL);
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
@@ -109,7 +105,6 @@ TEST(ASTAnalysisTest, TicTacToe) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  std::cout.rdbuf(NULL);
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);

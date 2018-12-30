@@ -24,7 +24,6 @@ TEST(OptimiserTest, FunDeclsC) {
   Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.parse();
 
-  // std::cout.rdbuf(NULL);
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
@@ -33,8 +32,6 @@ TEST(OptimiserTest, FunDeclsC) {
   ASSERT_EQ(0, typeAnalysis.errorCount);
   Optimiser optimiser(progAST);
   do {
-    DotGraph dotGraph(progAST);
-    dotGraph.print();
     optimiser.run();
     optimiser.printOptimisations();
   } while (optimiser.optimisationsCount > 0);

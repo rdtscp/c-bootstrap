@@ -72,13 +72,6 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
   for (const auto &stmt : b.blockStmts)
     stmt->accept(*this);
 
-  // /* Clean up the stack. */
-  // for (const auto &ident_decl : b.blockDecls) {
-  //   std::shared_ptr<Decl> currDecl = ident_decl.second;
-  //   if (currDecl->astClass() == "VarDecl") {
-  //     /* ---- Deconstruct VarDecl ---- */
-  //   }
-  // }
   currScope = b.outerBlock;
   return std::make_shared<X86::None>();
 }
