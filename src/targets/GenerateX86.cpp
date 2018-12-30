@@ -43,11 +43,19 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(BaseType &bt) {
   return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
-  bo.lhs->accept(*this);
-  bo.rhs->accept(*this);
-  x86.write("mov eax, 1");
+  std::shared_ptr<X86::Operand> lhsOperand = bo.lhs->accept(*this);
+  std::shared_ptr<X86::Operand> rhsOperand = bo.rhs->accept(*this);
+  switch (bo.operation) {
+  case Op::ADD:
+    x86.add(lhsOperand, rhsOperand);
+    break;
+  default:
+    x86.comment("Not Implemented this BinOp Yet");
+    break;
+  }
+  x86.comment("BinOp with: LHS(" + lhsOperand->toString() + ") and RHS(" +
+              rhsOperand->toString() + ")");
   return X86::eax;
-  // return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
   currScope = b.getptr();
@@ -144,11 +152,11 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(If &i) {
   return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(IntLiteral &il) {
-  return std::make_shared<X86::None>();
+  return std::make_shared<X86::IntValue>(X86::IntValue(il.value));
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(ParenthExpr &pe) {
-  pe.innerExpr->accept(*this);
-  return std::make_shared<X86::None>();
+  x86.comment("Not Implemented ParenthExpr Yet");
+  return pe.innerExpr->accept(*this);
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(PointerType &pt) {
   return std::make_shared<X86::None>();
