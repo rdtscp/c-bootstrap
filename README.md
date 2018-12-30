@@ -87,3 +87,13 @@ litExpr      -> INT_LITERAL
               | STRING_LITERAL
               | exp
 ```
+
+### macOS Notes
+```
+# Building Assembly:
+cpp_base main.cpp
+# Building Objects
+nasm -f macho x86.s
+# Link Objects
+ld -macosx_version_min 10.14 -lSystem -o x86 x86.o
+```
