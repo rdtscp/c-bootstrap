@@ -45,7 +45,9 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(BaseType &bt) {
 std::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
   bo.lhs->accept(*this);
   bo.rhs->accept(*this);
-  return std::make_shared<X86::None>();
+  x86.write("mov eax, 1");
+  return X86::eax;
+  // return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
   currScope = b.getptr();
@@ -154,8 +156,11 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(PointerType &pt) {
 std::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   currScope = p.globalScope;
 
+  x86.write("SECTION .data");
   for (std::shared_ptr<VarDecl> globalVar : p.globalVars)
     alloc(*globalVar);
+
+  x86.write("SECTION .text");
 
   x86.write("global _main");
 
