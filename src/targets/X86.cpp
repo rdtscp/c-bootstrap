@@ -50,8 +50,11 @@ Writer::Writer(std::string filename) { x86Output.open(filename); }
 void Writer::add(const std::shared_ptr<X86::Operand> &op1,
                  const std::shared_ptr<X86::Operand> &op2,
                  const std::string &comment) {
-  x86Output << "add " << op1->toString() << ", " << op2->toString()
-            << std::endl;
+  std::string output = "add " + op1->toString() + ", " + op2->toString() +
+                       "\t; eax = " + op1->toString() + " + " + op2->toString();
+  if (comment != "")
+    output += "\t" + comment;
+  write(output);
 }
 
 void Writer::block(std::string blockName, const std::string &comment) {
@@ -74,8 +77,11 @@ void Writer::comment(const std::string &comment) {
 void Writer::imul(const std::shared_ptr<X86::Operand> &op1,
                   const std::shared_ptr<X86::Operand> &op2,
                   const std::string &comment) {
-  x86Output << "imul " << op1->toString() << ", " << op2->toString()
-            << std::endl;
+  std::string output = "imul " + op1->toString() + ", " + op2->toString() +
+                       "\t; eax = " + op1->toString() + " * " + op2->toString();
+  if (comment != "")
+    output += "\t" + comment;
+  write(output);
 }
 
 void Writer::jeq(const std::string &label, const std::string &comment) {
@@ -89,12 +95,14 @@ void Writer::jmp(const std::string &label, const std::string &comment) {
 void Writer::mov(const std::shared_ptr<X86::Operand> &dst,
                  const std::shared_ptr<X86::Operand> &src,
                  const std::string &comment) {
+  std::string output = "mov " + dst->toString() + ", " + src->toString();
   if (dst->opType() == "GlobalVariable")
-    x86Output << "mov [" << dst->toString() << "], " << src->toString()
-              << std::endl;
-  else
-    x86Output << "mov " << dst->toString() << ", " << src->toString()
-              << std::endl;
+    output = "mov [" + dst->toString() + "], " + src->toString();
+
+  if (comment != "")
+    output += "\t; " + comment;
+
+  write(output);
 }
 
 void Writer::pop(const std::shared_ptr<X86::Operand> &op,
@@ -113,7 +121,7 @@ void Writer::ret(const std::string &comment) {
 
 void Writer::sub(const std::shared_ptr<X86::Operand> &op, const int value,
                  const std::string &comment) {
-  x86Output << "sub " << op->toString() << ", " << value << "\t;" << comment
+  x86Output << "sub " << op->toString() << ", " << value << "\t; " << comment
             << std::endl;
 }
 
