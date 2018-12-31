@@ -24,6 +24,8 @@ public:
 
   void preprocessPragmaOnce(const std::string &filename);
 
+  void preprocessUndef(const std::string &definition);
+
 private:
   std::set<std::string> definitions;
   std::set<std::string> files;

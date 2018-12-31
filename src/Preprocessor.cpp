@@ -23,10 +23,8 @@ void Preprocessor::preprocessIfNDef(const std::string &definition) {
     for (int i = 0; i < expected.length(); i++) {
       curr = scanner.next();
       if (curr != expected[i]) {
-        throw std::runtime_error(
-            "Pre-Processing: Expected #endif Directive at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column));
+        throw std::runtime_error("Pre-Processing: Expected #endif Directive. " +
+                                 scanner.getPosition().toString());
       }
     }
   }
@@ -39,8 +37,10 @@ void Preprocessor::preprocessInclude(const bool localFile,
         new Scanner(scanner.getFilepath() + filename));
     scanner.startIncluding(includeScanner);
   } else {
-    throw std::runtime_error("Pre-Processing: Include Directive only Supports "
-                             "Local Includes Temporarily");
+    const std::string includePath = "/usr/include/c++/4.2.1/";
+    std::shared_ptr<Scanner> includeScanner(
+        new Scanner(includePath + filename));
+    scanner.startIncluding(includeScanner);
   }
 }
 
@@ -52,4 +52,13 @@ void Preprocessor::preprocessPragmaOnce(const std::string &filename) {
     }
   } else
     files.insert(filename);
+}
+
+void Preprocessor::preprocessUndef(const std::string &definition) {
+  const std::set<std::string> definitonsCopy = definitions;
+  definitions.clear();
+  for (const std::string &definitonCopy : definitonsCopy) {
+    if (definitonCopy != definition)
+      preprocessDefinition(definitonCopy);
+  }
 }

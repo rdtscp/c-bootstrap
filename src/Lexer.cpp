@@ -12,21 +12,18 @@ Lexer::Lexer(const Scanner &in_scanner)
 
 Token Lexer::lexStringLiteral() {
   std::string literal;
-  int currLine = scanner.line;
+  int currLine = scanner.getPosition().line;
 
   char c;
   while (true) {
     c = scanner.next();
     if (c == '\0')
-      throw std::runtime_error(
-          "Lexer: Unexpected EOF in String Literal at Line " +
-          std::to_string(scanner.line) + ", Column " +
-          std::to_string(scanner.column));
+      throw std::runtime_error("Lexer: Unexpected EOF in String Literal. " +
+                               scanner.getPosition().toString());
     if (c == '\n')
       throw std::runtime_error(
-          "Lexer: Unexpected Newline Character in String Literal at Line " +
-          std::to_string(scanner.line) + ", Column " +
-          std::to_string(scanner.column));
+          "Lexer: Unexpected Newline Character in String Literal. " +
+          scanner.getPosition().toString());
 
     // Check if we are about to see an escaped character.
     if (c == '\\') {
@@ -39,16 +36,16 @@ Token Lexer::lexStringLiteral() {
       literal += c;
     }
   }
-  return Token(Token::TokenClass::STRING_LITERAL, scanner.line, scanner.column,
-               scanner.getFilename(), literal);
+  return Token(Token::TokenClass::STRING_LITERAL, scanner.getPosition(),
+               literal);
 }
 
 void Lexer::passComment() {
   // Consume the '/' or '*' character.
   char c = scanner.next();
-  int currLine = scanner.line;
+  int currLine = scanner.getPosition().line;
   if (c == '/') {
-    while (scanner.line == currLine)
+    while (scanner.getPosition().line == currLine)
       scanner.next();
     return;
   } else if (c == '*') {
@@ -67,8 +64,8 @@ void Lexer::passComment() {
   }
   throw std::runtime_error(
       "Lexer: Parsing Comment Returned Unexpected Token(s). Line " +
-      std::to_string(scanner.line) + ", Column " +
-      std::to_string(scanner.column));
+      std::to_string(scanner.getPosition().line) + ", Column " +
+      std::to_string(scanner.getPosition().column));
 }
 
 std::pair<bool, std::string> Lexer::tryLexKeyword(const std::string &keyword) {
@@ -97,8 +94,7 @@ Token Lexer::nextToken() {
 
   // Find EOF.
   if (c == '\0')
-    return Token(Token::TokenClass::ENDOFFILE, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::ENDOFFILE, scanner.getPosition());
 
   // Skip through Comments.
   if (c == '/' && (scanner.peek() == '*' || scanner.peek() == '/')) {
@@ -124,8 +120,7 @@ Token Lexer::nextToken() {
         if (scanner.peek() == '\'') {
           char val = c;
           scanner.next();
-          return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
-                       scanner.column, scanner.getFilename(),
+          return Token(Token::TokenClass::CHAR_LITERAL, scanner.getPosition(),
                        std::to_string('\\' + val));
         }
       }
@@ -134,8 +129,8 @@ Token Lexer::nextToken() {
     else if (scanner.peek() == '\'') {
       char val = c;
       scanner.next();
-      return Token(Token::TokenClass::CHAR_LITERAL, scanner.line,
-                   scanner.column, scanner.getFilename(), std::string(1, val));
+      return Token(Token::TokenClass::CHAR_LITERAL, scanner.getPosition(),
+                   std::string(1, val));
     }
   }
   // Recognise IDENTIFIERS & Keyword Tokens.
@@ -147,8 +142,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::CHAR, scanner.line, scanner.column,
-                     scanner.getFilename());
+        return Token(Token::TokenClass::CHAR, scanner.getPosition());
     }
     // Check for CONST Token.
     if (c == 'c' && scanner.peek() == 'o') {
@@ -156,8 +150,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::CONST, scanner.line, scanner.column,
-                     scanner.getFilename());
+        return Token(Token::TokenClass::CONST, scanner.getPosition());
     }
     // Check for ELSE Token.
     else if (c == 'e' && scanner.peek() == 'l') {
@@ -165,8 +158,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::ELSE, scanner.line, scanner.column,
-                     scanner.getFilename());
+        return Token(Token::TokenClass::ELSE, scanner.getPosition());
     }
     // Check for IF Token.
     else if (c == 'i' && scanner.peek() == 'f') {
@@ -174,8 +166,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::IF, scanner.line, scanner.column,
-                     scanner.getFilename());
+        return Token(Token::TokenClass::IF, scanner.getPosition());
     }
     // Check for INT token.
     else if (c == 'i' && scanner.peek() == 'n') {
@@ -183,8 +174,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::INT, scanner.line, scanner.column,
-                     scanner.getFilename());
+        return Token(Token::TokenClass::INT, scanner.getPosition());
     }
     // Check for RETURN Token.
     else if (c == 'r' && scanner.peek() == 'e') {
@@ -192,8 +182,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::RETURN, scanner.line, scanner.column,
-                     scanner.getFilename());
+        return Token(Token::TokenClass::RETURN, scanner.getPosition());
     }
     // Check for SIZEOF Token.
     else if (c == 's' && scanner.peek() == 'i') {
@@ -201,8 +190,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::SIZEOF, scanner.line, scanner.column,
-                     scanner.getFilename());
+        return Token(Token::TokenClass::SIZEOF, scanner.getPosition());
     }
     // Check for STRUCT Token.
     else if (c == 's' && scanner.peek() == 't') {
@@ -210,8 +198,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::STRUCT, scanner.line, scanner.column,
-                     scanner.getFilename());
+        return Token(Token::TokenClass::STRUCT, scanner.getPosition());
     }
     // Check for WHILE Token.
     else if (c == 'w' && scanner.peek() == 'h') {
@@ -219,8 +206,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::WHILE, scanner.line, scanner.column,
-                     scanner.getFilename());
+        return Token(Token::TokenClass::WHILE, scanner.getPosition());
     }
     // Check for VOID Token.
     else if (c == 'v' && scanner.peek() == 'o') {
@@ -228,8 +214,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::VOID, scanner.line, scanner.column,
-                     scanner.getFilename());
+        return Token(Token::TokenClass::VOID, scanner.getPosition());
     }
 
     // No keyword Token has been returned.
@@ -240,14 +225,14 @@ Token Lexer::nextToken() {
       // If the next character is whitespace, the IDENTIFIER has been
       // identified.
       if (std::isspace(peek)) {
-        return Token(Token::TokenClass::IDENTIFIER, scanner.line,
-                     scanner.column, scanner.getFilename(), literal);
+        return Token(Token::TokenClass::IDENTIFIER, scanner.getPosition(),
+                     literal);
       }
       // If the next character is an illegal characater for an IDENTIFIER, we
       // have finished finding the token.
       if (!isalpha(peek) && !isdigit(peek) && peek != '_') {
-        return Token(Token::TokenClass::IDENTIFIER, scanner.line,
-                     scanner.column, scanner.getFilename(), literal);
+        return Token(Token::TokenClass::IDENTIFIER, scanner.getPosition(),
+                     literal);
       }
       // We are still Lexing the token.
       c = scanner.next();
@@ -263,8 +248,8 @@ Token Lexer::nextToken() {
         break;
       c = scanner.next();
     }
-    return Token(Token::TokenClass::INT_LITERAL, scanner.line, scanner.column,
-                 scanner.getFilename(), literal);
+    return Token(Token::TokenClass::INT_LITERAL, scanner.getPosition(),
+                 literal);
   }
 
   // Recognise Pre-Processing Instructions.
@@ -276,14 +261,14 @@ Token Lexer::nextToken() {
       if (!lexResult.first)
         throw std::runtime_error(
             "Pre-Processing: Unexpected Preprocessing Directive at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column));
+            std::to_string(scanner.getPosition().line) + ", Column " +
+            std::to_string(scanner.getPosition().column));
       c = scanner.next();
       if (c != ' ')
         throw std::runtime_error(
             "Pre-Processing: Unexpected Preprocessing Directive at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column));
+            std::to_string(scanner.getPosition().line) + ", Column " +
+            std::to_string(scanner.getPosition().column));
       std::string definition;
       c = scanner.next();
       while (isalpha(c) || c == '_') {
@@ -297,8 +282,8 @@ Token Lexer::nextToken() {
       if (!lexResult.first)
         throw std::runtime_error(
             "Pre-Processing: Unexpected Preprocessing Directive at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column));
+            std::to_string(scanner.getPosition().line) + ", Column " +
+            std::to_string(scanner.getPosition().column));
       c = scanner.next();
     }
     if (c == 'i' && scanner.peek() == 'f') {
@@ -306,14 +291,14 @@ Token Lexer::nextToken() {
       if (!lexResult.first)
         throw std::runtime_error(
             "Pre-Processing: Unexpected Preprocessing Directive at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column));
+            std::to_string(scanner.getPosition().line) + ", Column " +
+            std::to_string(scanner.getPosition().column));
       c = scanner.next();
       if (c != ' ')
         throw std::runtime_error(
             "Pre-Processing: Unexpected Preprocessing Directive at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column));
+            std::to_string(scanner.getPosition().line) + ", Column " +
+            std::to_string(scanner.getPosition().column));
       std::string definition;
       c = scanner.next();
       while (isalpha(c) || c == '_') {
@@ -327,14 +312,14 @@ Token Lexer::nextToken() {
       if (!lexResult.first)
         throw std::runtime_error(
             "Pre-Processing: Unexpected Preprocessing Directive at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column));
+            std::to_string(scanner.getPosition().line) + ", Column " +
+            std::to_string(scanner.getPosition().column));
       c = scanner.next();
       if (c != ' ')
         throw std::runtime_error(
             "Pre-Processing: Unexpected Preprocessing Directive at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column));
+            std::to_string(scanner.getPosition().line) + ", Column " +
+            std::to_string(scanner.getPosition().column));
       c = scanner.next();
       bool localFile = true;
       std::string filename;
@@ -345,8 +330,9 @@ Token Lexer::nextToken() {
           c = scanner.next();
           if (c == '\0')
             throw std::runtime_error(
-                "Lexer: Unexpected EOF, Line " + std::to_string(scanner.line) +
-                ", Column " + std::to_string(scanner.column));
+                "Lexer: Unexpected EOF, Line " +
+                std::to_string(scanner.getPosition().line) + ", Column " +
+                std::to_string(scanner.getPosition().column));
         }
         localFile = false;
       }
@@ -357,8 +343,9 @@ Token Lexer::nextToken() {
           c = scanner.next();
           if (c == '\0')
             throw std::runtime_error(
-                "Lexer: Unexpected EOF, Line " + std::to_string(scanner.line) +
-                ", Column " + std::to_string(scanner.column));
+                "Lexer: Unexpected EOF, Line " +
+                std::to_string(scanner.getPosition().line) + ", Column " +
+                std::to_string(scanner.getPosition().column));
         }
         localFile = true;
       }
@@ -369,16 +356,16 @@ Token Lexer::nextToken() {
       if (!lexResult.first)
         throw std::runtime_error(
             "Pre-Processing: Unexpected Preprocessing Directive at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column));
+            std::to_string(scanner.getPosition().line) + ", Column " +
+            std::to_string(scanner.getPosition().column));
       c = scanner.next();
       c = scanner.next();
       lexResult = tryLexKeyword("once");
       if (!lexResult.first)
         throw std::runtime_error(
             "Pre-Processing: Unexpected Preprocessing Directive at Line " +
-            std::to_string(scanner.line) + ", Column " +
-            std::to_string(scanner.column));
+            std::to_string(scanner.getPosition().line) + ", Column " +
+            std::to_string(scanner.getPosition().column));
       preprocessor.preprocessPragmaOnce(scanner.getFilepath() +
                                         scanner.getFilename());
     }
@@ -388,90 +375,66 @@ Token Lexer::nextToken() {
   /* Recognise Two Symbol Tokens. */
   if (c == '=' && scanner.peek() == '=') {
     scanner.next();
-    return Token(Token::TokenClass::EQ, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::EQ, scanner.getPosition());
   }
   if (c == '!' && scanner.peek() == '=') {
     scanner.next();
-    return Token(Token::TokenClass::NE, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::NE, scanner.getPosition());
   }
   if (c == '<' && scanner.peek() == '=') {
     scanner.next();
-    return Token(Token::TokenClass::LE, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::LE, scanner.getPosition());
   }
   if (c == '>' && scanner.peek() == '=') {
     scanner.next();
-    return Token(Token::TokenClass::GE, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::GE, scanner.getPosition());
   }
   if (c == '&' && scanner.peek() == '&') {
     scanner.next();
-    return Token(Token::TokenClass::AND, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::AND, scanner.getPosition());
   }
   if (c == '|' && scanner.peek() == '|') {
     scanner.next();
-    return Token(Token::TokenClass::OR, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::OR, scanner.getPosition());
   }
 
   /* Recognise One Symbol Tokens. */
   if (c == '=')
-    return Token(Token::TokenClass::ASSIGN, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::ASSIGN, scanner.getPosition());
   if (c == '{')
-    return Token(Token::TokenClass::LBRA, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::LBRA, scanner.getPosition());
   if (c == '}')
-    return Token(Token::TokenClass::RBRA, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::RBRA, scanner.getPosition());
   if (c == '(')
-    return Token(Token::TokenClass::LPAR, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::LPAR, scanner.getPosition());
   if (c == ')')
-    return Token(Token::TokenClass::RPAR, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::RPAR, scanner.getPosition());
   if (c == '[')
-    return Token(Token::TokenClass::LSBR, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::LSBR, scanner.getPosition());
   if (c == ']')
-    return Token(Token::TokenClass::RSBR, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::RSBR, scanner.getPosition());
   if (c == ';')
-    return Token(Token::TokenClass::SC, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::SC, scanner.getPosition());
   if (c == ',')
-    return Token(Token::TokenClass::COMMA, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::COMMA, scanner.getPosition());
   if (c == '+')
-    return Token(Token::TokenClass::PLUS, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::PLUS, scanner.getPosition());
   if (c == '-')
-    return Token(Token::TokenClass::MINUS, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::MINUS, scanner.getPosition());
   if (c == '*')
-    return Token(Token::TokenClass::ASTERIX, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::ASTERIX, scanner.getPosition());
   if (c == '%')
-    return Token(Token::TokenClass::REM, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::REM, scanner.getPosition());
   if (c == '.')
-    return Token(Token::TokenClass::DOT, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::DOT, scanner.getPosition());
   if (c == '/')
-    return Token(Token::TokenClass::DIV, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::DIV, scanner.getPosition());
   if (c == '>')
-    return Token(Token::TokenClass::GT, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::GT, scanner.getPosition());
   if (c == '<')
-    return Token(Token::TokenClass::LT, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::LT, scanner.getPosition());
   if (c == '&')
-    return Token(Token::TokenClass::REF, scanner.line, scanner.column,
-                 scanner.getFilename());
+    return Token(Token::TokenClass::REF, scanner.getPosition());
 
   // Skip Whitespace.
   if (std::isspace(c))
@@ -479,6 +442,7 @@ Token Lexer::nextToken() {
 
   // if we reach this point, it means we did not recognise a valid token
   throw std::runtime_error("Lexer: Unexpected Token at Line " +
-                           std::to_string(scanner.line) + ", Column " +
-                           std::to_string(scanner.column));
+                           std::to_string(scanner.getPosition().line) +
+                           ", Column " +
+                           std::to_string(scanner.getPosition().column));
 }

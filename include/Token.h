@@ -88,10 +88,8 @@ public:
       : tokenClass(Token::TokenClass::INVALID), position(Position(-1, -1, "")),
         data("") {}
 
-  Token(TokenClass tokenClass, int lineNum, int colNum, std::string file,
-        std::string data = "")
-      : tokenClass(tokenClass), position(Position(lineNum, colNum, file)),
-        data(data) {}
+  Token(TokenClass tokenClass, Position p, std::string data = "")
+      : tokenClass(tokenClass), position(p), data(data) {}
 
   bool operator==(const Token &t) { return tokenClass == t.tokenClass; }
 };

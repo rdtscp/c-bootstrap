@@ -180,13 +180,14 @@ TEST(LexerTest, SingleLetterVar) {
   Lexer lexer(scanner);
 
   std::vector<Token> expectedTokens = {
-      Token(Token::TokenClass::INT, 1, 1, "singlelettervar.c"),
-      Token(Token::TokenClass::IDENTIFIER, 1, 4, "singlelettervar.c"),
-      Token(Token::TokenClass::SC, 1, 5, "singlelettervar.c"),
-      Token(Token::TokenClass::ENDOFFILE, 1, 6, "singlelettervar.c")};
+      Token(Token::TokenClass::INT, Position(1, 1, "singlelettervar.c")),
+      Token(Token::TokenClass::IDENTIFIER, Position(1, 4, "singlelettervar.c")),
+      Token(Token::TokenClass::SC, Position(1, 5, "singlelettervar.c")),
+      Token(Token::TokenClass::ENDOFFILE, Position(1, 6, "singlelettervar.c"))};
 
   std::vector<Token> actualTokens;
-  Token currToken(Token::TokenClass::INVALID, 0, 0, "singlelettervar.c");
+  Token currToken(Token::TokenClass::INVALID,
+                  Position(0, 0, "singlelettervar.c"));
   while (currToken.tokenClass != Token::TokenClass::ENDOFFILE) {
     currToken = lexer.nextToken();
     actualTokens.push_back(currToken);

@@ -9,7 +9,7 @@ using namespace ACC;
 using TC = Token::TokenClass;
 
 Parser::Parser(Lexer &lexer)
-    : currToken(TC::INVALID, -1, -1, ""), lexer(lexer) {}
+    : currToken(TC::INVALID, Position(-1, -1, "")), lexer(lexer) {}
 
 std::shared_ptr<Program> Parser::parse() {
   nextToken();

@@ -18,8 +18,8 @@ TEST(ScannerTest, TestAPI) {
   Scanner scanner(test_prefix + "scanner/scanner.c");
 
   std::string output;
-  ASSERT_EQ(scanner.column, 1);
-  ASSERT_EQ(scanner.line, 1);
+  ASSERT_EQ(scanner.getPosition().column, 1);
+  ASSERT_EQ(scanner.getPosition().line, 1);
 
   output += scanner.next();
   ASSERT_EQ(output, "1");

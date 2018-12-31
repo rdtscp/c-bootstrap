@@ -7,15 +7,14 @@
 #include <string>
 #include <vector>
 
+#include "Position.h"
+
 namespace ACC {
 
 class Scanner {
 
 public:
-  int column;
-  int line;
-
-  Scanner(const std::string &abspath);
+    Scanner(const std::string &abspath);
 
   char next();
 
@@ -29,8 +28,12 @@ public:
 
   std::string getFilepath() const;
 
+  Position getPosition() const;
+
 private:
   std::string::const_iterator currChar;
+  int column;
+  int line;
   std::string file;
   const std::string abspath;
   std::shared_ptr<Scanner> includeScanner = nullptr;
