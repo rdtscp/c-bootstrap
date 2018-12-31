@@ -123,6 +123,11 @@ std::string DotGraph::visit(CharLiteral &cl) {
   declare(charID, "'" + cl.value + "'");
   return charID;
 }
+std::string DotGraph::visit(DoWhile &dw) {
+  std::string charID = "DoWhile" + std::to_string(nodeCount++);
+  // @TODO
+  return charID;
+}
 std::string DotGraph::visit(FieldAccess &fa) {
   std::string fieldAccessID = "FieldAccess" + std::to_string(nodeCount++);
   declare(fieldAccessID, "FieldAccess." + fa.field);

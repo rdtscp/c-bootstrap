@@ -12,6 +12,7 @@ class BaseType;
 class BinOp;
 class Block;
 class CharLiteral;
+class DoWhile;
 class FieldAccess;
 class FunCall;
 class FunDecl;
@@ -41,6 +42,7 @@ public:
   virtual T visit(BinOp &bo) = 0;
   virtual T visit(Block &b) = 0;
   virtual T visit(CharLiteral &cl) = 0;
+  virtual T visit(DoWhile &dw) = 0;
   virtual T visit(FieldAccess &fa) = 0;
   virtual T visit(FunCall &fc) = 0;
   virtual T visit(FunDecl &fd) = 0;

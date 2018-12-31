@@ -35,6 +35,7 @@ private:
   std::string visit(BinOp &bo) override;
   std::string visit(Block &b) override;
   std::string visit(CharLiteral &cl) override;
+  std::string visit(DoWhile &dw) override;
   std::string visit(FieldAccess &fa) override;
   std::string visit(FunCall &fc) override;
   std::string visit(FunDecl &fd) override;

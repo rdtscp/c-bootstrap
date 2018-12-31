@@ -86,6 +86,11 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
 std::shared_ptr<X86::Operand> GenerateX86::visit(CharLiteral &cl) {
   return std::make_shared<X86::None>();
 }
+std::shared_ptr<X86::Operand> GenerateX86::visit(DoWhile &dw) {
+  dw.body->accept(*this);
+  dw.condition->accept(*this);
+  return std::make_shared<X86::None>();
+}
 std::shared_ptr<X86::Operand> GenerateX86::visit(FieldAccess &fa) {
   fa.object->accept(*this);
   return std::make_shared<X86::None>();

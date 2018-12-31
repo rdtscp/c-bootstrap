@@ -38,6 +38,7 @@ public:
     // keywords
     IF,     // "if"
     ELSE,   // "else"
+    DO,     // "do"
     WHILE,  // "while"
     RETURN, // "return"
     STRUCT, // "struct"
@@ -126,6 +127,8 @@ static std::string tokToStr(const Token::TokenClass &tok) {
     return "IF";
   case Token::TokenClass::ELSE:
     return "ELSE";
+  case Token::TokenClass::DO:
+    return "DO";
   case Token::TokenClass::WHILE:
     return "WHILE";
   case Token::TokenClass::RETURN:

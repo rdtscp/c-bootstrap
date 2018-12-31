@@ -61,6 +61,7 @@ private:
   bool acceptStmt();
   bool acceptBlock();
   bool acceptWhile();
+  bool acceptDoWhile();
   bool acceptIf();
   bool acceptReturn();
   bool acceptAssign();
@@ -85,6 +86,7 @@ private:
 
   std::shared_ptr<Stmt> parseStmt();
   std::shared_ptr<While> parseWhile();
+  std::shared_ptr<DoWhile> parseDoWhile();
   std::shared_ptr<If> parseIf();
   std::shared_ptr<Return> parseReturn();
   std::shared_ptr<Assign> parseAssign();

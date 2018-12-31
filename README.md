@@ -34,6 +34,7 @@ params       -> [ type IDENT ("," type IDENT)* ]
 
 stmt         -> vardecl
               | block
+              | "do" stmt "while" "(" exp ")"
               | "while" "(" exp ")" stmt
               | "if" "(" exp ")" stmt ["else" stmt]
               | "return" [exp] ";"

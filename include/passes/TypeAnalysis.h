@@ -8,8 +8,8 @@
 #include <set>
 #include <vector>
 
-#include "../ASTVisitor.h"
 #include "../AST.h"
+#include "../ASTVisitor.h"
 
 namespace ACC {
 
@@ -43,6 +43,7 @@ private:
   std::shared_ptr<Type> visit(BinOp &bo) override;
   std::shared_ptr<Type> visit(Block &b) override;
   std::shared_ptr<Type> visit(CharLiteral &cl) override;
+  std::shared_ptr<Type> visit(DoWhile &dw) override;
   std::shared_ptr<Type> visit(FieldAccess &fa) override;
   std::shared_ptr<Type> visit(FunCall &fc) override;
   std::shared_ptr<Type> visit(FunDecl &fd) override;

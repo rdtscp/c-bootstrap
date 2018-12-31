@@ -151,6 +151,14 @@ Token Lexer::nextToken() {
       if (lexResult.first)
         return Token(Token::TokenClass::CONST, scanner.getPosition());
     }
+    // Check for DO Token.
+    if (c == 'd' && scanner.peek() == 'o') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("do");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return Token(Token::TokenClass::DO, scanner.getPosition());
+    }
     // Check for ELSE Token.
     else if (c == 'e' && scanner.peek() == 'l') {
       std::pair<bool, std::string> lexResult = tryLexKeyword("else");

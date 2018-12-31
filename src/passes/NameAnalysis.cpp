@@ -2,7 +2,8 @@
 
 using namespace ACC;
 
-NameAnalysis::NameAnalysis(std::shared_ptr<Program> progAST) : progAST(progAST) {}
+NameAnalysis::NameAnalysis(std::shared_ptr<Program> progAST)
+    : progAST(progAST) {}
 
 void NameAnalysis::error(std::string error) {
   errorCount++;
@@ -40,6 +41,7 @@ void NameAnalysis::visit(Block &b) {
   currScope = b.outerBlock;
 }
 void NameAnalysis::visit(CharLiteral &cl) {}
+void NameAnalysis::visit(DoWhile &dw) {}
 void NameAnalysis::visit(FieldAccess &fa) { fa.object->accept(*this); }
 void NameAnalysis::visit(FunCall &fc) {
   if (currScope->find(fc.funName) == nullptr)
@@ -69,9 +71,7 @@ void NameAnalysis::visit(If &i) {
     i.elseBody->accept(*this);
 }
 void NameAnalysis::visit(IntLiteral &il) {}
-void NameAnalysis::visit(ParenthExpr &pe) {
-  pe.innerExpr->accept(*this);
-}
+void NameAnalysis::visit(ParenthExpr &pe) { pe.innerExpr->accept(*this); }
 void NameAnalysis::visit(PointerType &pt) {}
 void NameAnalysis::visit(Program &p) {
   currScope = std::make_shared<Block>(Block({}));

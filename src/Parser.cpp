@@ -161,6 +161,8 @@ bool Parser::acceptStmt() {
     return true;
   if (acceptWhile())
     return true;
+  if (acceptDoWhile())
+    return true;
   if (acceptIf())
     return true;
   if (acceptReturn())
@@ -176,6 +178,8 @@ bool Parser::acceptStmt() {
 bool Parser::acceptBlock() { return accept(TC::LBRA); }
 
 bool Parser::acceptWhile() { return accept(TC::WHILE); }
+
+bool Parser::acceptDoWhile() { return accept(TC::DO); }
 
 bool Parser::acceptIf() { return accept(TC::IF); }
 
@@ -356,6 +360,9 @@ std::shared_ptr<Stmt> Parser::parseStmt() {
   if (acceptWhile())
     return parseWhile();
 
+  if (acceptDoWhile())
+    return parseDoWhile();
+
   if (acceptIf())
     return parseIf();
 
@@ -388,6 +395,21 @@ std::shared_ptr<While> Parser::parseWhile() {
 
   std::shared_ptr<While> newNode =
       std::make_shared<While>(While(whileBody, whileCondition));
+  newNode->position = currToken.position;
+  return newNode;
+}
+
+std::shared_ptr<DoWhile> Parser::parseDoWhile() {
+  expect(TC::DO);
+  std::shared_ptr<Stmt> whileBody = parseStmt();
+  expect(TC::WHILE);
+  expect(TC::LPAR);
+  std::shared_ptr<Expr> whileCondition = parseExpr();
+  expect(TC::RPAR);
+  expect(TC::SC);
+
+  std::shared_ptr<DoWhile> newNode =
+      std::make_shared<DoWhile>(DoWhile(whileBody, whileCondition));
   newNode->position = currToken.position;
   return newNode;
 }

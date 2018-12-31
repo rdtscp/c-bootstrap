@@ -8,8 +8,8 @@
 #include <set>
 #include <vector>
 
-#include "../ASTVisitor.h"
 #include "../AST.h"
+#include "../ASTVisitor.h"
 
 namespace ACC {
 
@@ -43,6 +43,7 @@ private:
   void visit(BinOp &bo) override;
   void visit(Block &b) override;
   void visit(CharLiteral &cl) override;
+  void visit(DoWhile &dw) override;
   void visit(FieldAccess &fa) override;
   void visit(FunCall &fc) override;
   void visit(FunDecl &fd) override;

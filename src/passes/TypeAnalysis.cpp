@@ -67,6 +67,17 @@ std::shared_ptr<Type> TypeAnalysis::visit(Block &b) {
 std::shared_ptr<Type> TypeAnalysis::visit(CharLiteral &cl) {
   return std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR));
 }
+std::shared_ptr<Type> TypeAnalysis::visit(DoWhile &dw) {
+  dw.body->accept(*this);
+  std::shared_ptr<Type> conditionType = dw.condition->accept(*this);
+  if (conditionType->astClass() != "BaseType")
+    return error("Type Analysis: Type of While condition is invalid.");
+  std::shared_ptr<BaseType> conditionBaseType =
+      std::static_pointer_cast<BaseType>(conditionType);
+  if (conditionBaseType->primitiveType != PrimitiveType::INT)
+    return error("Type Analysis: Type of While condition is not INT.");
+  return nullptr;
+}
 std::shared_ptr<Type> TypeAnalysis::visit(FieldAccess &fa) {
   std::shared_ptr<Type> objType = fa.object->accept(*this);
   if (objType->astClass() != "StructType")

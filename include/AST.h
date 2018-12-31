@@ -11,6 +11,7 @@
 #include "ast/Block.h"
 #include "ast/CharLiteral.h"
 #include "ast/Decl.h"
+#include "ast/DoWhile.h"
 #include "ast/Expr.h"
 #include "ast/FieldAccess.h"
 #include "ast/FunCall.h"
