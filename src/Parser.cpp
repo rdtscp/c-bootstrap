@@ -118,8 +118,11 @@ bool Parser::acceptStructTypeDecl() {
 
 bool Parser::acceptVarDecl() {
   int lookAheadOffset = 1;
-  if (!accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT}))
+  if (!accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::EXTERN}))
     return false;
+
+  if (accept(TC::EXTERN))
+    lookAheadOffset++;
 
   if (accept(TC::STRUCT))
     lookAheadOffset++;
@@ -237,6 +240,11 @@ std::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
 }
 
 std::shared_ptr<VarDecl> Parser::parseVarDecl() {
+  bool isExtern = false;
+  if (accept(TC::EXTERN)) {
+    expect(TC::EXTERN);
+    isExtern = true;
+  }
   std::shared_ptr<Type> varType = parseType();
   std::string varIdentifier = expect(TC::IDENTIFIER).data;
   if (accept(TC::LSBR)) {
@@ -246,9 +254,8 @@ std::shared_ptr<VarDecl> Parser::parseVarDecl() {
     varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
   expect(TC::SC);
-  std::shared_ptr<VarDecl> vd(new VarDecl(varType, varIdentifier));
   std::shared_ptr<VarDecl> newNode =
-      std::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
+      std::make_shared<VarDecl>(VarDecl(varType, varIdentifier, isExtern));
   newNode->Decl::position = currToken.position;
   return newNode;
 }

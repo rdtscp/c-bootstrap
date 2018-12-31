@@ -44,6 +44,7 @@ public:
     STRUCT, // "struct"
     SIZEOF, // "sizeof"
     CONST,  // "const"
+    EXTERN, // "extern"
 
     // literals
     STRING_LITERAL, // \".*\"  any sequence of characters enclosed within two
@@ -179,6 +180,8 @@ static std::string tokToStr(const Token::TokenClass &tok) {
     return "&";
   case Token::TokenClass::CONST:
     return "CONST";
+  case Token::TokenClass::EXTERN:
+    return "EXTERN";
   }
 }
 

@@ -167,6 +167,14 @@ Token Lexer::nextToken() {
       if (lexResult.first)
         return Token(Token::TokenClass::ELSE, scanner.getPosition());
     }
+    // Check for EXTERN Token.
+    else if (c == 'e' && scanner.peek() == 'x') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("extern");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return Token(Token::TokenClass::EXTERN, scanner.getPosition());
+    }
     // Check for IF Token.
     else if (c == 'i' && scanner.peek() == 'f') {
       std::pair<bool, std::string> lexResult = tryLexKeyword("if");
