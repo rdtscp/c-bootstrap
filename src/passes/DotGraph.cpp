@@ -124,9 +124,11 @@ std::string DotGraph::visit(CharLiteral &cl) {
   return charID;
 }
 std::string DotGraph::visit(DoWhile &dw) {
-  std::string charID = "DoWhile" + std::to_string(nodeCount++);
-  // @TODO
-  return charID;
+  std::string whileID = "While" + std::to_string(nodeCount++);
+  declare(whileID, "do {} while()");
+  join(whileID, dw.body->accept(*this));
+  join(whileID, dw.condition->accept(*this));
+  return whileID;
 }
 std::string DotGraph::visit(FieldAccess &fa) {
   std::string fieldAccessID = "FieldAccess" + std::to_string(nodeCount++);

@@ -41,7 +41,10 @@ void NameAnalysis::visit(Block &b) {
   currScope = b.outerBlock;
 }
 void NameAnalysis::visit(CharLiteral &cl) {}
-void NameAnalysis::visit(DoWhile &dw) {}
+void NameAnalysis::visit(DoWhile &dw) {
+  dw.condition->accept(*this);
+  dw.body->accept(*this);
+}
 void NameAnalysis::visit(FieldAccess &fa) { fa.object->accept(*this); }
 void NameAnalysis::visit(FunCall &fc) {
   if (currScope->find(fc.funName) == nullptr)
