@@ -104,5 +104,5 @@ std::string Scanner::getFilepath() const {
 Position Scanner::getPosition() const {
   if (includeScanner)
     return includeScanner->getPosition();
-  return Position(line, column, getFilename());
+  return Position(line, column, getFilepath() + getFilename());
 }

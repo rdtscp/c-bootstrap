@@ -4,8 +4,31 @@ using namespace ACC;
 
 Preprocessor::Preprocessor(Scanner &newScanner) : scanner(newScanner) {}
 
-void Preprocessor::preprocessDefinition(const std::string &definition) {
-  definitions.insert(definition);
+void Preprocessor::preprocessDefinition(const std::string &definition,
+                                        const std::string &value) {
+  definitions[definition] = value;
+}
+
+void Preprocessor::preprocessIfDef(const std::string &definition) {
+  if (definitions.find(definition) == definitions.end()) {
+    char curr;
+    while (true) {
+      curr = scanner.next();
+      if (curr == '#' && scanner.peek() == 'e')
+        break;
+      if (curr == '\0')
+        throw std::runtime_error(
+            "Pre-Processing: Expected #endif Directive but found EOF.");
+    }
+    std::string expected = "endif";
+    for (int i = 0; i < expected.length(); i++) {
+      curr = scanner.next();
+      if (curr != expected[i]) {
+        throw std::runtime_error("Pre-Processing: Expected #endif Directive. " +
+                                 scanner.getPosition().toString());
+      }
+    }
+  }
 }
 
 void Preprocessor::preprocessIfNDef(const std::string &definition) {
@@ -55,10 +78,10 @@ void Preprocessor::preprocessPragmaOnce(const std::string &filename) {
 }
 
 void Preprocessor::preprocessUndef(const std::string &definition) {
-  const std::set<std::string> definitonsCopy = definitions;
+  const std::map<std::string, std::string> definitonsCopy = definitions;
   definitions.clear();
-  for (const std::string &definitonCopy : definitonsCopy) {
-    if (definitonCopy != definition)
-      preprocessDefinition(definitonCopy);
+  for (const auto &definitonCopy : definitonsCopy) {
+    if (definitonCopy.first != definition)
+      preprocessDefinition(definitonCopy.first, definitonCopy.second);
   }
 }
