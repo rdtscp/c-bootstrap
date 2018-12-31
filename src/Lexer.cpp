@@ -279,7 +279,7 @@ Token Lexer::nextToken() {
       int currLine = scanner.getPosition().line;
       std::string definition;
       c = scanner.next();
-      while (isalpha(c) || c == '_') {
+      while (isalpha(c) || c == '_' || c == '(' || c == ')' || c == ',') {
         definition += c;
         c = scanner.next();
       }
@@ -291,6 +291,8 @@ Token Lexer::nextToken() {
         c = scanner.next();
         while (currLine == scanner.getPosition().line) {
           value += c;
+          if (c == '\\' && scanner.peek() == '\n')
+            currLine++;
           c = scanner.next();
         }
       }
