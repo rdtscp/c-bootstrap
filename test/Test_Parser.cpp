@@ -225,6 +225,26 @@ TEST(ParserTest, ComplexBinOp) {
   /* @TODO Test AST */
 }
 
+TEST(ParserTest, InvalidSignatureFunDef) {
+  Scanner scanner(test_prefix + "parser/invalidfundef.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  try {
+    parser.parse();
+  } catch (std::runtime_error const &err) {
+    ASSERT_TRUE(true);
+    return;
+  } catch (...) {
+    std::cout << "Expected a std::runtime_error" << std::endl;
+    ASSERT_TRUE(false);
+    return;
+  }
+  std::cout << "Expected a std::runtime_error, but no exception was thrown."
+            << std::endl;
+  ASSERT_TRUE(false);
+}
+
 // The fixture for testing class Project1. From google test primer.
 class Test_Parser : public ::testing::Test {
 protected:

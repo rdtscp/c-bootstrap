@@ -293,16 +293,24 @@ std::shared_ptr<FunDecl> Parser::parseFunDecl() {
   expect(TC::LPAR);
   std::vector<std::shared_ptr<VarDecl>> funParams;
 
+  bool isDef = true;
   if (acceptParam())
     funParams.push_back(parseParam());
   while (accept(TC::COMMA)) {
     expect(TC::COMMA);
-    funParams.push_back(parseParam());
+    std::shared_ptr<VarDecl> currParam = parseParam();
+    if (currParam->identifer == "")
+      isDef = false;
+
+    funParams.push_back(currParam);
   }
 
   expect(TC::RPAR);
 
-  if (acceptBlock()) {
+  if (acceptBlock() && !isDef) {
+    throw std::runtime_error(
+        "Parser: FunDef signature did not provide names for parameters.");
+  } else if (acceptBlock()) {
     std::shared_ptr<Block> funBlock = parseBlock();
     std::shared_ptr<FunDef> newNode = std::make_shared<FunDef>(
         FunDef(funBlock, funIdent, funParams, funType));
@@ -319,7 +327,9 @@ std::shared_ptr<FunDecl> Parser::parseFunDecl() {
 
 std::shared_ptr<VarDecl> Parser::parseParam() {
   std::shared_ptr<Type> varType = parseType();
-  std::string varIdentifier = expect(TC::IDENTIFIER).data;
+  std::string varIdentifier = "";
+  if (accept(TC::IDENTIFIER))
+    varIdentifier = expect(TC::IDENTIFIER).data;
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
     std::string arraySize = expect(TC::INT_LITERAL).data;
