@@ -245,7 +245,7 @@ Token Lexer::nextToken() {
       }
       // If the next character is an illegal characater for an IDENTIFIER, we
       // have finished finding the token.
-      if (!isalpha(peek) && !isdigit(peek) && peek != '_') {
+      if (!isalpha(peek) && !isdigit(peek) && peek != '_' && peek != '$') {
         return Token(Token::TokenClass::IDENTIFIER, scanner.getPosition(),
                      literal);
       }
