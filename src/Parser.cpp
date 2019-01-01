@@ -18,11 +18,16 @@ std::shared_ptr<Program> Parser::parse() {
 
 /* ---- Token Operations ---- */
 
-bool Parser::accept(TC expected) { return expected == currToken.tokenClass; }
+bool Parser::accept(TC expected, int offset) {
+  if (offset == 0)
+    return expected == currToken.tokenClass;
+  TC actual = lookAhead(offset).tokenClass;
+  return expected == actual;
+}
 
-bool Parser::accept(std::vector<TC> expected) {
+bool Parser::accept(std::vector<TC> expected, int offset) {
   for (const TC token : expected) {
-    if (accept(token))
+    if (accept(token, offset))
       return true;
   }
   return false;
@@ -53,7 +58,9 @@ Token Parser::expect(std::vector<TC> expected) {
 }
 
 Token Parser::lookAhead(int i) {
-  assert(i > 0);
+  assert(i >= 0);
+  if (i == 0)
+    return currToken;
   while (tokenBuffer.size() < i) {
     tokenBuffer.push_back(lexer.nextToken());
   }
@@ -73,126 +80,141 @@ void Parser::nextToken() {
 
 /* ---- Look Ahead ---- */
 
-bool Parser::acceptDecl() {
-  if (acceptStructTypeDecl())
+bool Parser::acceptDecl(int offset) {
+  if (acceptStructTypeDecl(offset))
     return true;
 
-  if (acceptVarDecl())
+  if (acceptVarDecl(offset))
     return true;
 
-  if (acceptFunDecl())
+  if (acceptFunDecl(offset))
     return true;
 
   return false;
 }
 
-bool Parser::acceptFunDecl() {
-
-  if (acceptStructType()) {
-    int lookAheadOffset = 2;
-    while (lookAhead(lookAheadOffset).tokenClass == TC::ASTERIX)
-      lookAheadOffset++;
-    return lookAhead(lookAheadOffset).tokenClass == TC::IDENTIFIER &&
-           lookAhead(lookAheadOffset + 1).tokenClass == TC::LPAR;
+bool Parser::acceptFunDecl(int offset) {
+  if (acceptStructType(offset)) {
+    offset += 2;
+    while (accept(TC::ASTERIX, offset))
+      offset++;
+    return accept(TC::IDENTIFIER, offset) && accept(TC::LPAR, offset + 1);
   }
 
-  if (acceptType()) {
-    int lookAheadOffset = 1;
-    while (lookAhead(lookAheadOffset).tokenClass == TC::ASTERIX)
-      lookAheadOffset++;
-    return lookAhead(lookAheadOffset).tokenClass == TC::IDENTIFIER &&
-           lookAhead(lookAheadOffset + 1).tokenClass == TC::LPAR;
+  if (acceptType(offset)) {
+    offset += 1;
+    while (accept(TC::ASTERIX, offset))
+      offset++;
+
+    return accept(TC::IDENTIFIER, offset) && accept(TC::LPAR, offset + 1);
   }
 
   return false;
 }
 
-bool Parser::acceptStructTypeDecl() {
-  if (!acceptStructType())
-    return false;
-  if (lookAhead(2).tokenClass != TC::LBRA)
+bool Parser::acceptStructTypeDecl(int offset) {
+  if (!acceptStructType(offset))
     return false;
 
-  return true;
-}
-
-bool Parser::acceptVarDecl() {
-  int lookAheadOffset = 1;
-  if (!accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::EXTERN}))
-    return false;
-
-  if (accept(TC::EXTERN))
-    lookAheadOffset++;
-
-  if (accept(TC::STRUCT))
-    lookAheadOffset++;
-
-  while (lookAhead(lookAheadOffset).tokenClass == TC::ASTERIX)
-    lookAheadOffset++;
-
-  if (lookAhead(lookAheadOffset).tokenClass != TC::IDENTIFIER)
-    return false;
-
-  lookAheadOffset++;
-  if (lookAhead(lookAheadOffset).tokenClass != TC::SC &&
-      lookAhead(lookAheadOffset).tokenClass != TC::LSBR)
+  if (!accept(TC::LBRA, offset + 2))
     return false;
 
   return true;
 }
 
-bool Parser::acceptType() {
-  return accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT});
-}
-
-bool Parser::acceptStructType() {
-  if (!accept(TC::STRUCT))
+bool Parser::acceptVarDecl(int offset) {
+  if (!accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::EXTERN}, offset))
     return false;
 
-  if (lookAhead(1).tokenClass != TC::IDENTIFIER)
+  if (accept(TC::EXTERN, offset))
+    offset++;
+
+  if (accept(TC::STRUCT, offset)) {
+    offset++;
+    if (!accept(TC::IDENTIFIER, offset))
+      return false;
+
+    offset++;
+    while (accept(TC::ASTERIX, offset))
+      offset++;
+
+    if (!accept(TC::IDENTIFIER, offset))
+      return false;
+
+    offset++;
+    if (!accept({TC::SC, TC::LSBR}, offset))
+      return false;
+
+  } else if (accept({TC::INT, TC::CHAR, TC::VOID}, offset)) {
+    offset++;
+    while (accept(TC::ASTERIX, offset))
+      offset++;
+
+    if (!accept(TC::IDENTIFIER, offset))
+      return false;
+
+    offset++;
+    if (!accept({TC::SC, TC::LSBR}, offset))
+      return false;
+  } else
     return false;
 
   return true;
 }
 
-bool Parser::acceptParam() { return acceptType(); }
+bool Parser::acceptType(int offset) {
+  return accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT}, offset);
+}
 
-bool Parser::acceptStmt() {
-  if (acceptVarDecl())
+bool Parser::acceptStructType(int offset) {
+  if (!accept(TC::STRUCT, offset))
+    return false;
+
+  if (!accept(TC::IDENTIFIER, offset + 1))
+    return false;
+
+  return true;
+}
+
+bool Parser::acceptParam(int offset) { return acceptType(offset); }
+
+bool Parser::acceptStmt(int offset) {
+  if (acceptVarDecl(offset))
     return true;
-  if (acceptBlock())
+  if (acceptBlock(offset))
     return true;
-  if (acceptWhile())
+  if (acceptWhile(offset))
     return true;
-  if (acceptDoWhile())
+  if (acceptDoWhile(offset))
     return true;
-  if (acceptIf())
+  if (acceptIf(offset))
     return true;
-  if (acceptReturn())
+  if (acceptReturn(offset))
     return true;
-  if (acceptAssign())
+  if (acceptAssign(offset))
     return true;
-  if (acceptExpr())
+  if (acceptExpr(offset))
     return true;
 
   return false;
 }
 
-bool Parser::acceptBlock() { return accept(TC::LBRA); }
+bool Parser::acceptBlock(int offset) { return accept(TC::LBRA, offset); }
 
-bool Parser::acceptWhile() { return accept(TC::WHILE); }
+bool Parser::acceptWhile(int offset) { return accept(TC::WHILE, offset); }
 
-bool Parser::acceptDoWhile() { return accept(TC::DO); }
+bool Parser::acceptDoWhile(int offset) { return accept(TC::DO, offset); }
 
-bool Parser::acceptIf() { return accept(TC::IF); }
+bool Parser::acceptIf(int offset) { return accept(TC::IF, offset); }
 
-bool Parser::acceptReturn() { return accept(TC::RETURN); }
+bool Parser::acceptReturn(int offset) { return accept(TC::RETURN, offset); }
 
-bool Parser::acceptAssign() { return acceptExpr(); }
+bool Parser::acceptAssign(int offset) { return acceptExpr(offset); }
 
-bool Parser::acceptExpr() {
+bool Parser::acceptExpr(int offset) {
   return accept({TC::LPAR, TC::SIZEOF, TC::ASTERIX, TC::MINUS, TC::IDENTIFIER,
-                 TC::INT_LITERAL, TC::CHAR_LITERAL, TC::STRING_LITERAL});
+                 TC::INT_LITERAL, TC::CHAR_LITERAL, TC::STRING_LITERAL},
+                offset);
 }
 
 /* ---- Parsing ---- */
@@ -468,10 +490,7 @@ std::shared_ptr<Assign> Parser::parseAssign() {
 }
 
 std::shared_ptr<Expr> Parser::parseExpr() {
-  if (accept(TC::LPAR) && (lookAhead(1).tokenClass != TC::INT &&
-                           lookAhead(1).tokenClass != TC::CHAR &&
-                           lookAhead(1).tokenClass != TC::VOID &&
-                           lookAhead(1).tokenClass != TC::STRUCT)) {
+  if (accept(TC::LPAR) && !acceptType(1)) {
     expect(TC::LPAR);
     std::shared_ptr<Expr> innerExpr = parseExpr();
     expect(TC::RPAR);
@@ -630,10 +649,7 @@ std::shared_ptr<Expr> Parser::parseUnaryExpr() {
     newNode->position = currToken.position;
     return newNode;
   }
-  if (accept(TC::LPAR) && (lookAhead(1).tokenClass == TC::INT ||
-                           lookAhead(1).tokenClass == TC::CHAR ||
-                           lookAhead(1).tokenClass == TC::VOID ||
-                           lookAhead(1).tokenClass == TC::STRUCT)) {
+  if (accept(TC::LPAR) && acceptType(1)) {
     expect(TC::LPAR);
     std::shared_ptr<Type> castType = parseType();
     expect(TC::RPAR);

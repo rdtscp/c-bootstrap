@@ -29,10 +29,10 @@ private:
   /* ---- Token Operations ---- */
 
   /* Check if we can expect the provided Token to be next. */
-  bool accept(Token::TokenClass expected);
+  bool accept(Token::TokenClass expected, int offset = 0);
 
   /* Check if we can expect one of the provided Tokens to be next. */
-  bool accept(std::vector<Token::TokenClass> expected);
+  bool accept(std::vector<Token::TokenClass> expected, int offset = 0);
 
   /* Expect the next Token to be of a certain type. Throws if not. */
   Token expect(Token::TokenClass expected);
@@ -48,25 +48,25 @@ private:
 
   /* ---- Look Ahead ---- */
 
-  bool acceptDecl();
+  bool acceptDecl(int offset = 0);
 
-  bool acceptFunDecl();
-  bool acceptStructTypeDecl();
-  bool acceptVarDecl();
+  bool acceptFunDecl(int offset = 0);
+  bool acceptStructTypeDecl(int offset = 0);
+  bool acceptVarDecl(int offset = 0);
 
-  bool acceptType();
-  bool acceptStructType();
+  bool acceptType(int offset = 0);
+  bool acceptStructType(int offset = 0);
 
-  bool acceptParam();
-  bool acceptStmt();
-  bool acceptBlock();
-  bool acceptWhile();
-  bool acceptDoWhile();
-  bool acceptIf();
-  bool acceptReturn();
-  bool acceptAssign();
+  bool acceptParam(int offset = 0);
+  bool acceptStmt(int offset = 0);
+  bool acceptBlock(int offset = 0);
+  bool acceptWhile(int offset = 0);
+  bool acceptDoWhile(int offset = 0);
+  bool acceptIf(int offset = 0);
+  bool acceptReturn(int offset = 0);
+  bool acceptAssign(int offset = 0);
 
-  bool acceptExpr();
+  bool acceptExpr(int offset = 0);
 
   /* ---- Parsing ---- */
 
