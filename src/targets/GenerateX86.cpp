@@ -106,35 +106,35 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(FunCall &fc) {
   return X86::eax;
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(FunDecl &fd) {
-  currScope = fd.funBlock;
+  // currScope = fd.funBlock;
 
-  x86.block(fd.getIdentifier() + "FunDecl");
+  // x86.block(fd.getIdentifier() + "FunDecl");
 
-  /* ---- Callee Prologue ---- */
-  x86.push(X86::ebp);
-  x86.mov(X86::ebp, X86::esp);
-  x86.push(X86::ebx);
-  x86.push(X86::edi);
-  x86.push(X86::esi);
+  // /* ---- Callee Prologue ---- */
+  // x86.push(X86::ebp);
+  // x86.mov(X86::ebp, X86::esp);
+  // x86.push(X86::ebx);
+  // x86.push(X86::edi);
+  // x86.push(X86::esi);
 
-  /* ---- Execute Function ---- */
-  x86.comment(" ---- Function Body ----");
-  fd.funBlock->accept(*this);
-  x86.comment(" -----------------------");
+  // /* ---- Execute Function ---- */
+  // x86.comment(" ---- Function Body ----");
+  // fd.funBlock->accept(*this);
+  // x86.comment(" -----------------------");
 
-  /* -------------------------- */
+  // /* -------------------------- */
 
-  /* ---- Callee Epilogue ---- */
-  x86.pop(X86::esi);
-  x86.pop(X86::edi);
-  x86.pop(X86::ebx);
-  x86.mov(X86::esp, X86::ebp);
-  x86.pop(X86::ebp);
-  x86.ret();
-  x86.write("");
+  // /* ---- Callee Epilogue ---- */
+  // x86.pop(X86::esi);
+  // x86.pop(X86::edi);
+  // x86.pop(X86::ebx);
+  // x86.mov(X86::esp, X86::ebp);
+  // x86.pop(X86::ebp);
+  // x86.ret();
+  // x86.write("");
 
-  currFpOffset = 0;
-  currScope = fd.funBlock->outerBlock;
+  // currFpOffset = 0;
+  // currScope = fd.funBlock->outerBlock;
   return std::make_shared<X86::None>(X86::None());
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(FunDef &fd) {

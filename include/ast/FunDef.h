@@ -7,25 +7,22 @@
 
 #include "Block.h"
 #include "Decl.h"
+#include "FunDecl.h"
 #include "Type.h"
 #include "VarDecl.h"
 
 namespace ACC {
 
-class FunDef : public Decl, public std::enable_shared_from_this<FunDef> {
+class FunDef : public FunDecl {
 
 public:
-  bool isExtern;
   std::shared_ptr<Block> funBlock;
-  std::string funName;
-  std::vector<std::shared_ptr<VarDecl>> funParams;
-  std::shared_ptr<Type> funType;
 
   FunDef(std::shared_ptr<Block> funBlock, std::string funName,
          std::vector<std::shared_ptr<VarDecl>> funParams,
-         std::shared_ptr<Type> funType, bool isExtern = false);
+         std::shared_ptr<Type> funType);
 
-  std::shared_ptr<FunDef> getptr();
+  std::shared_ptr<FunDecl> getptr();
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;

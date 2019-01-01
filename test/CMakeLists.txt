@@ -60,25 +60,6 @@ target_link_libraries(runLexerUnitTests
 )
 add_test(LexerUnitTests runLexerUnitTests)
 
-add_executable(runPreprocessorUnitTests Test_Preprocessor.cpp main.cpp)
-target_link_libraries(runPreprocessorUnitTests
-    libgtest
-    libgmock
-    AST
-    DotGraph
-    NameAnalysis
-    TypeAnalysis
-    GenerateMIPS
-    GenerateX86
-    MIPS
-    X86
-    Lexer
-    Parser
-    Preprocessor
-    Scanner
-)
-add_test(PreprocessorUnitTests runPreprocessorUnitTests)
-
 add_executable(runParserUnitTests Test_Parser.cpp  main.cpp)
 target_link_libraries(runParserUnitTests
     libgtest
@@ -97,6 +78,25 @@ target_link_libraries(runParserUnitTests
     Scanner
 )
 add_test(ParserUnitTests runParserUnitTests)
+
+add_executable(runPreprocessorUnitTests Test_Preprocessor.cpp main.cpp)
+target_link_libraries(runPreprocessorUnitTests
+    libgtest
+    libgmock
+    AST
+    DotGraph
+    NameAnalysis
+    TypeAnalysis
+    GenerateMIPS
+    GenerateX86
+    MIPS
+    X86
+    Lexer
+    Parser
+    Preprocessor
+    Scanner
+)
+add_test(PreprocessorUnitTests runPreprocessorUnitTests)
 
 add_executable(runASTAnalysisUnitTests Test_ASTAnalysis.cpp  main.cpp)
 target_link_libraries(runASTAnalysisUnitTests
@@ -117,25 +117,6 @@ target_link_libraries(runASTAnalysisUnitTests
 )
 add_test(ASTAnalysisUnitTests runASTAnalysisUnitTests)
 
-add_executable(runCodeGenerationUnitTests Test_CodeGeneration.cpp  main.cpp)
-target_link_libraries(runCodeGenerationUnitTests
-    libgtest
-    libgmock
-    AST
-    DotGraph
-    NameAnalysis
-    TypeAnalysis
-    GenerateMIPS
-    GenerateX86
-    MIPS
-    X86
-    Lexer
-    Parser
-    Preprocessor
-    Scanner
-)
-add_test(CodeGenerationUnitTests runCodeGenerationUnitTests)
-
 add_executable(runOptimiserUnitTests Test_Optimiser.cpp  main.cpp)
 target_link_libraries(runOptimiserUnitTests
     libgtest
@@ -155,3 +136,22 @@ target_link_libraries(runOptimiserUnitTests
     Scanner
 )
 add_test(OptimiserUnitTests runOptimiserUnitTests)
+
+add_executable(runCodeGenerationUnitTests Test_CodeGeneration.cpp  main.cpp)
+target_link_libraries(runCodeGenerationUnitTests
+    libgtest
+    libgmock
+    AST
+    DotGraph
+    NameAnalysis
+    TypeAnalysis
+    GenerateMIPS
+    GenerateX86
+    MIPS
+    X86
+    Lexer
+    Parser
+    Preprocessor
+    Scanner
+)
+add_test(CodeGenerationUnitTests runCodeGenerationUnitTests)

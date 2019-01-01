@@ -4,11 +4,12 @@ using namespace ACC;
 
 FunDef::FunDef(std::shared_ptr<Block> funBlock, std::string funName,
                std::vector<std::shared_ptr<VarDecl>> funParams,
-               std::shared_ptr<Type> funType, bool isExtern)
-    : funBlock(funBlock), funName(funName), funParams(funParams),
-      funType(funType), isExtern(isExtern) {}
+               std::shared_ptr<Type> funType)
+    : FunDecl(funName, funParams, funType), funBlock(funBlock) {}
 
-std::shared_ptr<FunDef> FunDef::getptr() { return shared_from_this(); }
+std::shared_ptr<FunDecl> FunDef::getptr() {
+  return FunDecl::shared_from_this();
+}
 
 bool FunDef::operator==(Decl &rhs) const {
   if (rhs.astClass() == astClass())

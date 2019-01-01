@@ -53,19 +53,20 @@ void NameAnalysis::visit(FunCall &fc) {
     arg->accept(*this);
 }
 void NameAnalysis::visit(FunDecl &fd) {
-  if (currScope->findLocal(fd.getIdentifier()))
-    return error("Attempted to declare a Function with an identifier that is "
-                 "already in use: " +
-                 fd.getIdentifier());
-  currScope->insertDecl(fd.getptr());
+  // if (currScope->findLocal(fd.getIdentifier()))
+  //   return error("Attempted to declare a Function with an identifier that is
+  //   "
+  //                "already in use: " +
+  //                fd.getIdentifier());
+  // currScope->insertDecl(fd.getptr());
 
-  fd.funBlock->setOuterBlock(currScope);
-  currScope = fd.funBlock;
+  // fd.funBlock->setOuterBlock(currScope);
+  // currScope = fd.funBlock;
 
-  for (const auto &param : fd.funParams)
-    param->accept(*this);
-  fd.funBlock->accept(*this);
-  currScope = fd.funBlock->outerBlock;
+  // for (const auto &param : fd.funParams)
+  //   param->accept(*this);
+  // fd.funBlock->accept(*this);
+  // currScope = fd.funBlock->outerBlock;
 }
 void NameAnalysis::visit(FunDef &fd) {
   if (currScope->findLocal(fd.getIdentifier()))
@@ -98,7 +99,7 @@ void NameAnalysis::visit(Program &p) {
   }
   /* Check for main() function */
   std::shared_ptr<Decl> mainDecl = currScope->find("main");
-  if (mainDecl == nullptr || mainDecl->astClass() != "FunDecl")
+  if (mainDecl == nullptr || mainDecl->astClass() != "FunDef")
     error("Program did not contain a main() Function.");
   p.globalScope = currScope;
 }

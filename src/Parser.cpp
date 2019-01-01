@@ -285,10 +285,8 @@ std::shared_ptr<VarDecl> Parser::parseVarDecl() {
 }
 
 std::shared_ptr<FunDecl> Parser::parseFunDecl() {
-  bool isExtern = false;
   if (accept(TC::EXTERN)) {
     expect(TC::EXTERN);
-    isExtern = true;
   }
   std::shared_ptr<Type> funType = parseType();
   std::string funIdent = expect(TC::IDENTIFIER).data;
@@ -304,12 +302,19 @@ std::shared_ptr<FunDecl> Parser::parseFunDecl() {
 
   expect(TC::RPAR);
 
-  std::shared_ptr<Block> funBlock = parseBlock();
-
-  std::shared_ptr<FunDecl> newNode = std::make_shared<FunDecl>(
-      FunDecl(funBlock, funIdent, funParams, funType, isExtern));
-  newNode->Decl::position = currToken.position;
-  return newNode;
+  if (acceptBlock()) {
+    std::shared_ptr<Block> funBlock = parseBlock();
+    std::shared_ptr<FunDef> newNode = std::make_shared<FunDef>(
+        FunDef(funBlock, funIdent, funParams, funType));
+    newNode->Decl::position = currToken.position;
+    return newNode;
+  } else {
+    expect(TC::SC);
+    std::shared_ptr<FunDecl> newNode =
+        std::make_shared<FunDecl>(FunDecl(funIdent, funParams, funType));
+    newNode->Decl::position = currToken.position;
+    return newNode;
+  }
 }
 
 std::shared_ptr<VarDecl> Parser::parseParam() {

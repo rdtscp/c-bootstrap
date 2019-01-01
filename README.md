@@ -18,14 +18,16 @@ Progressively changing to adopt new features of the language(s).
 ```
 program      -> (include)* (decl)* EOF
 
-decl         -> (structdecl)* (vardecl)* (fundecl)*
+decl         -> ["extern"] (structdecl)* (vardecl)* (fundecl | fundef)*
 
 structdecl   -> structtype "{" (vardecl)+ "}" ";"
 
 vardecl      -> type IDENT ";"
               | type IDENT "[" INT_LITERAL "]" ";"
 
-fundecl      -> type IDENT "(" params ")" block
+fundecl      -> type IDENT "(" params ")"
+
+fundef       -> type IDENT "(" params ")" block
 
 type         -> ("int" | "char" | "void" | structtype) (ASTERIX)*
 structtype   -> "struct" IDENT

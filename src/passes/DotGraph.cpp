@@ -151,8 +151,8 @@ std::string DotGraph::visit(FunCall &fc) {
 }
 std::string DotGraph::visit(FunDecl &fd) {
   std::string funcID = "FunDecl" + std::to_string(nodeCount++);
-  declare(funcID, fd.funName);
-  join(funcID, fd.funBlock->accept(*this));
+  // declare(funcID, fd.funName);
+  // join(funcID, fd.funBlock->accept(*this));
   return funcID;
 }
 std::string DotGraph::visit(FunDef &fd) {

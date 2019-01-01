@@ -171,7 +171,7 @@ TEST(ParserTest, FunDecl) {
       std::make_shared<VarDecl>(
           VarDecl(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
                   "myGlobalInt")),
-      std::make_shared<FunDecl>(FunDecl(
+      std::make_shared<FunDef>(FunDef(
           std::make_shared<Block>(Block({})), "main",
           {std::make_shared<VarDecl>(
                VarDecl(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
@@ -196,7 +196,7 @@ TEST(ParserTest, BinOp) {
   std::shared_ptr<Program> actual = parser.parse();
   ASSERT_EQ(actual->decls.size(), 1);
   std::vector<std::shared_ptr<Decl>> expectedDecls = {
-      std::make_shared<FunDecl>(FunDecl(
+      std::make_shared<FunDef>(FunDef(
           std::make_shared<Block>(Block(
               {std::make_shared<VarDecl>(VarDecl(
                    std::make_shared<BaseType>(BaseType(PrimitiveType::INT)),

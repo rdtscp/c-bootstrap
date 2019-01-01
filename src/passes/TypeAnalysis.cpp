@@ -110,7 +110,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
     return error("Type Analysis: Attempted to call undeclared function: " +
                  fc.funName);
 
-  if (identDecl->astClass() != "FunDecl")
+  if (identDecl->astClass() != "FunDecl" && identDecl->astClass() != "FunDef")
     return error("Type Analysis: Attempted to call undeclared function: " +
                  fc.funName);
 
@@ -131,14 +131,14 @@ std::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
   return funDecl->funType;
 }
 std::shared_ptr<Type> TypeAnalysis::visit(FunDecl &fd) {
-  fd.funBlock->setOuterBlock(currScope);
-  currScope = fd.funBlock;
+  // fd.funBlock->setOuterBlock(currScope);
+  // currScope = fd.funBlock;
 
-  for (const auto &param : fd.funParams)
-    param->accept(*this);
-  fd.funBlock->accept(*this);
-  currScope = fd.funBlock->outerBlock;
-  return nullptr;
+  // for (const auto &param : fd.funParams)
+  //   param->accept(*this);
+  // fd.funBlock->accept(*this);
+  // currScope = fd.funBlock->outerBlock;
+  return fd.funType;
 }
 std::shared_ptr<Type> TypeAnalysis::visit(FunDef &fd) {
   fd.funBlock->setOuterBlock(currScope);
@@ -148,7 +148,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(FunDef &fd) {
     param->accept(*this);
   fd.funBlock->accept(*this);
   currScope = fd.funBlock->outerBlock;
-  return nullptr;
+  return fd.funType;
 }
 std::shared_ptr<Type> TypeAnalysis::visit(If &i) {
   std::shared_ptr<Type> condType = i.ifCondition->accept(*this);
