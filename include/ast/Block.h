@@ -22,6 +22,9 @@ public:
 
   std::shared_ptr<Block> getptr();
 
+  bool operator==(const Block &rhs) const;
+  bool operator!=(const Block &rhs) const;
+
   std::shared_ptr<Decl> find(const std::string &identifier);
 
   std::shared_ptr<Decl> findLocal(const std::string &identifier);

@@ -34,6 +34,8 @@ bool FunDef::operator==(const FunDef &rhs) const {
       return false;
 
   /* Check Block*/
+  if (*funBlock != *rhs.funBlock)
+    return false;
 
   return true;
 }

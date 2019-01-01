@@ -14,6 +14,19 @@ std::shared_ptr<Decl> Block::find(const std::string &identifier) {
 
   return local;
 }
+bool Block::operator==(const Block &rhs) const {
+  if (blockStmts.size() != rhs.blockStmts.size())
+    return false;
+
+  for (int i = 0; i < blockStmts.size(); i++)
+    /* @TODO Implement comparitors for Stmts. */
+    if (blockStmts[i]->astClass() != rhs.blockStmts[i]->astClass())
+      return false;
+
+  return true;
+}
+
+bool Block::operator!=(const Block &rhs) const { return !(*this == rhs); }
 
 std::shared_ptr<Decl> Block::findLocal(const std::string &identifier) {
   if (blockDecls.find(identifier) != blockDecls.end())
