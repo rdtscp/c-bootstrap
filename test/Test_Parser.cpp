@@ -205,7 +205,8 @@ TEST(ParserTest, BinOp) {
                    std::make_shared<VarExpr>(VarExpr("x")),
                    std::make_shared<BinOp>(BinOp(
                        std::make_shared<IntLiteral>(IntLiteral("1")), Op::ADD,
-                       std::make_shared<IntLiteral>(IntLiteral("2"))))))})),
+                       std::make_shared<IntLiteral>(IntLiteral("2")))))),
+                       std::make_shared<Return>(Return(std::make_shared<VarExpr>(VarExpr("x"))))})),
           "main", {},
           std::make_shared<BaseType>(BaseType(PrimitiveType::INT))))};
 
