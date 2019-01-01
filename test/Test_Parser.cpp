@@ -222,7 +222,7 @@ TEST(ParserTest, ComplexBinOp) {
   Parser parser(lexer);
 
   std::shared_ptr<Program> actual = parser.parse();
-  /* TODO Test AST */
+  /* @TODO Test AST */
 }
 
 // The fixture for testing class Project1. From google test primer.
