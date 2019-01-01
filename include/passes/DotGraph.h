@@ -5,8 +5,8 @@
 
 #include <iostream>
 
-#include "../ASTVisitor.h"
 #include "../AST.h"
+#include "../ASTVisitor.h"
 
 namespace ACC {
 
@@ -39,6 +39,7 @@ private:
   std::string visit(FieldAccess &fa) override;
   std::string visit(FunCall &fc) override;
   std::string visit(FunDecl &fd) override;
+  std::string visit(FunDef &fd) override;
   std::string visit(If &i) override;
   std::string visit(IntLiteral &il) override;
   std::string visit(ParenthExpr &pe) override;

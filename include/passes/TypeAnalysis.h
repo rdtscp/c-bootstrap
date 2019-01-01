@@ -47,6 +47,7 @@ private:
   std::shared_ptr<Type> visit(FieldAccess &fa) override;
   std::shared_ptr<Type> visit(FunCall &fc) override;
   std::shared_ptr<Type> visit(FunDecl &fd) override;
+  std::shared_ptr<Type> visit(FunDef &fd) override;
   std::shared_ptr<Type> visit(If &i) override;
   std::shared_ptr<Type> visit(IntLiteral &il) override;
   std::shared_ptr<Type> visit(ParenthExpr &pe) override;

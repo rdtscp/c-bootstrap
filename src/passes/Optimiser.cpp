@@ -132,6 +132,16 @@ std::shared_ptr<ASTNode> Optimiser::visit(FunDecl &fd) {
   currScope = fd.funBlock->outerBlock;
   return fd.getptr();
 }
+std::shared_ptr<ASTNode> Optimiser::visit(FunDef &fd) {
+  fd.funBlock->setOuterBlock(currScope);
+  currScope = fd.funBlock;
+
+  // for (auto &param : fd.funParams)
+  // param = std::static_pointer_cast<VarDecl>(param->accept(*this));
+  fd.funBlock = std::static_pointer_cast<Block>(fd.funBlock->accept(*this));
+  currScope = fd.funBlock->outerBlock;
+  return fd.getptr();
+}
 std::shared_ptr<ASTNode> Optimiser::visit(If &i) {
   i.ifCondition = std::static_pointer_cast<Expr>(i.ifCondition->accept(*this));
   i.ifBody = std::static_pointer_cast<Stmt>(i.ifBody->accept(*this));

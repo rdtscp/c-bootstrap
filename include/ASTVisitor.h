@@ -16,6 +16,7 @@ class DoWhile;
 class FieldAccess;
 class FunCall;
 class FunDecl;
+class FunDef;
 class If;
 class IntLiteral;
 class ParenthExpr;
@@ -46,6 +47,7 @@ public:
   virtual T visit(FieldAccess &fa) = 0;
   virtual T visit(FunCall &fc) = 0;
   virtual T visit(FunDecl &fd) = 0;
+  virtual T visit(FunDef &fd) = 0;
   virtual T visit(If &i) = 0;
   virtual T visit(IntLiteral &il) = 0;
   virtual T visit(ParenthExpr &pe) = 0;

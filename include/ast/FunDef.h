@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef FUNDECL_H
-#define FUNDECL_H
+#ifndef FUNDEF_H
+#define FUNDEF_H
 
 #include <vector>
 
@@ -12,7 +12,7 @@
 
 namespace ACC {
 
-class FunDecl : public Decl, public std::enable_shared_from_this<FunDecl> {
+class FunDef : public Decl, public std::enable_shared_from_this<FunDef> {
 
 public:
   bool isExtern;
@@ -21,17 +21,17 @@ public:
   std::vector<std::shared_ptr<VarDecl>> funParams;
   std::shared_ptr<Type> funType;
 
-  FunDecl(std::shared_ptr<Block> funBlock, std::string funName,
-          std::vector<std::shared_ptr<VarDecl>> funParams,
-          std::shared_ptr<Type> funType, bool isExtern = false);
+  FunDef(std::shared_ptr<Block> funBlock, std::string funName,
+         std::vector<std::shared_ptr<VarDecl>> funParams,
+         std::shared_ptr<Type> funType, bool isExtern = false);
 
-  std::shared_ptr<FunDecl> getptr();
+  std::shared_ptr<FunDef> getptr();
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
 
-  bool operator==(const FunDecl &rhs) const;
-  bool operator!=(const FunDecl &rhs) const;
+  bool operator==(const FunDef &rhs) const;
+  bool operator!=(const FunDef &rhs) const;
 
   std::string getIdentifier() const override;
 

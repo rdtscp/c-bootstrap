@@ -18,6 +18,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
     src/ast/FieldAccess.cpp
     src/ast/FunCall.cpp
     src/ast/FunDecl.cpp
+    src/ast/FunDef.cpp
     src/ast/If.cpp
     src/ast/IntLiteral.cpp
     src/ast/ParenthExpr.cpp
@@ -128,6 +129,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
     src/ast/FieldAccess.cpp
     src/ast/FunCall.cpp
     src/ast/FunDecl.cpp
+    src/ast/FunDef.cpp
     src/ast/If.cpp
     src/ast/IntLiteral.cpp
     src/ast/ParenthExpr.cpp

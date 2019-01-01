@@ -47,6 +47,7 @@ private:
   void visit(FieldAccess &fa) override;
   void visit(FunCall &fc) override;
   void visit(FunDecl &fd) override;
+  void visit(FunDef &fd) override;
   void visit(If &i) override;
   void visit(IntLiteral &il) override;
   void visit(ParenthExpr &pe) override;

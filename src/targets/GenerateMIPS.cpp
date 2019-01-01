@@ -199,6 +199,47 @@ MIPS::Register GenerateMIPS::visit(FunDecl &fd) {
   currScope = fd.funBlock->outerBlock;
   return MIPS::Register();
 }
+MIPS::Register GenerateMIPS::visit(FunDef &fd) {
+  std::vector<MIPS::Register> saveRegs = MIPS::saveRegs;
+  currScope = fd.funBlock;
+
+  MIPS.BLOCK(fd.getIdentifier() + "FunDecl");
+
+  /* ---- Save Caller's $fp ---- */
+  stackPush(MIPS::fp);
+
+  /* ---- Save Registers [ $s0-$s7 ] && $ra ---- */
+  for (const MIPS::Register &saveReg : saveRegs)
+    stackPush(saveReg);
+  stackPush(MIPS::ra);
+
+  /* ---- Construct Arguments ---- */
+  // @TODO
+
+  /* ---- Execute Function ---- */
+
+  fd.funBlock->accept(*this);
+
+  /* -------------------------- */
+
+  /* ---- Deconstruct Arguments ---- */
+  // @TODO
+
+  /* ---- Load Registers [ $s0-$s7 ] && $ra ---- */
+  stackPop(MIPS::ra);
+  std::reverse(std::begin(saveRegs), std::end(saveRegs));
+  for (const MIPS::Register &saveReg : saveRegs)
+    stackPop(saveReg);
+
+  /* ---- Load Caller's $fp ---- */
+  stackPop(MIPS::fp);
+
+  /* ---- Return to $ra ---- */
+  MIPS.write("JR $ra");
+
+  currScope = fd.funBlock->outerBlock;
+  return MIPS::Register();
+}
 MIPS::Register GenerateMIPS::visit(If &i) {
   i.ifCondition->accept(*this);
   i.ifBody->accept(*this);

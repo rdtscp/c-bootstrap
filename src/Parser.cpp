@@ -94,6 +94,8 @@ bool Parser::acceptDecl(int offset) {
 }
 
 bool Parser::acceptFunDecl(int offset) {
+  if (accept(TC::EXTERN))
+    offset++;
   if (acceptStructType(offset)) {
     offset += 2;
     while (accept(TC::ASTERIX, offset))
@@ -283,6 +285,11 @@ std::shared_ptr<VarDecl> Parser::parseVarDecl() {
 }
 
 std::shared_ptr<FunDecl> Parser::parseFunDecl() {
+  bool isExtern = false;
+  if (accept(TC::EXTERN)) {
+    expect(TC::EXTERN);
+    isExtern = true;
+  }
   std::shared_ptr<Type> funType = parseType();
   std::string funIdent = expect(TC::IDENTIFIER).data;
   expect(TC::LPAR);
@@ -300,7 +307,7 @@ std::shared_ptr<FunDecl> Parser::parseFunDecl() {
   std::shared_ptr<Block> funBlock = parseBlock();
 
   std::shared_ptr<FunDecl> newNode = std::make_shared<FunDecl>(
-      FunDecl(funBlock, funIdent, funParams, funType));
+      FunDecl(funBlock, funIdent, funParams, funType, isExtern));
   newNode->Decl::position = currToken.position;
   return newNode;
 }

@@ -79,6 +79,7 @@ private:
   MIPS::Register visit(FieldAccess &fa) override;
   MIPS::Register visit(FunCall &fc) override;
   MIPS::Register visit(FunDecl &fd) override;
+  MIPS::Register visit(FunDef &fd) override;
   MIPS::Register visit(If &i) override;
   MIPS::Register visit(IntLiteral &il) override;
   MIPS::Register visit(ParenthExpr &pe) override;

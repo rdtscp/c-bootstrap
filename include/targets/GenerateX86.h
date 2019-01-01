@@ -54,6 +54,7 @@ private:
   std::shared_ptr<X86::Operand> visit(FieldAccess &fa) override;
   std::shared_ptr<X86::Operand> visit(FunCall &fc) override;
   std::shared_ptr<X86::Operand> visit(FunDecl &fd) override;
+  std::shared_ptr<X86::Operand> visit(FunDef &fd) override;
   std::shared_ptr<X86::Operand> visit(If &i) override;
   std::shared_ptr<X86::Operand> visit(IntLiteral &il) override;
   std::shared_ptr<X86::Operand> visit(ParenthExpr &pe) override;

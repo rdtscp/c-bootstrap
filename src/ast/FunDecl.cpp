@@ -4,9 +4,9 @@ using namespace ACC;
 
 FunDecl::FunDecl(std::shared_ptr<Block> funBlock, std::string funName,
                  std::vector<std::shared_ptr<VarDecl>> funParams,
-                 std::shared_ptr<Type> funType)
+                 std::shared_ptr<Type> funType, bool isExtern)
     : funBlock(funBlock), funName(funName), funParams(funParams),
-      funType(funType) {}
+      funType(funType), isExtern(isExtern) {}
 
 std::shared_ptr<FunDecl> FunDecl::getptr() { return shared_from_this(); }
 

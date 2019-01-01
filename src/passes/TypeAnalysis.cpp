@@ -140,6 +140,16 @@ std::shared_ptr<Type> TypeAnalysis::visit(FunDecl &fd) {
   currScope = fd.funBlock->outerBlock;
   return nullptr;
 }
+std::shared_ptr<Type> TypeAnalysis::visit(FunDef &fd) {
+  fd.funBlock->setOuterBlock(currScope);
+  currScope = fd.funBlock;
+
+  for (const auto &param : fd.funParams)
+    param->accept(*this);
+  fd.funBlock->accept(*this);
+  currScope = fd.funBlock->outerBlock;
+  return nullptr;
+}
 std::shared_ptr<Type> TypeAnalysis::visit(If &i) {
   std::shared_ptr<Type> condType = i.ifCondition->accept(*this);
 

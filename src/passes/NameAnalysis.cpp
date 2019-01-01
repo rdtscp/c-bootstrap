@@ -67,6 +67,21 @@ void NameAnalysis::visit(FunDecl &fd) {
   fd.funBlock->accept(*this);
   currScope = fd.funBlock->outerBlock;
 }
+void NameAnalysis::visit(FunDef &fd) {
+  if (currScope->findLocal(fd.getIdentifier()))
+    return error("Attempted to declare a Function with an identifier that is "
+                 "already in use: " +
+                 fd.getIdentifier());
+  currScope->insertDecl(fd.getptr());
+
+  fd.funBlock->setOuterBlock(currScope);
+  currScope = fd.funBlock;
+
+  for (const auto &param : fd.funParams)
+    param->accept(*this);
+  fd.funBlock->accept(*this);
+  currScope = fd.funBlock->outerBlock;
+}
 void NameAnalysis::visit(If &i) {
   i.ifCondition->accept(*this);
   i.ifBody->accept(*this);
