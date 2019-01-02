@@ -9,46 +9,64 @@ void Preprocessor::preprocessDefinition(const std::string &definition,
   definitions[definition] = value;
 }
 
-void Preprocessor::preprocessIfDef(const std::string &definition) {
-  if (definitions.find(definition) == definitions.end()) {
-    char curr;
+void Preprocessor::preprocessElse() {
+  std::pair<std::string, bool> latestIf = ifs[ifs.size() - 1];
+  if (latestIf.second) {
     while (true) {
-      curr = scanner.next();
-      if (curr == '#' && scanner.peek() == 'e')
+      scanner.next();
+      if (scanner.peek() == '#')
         break;
-      if (curr == '\0')
+      if (scanner.peek() == '\0')
+        throw std::runtime_error("Pre-Processing: Expected #else or #endif "
+                                 "Directive but found EOF.");
+    }
+  }
+}
+
+void Preprocessor::preprocessEndif() { ifs.pop_back(); }
+
+void Preprocessor::preprocessIf(const std::string &condition) {
+  bool conditionResult = (definitions.find(condition) == definitions.end() ||
+                          definitions[condition] != "0");
+  ifs.push_back(std::pair<std::string, bool>(condition, conditionResult));
+  if (conditionResult) {
+    while (true) {
+      scanner.next();
+      if (scanner.peek() == '#')
+        break;
+      if (scanner.peek() == '\0')
+        throw std::runtime_error("Pre-Processing: Expected #else or #endif "
+                                 "Directive but found EOF.");
+    }
+  }
+}
+
+void Preprocessor::preprocessIfDef(const std::string &definition) {
+  bool definitionExists = (definitions.find(definition) != definitions.end());
+  ifs.push_back(std::pair<std::string, bool>(definition, !definitionExists));
+  if (!definitionExists) {
+    while (true) {
+      scanner.next();
+      if (scanner.peek() == '#')
+        break;
+      if (scanner.peek() == '\0')
         throw std::runtime_error(
             "Pre-Processing: Expected #endif Directive but found EOF.");
-    }
-    std::string expected = "endif";
-    for (int i = 0; i < expected.length(); i++) {
-      curr = scanner.next();
-      if (curr != expected[i]) {
-        throw std::runtime_error("Pre-Processing: Expected #endif Directive. " +
-                                 scanner.getPosition().toString());
-      }
     }
   }
 }
 
 void Preprocessor::preprocessIfNDef(const std::string &definition) {
-  if (definitions.find(definition) != definitions.end()) {
-    char curr;
+  bool definitionExists = (definitions.find(definition) != definitions.end());
+  ifs.push_back(std::pair<std::string, bool>(definition, !definitionExists));
+  if (definitionExists) {
     while (true) {
-      curr = scanner.next();
-      if (curr == '#' && scanner.peek() == 'e')
+      scanner.next();
+      if (scanner.peek() == '#')
         break;
-      if (curr == '\0')
+      if (scanner.peek() == '\0')
         throw std::runtime_error(
             "Pre-Processing: Expected #endif Directive but found EOF.");
-    }
-    std::string expected = "endif";
-    for (int i = 0; i < expected.length(); i++) {
-      curr = scanner.next();
-      if (curr != expected[i]) {
-        throw std::runtime_error("Pre-Processing: Expected #endif Directive. " +
-                                 scanner.getPosition().toString());
-      }
     }
   }
 }

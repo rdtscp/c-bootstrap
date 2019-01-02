@@ -275,13 +275,13 @@ Token Lexer::nextToken() {
       std::pair<bool, std::string> lexResult = tryLexKeyword("define");
       if (!lexResult.first)
         throw std::runtime_error(
-            "Pre-Processing: Unexpected Preprocessing Directive. " +
-            scanner.getPosition().toString());
+            "Pre-Processing: Unexpected Preprocessing Directive: " +
+            lexResult.second + ". " + scanner.getPosition().toString());
       c = scanner.next();
       if (!std::isspace(c))
         throw std::runtime_error(
-            "Pre-Processing: Unexpected Preprocessing Directive. " +
-            scanner.getPosition().toString());
+            "Pre-Processing: Unexpected Preprocessing Directive: " +
+            lexResult.second + ". " + scanner.getPosition().toString());
 
       /* Parse #define key */
       int currLine = scanner.getPosition().line;
@@ -307,12 +307,22 @@ Token Lexer::nextToken() {
 
       preprocessor.preprocessDefinition(definition, value);
     }
+    if (c == 'e' && scanner.peek() == 'l') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("else");
+      if (!lexResult.first)
+        throw std::runtime_error(
+            "Pre-Processing: Unexpected Preprocessing Directive: " +
+            lexResult.second + ". " + scanner.getPosition().toString());
+      preprocessor.preprocessElse();
+      c = scanner.next();
+    }
     if (c == 'e' && scanner.peek() == 'n') {
       std::pair<bool, std::string> lexResult = tryLexKeyword("endif");
       if (!lexResult.first)
         throw std::runtime_error(
-            "Pre-Processing: Unexpected Preprocessing Directive. " +
-            scanner.getPosition().toString());
+            "Pre-Processing: Unexpected Preprocessing Directive: " +
+            lexResult.second + ". " + scanner.getPosition().toString());
+      preprocessor.preprocessEndif();
       c = scanner.next();
     }
     if (c == 'i' && scanner.peek() == 'f') {
@@ -321,13 +331,13 @@ Token Lexer::nextToken() {
         std::pair<bool, std::string> lexResult = tryLexKeyword("fndef");
         if (!lexResult.first)
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive. " +
-              scanner.getPosition().toString());
+              "Pre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + scanner.getPosition().toString());
         c = scanner.next();
         if (!std::isspace(c))
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive. " +
-              scanner.getPosition().toString());
+              "Pre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + scanner.getPosition().toString());
         std::string definition;
         c = scanner.next();
         while (isalpha(c) || c == '_') {
@@ -339,13 +349,13 @@ Token Lexer::nextToken() {
         std::pair<bool, std::string> lexResult = tryLexKeyword("fdef");
         if (!lexResult.first)
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive. " +
-              scanner.getPosition().toString());
+              "Pre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + scanner.getPosition().toString());
         c = scanner.next();
         if (!std::isspace(c))
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive. " +
-              scanner.getPosition().toString());
+              "Pre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + scanner.getPosition().toString());
         std::string definition;
         c = scanner.next();
         while (isalpha(c) || c == '_') {
@@ -353,6 +363,14 @@ Token Lexer::nextToken() {
           c = scanner.next();
         }
         preprocessor.preprocessIfDef(definition);
+      } else if (std::isspace(scanner.peek())) {
+        std::string condition;
+        c = scanner.next();
+        while (isalpha(c) || c == '_') {
+          condition += c;
+          c = scanner.next();
+        }
+        preprocessor.preprocessIf(condition);
       } else {
         throw std::runtime_error(
             "Pre-Processing: Unexpected Preprocessing Directive. " +
@@ -363,13 +381,13 @@ Token Lexer::nextToken() {
       std::pair<bool, std::string> lexResult = tryLexKeyword("include");
       if (!lexResult.first)
         throw std::runtime_error(
-            "Pre-Processing: Unexpected Preprocessing Directive. " +
-            scanner.getPosition().toString());
+            "Pre-Processing: Unexpected Preprocessing Directive: " +
+            lexResult.second + ". " + scanner.getPosition().toString());
       c = scanner.next();
       if (c != ' ')
         throw std::runtime_error(
-            "Pre-Processing: Unexpected Preprocessing Directive " +
-            scanner.getPosition().toString());
+            "Pre-Processing: Unexpected Preprocessing Directive: " +
+            lexResult.second + ". " + scanner.getPosition().toString());
       c = scanner.next();
       bool localFile = true;
       std::string filename;
@@ -401,29 +419,29 @@ Token Lexer::nextToken() {
       std::pair<bool, std::string> lexResult = tryLexKeyword("pragma");
       if (!lexResult.first)
         throw std::runtime_error(
-            "Pre-Processing: Unexpected Preprocessing Directive " +
-            scanner.getPosition().toString());
+            "Pre-Processing: Unexpected Preprocessing Directive: " +
+            lexResult.second + ". " + scanner.getPosition().toString());
       c = scanner.next();
       c = scanner.next();
       if (c == 'o') {
         lexResult = tryLexKeyword("once");
         if (!lexResult.first)
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive. " +
-              scanner.getPosition().toString());
+              "Pre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + scanner.getPosition().toString());
         preprocessor.preprocessPragmaOnce(scanner.getFilepath() +
                                           scanner.getFilename());
       } else if (c == 'G') {
         lexResult = tryLexKeyword("GCC system_header");
         if (!lexResult.first)
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive. " +
-              scanner.getPosition().toString());
+              "Pre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + scanner.getPosition().toString());
         // Do Nothing
       } else {
         throw std::runtime_error(
-            "Pre-Processing: Unexpected Preprocessing Directive. " +
-            scanner.getPosition().toString());
+            "Pre-Processing: Unexpected Preprocessing Directive: " +
+            lexResult.second + ". " + scanner.getPosition().toString());
         preprocessor.preprocessPragmaOnce(scanner.getFilepath() +
                                           scanner.getFilename());
       }
