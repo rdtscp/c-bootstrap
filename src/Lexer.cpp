@@ -287,7 +287,7 @@ Token Lexer::nextToken() {
       int currLine = scanner.getPosition().line;
       std::string definition;
       c = scanner.next();
-      while (isalpha(c) || c == '_' || c == '(' || c == ')' || c == ',') {
+      while (!std::isspace(c)) {
         definition += c;
         c = scanner.next();
       }
@@ -308,12 +308,22 @@ Token Lexer::nextToken() {
       preprocessor.preprocessDefinition(definition, value);
     }
     if (c == 'e' && scanner.peek() == 'l') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("else");
-      if (!lexResult.first)
-        throw std::runtime_error(
-            "Pre-Processing: Unexpected Preprocessing Directive: " +
-            lexResult.second + ". " + scanner.getPosition().toString());
-      preprocessor.preprocessElse();
+      c = scanner.next();
+      if (scanner.peek() == 'i') {
+        std::pair<bool, std::string> lexResult = tryLexKeyword("lif");
+        if (!lexResult.first)
+          throw std::runtime_error(
+              "Pre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + scanner.getPosition().toString());
+        preprocessor.preprocessElif();
+      } else if (scanner.peek() == 's') {
+        std::pair<bool, std::string> lexResult = tryLexKeyword("lse");
+        if (!lexResult.first)
+          throw std::runtime_error(
+              "Pre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + scanner.getPosition().toString());
+        preprocessor.preprocessElse();
+      }
     }
     if (c == 'e' && scanner.peek() == 'n') {
       std::pair<bool, std::string> lexResult = tryLexKeyword("endif");
@@ -366,7 +376,8 @@ Token Lexer::nextToken() {
         std::string condition;
         scanner.next();
         c = scanner.next();
-        while (isalpha(c) || c == '_') {
+        int currLine = scanner.getPosition().line;
+        while (currLine == scanner.getPosition().line) {
           condition += c;
           c = scanner.next();
         }

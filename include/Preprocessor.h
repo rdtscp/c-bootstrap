@@ -20,11 +20,13 @@ public:
   void preprocessDefinition(const std::string &definition,
                             const std::string &value);
 
-  void preprocessIf(const std::string &condition);
+  void preprocessElif();
 
   void preprocessElse();
 
   void preprocessEndif();
+
+  void preprocessIf(const std::string &condition);
 
   void preprocessIfDef(const std::string &definition);
 

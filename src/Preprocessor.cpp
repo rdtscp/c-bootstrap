@@ -12,7 +12,55 @@ void Preprocessor::preprocessDefinition(const std::string &definition,
     definitions[definition] = value;
 }
 
+void Preprocessor::preprocessElif() {
+  assert(ifs.size() > 0);
+  std::pair<std::string, bool> &latestIf = ifs[ifs.size() - 1];
+  bool ifExecuting = latestIf.second;
+  latestIf.second = false;
+  if (!ifExecuting) {
+    ifs.pop_back();
+    char curr;
+    while (true) {
+      curr = scanner.next();
+      checkChar(curr);
+      if (curr == '#' && scanner.peek() == 'e') {
+        scanner.next();
+        if (scanner.next() == 'n' && scanner.next() == 'd' &&
+            scanner.next() == 'i' && scanner.next() == 'f')
+          break;
+      }
+    }
+    if (!std::isspace(scanner.next()))
+      throw std::runtime_error(
+          "Pre-Processing: #if with #elif expected #endif Directive. " +
+          scanner.getPosition().toString());
+  }
+}
+
 void Preprocessor::preprocessElse() {
+  assert(ifs.size() > 0);
+  std::pair<std::string, bool> &latestIf = ifs[ifs.size() - 1];
+  bool ifExecuted = latestIf.second;
+  latestIf.second = false;
+  if (ifExecuted) {
+    char curr;
+    while (true) {
+      curr = scanner.next();
+      checkChar(curr);
+      if (curr == '#' && scanner.peek() == 'e')
+        break;
+    }
+    scanner.next();
+    std::pair<bool, std::string> endifRes = tryLexKeyword("endif");
+    if (!endifRes.first)
+      throw std::runtime_error(
+          "Pre-Processing: #if #else expected #endif Directive. " +
+          scanner.getPosition().toString());
+    ifs.pop_back();
+  }
+}
+
+void Preprocessor::preprocessEndif() {
   assert(ifs.size() > 0);
   std::pair<std::string, bool> &latestIf = ifs[ifs.size() - 1];
   bool ifExecuted = latestIf.second;
@@ -44,12 +92,23 @@ void Preprocessor::preprocessIf(const std::string &condition) {
   } else {
     /* Scan for #elif, #else, or #endif */
     char curr;
-    bool withinIf = true;
-    while (true) {
+    bool foundElif = false;
+    while (!foundElif) {
       std::pair<bool, std::string> nextIfDirective = getNextIfDirective();
       std::string directive = nextIfDirective.second;
       if (directive == "elif") {
         /* Pluck the condition */
+        std::string condition;
+        curr = scanner.next();
+        curr = scanner.next();
+        int currLine = scanner.getPosition().line;
+        while (currLine == scanner.getPosition().line) {
+          condition += curr;
+          curr = scanner.next();
+        }
+        if (evalCondition(condition)) {
+          foundElif = true;
+        }
       } else if (directive == "else") {
         /* Allow the Lexer to use this section */
         break;
@@ -58,6 +117,9 @@ void Preprocessor::preprocessIf(const std::string &condition) {
         break;
       }
       // curr = scanner.next();
+    }
+    if (foundElif) {
+      ifs.push_back(std::pair<std::string, bool>(condition, false));
     }
   }
 }
@@ -141,8 +203,13 @@ void Preprocessor::checkChar(char c) {
 }
 
 bool Preprocessor::evalCondition(const std::string &condition) {
-  return (definitions.find(condition) == definitions.end() ||
-          definitions[condition] != "0");
+  if (definitions.find(condition) == definitions.end())
+    return false;
+
+  if (definitions[condition] == "0")
+    return false;
+
+  return true;
 }
 
 std::pair<bool, std::string> Preprocessor::getNextIfDirective() {

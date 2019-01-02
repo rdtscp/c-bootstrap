@@ -79,6 +79,18 @@ TEST(PreprocessorTest, NestedIfDefs) {
   ASSERT_EQ(progAST->decls[2]->getIdentifier(), "main");
 }
 
+TEST(PreprocessorTest, IfElifElse) {
+  Scanner scanner(test_prefix + "preprocessor/prog6.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+  std::shared_ptr<Program> progAST = parser.parse();
+
+  ASSERT_EQ(progAST->decls.size(), 3);
+  ASSERT_EQ(progAST->decls[0]->getIdentifier(), "funA3");
+  ASSERT_EQ(progAST->decls[1]->getIdentifier(), "funB5");
+  ASSERT_EQ(progAST->decls[2]->getIdentifier(), "main");
+}
+
 // The fixture for testing class Project1. From google test primer.
 class Test_Preprocessor : public ::testing::Test {
 protected:
