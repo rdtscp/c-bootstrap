@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "../include/Preprocessor.h"
 
 using namespace ACC;
