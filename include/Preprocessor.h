@@ -37,10 +37,19 @@ public:
   void preprocessUndef(const std::string &definition);
 
 private:
+  /* Bool marks if we should include preprocessing within the if. */
   std::vector<std::pair<std::string, bool>> ifs;
   std::map<std::string, std::string> definitions;
   std::set<std::string> files;
   Scanner &scanner;
+
+  void checkChar(char c);
+
+  bool evalCondition(const std::string &condition);
+
+  std::pair<bool, std::string> getNextIfDirective();
+
+  std::pair<bool, std::string> tryLexKeyword(const std::string &keyword);
 };
 
 }; // namespace ACC

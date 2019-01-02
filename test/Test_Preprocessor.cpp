@@ -67,6 +67,18 @@ TEST(PreprocessorTest, PragmaOnce) {
   ASSERT_EQ(0, nameAnalysis.errorCount);
 }
 
+TEST(PreprocessorTest, NestedIfDefs) {
+  Scanner scanner(test_prefix + "preprocessor/prog5.c");
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+  std::shared_ptr<Program> progAST = parser.parse();
+
+  ASSERT_EQ(progAST->decls.size(), 3);
+  ASSERT_EQ(progAST->decls[0]->getIdentifier(), "funB0");
+  ASSERT_EQ(progAST->decls[1]->getIdentifier(), "funC0");
+  ASSERT_EQ(progAST->decls[2]->getIdentifier(), "main");
+}
+
 // The fixture for testing class Project1. From google test primer.
 class Test_Preprocessor : public ::testing::Test {
 protected:

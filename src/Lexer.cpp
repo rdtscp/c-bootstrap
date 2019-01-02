@@ -314,15 +314,14 @@ Token Lexer::nextToken() {
             "Pre-Processing: Unexpected Preprocessing Directive: " +
             lexResult.second + ". " + scanner.getPosition().toString());
       preprocessor.preprocessElse();
-      c = scanner.next();
     }
     if (c == 'e' && scanner.peek() == 'n') {
       std::pair<bool, std::string> lexResult = tryLexKeyword("endif");
       if (!lexResult.first)
         throw std::runtime_error(
-            "Pre-Processing: Unexpected Preprocessing Directive: " +
-            lexResult.second + ". " + scanner.getPosition().toString());
-      preprocessor.preprocessEndif();
+            "Pre-Processing: Unexpected Preprocessing Directive at Line " +
+            std::to_string(scanner.getPosition().line) + ", Column " +
+            std::to_string(scanner.getPosition().column));
       c = scanner.next();
     }
     if (c == 'i' && scanner.peek() == 'f') {
@@ -365,6 +364,7 @@ Token Lexer::nextToken() {
         preprocessor.preprocessIfDef(definition);
       } else if (std::isspace(scanner.peek())) {
         std::string condition;
+        scanner.next();
         c = scanner.next();
         while (isalpha(c) || c == '_') {
           condition += c;
