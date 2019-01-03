@@ -125,6 +125,7 @@ void Preprocessor::preprocessIf(const std::string &condition) {
 }
 
 void Preprocessor::preprocessIfDef(const std::string &definition) {
+  Position ifdefPos = scanner.getPosition();
   bool definitionExists = definitions.find(definition) != definitions.end();
   if (!definitionExists) {
     char curr;
@@ -134,11 +135,12 @@ void Preprocessor::preprocessIfDef(const std::string &definition) {
       if (curr == '#' && scanner.peek() == 'e')
         break;
     }
+    scanner.next();
     std::pair<bool, std::string> endifRes = tryLexKeyword("endif");
     if (!endifRes.first)
       throw std::runtime_error(
           "Pre-Processing: #ifdef expected #endif Directive. " +
-          scanner.getPosition().toString());
+          ifdefPos.toString());
   }
 }
 
