@@ -22,25 +22,39 @@ Progressively changing to adopt new features of the language(s).
 ```
 program      -> (include)* (decl)* EOF
 
-decl         -> ["extern"] (structdecl)* (vardecl)* (fundecl | fundef)*
+decl         -> ["extern"] structdecl ";"
+             -> ["extern"] vardecl ";"
+             -> ["extern"] arrvardecl ";"
+             -> ["extern"] fundecl ";"
+             -> fundef
+             -> typedecl ";"
+             -> enumdecl ";"
 
-structdecl   -> structtype "{" (vardecl)+ "}" ";"
+structdecl   -> structtype "{" (vardecl)+ "}"
 
-vardecl      -> type IDENT ";"
-              | type IDENT "[" INT_LITERAL "]" ";"
+vardecl      -> type IDENT
+
+arrvardecl   -> vardecl "[" INT_LITERAL "]"
 
 fundecl      -> type IDENT "(" params ")"
 
 fundef       -> type IDENT "(" params ")" block
 
+typedecl     -> "typedef" (type | structdecl) IDENT
+
+enumdecl     -> "enum" "{" statelist "}"
+
+statelist    -> (IDENT ["=" INT_LITERAL] ",")* IDENT ["=" INT_LITERAL]
+
 type         -> ("int" | "char" | "void" | structtype) (ASTERIX)*
+
 structtype   -> "struct" IDENT
 
 params       -> [ type IDENT ("," type IDENT)* ]
 
-stmt         -> vardecl
+stmt         -> vardecl ";"
               | block
-              | "do" stmt "while" "(" exp ")"
+              | "do" stmt "while" "(" exp ")" ";"
               | "while" "(" exp ")" stmt
               | "if" "(" exp ")" stmt ["else" stmt]
               | "return" [exp] ";"
