@@ -3,8 +3,6 @@
 #ifndef VARDECL_H
 #define VARDECL_H
 
-#include <memory>
-
 #include "Decl.h"
 #include "Stmt.h"
 #include "Type.h"
