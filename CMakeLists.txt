@@ -15,6 +15,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
     src/ast/Block.cpp
     src/ast/CharLiteral.cpp
     src/ast/DoWhile.cpp
+    src/ast/EnumType.cpp
     src/ast/FieldAccess.cpp
     src/ast/FunCall.cpp
     src/ast/FunDecl.cpp
@@ -30,6 +31,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
     src/ast/StructType.cpp
     src/ast/StructTypeDecl.cpp
     src/ast/TypeCast.cpp
+    src/ast/TypeDef.cpp
     src/ast/ValueAt.cpp
     src/ast/VarDecl.cpp
     src/ast/VarExpr.cpp
@@ -126,6 +128,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
     src/ast/Block.cpp
     src/ast/CharLiteral.cpp
     src/ast/DoWhile.cpp
+    src/ast/EnumType.cpp
     src/ast/FieldAccess.cpp
     src/ast/FunCall.cpp
     src/ast/FunDecl.cpp
@@ -141,6 +144,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
     src/ast/StructType.cpp
     src/ast/StructTypeDecl.cpp
     src/ast/TypeCast.cpp
+    src/ast/TypeDef.cpp
     src/ast/ValueAt.cpp
     src/ast/VarDecl.cpp
     src/ast/VarExpr.cpp

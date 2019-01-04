@@ -44,6 +44,7 @@ private:
   void visit(Block &b) override;
   void visit(CharLiteral &cl) override;
   void visit(DoWhile &dw) override;
+  void visit(EnumType &et) override;
   void visit(FieldAccess &fa) override;
   void visit(FunCall &fc) override;
   void visit(FunDecl &fd) override;
@@ -59,6 +60,7 @@ private:
   void visit(StructType &st) override;
   void visit(StructTypeDecl &std) override;
   void visit(TypeCast &tc) override;
+  void visit(TypeDef &td) override;
   void visit(ValueAt &va) override;
   void visit(VarDecl &vd) override;
   void visit(VarExpr &ve) override;

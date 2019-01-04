@@ -45,6 +45,7 @@ void NameAnalysis::visit(DoWhile &dw) {
   dw.condition->accept(*this);
   dw.body->accept(*this);
 }
+void NameAnalysis::visit(EnumType &et) {}
 void NameAnalysis::visit(FieldAccess &fa) { fa.object->accept(*this); }
 void NameAnalysis::visit(FunCall &fc) {
   if (currScope->find(fc.funName) == nullptr)
@@ -129,6 +130,7 @@ void NameAnalysis::visit(StructTypeDecl &std) {
   }
 }
 void NameAnalysis::visit(TypeCast &tc) { tc.expr->accept(*this); }
+void NameAnalysis::visit(TypeDef &td) {}
 void NameAnalysis::visit(ValueAt &va) { va.derefExpr->accept(*this); }
 void NameAnalysis::visit(VarDecl &vd) {
   if (currScope->findLocal(vd.getIdentifier()))

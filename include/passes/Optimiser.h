@@ -44,6 +44,7 @@ private:
   std::shared_ptr<ASTNode> visit(Block &b) override;
   std::shared_ptr<ASTNode> visit(CharLiteral &cl) override;
   std::shared_ptr<ASTNode> visit(DoWhile &dw) override;
+  std::shared_ptr<ASTNode> visit(EnumType &et) override;
   std::shared_ptr<ASTNode> visit(FieldAccess &fa) override;
   std::shared_ptr<ASTNode> visit(FunCall &fc) override;
   std::shared_ptr<ASTNode> visit(FunDecl &fd) override;
@@ -59,6 +60,7 @@ private:
   std::shared_ptr<ASTNode> visit(StructType &st) override;
   std::shared_ptr<ASTNode> visit(StructTypeDecl &std) override;
   std::shared_ptr<ASTNode> visit(TypeCast &tc) override;
+  std::shared_ptr<ASTNode> visit(TypeDef &td) override;
   std::shared_ptr<ASTNode> visit(ValueAt &va) override;
   std::shared_ptr<ASTNode> visit(VarDecl &vd) override;
   std::shared_ptr<ASTNode> visit(VarExpr &ve) override;

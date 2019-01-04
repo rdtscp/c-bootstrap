@@ -36,15 +36,17 @@ public:
     CHAR, // "char"
 
     // keywords
-    IF,     // "if"
-    ELSE,   // "else"
-    DO,     // "do"
-    WHILE,  // "while"
-    RETURN, // "return"
-    STRUCT, // "struct"
-    SIZEOF, // "sizeof"
-    CONST,  // "const"
-    EXTERN, // "extern"
+    IF,      // "if"
+    ELSE,    // "else"
+    DO,      // "do"
+    WHILE,   // "while"
+    RETURN,  // "return"
+    STRUCT,  // "struct"
+    SIZEOF,  // "sizeof"
+    CONST,   // "const"
+    EXTERN,  // "extern"
+    TYPEDEF, // "typedef"
+    ENUM,    // "enum"
 
     // literals
     STRING_LITERAL, // \".*\"  any sequence of characters enclosed within two
@@ -182,6 +184,10 @@ static std::string tokToStr(const Token::TokenClass &tok) {
     return "CONST";
   case Token::TokenClass::EXTERN:
     return "EXTERN";
+  case Token::TokenClass::TYPEDEF:
+    return "TYPEDEF";
+  case Token::TokenClass::ENUM:
+    return "ENUM";
   }
 }
 

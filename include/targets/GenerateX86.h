@@ -51,6 +51,7 @@ private:
   std::shared_ptr<X86::Operand> visit(Block &b) override;
   std::shared_ptr<X86::Operand> visit(CharLiteral &cl) override;
   std::shared_ptr<X86::Operand> visit(DoWhile &dw) override;
+  std::shared_ptr<X86::Operand> visit(EnumType &et) override;
   std::shared_ptr<X86::Operand> visit(FieldAccess &fa) override;
   std::shared_ptr<X86::Operand> visit(FunCall &fc) override;
   std::shared_ptr<X86::Operand> visit(FunDecl &fd) override;
@@ -66,6 +67,7 @@ private:
   std::shared_ptr<X86::Operand> visit(StructType &st) override;
   std::shared_ptr<X86::Operand> visit(StructTypeDecl &std) override;
   std::shared_ptr<X86::Operand> visit(TypeCast &tc) override;
+  std::shared_ptr<X86::Operand> visit(TypeDef &td) override;
   std::shared_ptr<X86::Operand> visit(ValueAt &va) override;
   std::shared_ptr<X86::Operand> visit(VarDecl &vd) override;
   std::shared_ptr<X86::Operand> visit(VarExpr &ve) override;

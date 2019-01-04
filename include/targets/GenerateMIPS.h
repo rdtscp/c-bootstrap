@@ -76,6 +76,7 @@ private:
   MIPS::Register visit(Block &b) override;
   MIPS::Register visit(CharLiteral &cl) override;
   MIPS::Register visit(DoWhile &dw) override;
+  MIPS::Register visit(EnumType &et) override;
   MIPS::Register visit(FieldAccess &fa) override;
   MIPS::Register visit(FunCall &fc) override;
   MIPS::Register visit(FunDecl &fd) override;
@@ -91,6 +92,7 @@ private:
   MIPS::Register visit(StructType &st) override;
   MIPS::Register visit(StructTypeDecl &std) override;
   MIPS::Register visit(TypeCast &tc) override;
+  MIPS::Register visit(TypeDef &td) override;
   MIPS::Register visit(ValueAt &va) override;
   MIPS::Register visit(VarDecl &vd) override;
   MIPS::Register visit(VarExpr &ve) override;

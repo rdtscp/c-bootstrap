@@ -91,6 +91,9 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(DoWhile &dw) {
   dw.condition->accept(*this);
   return std::make_shared<X86::None>();
 }
+std::shared_ptr<X86::Operand> GenerateX86::visit(EnumType &et) {
+  return std::make_shared<X86::None>();
+}
 std::shared_ptr<X86::Operand> GenerateX86::visit(FieldAccess &fa) {
   fa.object->accept(*this);
   return std::make_shared<X86::None>();
@@ -251,6 +254,9 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(StructTypeDecl &std) {
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(TypeCast &tc) {
   return tc.expr->accept(*this);
+}
+std::shared_ptr<X86::Operand> GenerateX86::visit(TypeDef &td) {
+  return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(ValueAt &va) {
   va.derefExpr->accept(*this);

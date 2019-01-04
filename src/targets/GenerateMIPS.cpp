@@ -147,6 +147,8 @@ MIPS::Register GenerateMIPS::visit(DoWhile &dw) {
   dw.body->accept(*this);
   return MIPS::Register();
 }
+MIPS::Register GenerateMIPS::visit(EnumType &et) { return MIPS::Register(); }
+
 MIPS::Register GenerateMIPS::visit(FieldAccess &fa) {
   fa.object->accept(*this);
   return MIPS::Register();
@@ -285,6 +287,7 @@ MIPS::Register GenerateMIPS::visit(StructTypeDecl &std) {
 MIPS::Register GenerateMIPS::visit(TypeCast &tc) {
   return tc.expr->accept(*this);
 }
+MIPS::Register GenerateMIPS::visit(TypeDef &td) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(ValueAt &va) {
   va.derefExpr->accept(*this);
   return MIPS::Register();

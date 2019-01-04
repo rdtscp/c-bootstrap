@@ -78,6 +78,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(DoWhile &dw) {
     return error("Type Analysis: Type of While condition is not INT.");
   return nullptr;
 }
+std::shared_ptr<Type> TypeAnalysis::visit(EnumType &et) { return et.getptr(); }
 std::shared_ptr<Type> TypeAnalysis::visit(FieldAccess &fa) {
   std::shared_ptr<Type> objType = fa.object->accept(*this);
   if (objType->astClass() != "StructType")
@@ -205,6 +206,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(StructTypeDecl &std) {
   return nullptr;
 }
 std::shared_ptr<Type> TypeAnalysis::visit(TypeCast &tc) { return tc.type; }
+std::shared_ptr<Type> TypeAnalysis::visit(TypeDef &td) { return td.type; }
 std::shared_ptr<Type> TypeAnalysis::visit(ValueAt &va) {
   std::shared_ptr<Type> exprType = va.derefExpr->accept(*this);
   if (exprType->astClass() != "PointerType")
