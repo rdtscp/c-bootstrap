@@ -97,9 +97,7 @@ bool Parser::acceptDecl(int offset) {
 
   return false;
 }
-bool Parser::acceptEnumTypeDecl(int offset) {
-  return false;
-}
+bool Parser::acceptEnumTypeDecl(int offset) { return false; }
 bool Parser::acceptFunDecl(int offset) {
   if (accept(TC::EXTERN))
     offset++;
@@ -129,9 +127,7 @@ bool Parser::acceptStructTypeDecl(int offset) {
 
   return true;
 }
-bool Parser::acceptTypeDefDecl(int offset) {
-  return false;
-}
+bool Parser::acceptTypeDefDecl(int offset) { return false; }
 bool Parser::acceptVarDecl(int offset) {
   if (!accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::EXTERN}, offset))
     return false;
@@ -151,20 +147,12 @@ bool Parser::acceptVarDecl(int offset) {
     if (!accept(TC::IDENTIFIER, offset))
       return false;
 
-    offset++;
-    if (!accept({TC::SC, TC::LSBR}, offset))
-      return false;
-
   } else if (accept({TC::INT, TC::CHAR, TC::VOID}, offset)) {
     offset++;
     while (accept(TC::ASTERIX, offset))
       offset++;
 
     if (!accept(TC::IDENTIFIER, offset))
-      return false;
-
-    offset++;
-    if (!accept({TC::SC, TC::LSBR}, offset))
       return false;
   } else
     return false;
@@ -237,27 +225,39 @@ std::shared_ptr<Program> Parser::parseProgram() {
 
 /* -- Decls -- */
 std::shared_ptr<Decl> Parser::parseDecl() {
-  if (acceptStructTypeDecl())
-    return parseStructTypeDecl();
+  if (acceptStructTypeDecl()) {
+    std::shared_ptr<StructTypeDecl> std = parseStructTypeDecl();
+    expect(TC::SC);
+    return std;
+  }
 
-  if (acceptVarDecl())
-    return parseVarDecl();
+  if (acceptFunDecl()) {
+    std::shared_ptr<FunDecl> fd = parseFunDecl();
+    return fd;
+  }
 
-  if (acceptFunDecl())
-    return parseFunDecl();
+  if (acceptVarDecl()) {
+    std::shared_ptr<VarDecl> vd = parseVarDecl();
+    expect(TC::SC);
+    return vd;
+  }
 
-  if (acceptTypeDefDecl())
-    return parseTypeDefDecl();
+  if (acceptTypeDefDecl()) {
+    std::shared_ptr<TypeDefDecl> tdd = parseTypeDefDecl();
+    expect(TC::SC);
+    return tdd;
+  }
 
-  if (acceptEnumTypeDecl())
-    return parseEnumTypeDecl();
+  if (acceptEnumTypeDecl()) {
+    std::shared_ptr<EnumTypeDecl> etd = parseEnumTypeDecl();
+    expect(TC::SC);
+    return etd;
+  }
 
   throw std::runtime_error("Parser: Expected a Struct/Variable/Function "
                            "Declaration but none was found.");
 }
-std::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
-  return nullptr;
-}
+std::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() { return nullptr; }
 std::shared_ptr<FunDecl> Parser::parseFunDecl() {
   if (accept(TC::EXTERN)) {
     expect(TC::EXTERN);
@@ -303,20 +303,19 @@ std::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
   expect(TC::LBRA);
   std::vector<std::shared_ptr<VarDecl>> fields;
   do {
-    fields.push_back(parseVarDecl());
+    std::shared_ptr<VarDecl> structField = parseVarDecl();
+    expect(TC::SC);
+    fields.push_back(structField);
   } while (acceptVarDecl());
 
   expect(TC::RBRA);
-  expect(TC::SC);
 
   std::shared_ptr<StructTypeDecl> newNode =
       std::make_shared<StructTypeDecl>(StructTypeDecl(structType, fields));
   newNode->Decl::position = currToken.position;
   return newNode;
 }
-std::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
-  return nullptr;
-}
+std::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() { return nullptr; }
 std::shared_ptr<VarDecl> Parser::parseVarDecl() {
   bool isExtern = false;
   if (accept(TC::EXTERN)) {
@@ -331,7 +330,6 @@ std::shared_ptr<VarDecl> Parser::parseVarDecl() {
     expect(TC::RSBR);
     varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
-  expect(TC::SC);
   std::shared_ptr<VarDecl> newNode =
       std::make_shared<VarDecl>(VarDecl(varType, varIdentifier, isExtern));
   newNode->Decl::position = currToken.position;
@@ -455,8 +453,11 @@ std::shared_ptr<Return> Parser::parseReturn() {
   }
 }
 std::shared_ptr<Stmt> Parser::parseStmt() {
-  if (acceptVarDecl())
-    return parseVarDecl();
+  if (acceptVarDecl()) {
+    std::shared_ptr<VarDecl> vd = parseVarDecl();
+    expect(TC::SC);
+    return vd;
+  }
 
   if (acceptBlock())
     return parseBlock();
