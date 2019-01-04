@@ -13,7 +13,7 @@ class BinOp;
 class Block;
 class CharLiteral;
 class DoWhile;
-class EnumType;
+class EnumTypeDecl;
 class FieldAccess;
 class FunCall;
 class FunDecl;
@@ -46,7 +46,7 @@ public:
   virtual T visit(Block &b) = 0;
   virtual T visit(CharLiteral &cl) = 0;
   virtual T visit(DoWhile &dw) = 0;
-  virtual T visit(EnumType &et) = 0;
+  virtual T visit(EnumTypeDecl &etd) = 0;
   virtual T visit(FieldAccess &fa) = 0;
   virtual T visit(FunCall &fc) = 0;
   virtual T visit(FunDecl &fd) = 0;

@@ -6,9 +6,9 @@ BaseType::BaseType(PrimitiveType pType) : primitiveType(pType) {}
 
 std::shared_ptr<BaseType> BaseType::getptr() { return shared_from_this(); }
 
-bool BaseType::operator==(Type &t) const {
-  if (t.astClass() == astClass())
-    return *this == *static_cast<BaseType *>(&t);
+bool BaseType::operator==(Type &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<BaseType *>(&rhs);
   return false;
 }
 bool BaseType::operator!=(Type &t) const { return !(*this == t); }

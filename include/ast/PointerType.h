@@ -20,9 +20,9 @@ public:
 
   std::shared_ptr<PointerType> getptr();
 
-  bool operator==(Type &t) const override;
+  bool operator==(Type &rhs) const override;
 
-  bool operator!=(Type &t) const override;
+  bool operator!=(Type &rhs) const override;
 
   bool operator==(const PointerType &rhs) const;
   bool operator!=(const PointerType &rhs) const;

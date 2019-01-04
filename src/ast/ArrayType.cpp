@@ -8,9 +8,9 @@ ArrayType::ArrayType(std::shared_ptr<Type> arrayType,
 
 std::shared_ptr<ArrayType> ArrayType::getptr() { return shared_from_this(); }
 
-bool ArrayType::operator==(Type &t) const {
-  if (t.astClass() == astClass())
-    return *this == *static_cast<ArrayType *>(&t);
+bool ArrayType::operator==(Type &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<ArrayType *>(&rhs);
   return false;
 }
 

@@ -44,7 +44,7 @@ private:
   std::shared_ptr<Type> visit(Block &b) override;
   std::shared_ptr<Type> visit(CharLiteral &cl) override;
   std::shared_ptr<Type> visit(DoWhile &dw) override;
-  std::shared_ptr<Type> visit(EnumType &et) override;
+  std::shared_ptr<Type> visit(EnumTypeDecl &etd) override;
   std::shared_ptr<Type> visit(FieldAccess &fa) override;
   std::shared_ptr<Type> visit(FunCall &fc) override;
   std::shared_ptr<Type> visit(FunDecl &fd) override;

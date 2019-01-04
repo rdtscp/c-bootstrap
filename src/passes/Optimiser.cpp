@@ -113,7 +113,9 @@ std::shared_ptr<ASTNode> Optimiser::visit(CharLiteral &cl) {
   return cl.getptr();
 }
 std::shared_ptr<ASTNode> Optimiser::visit(DoWhile &dw) { return dw.getptr(); }
-std::shared_ptr<ASTNode> Optimiser::visit(EnumType &et) { return et.getptr(); }
+std::shared_ptr<ASTNode> Optimiser::visit(EnumTypeDecl &etd) {
+  return etd.getptr();
+}
 std::shared_ptr<ASTNode> Optimiser::visit(FieldAccess &fa) {
   fa.object = std::static_pointer_cast<Expr>(fa.object->accept(*this));
   return fa.getptr();

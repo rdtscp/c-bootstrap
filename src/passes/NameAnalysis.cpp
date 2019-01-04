@@ -45,7 +45,7 @@ void NameAnalysis::visit(DoWhile &dw) {
   dw.condition->accept(*this);
   dw.body->accept(*this);
 }
-void NameAnalysis::visit(EnumType &et) {}
+void NameAnalysis::visit(EnumTypeDecl &etd) {}
 void NameAnalysis::visit(FieldAccess &fa) { fa.object->accept(*this); }
 void NameAnalysis::visit(FunCall &fc) {
   if (currScope->find(fc.funName) == nullptr)

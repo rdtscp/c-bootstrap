@@ -91,7 +91,7 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(DoWhile &dw) {
   dw.condition->accept(*this);
   return std::make_shared<X86::None>();
 }
-std::shared_ptr<X86::Operand> GenerateX86::visit(EnumType &et) {
+std::shared_ptr<X86::Operand> GenerateX86::visit(EnumTypeDecl &etd) {
   return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(FieldAccess &fa) {

@@ -15,7 +15,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
     src/ast/Block.cpp
     src/ast/CharLiteral.cpp
     src/ast/DoWhile.cpp
-    src/ast/EnumType.cpp
+    src/ast/EnumTypeDecl.cpp
     src/ast/FieldAccess.cpp
     src/ast/FunCall.cpp
     src/ast/FunDecl.cpp
@@ -128,7 +128,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
     src/ast/Block.cpp
     src/ast/CharLiteral.cpp
     src/ast/DoWhile.cpp
-    src/ast/EnumType.cpp
+    src/ast/EnumTypeDecl.cpp
     src/ast/FieldAccess.cpp
     src/ast/FunCall.cpp
     src/ast/FunDecl.cpp

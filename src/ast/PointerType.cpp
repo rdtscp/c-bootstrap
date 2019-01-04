@@ -9,9 +9,9 @@ std::shared_ptr<PointerType> PointerType::getptr() {
   return shared_from_this();
 }
 
-bool PointerType::operator==(Type &t) const {
-  if (t.astClass() == astClass())
-    return *this == *static_cast<PointerType *>(&t);
+bool PointerType::operator==(Type &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<PointerType *>(&rhs);
   return false;
 }
 

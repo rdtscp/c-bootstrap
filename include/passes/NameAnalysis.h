@@ -44,7 +44,7 @@ private:
   void visit(Block &b) override;
   void visit(CharLiteral &cl) override;
   void visit(DoWhile &dw) override;
-  void visit(EnumType &et) override;
+  void visit(EnumTypeDecl &etd) override;
   void visit(FieldAccess &fa) override;
   void visit(FunCall &fc) override;
   void visit(FunDecl &fd) override;

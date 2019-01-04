@@ -20,8 +20,8 @@ public:
 
   std::shared_ptr<ArrayType> getptr();
 
-  bool operator==(Type &t) const override;
-  bool operator!=(Type &t) const override;
+  bool operator==(Type &rhs) const override;
+  bool operator!=(Type &rhs) const override;
 
   bool operator==(const ArrayType &rhs) const;
   bool operator!=(const ArrayType &rhs) const;

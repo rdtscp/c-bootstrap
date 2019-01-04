@@ -53,6 +53,8 @@ private:
   bool acceptFunDecl(int offset = 0);
   bool acceptStructTypeDecl(int offset = 0);
   bool acceptVarDecl(int offset = 0);
+  bool acceptEnumTypeDecl(int offset = 0);
+  bool acceptTypeDef(int offset = 0);
 
   bool acceptType(int offset = 0);
   bool acceptStructType(int offset = 0);

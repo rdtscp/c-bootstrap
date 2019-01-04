@@ -95,7 +95,7 @@ public:
   Token(TokenClass tokenClass, Position p, std::string data = "")
       : tokenClass(tokenClass), position(p), data(data) {}
 
-  bool operator==(const Token &t) { return tokenClass == t.tokenClass; }
+  bool operator==(const Token &rhs) { return tokenClass == rhs.tokenClass; }
 };
 
 static std::string tokToStr(const Token::TokenClass &tok) {

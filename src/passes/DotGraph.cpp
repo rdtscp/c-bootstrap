@@ -130,7 +130,7 @@ std::string DotGraph::visit(DoWhile &dw) {
   join(whileID, dw.condition->accept(*this));
   return whileID;
 }
-std::string DotGraph::visit(EnumType &et) { return ""; }
+std::string DotGraph::visit(EnumTypeDecl &etd) { return ""; }
 std::string DotGraph::visit(FieldAccess &fa) {
   std::string fieldAccessID = "FieldAccess" + std::to_string(nodeCount++);
   declare(fieldAccessID, "FieldAccess." + fa.field);

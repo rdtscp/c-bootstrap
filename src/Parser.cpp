@@ -90,6 +90,12 @@ bool Parser::acceptDecl(int offset) {
   if (acceptFunDecl(offset))
     return true;
 
+  // if (acceptTypeDef())
+  //   return true;
+
+  // if (acceptEnumTypeDecl())
+  //   return true;
+
   return false;
 }
 

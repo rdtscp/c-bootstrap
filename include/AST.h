@@ -12,7 +12,7 @@
 #include "ast/CharLiteral.h"
 #include "ast/Decl.h"
 #include "ast/DoWhile.h"
-#include "ast/EnumType.h"
+#include "ast/EnumTypeDecl.h"
 #include "ast/Expr.h"
 #include "ast/FieldAccess.h"
 #include "ast/FunCall.h"
