@@ -52,7 +52,7 @@ private:
   std::string visit(StructType &st) override;
   std::string visit(StructTypeDecl &std) override;
   std::string visit(TypeCast &tc) override;
-  std::string visit(TypeDef &td) override;
+  std::string visit(TypeDefDecl &td) override;
   std::string visit(ValueAt &va) override;
   std::string visit(VarDecl &vd) override;
   std::string visit(VarExpr &ve) override;

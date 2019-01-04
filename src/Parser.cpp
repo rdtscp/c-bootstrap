@@ -3,8 +3,6 @@
 
 #include "../include/Parser.h"
 
-/* Public */
-
 using namespace ACC;
 using TC = Token::TokenClass;
 
@@ -80,6 +78,7 @@ void Parser::nextToken() {
 
 /* ---- Look Ahead ---- */
 
+/* -- Decls -- */
 bool Parser::acceptDecl(int offset) {
   if (acceptStructTypeDecl(offset))
     return true;
@@ -90,15 +89,17 @@ bool Parser::acceptDecl(int offset) {
   if (acceptFunDecl(offset))
     return true;
 
-  // if (acceptTypeDef())
-  //   return true;
+  if (acceptTypeDefDecl())
+    return true;
 
-  // if (acceptEnumTypeDecl())
-  //   return true;
+  if (acceptEnumTypeDecl())
+    return true;
 
   return false;
 }
-
+bool Parser::acceptEnumTypeDecl(int offset) {
+  return false;
+}
 bool Parser::acceptFunDecl(int offset) {
   if (accept(TC::EXTERN))
     offset++;
@@ -119,7 +120,6 @@ bool Parser::acceptFunDecl(int offset) {
 
   return false;
 }
-
 bool Parser::acceptStructTypeDecl(int offset) {
   if (!acceptStructType(offset))
     return false;
@@ -129,7 +129,9 @@ bool Parser::acceptStructTypeDecl(int offset) {
 
   return true;
 }
-
+bool Parser::acceptTypeDefDecl(int offset) {
+  return false;
+}
 bool Parser::acceptVarDecl(int offset) {
   if (!accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::EXTERN}, offset))
     return false;
@@ -170,10 +172,7 @@ bool Parser::acceptVarDecl(int offset) {
   return true;
 }
 
-bool Parser::acceptType(int offset) {
-  return accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT}, offset);
-}
-
+/* -- Types -- */
 bool Parser::acceptStructType(int offset) {
   if (!accept(TC::STRUCT, offset))
     return false;
@@ -183,9 +182,16 @@ bool Parser::acceptStructType(int offset) {
 
   return true;
 }
+bool Parser::acceptType(int offset) {
+  return accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT}, offset);
+}
 
-bool Parser::acceptParam(int offset) { return acceptType(offset); }
-
+/* -- Stmts -- */
+bool Parser::acceptAssign(int offset) { return acceptExpr(offset); }
+bool Parser::acceptBlock(int offset) { return accept(TC::LBRA, offset); }
+bool Parser::acceptDoWhile(int offset) { return accept(TC::DO, offset); }
+bool Parser::acceptIf(int offset) { return accept(TC::IF, offset); }
+bool Parser::acceptReturn(int offset) { return accept(TC::RETURN, offset); }
 bool Parser::acceptStmt(int offset) {
   if (acceptVarDecl(offset))
     return true;
@@ -206,18 +212,9 @@ bool Parser::acceptStmt(int offset) {
 
   return false;
 }
-
-bool Parser::acceptBlock(int offset) { return accept(TC::LBRA, offset); }
-
 bool Parser::acceptWhile(int offset) { return accept(TC::WHILE, offset); }
 
-bool Parser::acceptDoWhile(int offset) { return accept(TC::DO, offset); }
-
-bool Parser::acceptIf(int offset) { return accept(TC::IF, offset); }
-
-bool Parser::acceptReturn(int offset) { return accept(TC::RETURN, offset); }
-
-bool Parser::acceptAssign(int offset) { return acceptExpr(offset); }
+bool Parser::acceptParam(int offset) { return acceptType(offset); }
 
 bool Parser::acceptExpr(int offset) {
   return accept({TC::LPAR, TC::SIZEOF, TC::ASTERIX, TC::MINUS, TC::IDENTIFIER,
@@ -238,6 +235,7 @@ std::shared_ptr<Program> Parser::parseProgram() {
   return p;
 }
 
+/* -- Decls -- */
 std::shared_ptr<Decl> Parser::parseDecl() {
   if (acceptStructTypeDecl())
     return parseStructTypeDecl();
@@ -248,48 +246,18 @@ std::shared_ptr<Decl> Parser::parseDecl() {
   if (acceptFunDecl())
     return parseFunDecl();
 
+  if (acceptTypeDefDecl())
+    return parseTypeDefDecl();
+
+  if (acceptEnumTypeDecl())
+    return parseEnumTypeDecl();
+
   throw std::runtime_error("Parser: Expected a Struct/Variable/Function "
                            "Declaration but none was found.");
 }
-
-std::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
-  std::shared_ptr<StructType> structType = parseStructType();
-  expect(TC::LBRA);
-  std::vector<std::shared_ptr<VarDecl>> fields;
-  do {
-    fields.push_back(parseVarDecl());
-  } while (acceptVarDecl());
-
-  expect(TC::RBRA);
-  expect(TC::SC);
-
-  std::shared_ptr<StructTypeDecl> newNode =
-      std::make_shared<StructTypeDecl>(StructTypeDecl(structType, fields));
-  newNode->Decl::position = currToken.position;
-  return newNode;
+std::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
+  return nullptr;
 }
-
-std::shared_ptr<VarDecl> Parser::parseVarDecl() {
-  bool isExtern = false;
-  if (accept(TC::EXTERN)) {
-    expect(TC::EXTERN);
-    isExtern = true;
-  }
-  std::shared_ptr<Type> varType = parseType();
-  std::string varIdentifier = expect(TC::IDENTIFIER).data;
-  if (accept(TC::LSBR)) {
-    expect(TC::LSBR);
-    std::string arraySize = expect(TC::INT_LITERAL).data;
-    expect(TC::RSBR);
-    varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
-  }
-  expect(TC::SC);
-  std::shared_ptr<VarDecl> newNode =
-      std::make_shared<VarDecl>(VarDecl(varType, varIdentifier, isExtern));
-  newNode->Decl::position = currToken.position;
-  return newNode;
-}
-
 std::shared_ptr<FunDecl> Parser::parseFunDecl() {
   if (accept(TC::EXTERN)) {
     expect(TC::EXTERN);
@@ -330,24 +298,55 @@ std::shared_ptr<FunDecl> Parser::parseFunDecl() {
     return newNode;
   }
 }
+std::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
+  std::shared_ptr<StructType> structType = parseStructType();
+  expect(TC::LBRA);
+  std::vector<std::shared_ptr<VarDecl>> fields;
+  do {
+    fields.push_back(parseVarDecl());
+  } while (acceptVarDecl());
 
-std::shared_ptr<VarDecl> Parser::parseParam() {
+  expect(TC::RBRA);
+  expect(TC::SC);
+
+  std::shared_ptr<StructTypeDecl> newNode =
+      std::make_shared<StructTypeDecl>(StructTypeDecl(structType, fields));
+  newNode->Decl::position = currToken.position;
+  return newNode;
+}
+std::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
+  return nullptr;
+}
+std::shared_ptr<VarDecl> Parser::parseVarDecl() {
+  bool isExtern = false;
+  if (accept(TC::EXTERN)) {
+    expect(TC::EXTERN);
+    isExtern = true;
+  }
   std::shared_ptr<Type> varType = parseType();
-  std::string varIdentifier = "";
-  if (accept(TC::IDENTIFIER))
-    varIdentifier = expect(TC::IDENTIFIER).data;
+  std::string varIdentifier = expect(TC::IDENTIFIER).data;
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
     std::string arraySize = expect(TC::INT_LITERAL).data;
     expect(TC::RSBR);
     varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
+  expect(TC::SC);
   std::shared_ptr<VarDecl> newNode =
-      std::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
+      std::make_shared<VarDecl>(VarDecl(varType, varIdentifier, isExtern));
   newNode->Decl::position = currToken.position;
   return newNode;
 }
 
+/* -- Types -- */
+std::shared_ptr<StructType> Parser::parseStructType() {
+  expect(TC::STRUCT);
+  std::string structIdentifier = expect(TC::IDENTIFIER).data;
+  std::shared_ptr<StructType> newNode =
+      std::make_shared<StructType>(StructType(structIdentifier));
+  newNode->position = currToken.position;
+  return newNode;
+}
 std::shared_ptr<Type> Parser::parseType() {
   std::shared_ptr<Type> type;
   if (acceptStructType()) {
@@ -383,15 +382,15 @@ std::shared_ptr<Type> Parser::parseType() {
   return type;
 }
 
-std::shared_ptr<StructType> Parser::parseStructType() {
-  expect(TC::STRUCT);
-  std::string structIdentifier = expect(TC::IDENTIFIER).data;
-  std::shared_ptr<StructType> newNode =
-      std::make_shared<StructType>(StructType(structIdentifier));
+/* -- Stmts -- */
+std::shared_ptr<Assign> Parser::parseAssign() {
+  std::shared_ptr<Expr> lhs = parseExpr();
+  expect(TC::ASSIGN);
+  std::shared_ptr<Expr> rhs = parseExpr();
+  std::shared_ptr<Assign> newNode = std::make_shared<Assign>(Assign(lhs, rhs));
   newNode->position = currToken.position;
   return newNode;
 }
-
 std::shared_ptr<Block> Parser::parseBlock() {
   expect(TC::LBRA);
 
@@ -406,7 +405,55 @@ std::shared_ptr<Block> Parser::parseBlock() {
   newNode->position = currToken.position;
   return newNode;
 }
+std::shared_ptr<DoWhile> Parser::parseDoWhile() {
+  expect(TC::DO);
+  std::shared_ptr<Stmt> whileBody = parseStmt();
+  expect(TC::WHILE);
+  expect(TC::LPAR);
+  std::shared_ptr<Expr> whileCondition = parseExpr();
+  expect(TC::RPAR);
+  expect(TC::SC);
 
+  std::shared_ptr<DoWhile> newNode =
+      std::make_shared<DoWhile>(DoWhile(whileBody, whileCondition));
+  newNode->position = currToken.position;
+  return newNode;
+}
+std::shared_ptr<If> Parser::parseIf() {
+  expect(TC::IF);
+  expect(TC::LPAR);
+  std::shared_ptr<Expr> ifCondition = parseExpr();
+  expect(TC::RPAR);
+  std::shared_ptr<Stmt> ifBody = parseStmt();
+  if (accept(TC::ELSE)) {
+    expect(TC::ELSE);
+    std::shared_ptr<Stmt> elseBody = parseStmt();
+    std::shared_ptr<If> newNode =
+        std::make_shared<If>(If(ifCondition, ifBody, elseBody));
+    newNode->position = currToken.position;
+    return newNode;
+  } else {
+    std::shared_ptr<If> newNode = std::make_shared<If>(If(ifCondition, ifBody));
+    newNode->position = currToken.position;
+    return newNode;
+  }
+}
+std::shared_ptr<Return> Parser::parseReturn() {
+  expect(TC::RETURN);
+  if (acceptExpr()) {
+    std::shared_ptr<Expr> returnExpr = parseExpr();
+    expect(TC::SC);
+    std::shared_ptr<Return> newNode =
+        std::make_shared<Return>(Return(returnExpr));
+    newNode->position = currToken.position;
+    return newNode;
+  } else {
+    expect(TC::SC);
+    std::shared_ptr<Return> newNode = std::make_shared<Return>(Return());
+    newNode->position = currToken.position;
+    return newNode;
+  }
+}
 std::shared_ptr<Stmt> Parser::parseStmt() {
   if (acceptVarDecl())
     return parseVarDecl();
@@ -442,7 +489,6 @@ std::shared_ptr<Stmt> Parser::parseStmt() {
   expr->position = currToken.position;
   return expr;
 }
-
 std::shared_ptr<While> Parser::parseWhile() {
   expect(TC::WHILE);
   expect(TC::LPAR);
@@ -456,67 +502,24 @@ std::shared_ptr<While> Parser::parseWhile() {
   return newNode;
 }
 
-std::shared_ptr<DoWhile> Parser::parseDoWhile() {
-  expect(TC::DO);
-  std::shared_ptr<Stmt> whileBody = parseStmt();
-  expect(TC::WHILE);
-  expect(TC::LPAR);
-  std::shared_ptr<Expr> whileCondition = parseExpr();
-  expect(TC::RPAR);
-  expect(TC::SC);
-
-  std::shared_ptr<DoWhile> newNode =
-      std::make_shared<DoWhile>(DoWhile(whileBody, whileCondition));
-  newNode->position = currToken.position;
+std::shared_ptr<VarDecl> Parser::parseParam() {
+  std::shared_ptr<Type> varType = parseType();
+  std::string varIdentifier = "";
+  if (accept(TC::IDENTIFIER))
+    varIdentifier = expect(TC::IDENTIFIER).data;
+  if (accept(TC::LSBR)) {
+    expect(TC::LSBR);
+    std::string arraySize = expect(TC::INT_LITERAL).data;
+    expect(TC::RSBR);
+    varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
+  }
+  std::shared_ptr<VarDecl> newNode =
+      std::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
+  newNode->Decl::position = currToken.position;
   return newNode;
 }
 
-std::shared_ptr<If> Parser::parseIf() {
-  expect(TC::IF);
-  expect(TC::LPAR);
-  std::shared_ptr<Expr> ifCondition = parseExpr();
-  expect(TC::RPAR);
-  std::shared_ptr<Stmt> ifBody = parseStmt();
-  if (accept(TC::ELSE)) {
-    expect(TC::ELSE);
-    std::shared_ptr<Stmt> elseBody = parseStmt();
-    std::shared_ptr<If> newNode =
-        std::make_shared<If>(If(ifCondition, ifBody, elseBody));
-    newNode->position = currToken.position;
-    return newNode;
-  } else {
-    std::shared_ptr<If> newNode = std::make_shared<If>(If(ifCondition, ifBody));
-    newNode->position = currToken.position;
-    return newNode;
-  }
-}
-
-std::shared_ptr<Return> Parser::parseReturn() {
-  expect(TC::RETURN);
-  if (acceptExpr()) {
-    std::shared_ptr<Expr> returnExpr = parseExpr();
-    expect(TC::SC);
-    std::shared_ptr<Return> newNode =
-        std::make_shared<Return>(Return(returnExpr));
-    newNode->position = currToken.position;
-    return newNode;
-  } else {
-    expect(TC::SC);
-    std::shared_ptr<Return> newNode = std::make_shared<Return>(Return());
-    newNode->position = currToken.position;
-    return newNode;
-  }
-}
-
-std::shared_ptr<Assign> Parser::parseAssign() {
-  std::shared_ptr<Expr> lhs = parseExpr();
-  expect(TC::ASSIGN);
-  std::shared_ptr<Expr> rhs = parseExpr();
-  std::shared_ptr<Assign> newNode = std::make_shared<Assign>(Assign(lhs, rhs));
-  newNode->position = currToken.position;
-  return newNode;
-}
-
+/* -- Exprs -- */
 std::shared_ptr<Expr> Parser::parseExpr() {
   if (accept(TC::LPAR) && !acceptType(1)) {
     expect(TC::LPAR);
@@ -530,7 +533,6 @@ std::shared_ptr<Expr> Parser::parseExpr() {
 
   return parseBoolExpr();
 }
-
 std::shared_ptr<Expr> Parser::parseBoolExpr() {
   std::shared_ptr<Expr> lhs = parseEqualExpr();
   if (accept(TC::OR)) {
@@ -551,7 +553,6 @@ std::shared_ptr<Expr> Parser::parseBoolExpr() {
   }
   return lhs;
 }
-
 std::shared_ptr<Expr> Parser::parseEqualExpr() {
   std::shared_ptr<Expr> lhs = parseCompExpr();
   if (accept(TC::NE)) {
@@ -572,7 +573,6 @@ std::shared_ptr<Expr> Parser::parseEqualExpr() {
   }
   return lhs;
 }
-
 std::shared_ptr<Expr> Parser::parseCompExpr() {
   std::shared_ptr<Expr> lhs = parseAddExpr();
   if (accept(TC::LT)) {
@@ -609,7 +609,6 @@ std::shared_ptr<Expr> Parser::parseCompExpr() {
   }
   return lhs;
 }
-
 std::shared_ptr<Expr> Parser::parseAddExpr() {
   std::shared_ptr<Expr> lhs = parseMulExpr();
   if (accept(TC::PLUS)) {
@@ -630,7 +629,6 @@ std::shared_ptr<Expr> Parser::parseAddExpr() {
   }
   return lhs;
 }
-
 std::shared_ptr<Expr> Parser::parseMulExpr() {
   std::shared_ptr<Expr> lhs = parseUnaryExpr();
   if (accept(TC::ASTERIX)) {
@@ -659,7 +657,6 @@ std::shared_ptr<Expr> Parser::parseMulExpr() {
   }
   return lhs;
 }
-
 std::shared_ptr<Expr> Parser::parseUnaryExpr() {
   if (accept(TC::SIZEOF)) {
     expect(TC::SIZEOF);
@@ -699,7 +696,6 @@ std::shared_ptr<Expr> Parser::parseUnaryExpr() {
 
   return parseObjExpr();
 }
-
 std::shared_ptr<Expr> Parser::parseObjExpr() {
   if (accept(TC::IDENTIFIER)) {
     std::string ident = expect(TC::IDENTIFIER).data;
@@ -747,7 +743,6 @@ std::shared_ptr<Expr> Parser::parseObjExpr() {
 
   return lhs;
 }
-
 std::shared_ptr<Expr> Parser::parseLitExpr() {
   if (accept(TC::INT_LITERAL)) {
     std::shared_ptr<IntLiteral> newNode =
@@ -775,7 +770,7 @@ std::shared_ptr<Expr> Parser::parseLitExpr() {
                            currToken.position.toString());
 }
 
-/* Helpers */
+/* ---- Helpers ---- */
 
 std::shared_ptr<BaseType> Parser::tokenToType(const TC &tc) {
   switch (tc) {

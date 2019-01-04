@@ -230,7 +230,7 @@ std::string DotGraph::visit(TypeCast &tc) {
   join(typecastID, tc.expr->accept(*this));
   return typecastID;
 }
-std::string DotGraph::visit(TypeDef &td) { return ""; }
+std::string DotGraph::visit(TypeDefDecl &td) { return ""; }
 std::string DotGraph::visit(ValueAt &va) {
   std::string derefID = "Deref" + std::to_string(nodeCount++);
   declare(derefID, "\"Deref\"");

@@ -60,7 +60,7 @@ private:
   void visit(StructType &st) override;
   void visit(StructTypeDecl &std) override;
   void visit(TypeCast &tc) override;
-  void visit(TypeDef &td) override;
+  void visit(TypeDefDecl &td) override;
   void visit(ValueAt &va) override;
   void visit(VarDecl &vd) override;
   void visit(VarExpr &ve) override;

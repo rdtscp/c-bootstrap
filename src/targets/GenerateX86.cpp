@@ -255,7 +255,7 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(StructTypeDecl &std) {
 std::shared_ptr<X86::Operand> GenerateX86::visit(TypeCast &tc) {
   return tc.expr->accept(*this);
 }
-std::shared_ptr<X86::Operand> GenerateX86::visit(TypeDef &td) {
+std::shared_ptr<X86::Operand> GenerateX86::visit(TypeDefDecl &td) {
   return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(ValueAt &va) {

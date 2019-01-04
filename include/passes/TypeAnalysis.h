@@ -60,7 +60,7 @@ private:
   std::shared_ptr<Type> visit(StructType &st) override;
   std::shared_ptr<Type> visit(StructTypeDecl &std) override;
   std::shared_ptr<Type> visit(TypeCast &tc) override;
-  std::shared_ptr<Type> visit(TypeDef &td) override;
+  std::shared_ptr<Type> visit(TypeDefDecl &td) override;
   std::shared_ptr<Type> visit(ValueAt &va) override;
   std::shared_ptr<Type> visit(VarDecl &vd) override;
   std::shared_ptr<Type> visit(VarExpr &ve) override;

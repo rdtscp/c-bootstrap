@@ -48,25 +48,28 @@ private:
 
   /* ---- Look Ahead ---- */
 
+  /* -- Decls -- */
   bool acceptDecl(int offset = 0);
-
+  bool acceptEnumTypeDecl(int offset = 0);
   bool acceptFunDecl(int offset = 0);
   bool acceptStructTypeDecl(int offset = 0);
+  bool acceptTypeDefDecl(int offset = 0);
   bool acceptVarDecl(int offset = 0);
-  bool acceptEnumTypeDecl(int offset = 0);
-  bool acceptTypeDef(int offset = 0);
 
-  bool acceptType(int offset = 0);
+  /* -- Types -- */
   bool acceptStructType(int offset = 0);
+  bool acceptType(int offset = 0);
 
-  bool acceptParam(int offset = 0);
-  bool acceptStmt(int offset = 0);
+  /* -- Stmts -- */
+  bool acceptAssign(int offset = 0);
   bool acceptBlock(int offset = 0);
-  bool acceptWhile(int offset = 0);
   bool acceptDoWhile(int offset = 0);
   bool acceptIf(int offset = 0);
   bool acceptReturn(int offset = 0);
-  bool acceptAssign(int offset = 0);
+  bool acceptStmt(int offset = 0);
+  bool acceptWhile(int offset = 0);
+
+  bool acceptParam(int offset = 0);
 
   bool acceptExpr(int offset = 0);
 
@@ -74,25 +77,30 @@ private:
 
   std::shared_ptr<Program> parseProgram();
 
+  /* -- Decls -- */
   std::shared_ptr<Decl> parseDecl();
-
-  std::shared_ptr<StructTypeDecl> parseStructTypeDecl();
-  std::shared_ptr<VarDecl> parseVarDecl();
+  std::shared_ptr<EnumTypeDecl> parseEnumTypeDecl();
   std::shared_ptr<FunDecl> parseFunDecl();
-  std::shared_ptr<VarDecl> parseParam();
+  std::shared_ptr<StructTypeDecl> parseStructTypeDecl();
+  std::shared_ptr<TypeDefDecl> parseTypeDefDecl();
+  std::shared_ptr<VarDecl> parseVarDecl();
 
-  std::shared_ptr<Type> parseType();
+  /* -- Types -- */
   std::shared_ptr<StructType> parseStructType();
+  std::shared_ptr<Type> parseType();
 
+  /* -- Stmts -- */
+  std::shared_ptr<Assign> parseAssign();
   std::shared_ptr<Block> parseBlock();
-
-  std::shared_ptr<Stmt> parseStmt();
-  std::shared_ptr<While> parseWhile();
   std::shared_ptr<DoWhile> parseDoWhile();
   std::shared_ptr<If> parseIf();
   std::shared_ptr<Return> parseReturn();
-  std::shared_ptr<Assign> parseAssign();
+  std::shared_ptr<Stmt> parseStmt();
+  std::shared_ptr<While> parseWhile();
 
+  std::shared_ptr<VarDecl> parseParam();
+
+  /* -- Exprs -- */
   std::shared_ptr<Expr> parseExpr();
   std::shared_ptr<Expr> parseBoolExpr();
   std::shared_ptr<Expr> parseEqualExpr();

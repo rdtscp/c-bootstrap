@@ -130,7 +130,7 @@ void NameAnalysis::visit(StructTypeDecl &std) {
   }
 }
 void NameAnalysis::visit(TypeCast &tc) { tc.expr->accept(*this); }
-void NameAnalysis::visit(TypeDef &td) {}
+void NameAnalysis::visit(TypeDefDecl &td) {}
 void NameAnalysis::visit(ValueAt &va) { va.derefExpr->accept(*this); }
 void NameAnalysis::visit(VarDecl &vd) {
   if (currScope->findLocal(vd.getIdentifier()))

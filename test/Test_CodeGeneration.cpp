@@ -16,9 +16,9 @@
 
 using namespace ACC;
 
-// std::string test_prefix =
-    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-std::string test_prefix = "../../test/tests/";
+std::string test_prefix =
+    "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+// std::string test_prefix = "../../test/tests/";
 
 TEST(CodeGenerationTest, MIPS_Fibonacci) {
   // Scanner scanner(test_prefix + "fibonacci.c");

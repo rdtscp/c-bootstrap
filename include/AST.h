@@ -33,7 +33,7 @@
 #include "ast/StructTypeDecl.h"
 #include "ast/Type.h"
 #include "ast/TypeCast.h"
-#include "ast/TypeDef.h"
+#include "ast/TypeDefDecl.h"
 #include "ast/ValueAt.h"
 #include "ast/VarDecl.h"
 #include "ast/VarExpr.h"

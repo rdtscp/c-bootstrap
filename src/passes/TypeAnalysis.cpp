@@ -208,7 +208,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(StructTypeDecl &std) {
   return nullptr;
 }
 std::shared_ptr<Type> TypeAnalysis::visit(TypeCast &tc) { return tc.type; }
-std::shared_ptr<Type> TypeAnalysis::visit(TypeDef &td) { return td.type; }
+std::shared_ptr<Type> TypeAnalysis::visit(TypeDefDecl &td) { return td.type; }
 std::shared_ptr<Type> TypeAnalysis::visit(ValueAt &va) {
   std::shared_ptr<Type> exprType = va.derefExpr->accept(*this);
   if (exprType->astClass() != "PointerType")

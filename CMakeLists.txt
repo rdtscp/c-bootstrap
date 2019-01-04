@@ -31,7 +31,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Release)
     src/ast/StructType.cpp
     src/ast/StructTypeDecl.cpp
     src/ast/TypeCast.cpp
-    src/ast/TypeDef.cpp
+    src/ast/TypeDefDecl.cpp
     src/ast/ValueAt.cpp
     src/ast/VarDecl.cpp
     src/ast/VarExpr.cpp
@@ -144,7 +144,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
     src/ast/StructType.cpp
     src/ast/StructTypeDecl.cpp
     src/ast/TypeCast.cpp
-    src/ast/TypeDef.cpp
+    src/ast/TypeDefDecl.cpp
     src/ast/ValueAt.cpp
     src/ast/VarDecl.cpp
     src/ast/VarExpr.cpp

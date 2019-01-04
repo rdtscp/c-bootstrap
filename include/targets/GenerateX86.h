@@ -67,7 +67,7 @@ private:
   std::shared_ptr<X86::Operand> visit(StructType &st) override;
   std::shared_ptr<X86::Operand> visit(StructTypeDecl &std) override;
   std::shared_ptr<X86::Operand> visit(TypeCast &tc) override;
-  std::shared_ptr<X86::Operand> visit(TypeDef &td) override;
+  std::shared_ptr<X86::Operand> visit(TypeDefDecl &td) override;
   std::shared_ptr<X86::Operand> visit(ValueAt &va) override;
   std::shared_ptr<X86::Operand> visit(VarDecl &vd) override;
   std::shared_ptr<X86::Operand> visit(VarExpr &ve) override;

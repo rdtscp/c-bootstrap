@@ -189,7 +189,7 @@ std::shared_ptr<ASTNode> Optimiser::visit(TypeCast &tc) {
   tc.expr = std::static_pointer_cast<Expr>(tc.expr->accept(*this));
   return tc.getptr();
 }
-std::shared_ptr<ASTNode> Optimiser::visit(TypeDef &td) { return td.getptr(); }
+std::shared_ptr<ASTNode> Optimiser::visit(TypeDefDecl &td) { return td.getptr(); }
 std::shared_ptr<ASTNode> Optimiser::visit(ValueAt &va) {
   va.derefExpr = std::static_pointer_cast<Expr>(va.derefExpr->accept(*this));
   return va.getptr();

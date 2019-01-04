@@ -289,7 +289,7 @@ MIPS::Register GenerateMIPS::visit(StructTypeDecl &std) {
 MIPS::Register GenerateMIPS::visit(TypeCast &tc) {
   return tc.expr->accept(*this);
 }
-MIPS::Register GenerateMIPS::visit(TypeDef &td) { return MIPS::Register(); }
+MIPS::Register GenerateMIPS::visit(TypeDefDecl &td) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(ValueAt &va) {
   va.derefExpr->accept(*this);
   return MIPS::Register();

@@ -60,7 +60,7 @@ private:
   std::shared_ptr<ASTNode> visit(StructType &st) override;
   std::shared_ptr<ASTNode> visit(StructTypeDecl &std) override;
   std::shared_ptr<ASTNode> visit(TypeCast &tc) override;
-  std::shared_ptr<ASTNode> visit(TypeDef &td) override;
+  std::shared_ptr<ASTNode> visit(TypeDefDecl &td) override;
   std::shared_ptr<ASTNode> visit(ValueAt &va) override;
   std::shared_ptr<ASTNode> visit(VarDecl &vd) override;
   std::shared_ptr<ASTNode> visit(VarExpr &ve) override;
