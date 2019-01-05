@@ -17,6 +17,8 @@ class Preprocessor {
 public:
   Preprocessor(Scanner &scanner);
 
+  void preprocessDirective();
+
   void define();
 
   void preprocessElif();
