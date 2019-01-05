@@ -24,6 +24,8 @@ int BaseType::getBytes() const {
     return 1;
   case PrimitiveType::INT:
     return 4;
+  case PrimitiveType::SHORT:
+    return 4;
   case PrimitiveType::VOID:
     return 4;
   }
