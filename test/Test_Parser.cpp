@@ -4,9 +4,8 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/Lexer.h"
 #include "../include/Parser.h"
-#include "../include/Scanner.h"
+#include "../include/Preprocessor.h"
 #include "../include/Token.h"
 
 using namespace ACC;
@@ -16,12 +15,12 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(ParserTest, AllTokens) {
-  Scanner scanner(test_prefix + "lexer/alltokens.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
+  Preprocessor preprocessor(test_prefix + "lexer/alltokens.c");
+  SourceCode src = preprocessor.getSource();
 
+  Parser parser(src);
   try {
-    parser.parse();
+    parser.getAST();
   } catch (std::runtime_error const &err) {
     ASSERT_TRUE(true);
     return;
@@ -36,12 +35,12 @@ TEST(ParserTest, AllTokens) {
 }
 
 TEST(ParserTest, InvalidIdentifier) {
-  Scanner scanner(test_prefix + "lexer/errors.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
+  Preprocessor preprocessor(test_prefix + "lexer/errors.c");
 
   try {
-    parser.parse();
+  SourceCode src = preprocessor.getSource();
+  Parser parser(src);
+    parser.getAST();
   } catch (std::runtime_error const &err) {
     ASSERT_TRUE(true);
     return;
@@ -56,21 +55,21 @@ TEST(ParserTest, InvalidIdentifier) {
 }
 
 TEST(ParserTest, NestedComments) {
-  Scanner scanner(test_prefix + "lexer/nested_comments.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
+  Preprocessor preprocessor(test_prefix + "lexer/nested_comments.c");
+  SourceCode src = preprocessor.getSource();
 
-  std::shared_ptr<Program> p = parser.parse();
+  Parser parser(src);
+  std::shared_ptr<Program> p = parser.getAST();
 
   ASSERT_TRUE(true);
 }
 
 TEST(ParserTest, StructDecl) {
-  Scanner scanner(test_prefix + "parser/structdecl.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
+  Preprocessor preprocessor(test_prefix + "parser/structdecl.c");
+  SourceCode src = preprocessor.getSource();
 
-  std::shared_ptr<Program> actual = parser.parse();
+  Parser parser(src);
+  std::shared_ptr<Program> actual = parser.getAST();
 
   std::vector<std::shared_ptr<Decl>> expectedDecls = {
       std::make_shared<StructTypeDecl>(StructTypeDecl(
@@ -91,11 +90,11 @@ TEST(ParserTest, StructDecl) {
 }
 
 TEST(ParserTest, VarDecls) {
-  Scanner scanner(test_prefix + "parser/vardecl.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
+  Preprocessor preprocessor(test_prefix + "parser/vardecl.c");
+  SourceCode src = preprocessor.getSource();
 
-  std::shared_ptr<Program> actual = parser.parse();
+  Parser parser(src);
+  std::shared_ptr<Program> actual = parser.getAST();
 
   std::vector<std::shared_ptr<Decl>> expectedDecls = {
       std::make_shared<StructTypeDecl>(StructTypeDecl(
@@ -161,11 +160,12 @@ TEST(ParserTest, VarDecls) {
 }
 
 TEST(ParserTest, FunDecl) {
-  Scanner scanner(test_prefix + "parser/fundecl.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
+  Preprocessor preprocessor(test_prefix + "parser/fundecl.c");
+  SourceCode src = preprocessor.getSource();
 
-  std::shared_ptr<Program> actual = parser.parse();
+  Parser parser(src);
+
+  std::shared_ptr<Program> actual = parser.getAST();
   ASSERT_EQ(actual->decls.size(), 2);
   std::vector<std::shared_ptr<Decl>> expectedDecls = {
       std::make_shared<VarDecl>(
@@ -189,11 +189,12 @@ TEST(ParserTest, FunDecl) {
 }
 
 TEST(ParserTest, BinOp) {
-  Scanner scanner(test_prefix + "parser/binop.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
+  Preprocessor preprocessor(test_prefix + "parser/binop.c");
+  SourceCode src = preprocessor.getSource();
 
-  std::shared_ptr<Program> actual = parser.parse();
+  Parser parser(src);
+
+  std::shared_ptr<Program> actual = parser.getAST();
   ASSERT_EQ(actual->decls.size(), 1);
   std::vector<std::shared_ptr<Decl>> expectedDecls = {
       std::make_shared<FunDef>(FunDef(
@@ -217,21 +218,21 @@ TEST(ParserTest, BinOp) {
 }
 
 TEST(ParserTest, ComplexBinOp) {
-  Scanner scanner(test_prefix + "parser/fundecls.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
+  Preprocessor preprocessor(test_prefix + "parser/fundecls.c");
+  SourceCode src = preprocessor.getSource();
 
-  std::shared_ptr<Program> actual = parser.parse();
+  Parser parser(src);
+  std::shared_ptr<Program> actual = parser.getAST();
   /* @TODO Test AST */
 }
 
 TEST(ParserTest, InvalidSignatureFunDef) {
-  Scanner scanner(test_prefix + "parser/invalidfundef.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
+  Preprocessor preprocessor(test_prefix + "parser/invalidfundef.c");
+  SourceCode src = preprocessor.getSource();
 
+  Parser parser(src);
   try {
-    parser.parse();
+    parser.getAST();
   } catch (std::runtime_error const &err) {
     ASSERT_TRUE(true);
     return;

@@ -1,8 +1,6 @@
 // Tic-tac-toe game
 // Written by Daniel Hillerström
 
-#include "minic-stdlib.h"
-
 void print_s(char *s) {}
 
 void print_i(int i) {}

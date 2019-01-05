@@ -4,9 +4,9 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/Lexer.h"
 #include "../include/Parser.h"
-#include "../include/Scanner.h"
+#include "../include/Preprocessor.h"
+#include "../include/SourceCode.h"
 #include "../include/passes/DotGraph.h"
 #include "../include/passes/NameAnalysis.h"
 #include "../include/passes/Optimiser.h"
@@ -19,10 +19,11 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(OptimiserTest, FunDeclsC) {
-  Scanner scanner(test_prefix + "/parser/fundecls.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
-  std::shared_ptr<Program> progAST = parser.parse();
+  Preprocessor preprocessor(test_prefix + "/parser/fundecls.c");
+  SourceCode src = preprocessor.getSource();
+
+  Parser parser(src);
+  std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();

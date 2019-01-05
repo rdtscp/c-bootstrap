@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 
 #include "../include/Scanner.h"
 
@@ -7,19 +8,16 @@ using namespace ACC;
 Scanner::Scanner(const std::string &abspath)
     : column(1), line(1), abspath(abspath) {
   std::ifstream t(abspath);
+  if (!t.good())
+    throw std::runtime_error("Scanner: Provided filename (" + abspath +
+                             " could not be read.");
+
   file = std::string((std::istreambuf_iterator<char>(t)),
                      std::istreambuf_iterator<char>());
   currChar = file.begin();
 }
 
 char Scanner::next() {
-  if (includeScanner != nullptr) {
-    char nextChar = includeScanner->next();
-    if (nextChar != '\0')
-      return nextChar;
-
-    includeScanner.reset();
-  }
   char nextChar = *currChar;
   if (currChar == file.end() || nextChar == '\0')
     return '\0';
@@ -35,34 +33,14 @@ char Scanner::next() {
 }
 
 char Scanner::peek() {
-  if (includeScanner != nullptr) {
-    char peek = includeScanner->peek();
-    if (peek != '\0')
-      return peek;
-  }
   if (currChar == file.end())
     return '\0';
   return *currChar;
 }
 
-void Scanner::startIncluding(
-    const std::shared_ptr<Scanner> &newIncludeScanner) {
-  if (includeScanner != nullptr)
-    includeScanner->startIncluding(newIncludeScanner);
-  else
-    includeScanner = newIncludeScanner;
-}
-
-std::string Scanner::getFileContents() const {
-  if (includeScanner)
-    return includeScanner->file;
-  return file;
-}
+std::string Scanner::getFileContents() const { return file; }
 
 std::string Scanner::getFilename() const {
-  if (includeScanner)
-    return includeScanner->getFilename();
-
   std::vector<std::string> directories;
   std::string currDir;
   for (const char currChar : abspath) {
@@ -79,9 +57,6 @@ std::string Scanner::getFilename() const {
 }
 
 std::string Scanner::getFilepath() const {
-  if (includeScanner)
-    return includeScanner->getFilepath();
-
   std::vector<std::string> directories;
   std::string currDir;
   for (const char currChar : abspath) {
@@ -102,7 +77,5 @@ std::string Scanner::getFilepath() const {
 }
 
 Position Scanner::getPosition() const {
-  if (includeScanner)
-    return includeScanner->getPosition();
   return Position(line, column, getFilepath() + getFilename());
 }

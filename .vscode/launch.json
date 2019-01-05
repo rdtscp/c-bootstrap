@@ -5,10 +5,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "(lldb) ASTAnalysis Unit Tests",
+      "name": "(lldb) Scanner Unit Tests",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/test/runASTAnalysisUnitTests",
+      "program": "${workspaceFolder}/build/test/runScannerUnitTests",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
@@ -18,10 +18,10 @@
       "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
     },
     {
-      "name": "(lldb) Parser Unit Tests",
+      "name": "(lldb) AST Unit Tests",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/test/runParserUnitTests",
+      "program": "${workspaceFolder}/build/test/runASTUnitTests",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
@@ -57,10 +57,10 @@
       "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
     },
     {
-      "name": "(lldb) Scanner Unit Tests",
+      "name": "(lldb) Parser Unit Tests",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/test/runScannerUnitTests",
+      "program": "${workspaceFolder}/build/test/runParserUnitTests",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
@@ -70,23 +70,10 @@
       "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
     },
     {
-      "name": "(lldb) AST Unit Tests",
+      "name": "(lldb) ASTAnalysis Unit Tests",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/test/runASTUnitTests",
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
-    },
-    {
-      "name": "(lldb) Code Generation Unit Tests",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/build/test/runCodeGenerationUnitTests",
+      "program": "${workspaceFolder}/build/test/runASTAnalysisUnitTests",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
@@ -100,6 +87,19 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/test/runOptimiserUnitTests",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "lldb",
+      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
+    },
+    {
+      "name": "(lldb) Code Generation Unit Tests",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/test/runCodeGenerationUnitTests",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

@@ -4,9 +4,9 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/Lexer.h"
 #include "../include/Parser.h"
-#include "../include/Scanner.h"
+#include "../include/Preprocessor.h"
+#include "../include/SourceCode.h"
 #include "../include/passes/DotGraph.h"
 #include "../include/passes/NameAnalysis.h"
 #include "../include/passes/TypeAnalysis.h"
@@ -18,10 +18,11 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(PreprocessorTest, IncludeWorks) {
-  Scanner scanner(test_prefix + "preprocessor/prog.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
-  std::shared_ptr<Program> progAST = parser.parse();
+  Preprocessor preprocessor(test_prefix + "preprocessor/prog.c");
+  SourceCode src = preprocessor.getSource();
+
+  Parser parser(src);
+  std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
@@ -29,10 +30,11 @@ TEST(PreprocessorTest, IncludeWorks) {
 }
 
 TEST(PreprocessorTest, NestedIncludes) {
-  Scanner scanner(test_prefix + "preprocessor/prog3.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
-  std::shared_ptr<Program> progAST = parser.parse();
+  Preprocessor preprocessor(test_prefix + "preprocessor/prog3.c");
+  SourceCode src = preprocessor.getSource();
+
+  Parser parser(src);
+  std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
@@ -42,10 +44,11 @@ TEST(PreprocessorTest, NestedIncludes) {
 }
 
 TEST(PreprocessorTest, IfNDef) {
-  Scanner scanner(test_prefix + "preprocessor/prog2.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
-  std::shared_ptr<Program> progAST = parser.parse();
+  Preprocessor preprocessor(test_prefix + "preprocessor/prog2.c");
+  SourceCode src = preprocessor.getSource();
+
+  Parser parser(src);
+  std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
@@ -55,10 +58,11 @@ TEST(PreprocessorTest, IfNDef) {
 }
 
 TEST(PreprocessorTest, PragmaOnce) {
-  Scanner scanner(test_prefix + "preprocessor/prog4.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
-  std::shared_ptr<Program> progAST = parser.parse();
+  Preprocessor preprocessor(test_prefix + "preprocessor/prog4.c");
+  SourceCode src = preprocessor.getSource();
+
+  Parser parser(src);
+  std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
@@ -68,10 +72,11 @@ TEST(PreprocessorTest, PragmaOnce) {
 }
 
 TEST(PreprocessorTest, NestedIfDefs) {
-  Scanner scanner(test_prefix + "preprocessor/prog5.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
-  std::shared_ptr<Program> progAST = parser.parse();
+  Preprocessor preprocessor(test_prefix + "preprocessor/prog5.c");
+  SourceCode src = preprocessor.getSource();
+
+  Parser parser(src);
+  std::shared_ptr<Program> progAST = parser.getAST();
 
   ASSERT_EQ(progAST->decls.size(), 3);
   ASSERT_EQ(progAST->decls[0]->getIdentifier(), "funB0");
@@ -80,15 +85,70 @@ TEST(PreprocessorTest, NestedIfDefs) {
 }
 
 TEST(PreprocessorTest, IfElifElse) {
-  Scanner scanner(test_prefix + "preprocessor/prog6.c");
-  Lexer lexer(scanner);
-  Parser parser(lexer);
-  std::shared_ptr<Program> progAST = parser.parse();
+  Preprocessor preprocessor(test_prefix + "preprocessor/prog6.c");
+  SourceCode src = preprocessor.getSource();
+
+  Parser parser(src);
+  std::shared_ptr<Program> progAST = parser.getAST();
 
   ASSERT_EQ(progAST->decls.size(), 3);
   ASSERT_EQ(progAST->decls[0]->getIdentifier(), "funA3");
   ASSERT_EQ(progAST->decls[1]->getIdentifier(), "funB5");
   ASSERT_EQ(progAST->decls[2]->getIdentifier(), "main");
+}
+
+TEST(PreprocessorTest, InvalidComments) {
+  Preprocessor preprocessor(test_prefix + "lexer/errors.c");
+  try {
+    SourceCode src = preprocessor.getSource();
+  } catch (std::runtime_error const &err) {
+    ASSERT_TRUE(true);
+    return;
+  } catch (std::exception const &err) {
+    std::cout << "Expected a std::runtime_error, but got:" << err.what()
+              << std::endl;
+    ASSERT_TRUE(false);
+    return;
+  }
+  std::cout << "Expected a std::runtime_error, no exception thrown."
+            << std::endl;
+  ASSERT_TRUE(false);
+}
+
+TEST(PreprocessorTest, InvalidIncludes) {
+  Preprocessor preprocessor(test_prefix + "lexer/inclood.c");
+  try {
+    SourceCode src = preprocessor.getSource();
+  } catch (std::runtime_error const &err) {
+    ASSERT_TRUE(true);
+    return;
+  } catch (std::exception const &err) {
+    std::cout << "Expected a std::runtime_error, but got:" << err.what()
+              << std::endl;
+    ASSERT_TRUE(false);
+    return;
+  }
+  std::cout << "Expected a std::runtime_error, no exception thrown."
+            << std::endl;
+  ASSERT_TRUE(false);
+}
+
+TEST(PreprocessorTest, InvalidIncludes2) {
+  Preprocessor preprocessor(test_prefix + "lexer/include_error.c");
+  try {
+    SourceCode src = preprocessor.getSource();
+  } catch (std::runtime_error const &err) {
+    ASSERT_TRUE(true);
+    return;
+  } catch (std::exception const &err) {
+    std::cout << "Expected a std::runtime_error, but got:" << err.what()
+              << std::endl;
+    ASSERT_TRUE(false);
+    return;
+  }
+  std::cout << "Expected a std::runtime_error, no exception thrown."
+            << std::endl;
+  ASSERT_TRUE(false);
 }
 
 // The fixture for testing class Project1. From google test primer.

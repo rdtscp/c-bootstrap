@@ -14,13 +14,13 @@ namespace ACC {
 class Scanner {
 
 public:
-    Scanner(const std::string &abspath);
+  Scanner(const std::string &abspath);
+
+  Scanner(const Scanner &rhs) = delete;
 
   char next();
 
   char peek();
-
-  void startIncluding(const std::shared_ptr<Scanner> &newIncludeScanner);
 
   std::string getFileContents() const;
 
@@ -35,8 +35,8 @@ private:
   int column;
   int line;
   std::string file;
+
   const std::string abspath;
-  std::shared_ptr<Scanner> includeScanner = nullptr;
 };
 
 }; // namespace ACC

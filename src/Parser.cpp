@@ -6,10 +6,10 @@
 using namespace ACC;
 using TC = Token::TokenClass;
 
-Parser::Parser(Lexer &lexer)
-    : currToken(TC::INVALID, Position(-1, -1, "")), lexer(lexer) {}
+Parser::Parser(const SourceCode &src)
+    : currToken(TC::INVALID, Position(-1, -1, "")), lexer(src) {}
 
-std::shared_ptr<Program> Parser::parse() {
+std::shared_ptr<Program> Parser::getAST() {
   nextToken();
   return parseProgram();
 }

@@ -5,7 +5,9 @@
 #include "gtest/gtest.h"
 
 #include "../include/Lexer.h"
+#include "../include/Preprocessor.h"
 #include "../include/Scanner.h"
+#include "../include/SourceCode.h"
 #include "../include/Token.h"
 
 using namespace ACC;
@@ -15,8 +17,9 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(LexerTest, AllTokens) {
-  Scanner scanner(test_prefix + "lexer/alltokens.c");
-  Lexer lexer(scanner);
+  Preprocessor preprocessor(test_prefix + "lexer/alltokens.c");
+
+  Lexer lexer(preprocessor.getSource());
 
   std::vector<Token::TokenClass> expected = {Token::TokenClass::IDENTIFIER,
                                              Token::TokenClass::ASSIGN,
@@ -97,63 +100,9 @@ TEST(LexerTest, AllTokens) {
   }
 }
 
-TEST(LexerTest, InvalidIdentifier) {
-  Scanner scanner(test_prefix + "lexer/errors.c");
-  Lexer lexer(scanner);
-
-  ASSERT_EQ(Token::TokenClass::INT_LITERAL, lexer.nextToken().tokenClass);
-  ASSERT_EQ(Token::TokenClass::IDENTIFIER, lexer.nextToken().tokenClass);
-}
-
-TEST(LexerTest, InvalidIncludes) {
-  Scanner scanner(test_prefix + "lexer/inclood.c");
-  Lexer lexer(scanner);
-
-  try {
-    Token::TokenClass currToken = Token::TokenClass::INVALID;
-    while (currToken != Token::TokenClass::ENDOFFILE) {
-      currToken = lexer.nextToken().tokenClass;
-    }
-  } catch (std::runtime_error const &err) {
-    ASSERT_TRUE(true);
-    return;
-  } catch (std::exception const &err) {
-    std::cout << "Expected a std::runtime_error, but got:" << err.what()
-              << std::endl;
-    ASSERT_TRUE(false);
-    return;
-  }
-  std::cout << "Expected a std::runtime_error, no exception thrown."
-            << std::endl;
-  ASSERT_TRUE(false);
-}
-
-TEST(LexerTest, InvalidIncludes2) {
-  Scanner scanner(test_prefix + "lexer/include_error.c");
-  Lexer lexer(scanner);
-
-  try {
-    Token::TokenClass currToken = Token::TokenClass::INVALID;
-    while (currToken != Token::TokenClass::ENDOFFILE) {
-      currToken = lexer.nextToken().tokenClass;
-    }
-  } catch (std::runtime_error const &err) {
-    ASSERT_TRUE(true);
-    return;
-  } catch (std::exception const &err) {
-    std::cout << "Expected a std::runtime_error, but got:" << err.what()
-              << std::endl;
-    ASSERT_TRUE(false);
-    return;
-  }
-  std::cout << "Expected a std::runtime_error, no exception thrown."
-            << std::endl;
-  ASSERT_TRUE(false);
-}
-
 TEST(LexerTest, NestedComments) {
-  Scanner scanner(test_prefix + "lexer/nested_comments.c");
-  Lexer lexer(scanner);
+  Preprocessor preprocessor(test_prefix + "lexer/nested_comments.c");
+  Lexer lexer(preprocessor.getSource());
 
   Token::TokenClass currToken = Token::TokenClass::INVALID;
   while (currToken != Token::TokenClass::ENDOFFILE) {
@@ -164,8 +113,8 @@ TEST(LexerTest, NestedComments) {
 }
 
 TEST(LexerTest, VarDecls) {
-  Scanner scanner(test_prefix + "parser/vardecl.c");
-  Lexer lexer(scanner);
+  Preprocessor preprocessor(test_prefix + "parser/vardecl.c");
+  Lexer lexer(preprocessor.getSource());
 
   Token::TokenClass currToken = Token::TokenClass::INVALID;
   while (currToken != Token::TokenClass::ENDOFFILE) {
@@ -175,35 +124,9 @@ TEST(LexerTest, VarDecls) {
   ASSERT_TRUE(true);
 }
 
-TEST(LexerTest, SingleLetterVar) {
-  Scanner scanner(test_prefix + "lexer/singlelettervar.c");
-  Lexer lexer(scanner);
-
-  std::vector<Token> expectedTokens = {
-      Token(Token::TokenClass::INT, Position(1, 1, "singlelettervar.c")),
-      Token(Token::TokenClass::IDENTIFIER, Position(1, 4, "singlelettervar.c")),
-      Token(Token::TokenClass::SC, Position(1, 5, "singlelettervar.c")),
-      Token(Token::TokenClass::ENDOFFILE, Position(1, 6, "singlelettervar.c"))};
-
-  std::vector<Token> actualTokens;
-  Token currToken(Token::TokenClass::INVALID,
-                  Position(0, 0, "singlelettervar.c"));
-  while (currToken.tokenClass != Token::TokenClass::ENDOFFILE) {
-    currToken = lexer.nextToken();
-    actualTokens.push_back(currToken);
-  }
-
-  ASSERT_EQ(actualTokens.size(), expectedTokens.size());
-  for (int i = 0; i < actualTokens.size(); i++) {
-    ASSERT_TRUE(actualTokens[i] == expectedTokens[i]);
-  }
-
-  ASSERT_TRUE(true);
-}
-
 TEST(LexerTest, FunDecl) {
-  Scanner scanner(test_prefix + "parser/fundecl.c");
-  Lexer lexer(scanner);
+  Preprocessor preprocessor(test_prefix + "parser/fundecl.c");
+  Lexer lexer(preprocessor.getSource());
 
   Token::TokenClass currToken = Token::TokenClass::INVALID;
   while (currToken != Token::TokenClass::ENDOFFILE) {

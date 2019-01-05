@@ -2,9 +2,9 @@
 #include <string>
 
 #include "include/AST.h"
-#include "include/Lexer.h"
 #include "include/Parser.h"
-#include "include/Scanner.h"
+#include "include/Preprocessor.h"
+#include "include/SourceCode.h"
 #include "include/passes/DotGraph.h"
 #include "include/passes/NameAnalysis.h"
 #include "include/passes/Optimiser.h"
@@ -51,13 +51,11 @@ int main(int argc, char const *argv[]) {
 
   std::string abspath(argv[1]);
 
-  ACC::Scanner scanner(abspath);
+  ACC::Preprocessor preprocessor(abspath);
+  ACC::SourceCode src = preprocessor.getSource();
 
-  ACC::Lexer lexer(scanner);
-
-  ACC::Parser parser(lexer);
-
-  std::shared_ptr<ACC::Program> progAST = parser.parse();
+  ACC::Parser parser(src);
+  std::shared_ptr<ACC::Program> progAST = parser.getAST();
 
   ACC::NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
