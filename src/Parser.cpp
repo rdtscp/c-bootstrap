@@ -97,7 +97,7 @@ bool Parser::acceptDecl(int offset) {
 
   return false;
 }
-bool Parser::acceptEnumTypeDecl(int offset) { return false; }
+bool Parser::acceptEnumTypeDecl(int offset) { return accept(TC::ENUM); }
 bool Parser::acceptFunDecl(int offset) {
   if (accept(TC::EXTERN))
     offset++;
@@ -127,7 +127,7 @@ bool Parser::acceptStructTypeDecl(int offset) {
 
   return true;
 }
-bool Parser::acceptTypeDefDecl(int offset) { return false; }
+bool Parser::acceptTypeDefDecl(int offset) { return accept(TC::TYPEDEF); }
 bool Parser::acceptVarDecl(int offset) {
   if (!accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::EXTERN}, offset))
     return false;
@@ -257,7 +257,32 @@ std::shared_ptr<Decl> Parser::parseDecl() {
   throw std::runtime_error("Parser: Expected a Struct/Variable/Function "
                            "Declaration but none was found.");
 }
-std::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() { return nullptr; }
+std::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
+  expect(TC::ENUM);
+  std::string ident = "";
+  if (accept(TC::IDENTIFIER))
+    ident = expect(TC::IDENTIFIER).data;
+  expect(TC::LBRA);
+
+  bool moreStates = false;
+  std::map<std::string, std::string> states;
+  do {
+    std::string ident = expect(TC::IDENTIFIER).data;
+    std::string value = "";
+    if (accept(TC::ASSIGN)) {
+      expect(TC::ASSIGN);
+      value = expect(TC::INT_LITERAL).data;
+    }
+    states[ident] = value;
+    if (accept(TC::COMMA)) {
+      expect(TC::COMMA);
+      moreStates = true;
+    } else
+      moreStates = false;
+  } while (moreStates);
+  expect(TC::RBRA);
+  return std::make_shared<EnumTypeDecl>(EnumTypeDecl(ident, states));
+}
 std::shared_ptr<FunDecl> Parser::parseFunDecl() {
   if (accept(TC::EXTERN)) {
     expect(TC::EXTERN);
@@ -315,7 +340,21 @@ std::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
   newNode->Decl::position = currToken.position;
   return newNode;
 }
-std::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() { return nullptr; }
+std::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
+  expect(TC::TYPEDEF);
+  std::shared_ptr<Type> aliasedType;
+  if (acceptStructTypeDecl()) {
+    std::shared_ptr<StructTypeDecl> std = parseStructTypeDecl();
+    aliasedType = std->structType;
+  } else if (acceptEnumTypeDecl()) {
+    std::shared_ptr<EnumTypeDecl> etd = parseEnumTypeDecl();
+    aliasedType = etd;
+  } else {
+    aliasedType = parseType();
+  }
+  std::string typeAlias = expect(TC::IDENTIFIER).data;
+  return std::make_shared<TypeDefDecl>(TypeDefDecl(aliasedType, typeAlias));
+}
 std::shared_ptr<VarDecl> Parser::parseVarDecl() {
   bool isExtern = false;
   if (accept(TC::EXTERN)) {

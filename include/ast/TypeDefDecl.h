@@ -11,8 +11,8 @@
 namespace ACC {
 
 class TypeDefDecl : public Decl,
-                public Type,
-                public std::enable_shared_from_this<TypeDefDecl> {
+                    // public Type,
+                    public std::enable_shared_from_this<TypeDefDecl> {
 
 public:
   std::shared_ptr<Type> type;
@@ -21,6 +21,10 @@ public:
   TypeDefDecl(std::shared_ptr<Type> type, std::string identifier);
 
   std::shared_ptr<TypeDefDecl::Decl> getptr();
+
+  bool operator==(Decl &rhs) const override;
+  bool operator!=(Decl &rhs) const override;
+  std::string getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
   std::string accept(ASTVisitor<std::string> &v) override;

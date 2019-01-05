@@ -272,13 +272,13 @@ Token Lexer::nextToken() {
   }
   // Recognise INT_LITERAL Token.
   if (isdigit(c)) {
-    std::string literal;
-    while (true) {
-      literal += c;
-      if (!isdigit(scanner.peek()))
-        break;
-      c = scanner.next();
+    std::string literal(1, c);
+    if (scanner.peek() == 'x') {
+      literal += scanner.next();
     }
+    while (isdigit(scanner.peek()))
+      literal += scanner.next();
+
     return Token(Token::TokenClass::INT_LITERAL, scanner.getPosition(),
                  literal);
   }

@@ -8,22 +8,30 @@
 
 #include "Decl.h"
 #include "PrimitiveType.h"
+#include "Type.h"
 
 namespace ACC {
 
 class EnumTypeDecl : public Decl,
+                     public Type,
                      public std::enable_shared_from_this<EnumTypeDecl> {
 
 public:
-  std::map<std::string, unsigned int> states;
+  std::string identifer;
+  std::map<std::string, std::string> states;
 
-  EnumTypeDecl(std::map<std::string, unsigned int> states);
+  EnumTypeDecl(std::string ident, std::map<std::string, std::string> states);
 
-  std::shared_ptr<EnumTypeDecl> getptr();
+  std::shared_ptr<EnumTypeDecl::Decl> getptr();
 
   bool operator==(Decl &rhs) const override;
-
   bool operator!=(Decl &rhs) const override;
+
+  std::string getIdentifier() const override;
+
+  int getBytes() const override;
+  bool operator==(Type &rhs) const override;
+  bool operator!=(Type &rhs) const override;
 
   bool operator==(const EnumTypeDecl &rhs) const;
   bool operator!=(const EnumTypeDecl &rhs) const;

@@ -5,7 +5,19 @@ using namespace ACC;
 TypeDefDecl::TypeDefDecl(std::shared_ptr<Type> type, std::string identifier)
     : type(type), identifier(identifier) {}
 
-std::shared_ptr<TypeDefDecl::Decl> TypeDefDecl::getptr() { return shared_from_this(); }
+std::shared_ptr<TypeDefDecl::Decl> TypeDefDecl::getptr() {
+  return shared_from_this();
+}
+
+bool TypeDefDecl::operator==(Decl &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<TypeDefDecl *>(&rhs);
+  return false;
+}
+
+bool TypeDefDecl::operator!=(Decl &rhs) const { return !(*this == rhs); }
+
+std::string TypeDefDecl::getIdentifier() const { return identifier; }
 
 void TypeDefDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
@@ -13,7 +25,8 @@ std::string TypeDefDecl::accept(ASTVisitor<std::string> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<Type> TypeDefDecl::accept(ASTVisitor<std::shared_ptr<Type>> &v) {
+std::shared_ptr<Type>
+TypeDefDecl::accept(ASTVisitor<std::shared_ptr<Type>> &v) {
   return v.visit(*this);
 }
 
