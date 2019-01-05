@@ -31,13 +31,16 @@ public:
 private:
   std::string src;
   const std::string abspath;
-  std::stack<std::shared_ptr<Scanner>> scanners;
+  std::vector<std::shared_ptr<Scanner>> scanners;
 
   std::set<std::string> files;
-  std::vector<std::pair<std::string, bool>> ifs;
+  std::stack<std::pair<std::string, bool>> ifs;
   std::map<PPFuncSig, std::string> funcDefinitions;
   std::map<std::string, std::string> varDefinitions;
 
+  std::string currFilename() const;
+  std::string currFilepath() const;
+  int currLine() const;
   char nextChar();
   char peekChar();
 
@@ -45,21 +48,26 @@ private:
   bool evalIfCondition(const std::string &condition);
 
   void preprocessDefine();
-  void preprocessInclude();
-  void preprocessPragma();
-  void preprocessIf();
   void preprocessElif();
   void preprocessElse();
   void preprocessEndif();
+  void preprocessIf();
   void preprocessIfdef();
   void preprocessIfndef();
+  void preprocessInclude();
+  void preprocessPragma();
   void preprocessUndef();
 
   /* ---- Helpers --- */
-  void checkChar(char c);
+  void checkChar(char c) const;
+
   void addDefinition(const std::string &definition, const std::string &value);
   std::pair<bool, std::string> getNextIfDirective();
+  std::string getStackPosition() const;
+  bool isCppHeader(const std::string &filename) const;
+  std::string parseCondition();
   void passComment();
+  void preprocessIfCondition(const std::string &condition);
   std::pair<bool, std::string> tryLexKeyword(const std::string &keyword);
 };
 

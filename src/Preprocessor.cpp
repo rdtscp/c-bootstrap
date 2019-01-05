@@ -10,7 +10,7 @@ using namespace ACC;
 /* ---- Public ---- */
 
 Preprocessor::Preprocessor(const std::string &abspath) : abspath(abspath) {
-  scanners.push(std::shared_ptr<Scanner>(new Scanner(abspath)));
+  scanners.push_back(std::shared_ptr<Scanner>(new Scanner(abspath)));
 }
 
 SourceCode Preprocessor::getSource() {
@@ -20,7 +20,7 @@ SourceCode Preprocessor::getSource() {
 
     if (c == '\0') {
       if (scanners.size() > 1) {
-        scanners.pop();
+        scanners.pop_back();
         src += "#endFile\n";
         continue;
       }
@@ -33,15 +33,13 @@ SourceCode Preprocessor::getSource() {
         std::pair<bool, std::string> lexResult = tryLexKeyword("define");
         if (!lexResult.first)
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive: " +
-              lexResult.second + ". " +
-              scanners.top()->getPosition().toString());
+              "\nPre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + getStackPosition());
         c = nextChar();
         if (!std::isspace(c))
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive: " +
-              lexResult.second + ". " +
-              scanners.top()->getPosition().toString());
+              "\nPre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + getStackPosition());
         preprocessDefine();
       } else if (c == 'e' && peekChar() == 'l') {
         c = nextChar();
@@ -49,105 +47,94 @@ SourceCode Preprocessor::getSource() {
           std::pair<bool, std::string> lexResult = tryLexKeyword("lif");
           if (!lexResult.first)
             throw std::runtime_error(
-                "Pre-Processing: Unexpected Preprocessing Directive: " +
-                lexResult.second + ". " +
-                scanners.top()->getPosition().toString());
+                "\nPre-Processing: Unexpected Preprocessing Directive: " +
+                lexResult.second + ". " + getStackPosition());
           preprocessElif();
         } else if (peekChar() == 's') {
           std::pair<bool, std::string> lexResult = tryLexKeyword("lse");
           if (!lexResult.first)
             throw std::runtime_error(
-                "Pre-Processing: Unexpected Preprocessing Directive: " +
-                lexResult.second + ". " +
-                scanners.top()->getPosition().toString());
+                "\nPre-Processing: Unexpected Preprocessing Directive: " +
+                lexResult.second + ". " + getStackPosition());
           preprocessElse();
         }
       } else if (c == 'e' && peekChar() == 'n') {
         std::pair<bool, std::string> lexResult = tryLexKeyword("endif");
         if (!lexResult.first)
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive at Line " +
-              std::to_string(scanners.top()->getPosition().line) + ", Column " +
-              std::to_string(scanners.top()->getPosition().column));
-        c = nextChar();
+              "\nPre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + getStackPosition());
+        preprocessEndif();
       } else if (c == 'G') {
         std::pair<bool, std::string> lexResult =
             tryLexKeyword("GCC system_header");
         if (!lexResult.first)
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive: " +
-              lexResult.second + ". " +
-              scanners.top()->getPosition().toString());
-        // Do Nothing
+              "\nPre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + getStackPosition());
+        /* Do Nothing */
       } else if (c == 'i' && peekChar() == 'f') {
         c = nextChar();
         if (peekChar() == 'n') {
           std::pair<bool, std::string> lexResult = tryLexKeyword("fndef");
           if (!lexResult.first)
             throw std::runtime_error(
-                "Pre-Processing: Unexpected Preprocessing Directive: " +
-                lexResult.second + ". " +
-                scanners.top()->getPosition().toString());
+                "\nPre-Processing: Unexpected Preprocessing Directive: " +
+                lexResult.second + ". " + getStackPosition());
           c = nextChar();
           if (!std::isspace(c))
             throw std::runtime_error(
-                "Pre-Processing: Unexpected Preprocessing Directive: " +
-                lexResult.second + ". " +
-                scanners.top()->getPosition().toString());
+                "\nPre-Processing: Unexpected Preprocessing Directive: " +
+                lexResult.second + ". " + getStackPosition());
           preprocessIfndef();
         } else if (peekChar() == 'd') {
           std::pair<bool, std::string> lexResult = tryLexKeyword("fdef");
           if (!lexResult.first)
             throw std::runtime_error(
-                "Pre-Processing: Unexpected Preprocessing Directive: " +
-                lexResult.second + ". " +
-                scanners.top()->getPosition().toString());
+                "\nPre-Processing: Unexpected Preprocessing Directive: " +
+                lexResult.second + ". " + getStackPosition());
           c = nextChar();
           if (!std::isspace(c))
             throw std::runtime_error(
-                "Pre-Processing: Unexpected Preprocessing Directive: " +
-                lexResult.second + ". " +
-                scanners.top()->getPosition().toString());
+                "\nPre-Processing: Unexpected Preprocessing Directive: " +
+                lexResult.second + ". " + getStackPosition());
           preprocessIfdef();
         } else if (std::isspace(peekChar())) {
+          nextChar();
           preprocessIf();
         } else {
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive. " +
-              scanners.top()->getPosition().toString());
+              "\nPre-Processing: Unexpected Preprocessing Directive. " +
+              getStackPosition());
         }
       } else if (c == 'i' && peekChar() == 'n') {
         std::pair<bool, std::string> lexResult = tryLexKeyword("include");
         if (!lexResult.first)
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive: " +
-              lexResult.second + ". " +
-              scanners.top()->getPosition().toString());
+              "\nPre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + getStackPosition());
         c = nextChar();
         if (!std::isspace(c))
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive: " +
-              lexResult.second + ". " +
-              scanners.top()->getPosition().toString());
+              "\nPre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + getStackPosition());
         preprocessInclude();
       } else if (c == 'p' && peekChar() == 'r') {
         std::pair<bool, std::string> lexResult = tryLexKeyword("pragma");
         if (!lexResult.first)
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive: " +
-              lexResult.second + ". " +
-              scanners.top()->getPosition().toString());
+              "\nPre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + getStackPosition());
         c = nextChar();
         if (!std::isspace(c))
           throw std::runtime_error(
-              "Pre-Processing: Unexpected Preprocessing Directive: " +
-              lexResult.second + ". " +
-              scanners.top()->getPosition().toString());
+              "\nPre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + getStackPosition());
         preprocessPragma();
       } else {
         throw std::runtime_error(
-            "Pre-Processing: Unexpected Preprocessing Directive: " +
-            scanners.top()->getPosition().toString());
+            "\nPre-Processing: Unexpected Preprocessing Directive: " +
+            getStackPosition());
       }
       src += "\n";
     } else if (isalpha(c) || c == '_') {
@@ -165,17 +152,49 @@ SourceCode Preprocessor::getSource() {
       else
         src += identifier;
     } else
-      /* Replace definitions */
+      /* @TODO: Replace definitions */
       src += c;
   }
 }
 
 /* ---- Private ---- */
-char Preprocessor::nextChar() { return scanners.top()->next(); }
 
-char Preprocessor::peekChar() { return scanners.top()->peek(); }
+std::string Preprocessor::currFilename() const {
+  return scanners[scanners.size() - 1]->getFilename();
+}
+
+std::string Preprocessor::currFilepath() const {
+  return scanners[scanners.size() - 1]->getFilepath();
+}
+
+int Preprocessor::currLine() const {
+  return scanners[scanners.size() - 1]->getPosition().line;
+}
+
+char Preprocessor::nextChar() { return scanners[scanners.size() - 1]->next(); }
+
+char Preprocessor::peekChar() { return scanners[scanners.size() - 1]->peek(); }
+
+/* ---- Functionality ---- */
 
 bool Preprocessor::evalIfCondition(const std::string &condition) {
+  std::string::size_type defStartPos = condition.find("defined(");
+  std::string::size_type defEndPos = condition.find(")");
+
+  /* If this condition is checking for definition status. */
+  if (defStartPos != std::string::npos && defEndPos != std::string::npos) {
+    const int defStart = defStartPos + 8;
+    const int defLength = condition.find(")") - condition.find("(") - 1;
+
+    const std::string definition = condition.substr(defStart, defLength);
+    const bool isDefined =
+        (varDefinitions.find(definition) != varDefinitions.end());
+    bool result = isDefined;
+    if (condition.find("!defined(") == (defStartPos - 1))
+      result = !result;
+    return result;
+  }
+
   if (varDefinitions.find(condition) == varDefinitions.end())
     return false;
 
@@ -190,7 +209,6 @@ void Preprocessor::preprocessDefine() {
 
   /* Lex a valid identifier. */
   std::string identifier(1, c);
-  /* Lex a valid identifier. */
   while (isalpha(peekChar()) || isdigit(peekChar()) || peekChar() == '_') {
     c = nextChar();
     identifier += c;
@@ -214,8 +232,8 @@ void Preprocessor::preprocessDefine() {
 
     /* Lex the function body. */
     std::string token_string;
-    int currScannerLine = scanners.top()->getPosition().line;
-    while (currScannerLine == scanners.top()->getPosition().line) {
+    int currScannerLine = currLine();
+    while (currScannerLine == currLine()) {
       if (c == '\\' && peekChar() == '\n') {
         nextChar();
         c = nextChar();
@@ -231,10 +249,10 @@ void Preprocessor::preprocessDefine() {
     addDefinition(identifier, "");
   } else if (std::isspace(peek)) {
     nextChar();
-    int currScannerLine = scanners.top()->getPosition().line;
+    int currScannerLine = currLine();
     std::string token_string;
     c = nextChar();
-    while (currScannerLine == scanners.top()->getPosition().line) {
+    while (currScannerLine == currLine()) {
       if (c == '\\' && (peekChar() == '\n' || peekChar() == '\r')) {
         nextChar();
         c = nextChar();
@@ -248,14 +266,148 @@ void Preprocessor::preprocessDefine() {
     c = nextChar();
   } else
     throw std::runtime_error(
-        "Pre-Processing: Unexpected Preprocessing Directive: " +
-        scanners.top()->getPosition().toString());
+        "\nPre-Processing: Unexpected Preprocessing Directive: " +
+        getStackPosition());
+}
+void Preprocessor::preprocessElif() {
+  assert(ifs.size() > 0);
+  std::pair<std::string, bool> &latestIf = ifs.top();
+  bool ifExecuting = latestIf.second;
+  latestIf.second = false;
+  if (!ifExecuting) {
+    ifs.pop();
+    char curr;
+    while (true) {
+      curr = nextChar();
+      checkChar(curr);
+      if (curr == '#' && peekChar() == 'e') {
+        nextChar();
+        if (nextChar() == 'n' && nextChar() == 'd' && nextChar() == 'i' &&
+            nextChar() == 'f')
+          break;
+      }
+    }
+    if (!std::isspace(nextChar()))
+      throw std::runtime_error(
+          "\nPre-Processing: #if with #elif expected #endif Directive. " +
+          getStackPosition());
+  }
+}
+void Preprocessor::preprocessElse() {
+  assert(ifs.size() > 0);
+  std::pair<std::string, bool> &latestIf = ifs.top();
+  bool ifExecuted = latestIf.second;
+  latestIf.second = false;
+  if (ifExecuted) {
+    char curr;
+    while (true) {
+      curr = nextChar();
+      checkChar(curr);
+      if (curr == '#' && peekChar() == 'e')
+        break;
+    }
+    nextChar();
+    std::pair<bool, std::string> endifRes = tryLexKeyword("endif");
+    if (!endifRes.first)
+      throw std::runtime_error(
+          "\nPre-Processing: #if #else expected #endif Directive. " +
+          getStackPosition());
+    ifs.pop();
+  }
+}
+void Preprocessor::preprocessEndif() { ifs.pop(); }
+void Preprocessor::preprocessIf() {
+  std::string condition = parseCondition();
+
+  if (evalIfCondition(condition)) {
+    /* Do the #if body */
+    ifs.push(std::pair<std::string, bool>(condition, true));
+  } else {
+    /* Scan for #elif, #else, or #endif */
+    ifs.push(std::pair<std::string, bool>(condition, true));
+    bool foundElif = false;
+    while (!foundElif) {
+      std::pair<bool, std::string> nextIfDirective = getNextIfDirective();
+      std::string directive = nextIfDirective.second;
+      if (directive == "elif") {
+        /* Check if this section should be used. */
+        nextChar();
+        std::string condition = parseCondition();
+        if (evalIfCondition(condition))
+          foundElif = true;
+      } else if (directive == "else") {
+        /* Allow the Lexer to use this section */
+        break;
+      } else if (directive == "endif") {
+        /* Allow the Lexer to continue */
+        break;
+      }
+    }
+    if (foundElif)
+      ifs.push(std::pair<std::string, bool>(condition, false));
+  }
+}
+void Preprocessor::preprocessIfdef() {
+  std::string condition = "defined(" + parseCondition() + ")";
+
+  if (evalIfCondition(condition)) {
+    /* Do the #ifdef body */
+    ifs.push(std::pair<std::string, bool>(condition, true));
+  } else {
+    /* Scan for #elif, #else, or #endif */
+    bool foundElif = false;
+    while (!foundElif) {
+      std::pair<bool, std::string> nextIfDirective = getNextIfDirective();
+      std::string directive = nextIfDirective.second;
+      if (directive == "elif") {
+        /* Check if this section should be used. */
+        std::string condition = parseCondition();
+        if (evalIfCondition(condition))
+          foundElif = true;
+      } else if (directive == "else") {
+        /* Allow the Lexer to use this section */
+        break;
+      } else if (directive == "endif") {
+        /* Allow the Lexer to continue */
+        break;
+      }
+    }
+    if (foundElif)
+      ifs.push(std::pair<std::string, bool>(condition, false));
+  }
+}
+void Preprocessor::preprocessIfndef() {
+  std::string condition = "!defined(" + parseCondition() + ")";
+
+  if (evalIfCondition(condition)) {
+    /* Do the #ifndef body */
+    ifs.push(std::pair<std::string, bool>(condition, true));
+  } else {
+    /* Scan for #elif, #else, or #endif */
+    bool foundElif = false;
+    while (!foundElif) {
+      std::pair<bool, std::string> nextIfDirective = getNextIfDirective();
+      std::string directive = nextIfDirective.second;
+      if (directive == "elif") {
+        /* Check if this section should be used. */
+        std::string condition = parseCondition();
+        if (evalIfCondition(condition))
+          foundElif = true;
+      } else if (directive == "else") {
+        /* Allow the Lexer to use this section */
+        break;
+      } else if (directive == "endif") {
+        /* Allow the Lexer to continue */
+        break;
+      }
+    }
+    if (foundElif)
+      ifs.push(std::pair<std::string, bool>(condition, false));
+  }
 }
 void Preprocessor::preprocessInclude() {
-
   bool localFile = false;
   std::string filename;
-  const std::string includePath = "/usr/include/c++/4.2.1/";
 
   /* Lex the include filepath. */
   char c = nextChar();
@@ -278,230 +430,59 @@ void Preprocessor::preprocessInclude() {
     localFile = true;
   }
 
-  std::string filepath;
+  /* Resolve the absolute filepath. */
+  std::string abspath;
   if (localFile) {
-    filepath = scanners.top()->getFilepath() + filename;
+    abspath = currFilepath() + filename;
   } else {
-    filepath = includePath + filename;
-  }
-  if (files.find(filepath) == files.end()) {
-    src += "#startFile=" + filepath;
-    scanners.push(std::shared_ptr<Scanner>(new Scanner(filepath)));
+    const std::string cIncludePath = "/usr/include/";
+    const std::string cppIncludePath =
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/"
+        "XcodeDefault.xctoolchain/usr/include/c++/v1/";
 
-    if (peekChar() == '\0') {
-      scanners.pop();
+    if (isCppHeader(filename))
+      abspath = cppIncludePath + filename;
+    else
+      abspath = cIncludePath + filename;
+  }
+
+  /* Include this file if we haven't seen it. */
+  if (files.find(abspath) == files.end()) {
+    src += "#startFile=" + abspath;
+    std::shared_ptr<Scanner> includeScanner(new Scanner(abspath));
+    if (includeScanner->peek() == '\0') {
       throw std::runtime_error(
-          "Preprocessing: Invalid #include, empty file:\n  " + filepath +
-          "\nin " + scanners.top()->getPosition().toString());
+          "Preprocessing: Invalid #include, empty file:\n  " + abspath +
+          "\nin " + getStackPosition());
     }
+    scanners.push_back(includeScanner);
   }
 }
 void Preprocessor::preprocessPragma() {
-
   char c = nextChar();
-  std::pair<bool, std::string> lexResult = tryLexKeyword("once");
-  if (!lexResult.first)
-    throw std::runtime_error(
-        "Pre-Processing: Unexpected Preprocessing Directive: " +
-        lexResult.second + ". " + scanners.top()->getPosition().toString());
-  const std::string currAbsPath =
-      scanners.top()->getFilepath() + scanners.top()->getFilename();
+  if (c == 'G') {
+    std::pair<bool, std::string> lexResult = tryLexKeyword("GCC system_header");
+    if (!lexResult.first)
+      throw std::runtime_error(
+          "\nPre-Processing: Unexpected Preprocessing Directive: " +
+          lexResult.second + ". " + getStackPosition());
+  } else if (c == 'o') {
+    std::pair<bool, std::string> lexResult = tryLexKeyword("once");
+    if (!lexResult.first)
+      throw std::runtime_error(
+          "\nPre-Processing: Unexpected Preprocessing Directive: " +
+          lexResult.second + ". " + getStackPosition());
+    const std::string currAbsPath = currFilepath() + currFilename();
 
-  /* Skip this File if its already been Preprocessed. */
-  if (files.find(currAbsPath) != files.end()) {
-    const std::string abspath =
-        scanners.top()->getFilepath() + scanners.top()->getFilename();
-    while ((scanners.top()->getFilepath() + scanners.top()->getFilename()) ==
-           abspath) {
-      nextChar();
-    }
-  } else
-    files.insert(currAbsPath);
-}
-void Preprocessor::preprocessIf() {
-  /* Lex the function body. */
-  nextChar();
-  char c = nextChar();
-  std::string condition;
-  int currScannerLine = scanners.top()->getPosition().line;
-  while (currScannerLine == scanners.top()->getPosition().line) {
-    if (c == '\\' && peekChar() == '\n') {
-      nextChar();
-      c = nextChar();
-      currScannerLine++;
-    }
-    condition += c;
-    c = nextChar();
-  }
-
-  bool conditionResult = evalIfCondition(condition);
-  if (conditionResult) {
-    /* Do the IF body */
-    ifs.push_back(std::pair<std::string, bool>(condition, true));
-    /* Lexer will call preprocessor when it finds an #elif, #else, or #endif.
-     */
+    /* Mark that we are visiting this file. */
+    if (files.find(currAbsPath) == files.end())
+      files.insert(currAbsPath);
   } else {
-    /* Scan for #elif, #else, or #endif */
-    char curr;
-    bool foundElif = false;
-    while (!foundElif) {
-      std::pair<bool, std::string> nextIfDirective = getNextIfDirective();
-      std::string directive = nextIfDirective.second;
-      if (directive == "elif") {
-        /* Pluck the condition */
-        std::string condition;
-        curr = nextChar();
-        curr = nextChar();
-        int currLine = scanners.top()->getPosition().line;
-        while (currLine == scanners.top()->getPosition().line) {
-          condition += curr;
-          curr = nextChar();
-        }
-        if (evalIfCondition(condition)) {
-          foundElif = true;
-        }
-      } else if (directive == "else") {
-        /* Allow the Lexer to use this section */
-        break;
-      } else if (directive == "endif") {
-        /* Allow the Lexer to continue */
-        break;
-      }
-      // curr = nextChar();
-    }
-    if (foundElif) {
-      ifs.push_back(std::pair<std::string, bool>(condition, false));
-    }
-  }
-}
-void Preprocessor::preprocessElif() {
-
-  assert(ifs.size() > 0);
-  std::pair<std::string, bool> &latestIf = ifs[ifs.size() - 1];
-  bool ifExecuting = latestIf.second;
-  latestIf.second = false;
-  if (!ifExecuting) {
-    ifs.pop_back();
-    char curr;
-    while (true) {
-      curr = nextChar();
-      checkChar(curr);
-      if (curr == '#' && peekChar() == 'e') {
-        nextChar();
-        if (nextChar() == 'n' && nextChar() == 'd' && nextChar() == 'i' &&
-            nextChar() == 'f')
-          break;
-      }
-    }
-    if (!std::isspace(nextChar()))
-      throw std::runtime_error(
-          "Pre-Processing: #if with #elif expected #endif Directive. " +
-          scanners.top()->getPosition().toString());
-  }
-}
-void Preprocessor::preprocessElse() {
-
-  assert(ifs.size() > 0);
-  std::pair<std::string, bool> &latestIf = ifs[ifs.size() - 1];
-  bool ifExecuted = latestIf.second;
-  latestIf.second = false;
-  if (ifExecuted) {
-    char curr;
-    while (true) {
-      curr = nextChar();
-      checkChar(curr);
-      if (curr == '#' && peekChar() == 'e')
-        break;
-    }
-    nextChar();
-    std::pair<bool, std::string> endifRes = tryLexKeyword("endif");
-    if (!endifRes.first)
-      throw std::runtime_error(
-          "Pre-Processing: #if #else expected #endif Directive. " +
-          scanners.top()->getPosition().toString());
-    ifs.pop_back();
-  }
-}
-void Preprocessor::preprocessEndif() {
-
-  assert(ifs.size() > 0);
-  std::pair<std::string, bool> &latestIf = ifs[ifs.size() - 1];
-  bool ifExecuted = latestIf.second;
-  latestIf.second = false;
-  if (ifExecuted) {
-    char curr;
-    while (true) {
-      curr = nextChar();
-      checkChar(curr);
-      if (curr == '#' && peekChar() == 'e')
-        break;
-    }
-    nextChar();
-    std::pair<bool, std::string> endifRes = tryLexKeyword("endif");
-    if (!endifRes.first)
-      throw std::runtime_error(
-          "Pre-Processing: #if #else expected #endif Directive. " +
-          scanners.top()->getPosition().toString());
-    ifs.pop_back();
-  }
-}
-void Preprocessor::preprocessIfdef() {
-
-  char c = nextChar();
-  std::string definition;
-  while (isalpha(c) || c == '_') {
-    definition += c;
-    c = nextChar();
-  }
-
-  Position ifdefPos = scanners.top()->getPosition();
-  bool definitionExists =
-      varDefinitions.find(definition) != varDefinitions.end();
-  if (!definitionExists) {
-    char curr;
-    while (true) {
-      curr = nextChar();
-      checkChar(curr);
-      if (curr == '#' && peekChar() == 'e')
-        break;
-    }
-    nextChar();
-    std::pair<bool, std::string> endifRes = tryLexKeyword("endif");
-    if (!endifRes.first)
-      throw std::runtime_error(
-          "Pre-Processing: #ifdef expected #endif Directive. " +
-          ifdefPos.toString());
-  }
-}
-void Preprocessor::preprocessIfndef() {
-
-  char c = nextChar();
-  std::string definition;
-  while (isalpha(c) || c == '_') {
-    definition += c;
-    c = nextChar();
-  }
-
-  bool definitionExists =
-      varDefinitions.find(definition) != varDefinitions.end();
-  if (definitionExists) {
-    char curr;
-    while (true) {
-      curr = nextChar();
-      checkChar(curr);
-      if (curr == '#' && peekChar() == 'e')
-        break;
-    }
-    nextChar();
-    std::pair<bool, std::string> endifRes = tryLexKeyword("endif");
-    if (!endifRes.first)
-      throw std::runtime_error(
-          "Pre-Processing: #ifndef expected #endif Directive. " +
-          scanners.top()->getPosition().toString());
+    throw std::runtime_error("\nPre-Processing: Unknown #pragma Directive: " +
+                             getStackPosition());
   }
 }
 void Preprocessor::preprocessUndef() {
-
   char c = nextChar();
   std::string definition;
   while (isalpha(c) || c == '_') {
@@ -519,18 +500,17 @@ void Preprocessor::preprocessUndef() {
 
 void Preprocessor::addDefinition(const std::string &definition,
                                  const std::string &value) {
-  if (ifs.size() == 0 || ifs[ifs.size() - 1].second)
+  if (ifs.size() == 0 || ifs.top().second)
     varDefinitions[definition] = value;
 }
 
-void Preprocessor::checkChar(char c) {
+void Preprocessor::checkChar(char c) const {
   if (c == '\0')
     throw std::runtime_error(
-        "Pre-Processing: Expected #endif Directive but found EOF.");
+        "\nPre-Processing: Expected #endif Directive but found EOF.");
 }
 
 std::pair<bool, std::string> Preprocessor::getNextIfDirective() {
-
   char curr;
   while (true) {
     curr = nextChar();
@@ -556,12 +536,42 @@ std::pair<bool, std::string> Preprocessor::getNextIfDirective() {
   }
 }
 
+std::string Preprocessor::getStackPosition() const {
+  std::string output = "\n";
+
+  const int numFiles = scanners.size() - 1;
+  for (int currFile = numFiles; currFile >= 0; --currFile)
+    output += " -> " + scanners[currFile]->getPosition().toString() + "\n";
+
+  return output;
+}
+
+bool Preprocessor::isCppHeader(const std::string &filename) const {
+  return (filename.find(".h") != std::string::npos);
+}
+
+std::string Preprocessor::parseCondition() {
+  std::string condition;
+  char c = nextChar();
+  int line = currLine();
+  while (line == currLine()) {
+    if (c == '\\' && peekChar() == '\n') {
+      nextChar();
+      c = nextChar();
+      line++;
+    }
+    condition += c;
+    c = nextChar();
+  }
+  return condition;
+}
+
 void Preprocessor::passComment() {
   // Consume the '/' or '*' character.
   char c = nextChar();
-  int currLine = scanners.top()->getPosition().line;
+  int line = currLine();
   if (c == '/') {
-    while (scanners.top()->getPosition().line == currLine)
+    while (currLine() == line)
       nextChar();
     return;
   } else if (c == '*') {
@@ -579,7 +589,7 @@ void Preprocessor::passComment() {
     }
   }
   throw std::runtime_error("Preprocessor: Malformed Comment: " +
-                           scanners.top()->getPosition().toString());
+                           getStackPosition());
 }
 
 std::pair<bool, std::string>
