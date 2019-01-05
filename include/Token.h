@@ -31,9 +31,10 @@ public:
     COMMA, // ','
 
     // types
-    INT,  // "int"
-    VOID, // "void"
-    CHAR, // "char"
+    INT,   // "int"
+    VOID,  // "void"
+    CHAR,  // "char"
+    SHORT, // "short"
 
     // keywords
     IF,       // "if"
@@ -191,6 +192,8 @@ static std::string tokToStr(const Token::TokenClass &tok) {
     return "ENUM";
   case Token::TokenClass::UNSIGNED:
     return "UNSIGNED";
+  case Token::TokenClass::SHORT:
+    return "SHORT";
   }
 }
 

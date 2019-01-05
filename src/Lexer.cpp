@@ -208,6 +208,14 @@ Token Lexer::nextToken() {
         return Token(Token::TokenClass::RETURN, scanner.getPosition());
     }
     // Check for SIZEOF Token.
+    else if (c == 's' && scanner.peek() == 'h') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("short");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return Token(Token::TokenClass::SHORT, scanner.getPosition());
+    }
+    // Check for SIZEOF Token.
     else if (c == 's' && scanner.peek() == 'i') {
       std::pair<bool, std::string> lexResult = tryLexKeyword("sizeof");
       literal = lexResult.second;
