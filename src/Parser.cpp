@@ -108,9 +108,7 @@ bool Parser::acceptFunDecl(int offset) {
     return accept(TC::IDENTIFIER, offset) && accept(TC::LPAR, offset + 1);
   }
 
-  if (accept({TC::UNSIGNED, TC::CONST}, offset))
-    offset++;
-  if (accept({TC::UNSIGNED, TC::CONST}, offset))
+  if (accept(TC::UNSIGNED, offset))
     offset++;
   if (acceptType(offset)) {
     offset++;
@@ -133,7 +131,7 @@ bool Parser::acceptStructTypeDecl(int offset) {
 }
 bool Parser::acceptTypeDefDecl(int offset) { return accept(TC::TYPEDEF); }
 bool Parser::acceptVarDecl(int offset) {
-  if (!accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::EXTERN}, offset))
+  if (!acceptType(offset) && !accept(TC::EXTERN, offset))
     return false;
 
   if (accept(TC::EXTERN, offset))
@@ -151,7 +149,11 @@ bool Parser::acceptVarDecl(int offset) {
     if (!accept(TC::IDENTIFIER, offset))
       return false;
 
-  } else if (accept({TC::INT, TC::CHAR, TC::VOID}, offset)) {
+  } else if (accept({TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UNSIGNED},
+                    offset)) {
+    if (accept(TC::UNSIGNED, offset))
+      offset++;
+
     offset++;
     while (accept(TC::ASTERIX, offset))
       offset++;
@@ -176,7 +178,7 @@ bool Parser::acceptStructType(int offset) {
 }
 bool Parser::acceptType(int offset) {
   return accept(
-      {TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::CONST, TC::UNSIGNED},
+      {TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::SHORT, TC::UNSIGNED},
       offset);
 }
 
@@ -402,10 +404,10 @@ std::shared_ptr<Type> Parser::parseType() {
     }
   } else {
     std::vector<TC> modifiers;
-    while (accept({TC::CONST, TC::UNSIGNED}))
-      modifiers.push_back(expect({TC::CONST, TC::UNSIGNED}).tokenClass);
+    while (accept(TC::UNSIGNED))
+      modifiers.push_back(expect(TC::UNSIGNED).tokenClass);
 
-    Token baseType = expect({TC::INT, TC::CHAR, TC::VOID});
+    Token baseType = expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT});
     PrimitiveType pType;
     switch (baseType.tokenClass) {
     case TC::INT:
@@ -413,6 +415,9 @@ std::shared_ptr<Type> Parser::parseType() {
       break;
     case TC::CHAR:
       pType = PrimitiveType::CHAR;
+      break;
+    case TC::SHORT:
+      pType = PrimitiveType::SHORT;
       break;
     case TC::VOID:
       pType = PrimitiveType::VOID;
@@ -830,6 +835,8 @@ std::shared_ptr<BaseType> Parser::tokenToType(const TC &tc) {
     return std::make_shared<BaseType>(BaseType(PrimitiveType::INT));
   case TC::CHAR:
     return std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR));
+  case TC::SHORT:
+    return std::make_shared<BaseType>(BaseType(PrimitiveType::SHORT));
   case TC::VOID:
     return std::make_shared<BaseType>(BaseType(PrimitiveType::VOID));
   default:
