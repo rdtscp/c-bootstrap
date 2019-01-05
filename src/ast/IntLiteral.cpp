@@ -7,8 +7,11 @@ IntLiteral::IntLiteral(std::string literal) : value(literal) {}
 std::shared_ptr<IntLiteral> IntLiteral::getptr() { return shared_from_this(); }
 
 std::string IntLiteral::getLiteral() const {
-  unsigned int intValue = std::stoul(value, nullptr, 16);
-  return std::to_string(intValue);
+  if (value.find("x") != std::string::npos) {
+    unsigned int intValue = std::stoul(value, nullptr, 16);
+    return std::to_string(intValue);
+  }
+  return value;
 }
 
 void IntLiteral::accept(ASTVisitor<void> &v) { return v.visit(*this); }
