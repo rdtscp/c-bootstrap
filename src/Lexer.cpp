@@ -314,30 +314,7 @@ Token Lexer::nextToken() {
         throw std::runtime_error(
             "Pre-Processing: Unexpected Preprocessing Directive: " +
             lexResult.second + ". " + scanner.getPosition().toString());
-
-      /* Parse #define key */
-      int currLine = scanner.getPosition().line;
-      std::string definition;
-      c = scanner.next();
-      while (!std::isspace(c)) {
-        definition += c;
-        c = scanner.next();
-      }
-
-      /* Parse #define value */
-      std::string value;
-      /* Check this even has a value. */
-      if (currLine == scanner.getPosition().line) {
-        c = scanner.next();
-        while (currLine == scanner.getPosition().line) {
-          value += c;
-          if (c == '\\' && scanner.peek() == '\n')
-            currLine++;
-          c = scanner.next();
-        }
-      }
-
-      preprocessor.preprocessDefinition(definition, value);
+      preprocessor.define();
     }
     if (c == 'e' && scanner.peek() == 'l') {
       c = scanner.next();

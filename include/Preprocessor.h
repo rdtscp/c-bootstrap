@@ -17,8 +17,7 @@ class Preprocessor {
 public:
   Preprocessor(Scanner &scanner);
 
-  void preprocessDefinition(const std::string &definition,
-                            const std::string &value);
+  void define();
 
   void preprocessElif();
 
@@ -50,6 +49,9 @@ private:
   bool evalCondition(const std::string &condition);
 
   std::pair<bool, std::string> getNextIfDirective();
+
+  void preprocessDefinition(const std::string &definition,
+                            const std::string &value);
 
   std::pair<bool, std::string> tryLexKeyword(const std::string &keyword);
 };

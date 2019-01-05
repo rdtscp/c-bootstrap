@@ -6,6 +6,33 @@ using namespace ACC;
 
 Preprocessor::Preprocessor(Scanner &newScanner) : scanner(newScanner) {}
 
+void Preprocessor::define() {
+  char c;
+  /* Parse #define key */
+  int currLine = scanner.getPosition().line;
+  std::string definition;
+  c = scanner.next();
+  while (!std::isspace(c)) {
+    definition += c;
+    c = scanner.next();
+  }
+
+  /* Parse #define value */
+  std::string value;
+  /* Check this even has a value. */
+  if (currLine == scanner.getPosition().line) {
+    c = scanner.next();
+    while (currLine == scanner.getPosition().line) {
+      value += c;
+      if (c == '\\' && scanner.peek() == '\n')
+        currLine++;
+      c = scanner.next();
+    }
+  }
+
+  preprocessDefinition(definition, value);
+}
+
 void Preprocessor::preprocessDefinition(const std::string &definition,
                                         const std::string &value) {
   if (ifs.size() == 0 || ifs[ifs.size() - 1].second)
