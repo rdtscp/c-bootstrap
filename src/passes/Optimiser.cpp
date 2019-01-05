@@ -1,5 +1,7 @@
 #include "../../include/passes/Optimiser.h"
 
+#include <memory>
+
 using namespace ACC;
 
 Optimiser::Optimiser(std::shared_ptr<Program> &progAST) : progAST(progAST) {}
@@ -48,8 +50,8 @@ std::shared_ptr<ASTNode> Optimiser::visit(BinOp &bo) {
     std::shared_ptr<IntLiteral> rhsIntLiteral =
         std::static_pointer_cast<IntLiteral>(bo.rhs);
 
-    int lhsVal = std::stoi(lhsIntLiteral->value);
-    int rhsVal = std::stoi(rhsIntLiteral->value);
+    int lhsVal = std::stoi(lhsIntLiteral->getLiteral());
+    int rhsVal = std::stoi(rhsIntLiteral->getLiteral());
 
     int newVal;
     optimised("Converted a BinOp of Two IntLiterals into its Result.");
@@ -189,7 +191,9 @@ std::shared_ptr<ASTNode> Optimiser::visit(TypeCast &tc) {
   tc.expr = std::static_pointer_cast<Expr>(tc.expr->accept(*this));
   return tc.getptr();
 }
-std::shared_ptr<ASTNode> Optimiser::visit(TypeDefDecl &td) { return td.getptr(); }
+std::shared_ptr<ASTNode> Optimiser::visit(TypeDefDecl &td) {
+  return td.getptr();
+}
 std::shared_ptr<ASTNode> Optimiser::visit(ValueAt &va) {
   va.derefExpr = std::static_pointer_cast<Expr>(va.derefExpr->accept(*this));
   return va.getptr();

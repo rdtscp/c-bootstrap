@@ -8,6 +8,8 @@ std::shared_ptr<StringLiteral> StringLiteral::getptr() {
   return shared_from_this();
 }
 
+std::string StringLiteral::getLiteral() const { return value; }
+
 void StringLiteral::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 std::string StringLiteral::accept(ASTVisitor<std::string> &v) {

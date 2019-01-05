@@ -122,7 +122,7 @@ std::string DotGraph::visit(Block &b) {
 }
 std::string DotGraph::visit(CharLiteral &cl) {
   std::string charID = "CharLiteral" + std::to_string(nodeCount++);
-  declare(charID, "'" + cl.value + "'");
+  declare(charID, "'" + cl.getLiteral() + "'");
   return charID;
 }
 std::string DotGraph::visit(DoWhile &dw) {
@@ -178,7 +178,7 @@ std::string DotGraph::visit(If &i) {
 }
 std::string DotGraph::visit(IntLiteral &il) {
   std::string intID = "IntLiteral" + std::to_string(nodeCount++);
-  declare(intID, il.value);
+  declare(intID, il.getLiteral());
   return intID;
 }
 std::string DotGraph::visit(ParenthExpr &pe) {
@@ -213,7 +213,7 @@ std::string DotGraph::visit(SizeOf &so) {
 }
 std::string DotGraph::visit(StringLiteral &sl) {
   std::string strID = "StringLiteral" + std::to_string(nodeCount++);
-  declare(strID, "\\\"" + sl.value + "\\\"");
+  declare(strID, "\\\"" + sl.getLiteral() + "\\\"");
   return strID;
 }
 std::string DotGraph::visit(StructType &st) {

@@ -6,18 +6,21 @@
 #include <string>
 
 #include "Expr.h"
+#include "Literal.h"
 
 namespace ACC {
 
-class IntLiteral : public Expr,
+class IntLiteral : public Literal,
                    public std::enable_shared_from_this<IntLiteral> {
-
-public:
+private:
   std::string value;
 
+public:
   IntLiteral(std::string literal);
 
   std::shared_ptr<IntLiteral> getptr();
+
+  std::string getLiteral() const override;
 
   void accept(ASTVisitor<void> &v) override;
   std::string accept(ASTVisitor<std::string> &v) override;

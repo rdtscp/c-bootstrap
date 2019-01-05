@@ -204,7 +204,8 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(If &i) {
   return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(IntLiteral &il) {
-  x86.mov(X86::eax, std::make_shared<X86::IntValue>(X86::IntValue(il.value)));
+  x86.mov(X86::eax,
+          std::make_shared<X86::IntValue>(X86::IntValue(il.getLiteral())));
   return X86::eax;
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(ParenthExpr &pe) {

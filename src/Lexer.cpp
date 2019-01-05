@@ -211,9 +211,12 @@ Token Lexer::nextToken() {
     std::string literal(1, c);
     if (src.peek() == 'x') {
       literal += src.next();
+      while (std::isalpha(src.peek()) || std::isdigit(src.peek()))
+        literal += src.next();
+    } else {
+      while (isdigit(src.peek()))
+        literal += src.next();
     }
-    while (isdigit(src.peek()))
-      literal += src.next();
 
     return Token(Token::TokenClass::INT_LITERAL, src.getPosition(), literal);
   }
