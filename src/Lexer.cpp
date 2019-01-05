@@ -231,6 +231,14 @@ Token Lexer::nextToken() {
       if (lexResult.first)
         return Token(Token::TokenClass::TYPEDEF, scanner.getPosition());
     }
+    // Check for UNSIGNED Token.
+    else if (c == 'u' && scanner.peek() == 'n') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("unsigned");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return Token(Token::TokenClass::UNSIGNED, scanner.getPosition());
+    }
     // Check for WHILE Token.
     else if (c == 'w' && scanner.peek() == 'h') {
       std::pair<bool, std::string> lexResult = tryLexKeyword("while");

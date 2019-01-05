@@ -99,7 +99,7 @@ bool Parser::acceptDecl(int offset) {
 }
 bool Parser::acceptEnumTypeDecl(int offset) { return accept(TC::ENUM); }
 bool Parser::acceptFunDecl(int offset) {
-  if (accept(TC::EXTERN))
+  if (accept(TC::EXTERN, offset))
     offset++;
   if (acceptStructType(offset)) {
     offset += 2;
@@ -108,8 +108,12 @@ bool Parser::acceptFunDecl(int offset) {
     return accept(TC::IDENTIFIER, offset) && accept(TC::LPAR, offset + 1);
   }
 
+  if (accept({TC::UNSIGNED, TC::CONST}, offset))
+    offset++;
+  if (accept({TC::UNSIGNED, TC::CONST}, offset))
+    offset++;
   if (acceptType(offset)) {
-    offset += 1;
+    offset++;
     while (accept(TC::ASTERIX, offset))
       offset++;
 
@@ -171,7 +175,9 @@ bool Parser::acceptStructType(int offset) {
   return true;
 }
 bool Parser::acceptType(int offset) {
-  return accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT}, offset);
+  return accept(
+      {TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::CONST, TC::UNSIGNED},
+      offset);
 }
 
 /* -- Stmts -- */
@@ -365,7 +371,9 @@ std::shared_ptr<VarDecl> Parser::parseVarDecl() {
   std::string varIdentifier = expect(TC::IDENTIFIER).data;
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
-    std::string arraySize = expect(TC::INT_LITERAL).data;
+    std::string arraySize;
+    if (!isExtern || accept(TC::INT_LITERAL))
+      arraySize = expect(TC::INT_LITERAL).data;
     expect(TC::RSBR);
     varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
@@ -393,6 +401,10 @@ std::shared_ptr<Type> Parser::parseType() {
       type = std::shared_ptr<PointerType>(new PointerType(type));
     }
   } else {
+    std::vector<TC> modifiers;
+    while (accept({TC::CONST, TC::UNSIGNED}))
+      modifiers.push_back(expect({TC::CONST, TC::UNSIGNED}).tokenClass);
+
     Token baseType = expect({TC::INT, TC::CHAR, TC::VOID});
     PrimitiveType pType;
     switch (baseType.tokenClass) {
