@@ -50,6 +50,8 @@ std::string DotGraph::visit(BaseType &bt) {
     return "char";
   case PrimitiveType::INT:
     return "int";
+  case PrimitiveType::SHORT:
+    return "short";
   case PrimitiveType::VOID:
     return "void";
   }
