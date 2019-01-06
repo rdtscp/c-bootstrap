@@ -62,7 +62,11 @@ def compileSourceFiles(srcMap, outDir):
             srcFile.replace("/", "._").replace(".cpp", ".s")
         print("    {0} ({1})\n -> {2}".format(srcFile,
                                               srcFiles["prep"], srcFiles["comp"]))
-        run(["./compiler/build/acc", srcFiles["prep"], srcFiles["comp"], "x86"])
+        compRes = run(["./compiler/build/acc", srcFiles["prep"],
+                       srcFiles["comp"], "x86", "--opt"])
+        if compRes.returncode != 0:
+            print("Failed to Compile file: " + srcFile)
+            exit()
     print("Done\n")
     return srcMap
 
@@ -75,7 +79,11 @@ def assembleSourceFiles(srcMap, outDir):
         print("    {0} ({1})\n -> {2}".format(srcFile,
                                               srcFiles["comp"], srcFiles["obj"]))
         # nasm -f macho x86.s
-        run(["nasm", "-f", "macho", srcFiles["comp"], "-o", srcFiles["obj"]])
+        asmRes = run(
+            ["nasm", "-f", "macho", srcFiles["comp"], "-o", srcFiles["obj"]])
+        if asmRes.returncode != 0:
+            print("Failed to Assemble file: " + srcFile)
+            exit()
     print("Done\n")
     return srcMap
 
@@ -84,12 +92,14 @@ def linkSourceFiles(srcMap, outDir):
     print("Linking:")
     for srcFile, srcFiles in srcMap.items():
         print("    Linking {0} ({1})".format(srcFile, srcFiles["obj"]))
-        run(["ld", "-macosx_version_min", "10.14",
-             "-lSystem", "-o", "./a.out", srcFiles["obj"]])
+        # ld -macosx_version_min 10.14 -lSystem -o x86 x86.o
+        linkRes = run(["ld", "-macosx_version_min", "10.14",
+                       "-lSystem", "-o", "./a.out", srcFiles["obj"]])
+        if linkRes.returncode != 0:
+            print("Failed to Link file: " + srcFile)
+            exit()
     print("Done\n")
     return srcMap
-
-# ld -macosx_version_min 10.14 -lSystem -o x86 x86.o
 
 
 def acc(srcMap):
@@ -107,8 +117,6 @@ def acc(srcMap):
         # Link the compiled source.
         srcMap = linkSourceFiles(srcMap, tmpDirName)
     finally:
-        print("Cleaning up temporary directory.")
-        print(srcMap)
         tmpDir.cleanup()
 
 

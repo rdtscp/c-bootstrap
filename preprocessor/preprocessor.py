@@ -1,5 +1,5 @@
 import sys
-from subprocess import call
+from subprocess import run
 
 
 class Preprocessor:
@@ -9,10 +9,17 @@ class Preprocessor:
     def preprocess(self, inFile, outFile):
         if ".cpp" in inFile:
             # clang++ -std=c++14 -E compiler/main.cpp -o tempSource.cpp
-            call(["clang++", "-std=c++14", "-E", inFile, "-o", outFile])
+            prepRes = run(["clang++", "-std=c++14",
+                           "-E", inFile, "-o", outFile])
+            if prepRes.returncode != 0:
+                print("Failed to Preprocess file: " + inFile)
+                exit()
         else:
             # clang++ -std=c++14 -E compiler/main.cpp -o tempSource.cpp
-            call(["clang", "-E", inFile, "-o", outFile])
+            prepRes = run(["clang", "-E", inFile, "-o", outFile])
+            if prepRes.returncode != 0:
+                print("Failed to Preprocess file: " + inFile)
+                exit()
 
 
 if __name__ == "__main__":
