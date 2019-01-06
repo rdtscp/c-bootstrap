@@ -13,4 +13,4 @@ int one() {
   return 1;
 }
 
-int main(int argc, char **argv) { return myGlobalInt + one(); }
+int main(int argc, char **argv) { return one() + myGlobalInt; }
