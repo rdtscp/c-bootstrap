@@ -105,7 +105,7 @@ TEST(PreprocessorTest, IfElifElse2) {
   std::shared_ptr<Program> progAST = parser.getAST();
 
   ASSERT_EQ(progAST->decls.size(), 1);
-  ASSERT_EQ(progAST->decls[0]->getIdentifier(), "two");
+  ASSERT_EQ(progAST->decls[0]->getIdentifier(), "one");
 }
 
 TEST(PreprocessorTest, InvalidComments) {
