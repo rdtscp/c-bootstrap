@@ -36,7 +36,9 @@ private:
   int line;
   std::string file;
 
-  const std::string abspath;
+  std::string abspath;
+
+  void updateCurrFile();
 };
 
 }; // namespace ACC

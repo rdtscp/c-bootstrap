@@ -22,6 +22,12 @@ char Scanner::next() {
   if (currChar == file.end() || nextChar == '\0')
     return '\0';
 
+  if (nextChar == '#') {
+    currChar++;
+    updateCurrFile();
+    return next();
+  }
+
   if (nextChar == '\n' || nextChar == '\r') {
     line++;
     column = 1;
@@ -78,4 +84,32 @@ std::string Scanner::getFilepath() const {
 
 Position Scanner::getPosition() const {
   return Position(line, column, getFilepath() + getFilename());
+}
+
+void Scanner::updateCurrFile() {
+  char nextChar = next(); // Skip space.
+
+  nextChar = next();
+
+  std::string lineNumStr(1, nextChar);
+  while (!std::isspace(peek())) {
+    lineNumStr += next();
+  }
+  unsigned int lineNum = std::stoul(lineNumStr, nullptr, 10);
+
+  nextChar = next(); // Skip space;
+  nextChar = next(); // Skip quote;
+
+  std::string filename;
+  if (peek() != '<') {
+    while (peek() != '\"') {
+      filename += next();
+    }
+  }
+  while (peek() != '\n') {
+    nextChar = next();
+  }
+  abspath = filename;
+  line = lineNum;
+  column = 1;
 }
