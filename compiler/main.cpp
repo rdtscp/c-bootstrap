@@ -11,45 +11,41 @@
 #include "include/targets/GenerateX86.h"
 
 int main(int argc, char const *argv[]) {
-  bool outputGraph = false;
-  bool optimise = false;
-  bool outputMIPS = false;
-  bool outputX86 = false;
-  if (argc < 3) {
-    std::cout << "Usage: acc <filename> { x86 | mips } [ --print |  --opt ]"
+  if (argc < 4) {
+    std::cout << "Usage: acc <input> <output> { x86 | mips } [ --print "
+                 "|  --opt ]"
               << std::endl;
     return 1;
   }
-  if (argc == 3) {
-    std::string target(argv[2]);
-    if (target == "mips")
-      outputMIPS = true;
-    else if (target == "x86")
-      outputX86 = true;
-    else {
-      std::cout << "Invalid Target Arch, Must be either 'mips' or 'x86'"
-                << std::endl;
-      return 1;
+  const std::string inFilename(argv[1]);
+  const std::string outFilename(argv[2]);
+  const std::string target(argv[3]);
+
+  bool outputMIPS = false;
+  bool outputX86 = false;
+  if (target == "mips")
+    outputMIPS = true;
+  else if (target == "x86")
+    outputX86 = true;
+  else {
+    std::cout << "Invalid Target Arch, Must be either 'mips' or 'x86'"
+              << std::endl;
+    return 1;
+  }
+
+  bool outputGraph = false;
+  bool optimise = false;
+  if (argc > 3) {
+    for (int i = 4; i < argc; i++) {
+      const std::string flag(argv[i]);
+      if (flag == "-p" || flag == "--print")
+        outputGraph = true;
+      if (flag == "-o" || flag == "--opt")
+        optimise = true;
     }
   }
-  if (argc >= 4) {
-    std::string flag(argv[3]);
-    if (flag == "-p" || flag == "--print")
-      outputGraph = true;
-    if (flag == "-o" || flag == "--opt")
-      optimise = true;
-  }
-  if (argc >= 5) {
-    std::string flag(argv[4]);
-    if (flag == "--print")
-      outputGraph = true;
-    if (flag == "--opt")
-      optimise = true;
-  }
 
-  std::string abspath(argv[1]);
-
-  ACC::Scanner scanner(abspath);
+  ACC::Scanner scanner(inFilename);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   std::shared_ptr<ACC::Program> progAST = parser.getAST();
@@ -83,12 +79,12 @@ int main(int argc, char const *argv[]) {
   }
 
   if (outputMIPS) {
-    ACC::GenerateMIPS mipsGenerator(progAST, "mips.asm");
+    ACC::GenerateMIPS mipsGenerator(progAST, outFilename);
     mipsGenerator.run();
   }
 
   if (outputX86) {
-    ACC::GenerateX86 x86Generator(progAST, "x86.s");
+    ACC::GenerateX86 x86Generator(progAST, outFilename);
     x86Generator.run();
   }
 
