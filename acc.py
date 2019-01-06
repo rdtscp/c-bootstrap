@@ -8,10 +8,13 @@ from preprocessor.preprocessor import Preprocessor
 ACC_BUILD_DIR = "./compiler/build"
 
 parser = argparse.ArgumentParser(
-    description='acc mini-c/c++ compiler.', usage="acc source [source ...]")
+    description="acc mini-c/c++ compiler.", usage="acc source [source ...]")
 
-parser.add_argument('source', type=list, nargs='+',
-                    help='Source files to compile.')
+parser.add_argument("source", type=list, nargs="+",
+                    help="source files to compile.")
+
+parser.add_argument("-o", "--output", type=str, default="./a.out", required=False,
+                    help='binary output filepath.')
 
 args = parser.parse_args()
 
@@ -23,6 +26,7 @@ def getSourceFiles():
         srcMap[srcFile] = {}
         srcMap[srcFile]["prep"] = ""
         srcMap[srcFile]["comp"] = ""
+        srcMap[srcFile]["obj"] = ""
     return srcMap
 
 
@@ -59,8 +63,33 @@ def compileSourceFiles(srcMap, outDir):
         print("    {0} ({1})\n -> {2}".format(srcFile,
                                               srcFiles["prep"], srcFiles["comp"]))
         run(["./compiler/build/acc", srcFiles["prep"], srcFiles["comp"], "x86"])
-        print("Done\n")
-        return srcMap
+    print("Done\n")
+    return srcMap
+
+
+def assembleSourceFiles(srcMap, outDir):
+    print("Assembling:")
+    for srcFile, srcFiles in srcMap.items():
+        srcFiles["obj"] = outDir + "/obj_" + \
+            srcFile.replace("/", "._").replace(".cpp", ".obj")
+        print("    {0} ({1})\n -> {2}".format(srcFile,
+                                              srcFiles["comp"], srcFiles["obj"]))
+        # nasm -f macho x86.s
+        run(["nasm", "-f", "macho", srcFiles["comp"], "-o", srcFiles["obj"]])
+    print("Done\n")
+    return srcMap
+
+
+def linkSourceFiles(srcMap, outDir):
+    print("Linking:")
+    for srcFile, srcFiles in srcMap.items():
+        print("    Linking {0} ({1})".format(srcFile, srcFiles["obj"]))
+        run(["ld", "-macosx_version_min", "10.14",
+             "-lSystem", "-o", "./a.out", srcFiles["obj"]])
+    print("Done\n")
+    return srcMap
+
+# ld -macosx_version_min 10.14 -lSystem -o x86 x86.o
 
 
 def acc(srcMap):
@@ -73,6 +102,10 @@ def acc(srcMap):
         srcMap = preprocessSourceFiles(srcMap, tmpDirName)
         # Compile the preprocessed source.
         srcMap = compileSourceFiles(srcMap, tmpDirName)
+        # Assemble the compiled source.
+        srcMap = assembleSourceFiles(srcMap, tmpDirName)
+        # Link the compiled source.
+        srcMap = linkSourceFiles(srcMap, tmpDirName)
     finally:
         print("Cleaning up temporary directory.")
         print(srcMap)
