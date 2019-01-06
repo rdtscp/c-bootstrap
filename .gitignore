@@ -15,3 +15,6 @@ build/
 # Ignore VSCode Settings.
 .vscode/c_cpp_properties.json
 .vscode/settings.json
+
+# Ignore Python Cache
+__pycache__
