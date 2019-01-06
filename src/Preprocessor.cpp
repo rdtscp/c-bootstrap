@@ -10,7 +10,14 @@ using namespace ACC;
 /* ---- Public ---- */
 
 Preprocessor::Preprocessor(const std::string &abspath) : abspath(abspath) {
-  scanners.push_back(std::shared_ptr<Scanner>(new Scanner(abspath)));
+  init();
+  try {
+    std::shared_ptr<Scanner> scanner(new Scanner(abspath));
+    scanners.push_back(scanner);
+  } catch (std::runtime_error const &err) {
+    throw std::runtime_error("\nPreprocessing: Couldn't resolve filepath:\n  " +
+                             abspath + getStackPosition());
+  }
 }
 
 SourceCode Preprocessor::getSource() {
@@ -207,11 +214,28 @@ char Preprocessor::nextChar() { return scanners[scanners.size() - 1]->next(); }
 char Preprocessor::peekChar() { return scanners[scanners.size() - 1]->peek(); }
 
 /* ---- Setup Environment ---- */
-void Preprocessor::init() { varDefinitions["__x86_64__"] = ""; }
+void Preprocessor::init() {
+  varDefinitions["__x86_64__"] = "";
+  varDefinitions["_LIBCPP_DEPRECATED_ABI_DISABLE_PAIR_TRIVIAL_COPY_CTOR"] = "";
+  varDefinitions["__cplusplus"] = "";
+  varDefinitions["__MACH__"] = "";
+}
 
 /* ---- Functionality ---- */
 
 bool Preprocessor::evalIfCondition(const std::string &condition) {
+  // std::string::size_type orPos = condition.find("||");
+  // if (orPos != std::string::npos) {
+  //   // We have an or statement.
+  //   const std::string lhs = condition.substr(0, );
+  //   const std::string rhs;
+  // }
+
+  // std::string::size_type andPos = condition.find("&&");
+  // if (andPos != std::string::npos) {
+  //   // We have an and statement.
+  // }
+
   std::string::size_type defStartPos = condition.find("defined(");
   std::string::size_type defEndPos = condition.find(")");
 
@@ -221,10 +245,10 @@ bool Preprocessor::evalIfCondition(const std::string &condition) {
     const int defLength = condition.find(")") - condition.find("(") - 1;
 
     const std::string definition = condition.substr(defStart, defLength);
-    const bool isDefined =
+    const bool defined =
         (varDefinitions.find(definition) != varDefinitions.end());
-    bool result = isDefined;
-    if (condition.find("!defined(") == (defStartPos - 1))
+    bool result = defined;
+    if (condition.find("!defined(") == (defStartPos - 1) && (defStartPos != 0))
       result = !result;
     return result;
   }
@@ -475,13 +499,19 @@ void Preprocessor::preprocessInclude() {
   /* Include this file if we haven't seen it. */
   if (files.find(abspath) == files.end()) {
     src += "#startFile=" + abspath;
-    std::shared_ptr<Scanner> includeScanner(new Scanner(abspath));
-    if (includeScanner->peek() == '\0') {
+    try {
+      std::shared_ptr<Scanner> includeScanner(new Scanner(abspath));
+      scanners.push_back(includeScanner);
+    } catch (std::runtime_error const &err) {
+      std::string includeStr = filename;
+      if (localFile)
+        includeStr = "\"" + includeStr + "\"";
+      else
+        includeStr = "<" + includeStr + ">";
       throw std::runtime_error(
-          "Preprocessing: Invalid #include, empty file:\n  " + abspath +
-          "\nin " + getStackPosition());
+          "\nPreprocessing: Couldn't resolve include directive:\n #include " +
+          includeStr + getStackPosition());
     }
-    scanners.push_back(includeScanner);
   }
 }
 void Preprocessor::preprocessPragma() {
