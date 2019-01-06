@@ -22,8 +22,6 @@ Token Lexer::nextToken() {
     return nextToken();
   }
 
-  /* Parse Multi Symbol Tokens */
-
   // Recognise STRING_LITERAL Token.
   if (c == '"')
     return lexStringLiteral();
@@ -295,6 +293,8 @@ Token Lexer::nextToken() {
   throw std::runtime_error("Lexer: Unexpected Token. " +
                            scanner.getPosition().toString());
 }
+
+Position Lexer::getPosition() { return scanner.getPosition(); }
 
 Token Lexer::lexStringLiteral() {
   std::string literal;
