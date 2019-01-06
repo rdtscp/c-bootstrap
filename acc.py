@@ -16,6 +16,12 @@ parser.add_argument("source", type=list, nargs="+",
 parser.add_argument("-o", "--output", type=str, default="./a.out", required=False,
                     help='binary output filepath.')
 
+parser.add_argument("-s", required=False, action='store_true',
+                    help='include assembly output.')
+
+parser.add_argument("--opt", required=False, action='store_true',
+                    help='Optimise pass.')
+
 args = parser.parse_args()
 
 
@@ -36,7 +42,7 @@ def buildACC():
         os.makedirs(ACC_BUILD_DIR)
 
     os.chdir(ACC_BUILD_DIR)
-    run(["cmake", "-DCMAKE_BUILD_TYPE=Debug", ".."],
+    run(["cmake", "-DCMAKE_BUILD_TYPE=Release", ".."],
         stdout=DEVNULL, stderr=DEVNULL)
     run(["make", "-j", "4"],
         stdout=DEVNULL, stderr=DEVNULL)
@@ -62,11 +68,17 @@ def compileSourceFiles(srcMap, outDir):
             srcFile.replace("/", "._").replace(".cpp", ".s")
         print("    {0} ({1})\n -> {2}".format(srcFile,
                                               srcFiles["prep"], srcFiles["comp"]))
+        optPass = ""
+        if args.opt:
+            optPass = "--opt"
         compRes = run(["./compiler/build/acc", srcFiles["prep"],
-                       srcFiles["comp"], "x86", "--opt"])
+                       srcFiles["comp"], "x86", optPass])
         if compRes.returncode != 0:
             print("Failed to Compile file: " + srcFile)
             exit()
+        if (args.s):
+            run(["cp", srcFiles["comp"], "./" +
+                 srcFile.replace("/", "._").replace(".cpp", ".s")])
     print("Done\n")
     return srcMap
 
