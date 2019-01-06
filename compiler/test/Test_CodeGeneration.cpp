@@ -17,8 +17,8 @@
 using namespace ACC;
 
 // std::string test_prefix =
-    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-std::string test_prefix = "../../../compiler/test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+std::string test_prefix = "../../test/tests/";
 
 TEST(CodeGenerationTest, MIPS_Fibonacci) {
   // Preprocessor preprocessor(test_prefix + "fibonacci.c");
@@ -39,7 +39,7 @@ TEST(CodeGenerationTest, MIPS_Fibonacci) {
 }
 
 TEST(CodeGenerationTest, X86_fundeclsc) {
-  const std::string abspath = (test_prefix + "parser/fundecls.c");
+  const std::string abspath = (test_prefix + "parser/fundecls.cpp");
   ACC::Scanner scanner(abspath);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);

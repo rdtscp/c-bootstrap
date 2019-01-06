@@ -11,8 +11,8 @@
 using namespace ACC;
 
 // std::string test_prefix =
-    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-std::string test_prefix = "../../../compiler/test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+std::string test_prefix = "../../test/tests/";
 
 TEST(LexerTest, AllTokens) {
   const std::string abspath = (test_prefix + "lexer/alltokens.c");

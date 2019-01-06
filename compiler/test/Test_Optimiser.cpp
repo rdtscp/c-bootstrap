@@ -14,7 +14,7 @@ using namespace ACC;
 
 // std::string test_prefix =
 // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-std::string test_prefix = "../../../compiler/test/tests/";
+std::string test_prefix = "../../test/tests/";
 
 TEST(OptimiserTest, FunDeclsC) {
   const std::string abspath = (test_prefix + "/parser/fundecls.c");
