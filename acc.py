@@ -5,7 +5,7 @@ from subprocess import run, DEVNULL
 import argparse
 from preprocessor.preprocessor import Preprocessor
 
-ACC_BUILD_DIR = "./build"
+ACC_BUILD_DIR = "./compiler/build"
 
 parser = argparse.ArgumentParser(
     description='acc mini-c/c++ compiler.', usage="acc source [source ...]")
@@ -20,7 +20,6 @@ def getSourceFiles():
     srcMap = {}
     for charArray in args.source:
         srcFile = "".join(charArray)
-        print("Creating entry for({0})".format(srcFile))
         srcMap[srcFile] = {}
         srcMap[srcFile]["prep"] = ""
         srcMap[srcFile]["comp"] = ""
@@ -37,7 +36,7 @@ def buildACC():
         stdout=DEVNULL, stderr=DEVNULL)
     run(["make", "-j", "4"],
         stdout=DEVNULL, stderr=DEVNULL)
-    os.chdir("..")
+    os.chdir("../..")
     print("Done\n")
 
 
@@ -59,7 +58,7 @@ def compileSourceFiles(srcMap, outDir):
             srcFile.replace("/", "._").replace(".cpp", ".s")
         print("    {0} ({1})\n -> {2}".format(srcFile,
                                               srcFiles["prep"], srcFiles["comp"]))
-        run(["./build/compiler/acc", srcFiles["prep"], srcFiles["comp"], "x86"])
+        run(["./compiler/build/acc", srcFiles["prep"], srcFiles["comp"], "x86"])
         print("Done\n")
         return srcMap
 
@@ -68,7 +67,7 @@ def acc(srcMap):
     tmpDir = tempfile.TemporaryDirectory()
     tmpDirName = tmpDir.name
     try:
-            # Build the c++ compiler.
+        # Build the c++ compiler.
         buildACC()
         # Preprocess the source.
         srcMap = preprocessSourceFiles(srcMap, tmpDirName)
