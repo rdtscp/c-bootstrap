@@ -294,8 +294,6 @@ Token Lexer::nextToken() {
                            scanner.getPosition().toString());
 }
 
-Position Lexer::getPosition() { return scanner.getPosition(); }
-
 Token Lexer::lexStringLiteral() {
   std::string literal;
   int currLine = scanner.getPosition().line;
