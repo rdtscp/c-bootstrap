@@ -9,7 +9,6 @@
 
 #include "AST.h"
 #include "Lexer.h"
-#include "SourceCode.h"
 #include "Token.h"
 
 namespace ACC {
@@ -17,14 +16,15 @@ namespace ACC {
 class Parser {
 
 public:
-  Parser(const SourceCode &src);
+  Parser(Lexer &lexer);
+  Parser(Parser &rhs) = delete;
 
   /* Parses the Tokens into an AST with root node Program. */
   std::shared_ptr<Program> getAST();
 
 private:
   Token currToken;
-  Lexer lexer;
+  Lexer &lexer;
   std::vector<Token> tokenBuffer;
 
   /* ---- Token Operations ---- */

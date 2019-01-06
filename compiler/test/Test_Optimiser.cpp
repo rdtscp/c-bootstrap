@@ -5,8 +5,6 @@
 #include "gtest/gtest.h"
 
 #include "../include/Parser.h"
-#include "../include/Preprocessor.h"
-#include "../include/SourceCode.h"
 #include "../include/passes/DotGraph.h"
 #include "../include/passes/NameAnalysis.h"
 #include "../include/passes/Optimiser.h"
@@ -15,15 +13,15 @@
 using namespace ACC;
 
 // std::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-std::string test_prefix = "../../test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+std::string test_prefix = "../../../compiler/test/tests/";
 
 TEST(OptimiserTest, FunDeclsC) {
-  Preprocessor preprocessor(test_prefix + "/parser/fundecls.c");
-  SourceCode src = preprocessor.getSource();
-
-  Parser parser(src);
-  std::shared_ptr<Program> progAST = parser.getAST();
+  const std::string abspath = (test_prefix + "/parser/fundecls.c");
+  ACC::Scanner scanner(abspath);
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  std::shared_ptr<ACC::Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();

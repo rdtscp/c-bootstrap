@@ -4,9 +4,9 @@
 
 #include "gtest/gtest.h"
 
+#include "../include/Lexer.h"
 #include "../include/Parser.h"
-#include "../include/Preprocessor.h"
-#include "../include/SourceCode.h"
+#include "../include/Scanner.h"
 #include "../include/passes/DotGraph.h"
 #include "../include/passes/NameAnalysis.h"
 #include "../include/passes/TypeAnalysis.h"
@@ -14,14 +14,15 @@
 using namespace ACC;
 
 // std::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-std::string test_prefix = "../../test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+std::string test_prefix = "../../../compiler/test/tests/";
 
 TEST(ASTAnalysisTest, DotGraph) {
-  Preprocessor preprocessor(test_prefix + "/parser/fundecls.c");
-  SourceCode src = preprocessor.getSource();
+  const std::string abspath = (test_prefix + "/parser/fundecls.c");
+  Scanner scanner(abspath);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
 
-  Parser parser(src);
   std::shared_ptr<Program> progAST = parser.getAST();
 
   DotGraph dotGraph(progAST);
@@ -29,10 +30,11 @@ TEST(ASTAnalysisTest, DotGraph) {
 }
 
 TEST(ASTAnalysisTest, NameAnalysis) {
-  Preprocessor preprocessor(test_prefix + "/parser/fundecls.c");
-  SourceCode src = preprocessor.getSource();
+  const std::string abspath = (test_prefix + "/parser/fundecls.c");
+  Scanner scanner(abspath);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
 
-  Parser parser(src);
   std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
@@ -41,10 +43,11 @@ TEST(ASTAnalysisTest, NameAnalysis) {
 }
 
 TEST(ASTAnalysisTest, DuplicateFunction) {
-  Preprocessor preprocessor(test_prefix + "sem/dupefun.c");
-  SourceCode src = preprocessor.getSource();
+  const std::string abspath = (test_prefix + "sem/dupefun.c");
+  Scanner scanner(abspath);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
 
-  Parser parser(src);
   std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
@@ -54,10 +57,11 @@ TEST(ASTAnalysisTest, DuplicateFunction) {
 }
 
 TEST(ASTAnalysisTest, DuplicateVariable) {
-  Preprocessor preprocessor(test_prefix + "sem/dupevar.c");
-  SourceCode src = preprocessor.getSource();
+  const std::string abspath = (test_prefix + "sem/dupevar.c");
+  Scanner scanner(abspath);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
 
-  Parser parser(src);
   std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
@@ -67,10 +71,11 @@ TEST(ASTAnalysisTest, DuplicateVariable) {
 }
 
 TEST(ASTAnalysisTest, AmbiguousIdentifier) {
-  Preprocessor preprocessor(test_prefix + "sem/ambig.c");
-  SourceCode src = preprocessor.getSource();
+  const std::string abspath = (test_prefix + "sem/ambig.c");
+  Scanner scanner(abspath);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
 
-  Parser parser(src);
   std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
@@ -80,10 +85,11 @@ TEST(ASTAnalysisTest, AmbiguousIdentifier) {
 }
 
 TEST(ASTAnalysisTest, NoMainFunc) {
-  Preprocessor preprocessor(test_prefix + "sem/nomain.c");
-  SourceCode src = preprocessor.getSource();
+  const std::string abspath = (test_prefix + "sem/nomain.c");
+  Scanner scanner(abspath);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
 
-  Parser parser(src);
   std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
@@ -92,10 +98,11 @@ TEST(ASTAnalysisTest, NoMainFunc) {
 }
 
 TEST(ASTAnalysisTest, Fibonacci) {
-  Preprocessor preprocessor(test_prefix + "fibonacci.c");
-  SourceCode src = preprocessor.getSource();
+  const std::string abspath = (test_prefix + "fibonacci.c");
+  Scanner scanner(abspath);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
 
-  Parser parser(src);
   std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
@@ -107,10 +114,11 @@ TEST(ASTAnalysisTest, Fibonacci) {
 }
 
 TEST(ASTAnalysisTest, TicTacToe) {
-  Preprocessor preprocessor(test_prefix + "tictactoe.c");
-  SourceCode src = preprocessor.getSource();
+  const std::string abspath = (test_prefix + "tictactoe.c");
+  Scanner scanner(abspath);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
 
-  Parser parser(src);
   std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);

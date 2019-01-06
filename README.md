@@ -6,17 +6,6 @@
 * Bootstrapping a simple C based compiler written in C++.
 * The compiler will intially be used to build simple C programs, and then extend the grammar enough so that it is able to compile itself.
 
-### Pre-Processor Grammar
-```
- #define
- #endif
- #ifdef
- #ifndef
- #if
- #elif
- #else
- #include
-```
 ### Mini-C/C++ Grammar
 Progressively changing to adopt new features of the language(s).
 ```
@@ -117,4 +106,20 @@ acc main.cpp
 nasm -f macho x86.s
 # Link Objects
 ld -macosx_version_min 10.14 -lSystem -o x86 x86.o
+```
+
+## History
+
+Notes of deprecated/replaced functionality below:
+
+### Pre-Processor Grammar
+```
+ #define
+ #endif
+ #ifdef
+ #ifndef
+ #if
+ #elif
+ #else
+ #include
 ```

@@ -1,5 +1,3 @@
-// #include <cstdio>
-
 int myGlobalInt;
 
 int ten() {

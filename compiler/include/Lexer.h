@@ -6,7 +6,7 @@
 #include <string>
 #include <utility>
 
-#include "SourceCode.h"
+#include "Scanner.h"
 #include "Token.h"
 
 namespace ACC {
@@ -14,13 +14,14 @@ namespace ACC {
 class Lexer {
 
 public:
-  Lexer(const SourceCode &src);
+  Lexer(Scanner &src);
+  Lexer(Lexer &rhs) = delete;
 
   /* Parses the next Token out of the Input File. */
   Token nextToken();
 
 private:
-  SourceCode src;
+  Scanner &scanner;
 
   Token lexStringLiteral();
   void passComment();

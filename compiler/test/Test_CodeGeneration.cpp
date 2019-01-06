@@ -10,7 +10,6 @@
 
 #include "../include/Lexer.h"
 #include "../include/Parser.h"
-#include "../include/Preprocessor.h"
 #include "../include/Scanner.h"
 #include "../include/targets/GenerateMIPS.h"
 #include "../include/targets/GenerateX86.h"
@@ -18,8 +17,8 @@
 using namespace ACC;
 
 // std::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-std::string test_prefix = "../../test/tests/";
+    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+std::string test_prefix = "../../../compiler/test/tests/";
 
 TEST(CodeGenerationTest, MIPS_Fibonacci) {
   // Preprocessor preprocessor(test_prefix + "fibonacci.c");
@@ -40,10 +39,10 @@ TEST(CodeGenerationTest, MIPS_Fibonacci) {
 }
 
 TEST(CodeGenerationTest, X86_fundeclsc) {
-  Preprocessor preprocessor(test_prefix + "parser/fundecls.c");
-  SourceCode src = preprocessor.getSource();
-
-  Parser parser(src);
+  const std::string abspath = (test_prefix + "parser/fundecls.c");
+  ACC::Scanner scanner(abspath);
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);

@@ -5,21 +5,20 @@
 #include "gtest/gtest.h"
 
 #include "../include/Lexer.h"
-#include "../include/Preprocessor.h"
 #include "../include/Scanner.h"
-#include "../include/SourceCode.h"
 #include "../include/Token.h"
 
 using namespace ACC;
 
 // std::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-std::string test_prefix = "../../test/tests/";
+    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+std::string test_prefix = "../../../compiler/test/tests/";
 
 TEST(LexerTest, AllTokens) {
-  Preprocessor preprocessor(test_prefix + "lexer/alltokens.c");
+  const std::string abspath = (test_prefix + "lexer/alltokens.c");
 
-  Lexer lexer(preprocessor.getSource());
+  Scanner scanner(abspath);
+  Lexer lexer(scanner);
 
   std::vector<Token::TokenClass> expected = {Token::TokenClass::IDENTIFIER,
                                              Token::TokenClass::ASSIGN,
@@ -101,8 +100,9 @@ TEST(LexerTest, AllTokens) {
 }
 
 TEST(LexerTest, NestedComments) {
-  Preprocessor preprocessor(test_prefix + "lexer/nested_comments.c");
-  Lexer lexer(preprocessor.getSource());
+  const std::string abspath = (test_prefix + "lexer/nested_comments.c");
+  Scanner scanner(abspath);
+  Lexer lexer(scanner);
 
   Token::TokenClass currToken = Token::TokenClass::INVALID;
   while (currToken != Token::TokenClass::ENDOFFILE) {
@@ -113,8 +113,9 @@ TEST(LexerTest, NestedComments) {
 }
 
 TEST(LexerTest, VarDecls) {
-  Preprocessor preprocessor(test_prefix + "parser/vardecl.c");
-  Lexer lexer(preprocessor.getSource());
+  const std::string abspath = (test_prefix + "parser/vardecl.c");
+  Scanner scanner(abspath);
+  Lexer lexer(scanner);
 
   Token::TokenClass currToken = Token::TokenClass::INVALID;
   while (currToken != Token::TokenClass::ENDOFFILE) {
@@ -125,8 +126,9 @@ TEST(LexerTest, VarDecls) {
 }
 
 TEST(LexerTest, FunDecl) {
-  Preprocessor preprocessor(test_prefix + "parser/fundecl.c");
-  Lexer lexer(preprocessor.getSource());
+  const std::string abspath = (test_prefix + "parser/fundecl.c");
+  Scanner scanner(abspath);
+  Lexer lexer(scanner);
 
   Token::TokenClass currToken = Token::TokenClass::INVALID;
   while (currToken != Token::TokenClass::ENDOFFILE) {
