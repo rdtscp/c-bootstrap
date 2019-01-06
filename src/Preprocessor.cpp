@@ -28,6 +28,8 @@ SourceCode Preprocessor::getSource() {
     } else if (c == '/' && (peekChar() == '*' || peekChar() == '/')) {
       passComment();
     } else if (c == '#') {
+      while (std::isspace(peekChar()))
+        nextChar();
       c = nextChar();
       if (c == 'd') {
         std::pair<bool, std::string> lexResult = tryLexKeyword("define");
@@ -65,6 +67,15 @@ SourceCode Preprocessor::getSource() {
               "\nPre-Processing: Unexpected Preprocessing Directive: " +
               lexResult.second + ". " + getStackPosition());
         preprocessEndif();
+      } else if (c == 'e' && peekChar() == 'r') {
+        std::pair<bool, std::string> lexResult = tryLexKeyword("error");
+        if (!lexResult.first)
+          throw std::runtime_error(
+              "\nPre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + getStackPosition());
+        std::string errorString = parseCondition();
+        throw std::runtime_error("\nPre-Processing Error: " + errorString +
+                                 getStackPosition());
       } else if (c == 'G') {
         std::pair<bool, std::string> lexResult =
             tryLexKeyword("GCC system_header");
@@ -131,6 +142,26 @@ SourceCode Preprocessor::getSource() {
               "\nPre-Processing: Unexpected Preprocessing Directive: " +
               lexResult.second + ". " + getStackPosition());
         preprocessPragma();
+      } else if (c == 'u' && peekChar() == 'n') {
+        std::pair<bool, std::string> lexResult = tryLexKeyword("undef");
+        if (!lexResult.first)
+          throw std::runtime_error(
+              "\nPre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + getStackPosition());
+        c = nextChar();
+        if (!std::isspace(c))
+          throw std::runtime_error(
+              "\nPre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + getStackPosition());
+        preprocessUndef();
+      } else if (c == 'w' && peekChar() == 'a') {
+        std::pair<bool, std::string> lexResult = tryLexKeyword("warning");
+        if (!lexResult.first)
+          throw std::runtime_error(
+              "\nPre-Processing: Unexpected Preprocessing Directive: " +
+              lexResult.second + ". " + getStackPosition());
+        std::string errorString = parseCondition();
+        std::cout << "  *  Pre-Processor Warning: " << errorString << std::endl;
       } else {
         throw std::runtime_error(
             "\nPre-Processing: Unexpected Preprocessing Directive: " +
@@ -484,24 +515,27 @@ void Preprocessor::preprocessPragma() {
 }
 void Preprocessor::preprocessUndef() {
   char c = nextChar();
-  std::string definition;
-  while (isalpha(c) || c == '_') {
-    definition += c;
+
+  /* Lex a valid identifier. */
+  std::string definition(1, c);
+  while (isalpha(peekChar()) || isdigit(peekChar()) || peekChar() == '_') {
     c = nextChar();
+    definition += c;
   }
 
   const std::map<std::string, std::string> definitonsCopy = varDefinitions;
   varDefinitions.clear();
   for (const auto &definitonCopy : definitonsCopy) {
     if (definitonCopy.first != definition)
-      addDefinition(definitonCopy.first, definitonCopy.second);
+      varDefinitions[definitonCopy.first] = definitonCopy.second;
   }
 }
 
 void Preprocessor::addDefinition(const std::string &definition,
                                  const std::string &value) {
-  if (ifs.size() == 0 || ifs.top().second)
+  if (ifs.size() == 0 || ifs.top().second) {
     varDefinitions[definition] = value;
+  }
 }
 
 void Preprocessor::checkChar(char c) const {
@@ -547,7 +581,7 @@ std::string Preprocessor::getStackPosition() const {
 }
 
 bool Preprocessor::isCppHeader(const std::string &filename) const {
-  return (filename.find(".h") != std::string::npos);
+  return (filename.find(".h") == std::string::npos);
 }
 
 std::string Preprocessor::parseCondition() {
