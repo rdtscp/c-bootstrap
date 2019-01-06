@@ -268,8 +268,8 @@ MIPS::Register GenerateMIPS::visit(Program &p) {
 
   MIPS.write(".text");
   MIPS.JAL("mainFunDecl");
-  for (std::shared_ptr<FunDecl> func : p.funDecls)
-    func->accept(*this);
+  // for (std::shared_ptr<FunDef> func : p.funDefs)
+  //   func->accept(*this);
 
   return MIPS::Register();
 }

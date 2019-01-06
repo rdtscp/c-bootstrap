@@ -229,8 +229,10 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   x86.call("main");
   x86.ret();
 
-  for (std::shared_ptr<FunDecl> func : p.funDecls)
+  for (std::shared_ptr<FunDecl> func : p.funDecls) {
+    std::cout << func->astClass() << std::endl;
     func->accept(*this);
+  }
 
   return std::make_shared<X86::None>();
 }

@@ -200,7 +200,7 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
     DESTINATION include
   )
 
-  
+  enable_testing()
   add_subdirectory(test)
   add_executable(acc main.cpp)
   target_link_libraries(acc AST DotGraph GenerateMIPS GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis)
