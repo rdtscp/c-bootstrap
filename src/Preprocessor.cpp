@@ -206,6 +206,9 @@ char Preprocessor::nextChar() { return scanners[scanners.size() - 1]->next(); }
 
 char Preprocessor::peekChar() { return scanners[scanners.size() - 1]->peek(); }
 
+/* ---- Setup Environment ---- */
+void Preprocessor::init() { varDefinitions["__x86_64__"] = ""; }
+
 /* ---- Functionality ---- */
 
 bool Preprocessor::evalIfCondition(const std::string &condition) {
@@ -302,46 +305,44 @@ void Preprocessor::preprocessDefine() {
 }
 void Preprocessor::preprocessElif() {
   assert(ifs.size() > 0);
-  std::pair<std::string, bool> &latestIf = ifs.top();
-  bool ifExecuting = latestIf.second;
-  latestIf.second = false;
-  if (!ifExecuting) {
-    ifs.pop();
-    char curr;
+  /* Skip this section */
+  if (ifs.top()) {
+    char c;
     while (true) {
-      curr = nextChar();
-      checkChar(curr);
-      if (curr == '#' && peekChar() == 'e') {
-        nextChar();
-        if (nextChar() == 'n' && nextChar() == 'd' && nextChar() == 'i' &&
-            nextChar() == 'f')
+      c = nextChar();
+      checkChar(c);
+      if (c == '#' && peekChar() == 'e') {
+        c = nextChar();
+        if (peekChar() == 'n')
           break;
       }
     }
-    if (!std::isspace(nextChar()))
+    std::pair<bool, std::string> endifRes = tryLexKeyword("endif");
+    if (!endifRes.first)
       throw std::runtime_error(
-          "\nPre-Processing: #if with #elif expected #endif Directive. " +
+          "\nPre-Processing: #if/#elif/#else expected #endif Directive. " +
           getStackPosition());
+    ifs.pop();
   }
 }
 void Preprocessor::preprocessElse() {
   assert(ifs.size() > 0);
-  std::pair<std::string, bool> &latestIf = ifs.top();
-  bool ifExecuted = latestIf.second;
-  latestIf.second = false;
-  if (ifExecuted) {
-    char curr;
+  /* Skip this section */
+  if (ifs.top()) {
+    char c;
     while (true) {
-      curr = nextChar();
-      checkChar(curr);
-      if (curr == '#' && peekChar() == 'e')
-        break;
+      c = nextChar();
+      checkChar(c);
+      if (c == '#' && peekChar() == 'e') {
+        c = nextChar();
+        if (peekChar() == 'n')
+          break;
+      }
     }
-    nextChar();
     std::pair<bool, std::string> endifRes = tryLexKeyword("endif");
     if (!endifRes.first)
       throw std::runtime_error(
-          "\nPre-Processing: #if #else expected #endif Directive. " +
+          "\nPre-Processing: #if/#elif/#else expected #endif Directive. " +
           getStackPosition());
     ifs.pop();
   }
@@ -351,89 +352,83 @@ void Preprocessor::preprocessIf() {
   std::string condition = parseCondition();
 
   if (evalIfCondition(condition)) {
-    /* Do the #if body */
-    ifs.push(std::pair<std::string, bool>(condition, true));
+    /* Notify preprocessElif(), preprocessElse() to skip the section. */
+    ifs.push(true);
   } else {
     /* Scan for #elif, #else, or #endif */
-    ifs.push(std::pair<std::string, bool>(condition, true));
-    bool foundElif = false;
-    while (!foundElif) {
-      std::pair<bool, std::string> nextIfDirective = getNextIfDirective();
-      std::string directive = nextIfDirective.second;
-      if (directive == "elif") {
+    ifs.push(false);
+    while (true) {
+      std::string nextDirective = getNextIfDirective();
+      if (nextDirective == "elif") {
         /* Check if this section should be used. */
         nextChar();
-        std::string condition = parseCondition();
-        if (evalIfCondition(condition))
-          foundElif = true;
-      } else if (directive == "else") {
+        condition = parseCondition();
+        if (evalIfCondition(condition)) {
+          ifs.top() = true;
+          break;
+        }
+      } else if (nextDirective == "else") {
         /* Allow the Lexer to use this section */
         break;
-      } else if (directive == "endif") {
+      } else if (nextDirective == "endif") {
         /* Allow the Lexer to continue */
         break;
       }
     }
-    if (foundElif)
-      ifs.push(std::pair<std::string, bool>(condition, false));
   }
 }
 void Preprocessor::preprocessIfdef() {
   std::string condition = "defined(" + parseCondition() + ")";
 
   if (evalIfCondition(condition)) {
-    /* Do the #ifdef body */
-    ifs.push(std::pair<std::string, bool>(condition, true));
+    /* Notify preprocessElif(), preprocessElse() to skip the section. */
+    ifs.push(true);
   } else {
     /* Scan for #elif, #else, or #endif */
-    bool foundElif = false;
-    while (!foundElif) {
-      std::pair<bool, std::string> nextIfDirective = getNextIfDirective();
-      std::string directive = nextIfDirective.second;
-      if (directive == "elif") {
+    while (true) {
+      std::string nextDirective = getNextIfDirective();
+      if (nextDirective == "elif") {
         /* Check if this section should be used. */
-        std::string condition = parseCondition();
-        if (evalIfCondition(condition))
-          foundElif = true;
-      } else if (directive == "else") {
+        condition = parseCondition();
+        if (evalIfCondition(condition)) {
+          ifs.top() = true;
+          break;
+        }
+      } else if (nextDirective == "else") {
         /* Allow the Lexer to use this section */
         break;
-      } else if (directive == "endif") {
+      } else if (nextDirective == "endif") {
         /* Allow the Lexer to continue */
         break;
       }
     }
-    if (foundElif)
-      ifs.push(std::pair<std::string, bool>(condition, false));
   }
 }
 void Preprocessor::preprocessIfndef() {
   std::string condition = "!defined(" + parseCondition() + ")";
 
   if (evalIfCondition(condition)) {
-    /* Do the #ifndef body */
-    ifs.push(std::pair<std::string, bool>(condition, true));
+    /* Notify preprocessElif(), preprocessElse() to skip the section. */
+    ifs.push(true);
   } else {
     /* Scan for #elif, #else, or #endif */
-    bool foundElif = false;
-    while (!foundElif) {
-      std::pair<bool, std::string> nextIfDirective = getNextIfDirective();
-      std::string directive = nextIfDirective.second;
-      if (directive == "elif") {
+    while (true) {
+      std::string nextDirective = getNextIfDirective();
+      if (nextDirective == "elif") {
         /* Check if this section should be used. */
-        std::string condition = parseCondition();
-        if (evalIfCondition(condition))
-          foundElif = true;
-      } else if (directive == "else") {
+        condition = parseCondition();
+        if (evalIfCondition(condition)) {
+          ifs.top() = true;
+          break;
+        }
+      } else if (nextDirective == "else") {
         /* Allow the Lexer to use this section */
         break;
-      } else if (directive == "endif") {
+      } else if (nextDirective == "endif") {
         /* Allow the Lexer to continue */
         break;
       }
     }
-    if (foundElif)
-      ifs.push(std::pair<std::string, bool>(condition, false));
   }
 }
 void Preprocessor::preprocessInclude() {
@@ -533,9 +528,7 @@ void Preprocessor::preprocessUndef() {
 
 void Preprocessor::addDefinition(const std::string &definition,
                                  const std::string &value) {
-  if (ifs.size() == 0 || ifs.top().second) {
-    varDefinitions[definition] = value;
-  }
+  varDefinitions[definition] = value;
 }
 
 void Preprocessor::checkChar(char c) const {
@@ -544,7 +537,7 @@ void Preprocessor::checkChar(char c) const {
         "\nPre-Processing: Expected #endif Directive but found EOF.");
 }
 
-std::pair<bool, std::string> Preprocessor::getNextIfDirective() {
+std::string Preprocessor::getNextIfDirective() {
   char curr;
   while (true) {
     curr = nextChar();
@@ -557,14 +550,14 @@ std::pair<bool, std::string> Preprocessor::getNextIfDirective() {
         curr = nextChar();
         if (peekChar() == 'i') {
           if (tryLexKeyword("lif").first)
-            return std::pair<bool, std::string>(true, "elif");
+            return "elif";
         } else if (peekChar() == 's') {
           if (tryLexKeyword("lse").first)
-            return std::pair<bool, std::string>(true, "else");
+            return "else";
         }
       } else if (peekChar() == 'n') {
         if (tryLexKeyword("endif").first)
-          return std::pair<bool, std::string>(true, "endif");
+          return "endif";
       }
     }
   }

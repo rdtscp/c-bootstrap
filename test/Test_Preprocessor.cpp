@@ -97,6 +97,17 @@ TEST(PreprocessorTest, IfElifElse) {
   ASSERT_EQ(progAST->decls[2]->getIdentifier(), "main");
 }
 
+TEST(PreprocessorTest, IfElifElse2) {
+  Preprocessor preprocessor(test_prefix + "preprocessor/prog7.c");
+  SourceCode src = preprocessor.getSource();
+
+  Parser parser(src);
+  std::shared_ptr<Program> progAST = parser.getAST();
+
+  ASSERT_EQ(progAST->decls.size(), 1);
+  ASSERT_EQ(progAST->decls[0]->getIdentifier(), "two");
+}
+
 TEST(PreprocessorTest, InvalidComments) {
   Preprocessor preprocessor(test_prefix + "lexer/errors.c");
   try {

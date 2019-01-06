@@ -33,8 +33,8 @@ private:
   const std::string abspath;
   std::vector<std::shared_ptr<Scanner>> scanners;
 
+  std::stack<bool> ifs;
   std::set<std::string> files;
-  std::stack<std::pair<std::string, bool>> ifs;
   std::map<PPFuncSig, std::string> funcDefinitions;
   std::map<std::string, std::string> varDefinitions;
 
@@ -43,6 +43,9 @@ private:
   int currLine() const;
   char nextChar();
   char peekChar();
+
+  /* ---- Setup Environment ---- */
+  void init();
 
   /* ---- Functionality ---- */
   bool evalIfCondition(const std::string &condition);
@@ -62,7 +65,7 @@ private:
   void checkChar(char c) const;
 
   void addDefinition(const std::string &definition, const std::string &value);
-  std::pair<bool, std::string> getNextIfDirective();
+  std::string getNextIfDirective();
   std::string getStackPosition() const;
   bool isCppHeader(const std::string &filename) const;
   std::string parseCondition();
