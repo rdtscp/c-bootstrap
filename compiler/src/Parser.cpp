@@ -39,8 +39,8 @@ SourceToken Parser::expect(TC expected) {
   }
   throw std::runtime_error(
       "Parsing: Expected Token " + ACC::tokToStr(expected) + " at " +
-      currToken.position.toString() +
-      " but found: " + ACC::tokToStr(currToken.tokenClass));
+      currToken.position.toString() + " but found: " +
+      ACC::tokToStr(currToken.tokenClass) + "(" + currToken.data + ")");
 }
 
 SourceToken Parser::expect(std::vector<TC> expected) {
