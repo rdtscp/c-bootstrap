@@ -7,7 +7,7 @@
 
 namespace ACC {
 
-class Position {
+class Position final {
 
 public:
   int column;

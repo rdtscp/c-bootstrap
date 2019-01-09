@@ -11,7 +11,7 @@
 
 namespace ACC {
 
-class Scanner {
+class Scanner final {
 
 public:
   Scanner(const std::string &abspath);

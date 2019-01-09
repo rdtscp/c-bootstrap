@@ -38,6 +38,8 @@ class While;
 template <typename T> class ASTVisitor {
 
 public:
+  virtual ~ASTVisitor() {}
+
   virtual T visit(ArrayAccess &aa) = 0;
   virtual T visit(ArrayType &at) = 0;
   virtual T visit(Assign &as) = 0;

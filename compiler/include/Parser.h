@@ -13,7 +13,7 @@
 
 namespace ACC {
 
-class Parser {
+class Parser final {
 
 public:
   Parser(Lexer &lexer);

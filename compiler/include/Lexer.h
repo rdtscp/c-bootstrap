@@ -11,7 +11,7 @@
 
 namespace ACC {
 
-class Lexer {
+class Lexer final {
 
 public:
   Lexer(Scanner &src);

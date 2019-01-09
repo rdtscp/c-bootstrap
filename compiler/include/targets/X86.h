@@ -15,6 +15,8 @@ namespace X86 {
 
 class Operand {
 public:
+  virtual ~Operand() {}
+
   virtual std::string opType() const = 0;
   virtual std::string toString() const = 0;
 };
@@ -57,7 +59,7 @@ public:
   std::string toString() const override;
 };
 
-class Writer {
+class Writer final {
 public:
   Writer(std::string filename);
 

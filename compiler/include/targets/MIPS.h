@@ -13,7 +13,7 @@ namespace ACC {
 
 namespace MIPS {
 
-class Register {
+class Register final {
 public:
   int num;
   std::string name;
@@ -24,7 +24,7 @@ public:
   std::string toString() const;
 };
 
-class Writer {
+class Writer final {
 public:
   Writer(std::string filename);
 

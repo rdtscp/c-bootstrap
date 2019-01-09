@@ -7,7 +7,7 @@
 
 namespace ACC {
 
-class Token {
+class Token final {
 
 public:
   enum class TokenClass {
