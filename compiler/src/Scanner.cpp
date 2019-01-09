@@ -5,15 +5,19 @@
 
 using namespace ACC;
 
-Scanner::Scanner(const std::string &abspath)
-    : column(1), line(1), abspath(abspath) {
-  std::ifstream t(abspath);
-  if (!t.good())
-    throw std::runtime_error("Scanner: Provided filename \"" + abspath +
-                             "\" could not be read.");
+Scanner::Scanner(const SourceHandler &source) : column(1), line(1) {
+  if (source.type == SourceHandler::SourceType::FILEPATH) {
+    std::ifstream fileStream(source.value);
+    if (!fileStream.good())
+      throw std::runtime_error("Scanner: Provided filename \"" + abspath +
+                               "\" could not be read.");
 
-  file = std::string((std::istreambuf_iterator<char>(t)),
-                     std::istreambuf_iterator<char>());
+    file = std::string((std::istreambuf_iterator<char>(fileStream)),
+                       std::istreambuf_iterator<char>());
+  } else if (source.type == SourceHandler::SourceType::RAW) {
+    file = source.value;
+  }
+
   currChar = file.begin();
 }
 

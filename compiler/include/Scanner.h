@@ -8,13 +8,14 @@
 #include <vector>
 
 #include "Position.h"
+#include "SourceHandler.h"
 
 namespace ACC {
 
 class Scanner final {
 
 public:
-  Scanner(const std::string &abspath);
+  Scanner(const SourceHandler &source);
 
   Scanner(const Scanner &rhs) = delete;
 
