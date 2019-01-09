@@ -317,11 +317,16 @@ std::shared_ptr<FunDecl> Parser::parseFunDecl() {
         "Parser: FunDef signature did not provide names for parameters.");
   } else if (acceptBlock()) {
     std::shared_ptr<Block> funBlock = parseBlock();
-    return std::make_shared<FunDef>(
-        FunDef(funBlock, funIdent, funParams, funType));
+    std::shared_ptr<FunDef> fd(
+        new FunDef(funBlock, funIdent, funParams, funType));
+    return fd;
+    // return std::make_shared<FunDef>(
+    //     FunDef(funBlock, funIdent, funParams, funType));
   } else {
     expect(TC::SC);
-    return std::make_shared<FunDecl>(FunDecl(funIdent, funParams, funType));
+    std::shared_ptr<FunDecl> fd(new FunDecl(funIdent, funParams, funType));
+    return fd;
+    // return std::make_shared<FunDecl>(FunDecl(funIdent, funParams, funType));
   }
 }
 std::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {

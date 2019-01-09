@@ -20,6 +20,9 @@ public:
 
   FunDecl(std::string funName, std::vector<std::shared_ptr<VarDecl>> funParams,
           std::shared_ptr<Type> funType);
+  FunDecl(const FunDecl &rhs) = delete;
+  virtual ~FunDecl() {}
+  FunDecl &operator=(const FunDecl &rhs) = delete;
 
   std::shared_ptr<FunDecl> getptr();
 
