@@ -45,8 +45,8 @@ int main(int argc, char const *argv[]) {
     }
   }
 
-  ACC::SourceHandler source(ACC::SourceHandler::Type::FILEPATH, inFilename);
-  ACC::Scanner scanner(source);
+  ACC::SourceHandler src(ACC::SourceHandler::Type::FILEPATH, inFilename);
+  ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   std::shared_ptr<ACC::Program> progAST = parser.getAST();

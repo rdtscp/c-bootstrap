@@ -5,17 +5,17 @@
 
 using namespace ACC;
 
-Scanner::Scanner(const SourceHandler &source) : column(1), line(1) {
-  if (source.type == SourceHandler::Type::FILEPATH) {
-    std::ifstream fileStream(source.value);
+Scanner::Scanner(const SourceHandler &src) : column(1), line(1) {
+  if (src.type == SourceHandler::Type::FILEPATH) {
+    std::ifstream fileStream(src.value);
     if (!fileStream.good())
       throw std::runtime_error("Scanner: Provided filename \"" + abspath +
                                "\" could not be read.");
 
     file = std::string((std::istreambuf_iterator<char>(fileStream)),
                        std::istreambuf_iterator<char>());
-  } else if (source.type == SourceHandler::Type::RAW) {
-    file = source.value;
+  } else if (src.type == SourceHandler::Type::RAW) {
+    file = src.value;
   }
 
   currChar = file.begin();
@@ -48,7 +48,9 @@ char Scanner::peek() {
   return *currChar;
 }
 
-std::string Scanner::getFileContents() const { return file; }
+SourceHandler Scanner::getFileContents() const {
+  return SourceHandler(SourceHandler::Type::RAW, file);
+}
 
 std::string Scanner::getFilename() const {
   std::vector<std::string> directories;

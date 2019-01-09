@@ -15,7 +15,7 @@ namespace ACC {
 class Scanner final {
 
 public:
-  Scanner(const SourceHandler &source);
+  Scanner(const SourceHandler &src);
 
   Scanner(const Scanner &rhs) = delete;
 
@@ -23,7 +23,7 @@ public:
 
   char peek();
 
-  std::string getFileContents() const;
+  SourceHandler getFileContents() const;
 
   std::string getFilename() const;
 

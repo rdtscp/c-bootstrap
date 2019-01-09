@@ -14,7 +14,7 @@ namespace ACC {
 class Lexer final {
 
 public:
-  Lexer(Scanner &src);
+  Lexer(Scanner &scanner);
   Lexer(Lexer &rhs) = delete;
 
   /* Parses the next Token out of the Input File. */
