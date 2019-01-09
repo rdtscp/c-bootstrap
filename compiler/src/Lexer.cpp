@@ -344,7 +344,7 @@ void Lexer::passComment() {
     }
   }
   throw std::runtime_error(
-      "Lexer: Parsing Comment Returned Unexpected SourceToken(s). " +
+      "Lexer: Lexing Comment Returned Unexpected SourceToken(s). " +
       scanner.getPosition().toString());
 }
 
