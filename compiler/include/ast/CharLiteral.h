@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef CHARLITERAL_H
-#define CHARLITERAL_H
+#ifndef ACC_CHARLITERAL_H
+#define ACC_CHARLITERAL_H
 
 #include <string>
 

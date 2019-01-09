@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef PRIMITIVETYPE_H
-#define PRIMITIVETYPE_H
+#ifndef ACC_PRIMITIVETYPE_H
+#define ACC_PRIMITIVETYPE_H
 
 #include <string>
 

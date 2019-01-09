@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef FUNCALL_H
-#define FUNCALL_H
+#ifndef ACC_FUNCALL_H
+#define ACC_FUNCALL_H
 
 #include <string>
 #include <vector>

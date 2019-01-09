@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef STRUCTTYPE_H
-#define STRUCTTYPE_H
+#ifndef ACC_STRUCTTYPE_H
+#define ACC_STRUCTTYPE_H
 
 #include <memory>
 #include <string>

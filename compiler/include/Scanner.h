@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef SCANNER_H
-#define SCANNER_H
+#ifndef ACC_SCANNER_H
+#define ACC_SCANNER_H
 
 #include <memory>
 #include <string>

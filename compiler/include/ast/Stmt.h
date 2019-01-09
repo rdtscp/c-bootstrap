@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef STMT_H
-#define STMT_H
+#ifndef ACC_STMT_H
+#define ACC_STMT_H
 
 #include "../ASTNode.h"
 

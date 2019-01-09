@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef LITERAL_H
-#define LITERAL_H
+#ifndef ACC_LITERAL_H
+#define ACC_LITERAL_H
 
 #include "Expr.h"
 

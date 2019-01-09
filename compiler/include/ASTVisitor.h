@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ASTVISITOR_H
-#define ASTVISITOR_H
+#ifndef ACC_ASTVISITOR_H
+#define ACC_ASTVISITOR_H
 
 namespace ACC {
 

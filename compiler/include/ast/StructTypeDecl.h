@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef STRUCTTYPEDECL_H
-#define STRUCTTYPEDECL_H
+#ifndef ACC_STRUCTTYPEDECL_H
+#define ACC_STRUCTTYPEDECL_H
 
 #include <vector>
 

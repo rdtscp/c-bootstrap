@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef TOKENISER_H
-#define TOKENISER_H
+#ifndef ACC_TOKENISER_H
+#define ACC_TOKENISER_H
 
 #include <string>
 #include <utility>

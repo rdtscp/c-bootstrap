@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef VALUEAT_H
-#define VALUEAT_H
+#ifndef ACC_VALUEAT_H
+#define ACC_VALUEAT_H
 
 #include <string>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef TYPE_H
-#define TYPE_H
+#ifndef ACC_TYPE_H
+#define ACC_TYPE_H
 
 #include "../ASTNode.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef BLOCK_H
-#define BLOCK_H
+#ifndef ACC_BLOCK_H
+#define ACC_BLOCK_H
 
 #include <map>
 #include <vector>

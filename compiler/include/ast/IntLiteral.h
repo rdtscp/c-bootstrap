@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef INTLITERAL_H
-#define INTLITERAL_H
+#ifndef ACC_INTLITERAL_H
+#define ACC_INTLITERAL_H
 
 #include <string>
 

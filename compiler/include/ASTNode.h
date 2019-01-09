@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ASTNODE_H
-#define ASTNODE_H
+#ifndef ACC_ASTNODE_H
+#define ACC_ASTNODE_H
 
 #include <string>
 

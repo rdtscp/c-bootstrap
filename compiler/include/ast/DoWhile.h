@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef DOWHILE_H
-#define DOWHILE_H
+#ifndef ACC_DOWHILE_H
+#define ACC_DOWHILE_H
 
 #include <string>
 

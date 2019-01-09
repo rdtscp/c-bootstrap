@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ARRAYTYPE_H
-#define ARRAYTYPE_H
+#ifndef ACC_ARRAYTYPE_H
+#define ACC_ARRAYTYPE_H
 
 #include <memory>
 #include <string>

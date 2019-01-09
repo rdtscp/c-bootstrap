@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef OP_H
-#define OP_H
+#ifndef ACC_OP_H
+#define ACC_OP_H
 
 namespace ACC {
 

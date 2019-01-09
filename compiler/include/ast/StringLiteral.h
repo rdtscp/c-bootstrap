@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef STRINGLITERAL_H
-#define STRINGLITERAL_H
+#ifndef ACC_STRINGLITERAL_H
+#define ACC_STRINGLITERAL_H
 
 #include <string>
 

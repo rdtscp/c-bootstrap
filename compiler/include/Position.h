@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef POSITION_H
-#define POSITION_H
+#ifndef ACC_POSITION_H
+#define ACC_POSITION_H
 
 #include <string>
 

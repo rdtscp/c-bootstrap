@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef OPTIMISER_H
-#define OPTIMISER_H
+#ifndef ACC_OPTIMISER_H
+#define ACC_OPTIMISER_H
 
 #include <iostream>
 #include <memory>

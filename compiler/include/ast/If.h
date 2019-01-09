@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef IF_H
-#define IF_H
+#ifndef ACC_IF_H
+#define ACC_IF_H
 
 #include <string>
 

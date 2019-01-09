@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef TYPEDEF_H
-#define TYPEDEF_H
+#ifndef ACC_TYPEDEF_H
+#define ACC_TYPEDEF_H
 
 #include <string>
 

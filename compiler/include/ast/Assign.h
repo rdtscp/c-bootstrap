@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ASSIGN_H
-#define ASSIGN_H
+#ifndef ACC_ASSIGN_H
+#define ACC_ASSIGN_H
 
 #include <string>
 

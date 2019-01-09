@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef WHILE_H
-#define WHILE_H
+#ifndef ACC_WHILE_H
+#define ACC_WHILE_H
 
 #include <string>
 

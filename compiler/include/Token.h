@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef TOKEN_H
-#define TOKEN_H
+#ifndef ACC_TOKEN_H
+#define ACC_TOKEN_H
 
 #include "Position.h"
 

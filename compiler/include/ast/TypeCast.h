@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef TYPECAST_H
-#define TYPECAST_H
+#ifndef ACC_TYPECAST_H
+#define ACC_TYPECAST_H
 
 #include <string>
 

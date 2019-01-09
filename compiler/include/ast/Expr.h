@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef EXPR_H
-#define EXPR_H
+#ifndef ACC_EXPR_H
+#define ACC_EXPR_H
 
 #include "Stmt.h"
 

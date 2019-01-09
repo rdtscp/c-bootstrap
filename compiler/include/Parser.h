@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef ACC_PARSER_H
+#define ACC_PARSER_H
 
 #include <memory>
 #include <string>

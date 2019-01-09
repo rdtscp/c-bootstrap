@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef FUNDECL_H
-#define FUNDECL_H
+#ifndef ACC_FUNDECL_H
+#define ACC_FUNDECL_H
 
 #include <vector>
 

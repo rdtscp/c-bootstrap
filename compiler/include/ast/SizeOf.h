@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef SIZEOF_H
-#define SIZEOF_H
+#ifndef ACC_SIZEOF_H
+#define ACC_SIZEOF_H
 
 #include <string>
 

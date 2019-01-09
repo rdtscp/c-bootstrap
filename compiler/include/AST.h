@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef AST_H
-#define AST_H
+#ifndef ACC_AST_H
+#define ACC_AST_H
 
 #include "ast/ArrayAccess.h"
 #include "ast/ArrayType.h"

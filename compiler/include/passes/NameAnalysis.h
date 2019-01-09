@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef NAMEANALYSIS_H
-#define NAMEANALYSIS_H
+#ifndef ACC_NAMEANALYSIS_H
+#define ACC_NAMEANALYSIS_H
 
 #include <iostream>
 #include <memory>

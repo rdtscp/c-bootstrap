@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef GENERATEMIPS_H
-#define GENERATEMIPS_H
+#ifndef ACC_GENERATEMIPS_H
+#define ACC_GENERATEMIPS_H
 
 #include <algorithm>
 #include <memory>

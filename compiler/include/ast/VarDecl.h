@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef VARDECL_H
-#define VARDECL_H
+#ifndef ACC_VARDECL_H
+#define ACC_VARDECL_H
 
 #include "Decl.h"
 #include "Stmt.h"

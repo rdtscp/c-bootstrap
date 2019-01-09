@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ENUMTYPEDECL_H
-#define ENUMTYPEDECL_H
+#ifndef ACC_ENUMTYPEDECL_H
+#define ACC_ENUMTYPEDECL_H
 
 #include <map>
 #include <string>

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef TYPEANALYSIS_H
-#define TYPEANALYSIS_H
+#ifndef ACC_TYPEANALYSIS_H
+#define ACC_TYPEANALYSIS_H
 
 #include <iostream>
 #include <memory>

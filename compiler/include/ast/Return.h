@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RETURN_H
-#define RETURN_H
+#ifndef ACC_RETURN_H
+#define ACC_RETURN_H
 
 #include <string>
 

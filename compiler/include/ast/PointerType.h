@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef POINTERTYPE_H
-#define POINTERTYPE_H
+#ifndef ACC_POINTERTYPE_H
+#define ACC_POINTERTYPE_H
 
 #include <string>
 

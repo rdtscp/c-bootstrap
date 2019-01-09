@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef FIELDACCESS_H
-#define FIELDACCESS_H
+#ifndef ACC_FIELDACCESS_H
+#define ACC_FIELDACCESS_H
 
 #include <string>
 

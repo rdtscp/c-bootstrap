@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef BINOP_H
-#define BINOP_H
+#ifndef ACC_BINOP_H
+#define ACC_BINOP_H
 
 #include <string>
 

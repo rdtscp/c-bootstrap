@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef X86_H
-#define X86_H
+#ifndef ACC_X86_H
+#define ACC_X86_H
 
 #include <fstream>
 #include <iostream>

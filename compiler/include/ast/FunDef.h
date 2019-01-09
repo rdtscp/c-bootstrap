@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef FUNDEF_H
-#define FUNDEF_H
+#ifndef ACC_FUNDEF_H
+#define ACC_FUNDEF_H
 
 #include <vector>
 

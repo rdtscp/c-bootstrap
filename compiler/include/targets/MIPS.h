@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef MIPS_H
-#define MIPS_H
+#ifndef ACC_MIPS_H
+#define ACC_MIPS_H
 
 #include <fstream>
 #include <iostream>

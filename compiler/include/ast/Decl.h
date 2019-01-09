@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef DECL_H
-#define DECL_H
+#ifndef ACC_DECL_H
+#define ACC_DECL_H
 
 #include "../ASTNode.h"
 

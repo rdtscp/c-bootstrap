@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ARRAYACCESS_H
-#define ARRAYACCESS_H
+#ifndef ACC_ARRAYACCESS_H
+#define ACC_ARRAYACCESS_H
 
 #include <memory>
 #include <string>

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef DOTGRAPH_H
-#define DOTGRAPH_H
+#ifndef ACC_DOTGRAPH_H
+#define ACC_DOTGRAPH_H
 
 #include <iostream>
 

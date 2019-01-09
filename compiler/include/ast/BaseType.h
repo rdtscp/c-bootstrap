@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef BASETYPE_H
-#define BASETYPE_H
+#ifndef ACC_BASETYPE_H
+#define ACC_BASETYPE_H
 
 #include <string>
 

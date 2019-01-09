@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef GENERATEX86_H
-#define GENERATEX86_H
+#ifndef ACC_GENERATEX86_H
+#define ACC_GENERATEX86_H
 
 #include <algorithm>
 #include <memory>

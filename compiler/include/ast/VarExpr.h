@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef VAREXPR_H
-#define VAREXPR_H
+#ifndef ACC_VAREXPR_H
+#define ACC_VAREXPR_H
 
 #include <string>
 
