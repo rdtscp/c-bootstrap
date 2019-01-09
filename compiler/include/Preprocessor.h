@@ -7,27 +7,32 @@
 #include <utility>
 
 #include "Scanner.h"
+#include "SourceHandler.h"
 
 namespace ACC {
 
 class Preprocessor final {
 
 public:
-  Preprocessor(Scanner &src);
+  Preprocessor(const SourceHandler &src);
+
   Preprocessor(Preprocessor &rhs) = delete;
 
-  /* Preprocess the file, and return it as a std::string. */
-  std::string preprocess();
-
-  /* Preprocess the file, and write the result to the filepath. */
-  void preprocess(const std::string &filepath);
+  SourceHandler preprocess(const SourceHandler &src);
 
 private:
-  Scanner &scanner;
+  Scanner scanner;
 
   void passComment();
   std::pair<bool, std::string> tryLexKeyword(const std::string &keyword);
 };
+
+class PPNode {
+public:
+  virtual ~PPNode() {}
+};
+
+class
 
 }; // namespace ACC
 
