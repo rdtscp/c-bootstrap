@@ -45,8 +45,7 @@ int main(int argc, char const *argv[]) {
     }
   }
 
-  ACC::SourceHandler source(ACC::SourceHandler::SourceType::FILEPATH,
-                            inFilename);
+  ACC::SourceHandler source(ACC::SourceHandler::Type::FILEPATH, inFilename);
   ACC::Scanner scanner(source);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);

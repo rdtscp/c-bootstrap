@@ -4,7 +4,7 @@
 #include "../include/Parser.h"
 
 using namespace ACC;
-using TC = Token::TokenClass;
+using TC = SourceToken::Class;
 
 Parser::Parser(Lexer &lexer)
     : currToken(TC::INVALID, Position(-1, -1, "")), lexer(lexer) {}
@@ -31,11 +31,11 @@ bool Parser::accept(std::vector<TC> expected, int offset) {
   return false;
 }
 
-Token Parser::expect(TC expected) {
+SourceToken Parser::expect(TC expected) {
   if (expected == currToken.tokenClass) {
-    Token temp = currToken;
+    SourceToken output = currToken;
     nextToken();
-    return temp;
+    return output;
   }
   throw std::runtime_error(
       "Parsing: Expected Token " + ACC::tokToStr(expected) + " at " +
@@ -43,10 +43,10 @@ Token Parser::expect(TC expected) {
       " but found: " + ACC::tokToStr(currToken.tokenClass));
 }
 
-Token Parser::expect(std::vector<TC> expected) {
+SourceToken Parser::expect(std::vector<TC> expected) {
   for (TC token : expected) {
     if (token == currToken.tokenClass) {
-      Token output = currToken;
+      SourceToken output = currToken;
       nextToken();
       return output;
     }
@@ -55,7 +55,7 @@ Token Parser::expect(std::vector<TC> expected) {
                            currToken.position.toString());
 }
 
-Token Parser::lookAhead(int i) {
+SourceToken Parser::lookAhead(int i) {
   assert(i >= 0);
   if (i == 0)
     return currToken;
@@ -391,7 +391,7 @@ std::shared_ptr<Type> Parser::parseType() {
     while (accept(TC::UNSIGNED))
       modifiers.push_back(expect(TC::UNSIGNED).tokenClass);
 
-    Token baseType = expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT});
+    SourceToken baseType = expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT});
     PrimitiveType pType;
     switch (baseType.tokenClass) {
     case TC::INT:

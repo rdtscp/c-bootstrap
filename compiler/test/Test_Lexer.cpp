@@ -6,7 +6,7 @@
 
 #include "../include/Lexer.h"
 #include "../include/Scanner.h"
-#include "../include/Token.h"
+#include "../include/SourceToken.h"
 
 using namespace ACC;
 
@@ -15,79 +15,80 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(LexerTest, AllTokens) {
-  const std::string abspath = (test_prefix + "lexer/alltokens.c");
-
-  Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "lexer/alltokens.c");
+  ACC::Scanner scanner(src);
   Lexer lexer(scanner);
 
-  std::vector<Token::TokenClass> expected = {Token::TokenClass::IDENTIFIER,
-                                             Token::TokenClass::ASSIGN,
-                                             Token::TokenClass::LBRA,
-                                             Token::TokenClass::RBRA,
-                                             Token::TokenClass::LPAR,
-                                             Token::TokenClass::RPAR,
-                                             Token::TokenClass::LSBR,
-                                             Token::TokenClass::RSBR,
-                                             Token::TokenClass::SC,
-                                             Token::TokenClass::COMMA,
-                                             Token::TokenClass::INT,
-                                             Token::TokenClass::VOID,
-                                             Token::TokenClass::CHAR,
-                                             Token::TokenClass::IF,
-                                             Token::TokenClass::ELSE,
-                                             Token::TokenClass::WHILE,
-                                             Token::TokenClass::RETURN,
-                                             Token::TokenClass::STRUCT,
-                                             Token::TokenClass::SIZEOF,
-                                             Token::TokenClass::IDENTIFIER,
-                                             Token::TokenClass::STRING_LITERAL,
-                                             Token::TokenClass::STRING_LITERAL,
-                                             Token::TokenClass::INT_LITERAL,
-                                             Token::TokenClass::INT_LITERAL,
-                                             Token::TokenClass::INT_LITERAL,
-                                             Token::TokenClass::INT_LITERAL,
-                                             Token::TokenClass::INT_LITERAL,
-                                             Token::TokenClass::INT_LITERAL,
-                                             Token::TokenClass::INT_LITERAL,
-                                             Token::TokenClass::INT_LITERAL,
-                                             Token::TokenClass::INT_LITERAL,
-                                             Token::TokenClass::INT_LITERAL,
-                                             Token::TokenClass::INT_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::CHAR_LITERAL,
-                                             Token::TokenClass::AND,
-                                             Token::TokenClass::OR,
-                                             Token::TokenClass::EQ,
-                                             Token::TokenClass::NE,
-                                             Token::TokenClass::LT,
-                                             Token::TokenClass::GT,
-                                             Token::TokenClass::LE,
-                                             Token::TokenClass::GE,
-                                             Token::TokenClass::PLUS,
-                                             Token::TokenClass::MINUS,
-                                             Token::TokenClass::ASTERIX,
-                                             Token::TokenClass::DIV,
-                                             Token::TokenClass::REM,
-                                             Token::TokenClass::DOT,
-                                             Token::TokenClass::ENDOFFILE};
+  std::vector<SourceToken::Class> expected = {
+      SourceToken::Class::IDENTIFIER,
+      SourceToken::Class::ASSIGN,
+      SourceToken::Class::LBRA,
+      SourceToken::Class::RBRA,
+      SourceToken::Class::LPAR,
+      SourceToken::Class::RPAR,
+      SourceToken::Class::LSBR,
+      SourceToken::Class::RSBR,
+      SourceToken::Class::SC,
+      SourceToken::Class::COMMA,
+      SourceToken::Class::INT,
+      SourceToken::Class::VOID,
+      SourceToken::Class::CHAR,
+      SourceToken::Class::IF,
+      SourceToken::Class::ELSE,
+      SourceToken::Class::WHILE,
+      SourceToken::Class::RETURN,
+      SourceToken::Class::STRUCT,
+      SourceToken::Class::SIZEOF,
+      SourceToken::Class::IDENTIFIER,
+      SourceToken::Class::STRING_LITERAL,
+      SourceToken::Class::STRING_LITERAL,
+      SourceToken::Class::INT_LITERAL,
+      SourceToken::Class::INT_LITERAL,
+      SourceToken::Class::INT_LITERAL,
+      SourceToken::Class::INT_LITERAL,
+      SourceToken::Class::INT_LITERAL,
+      SourceToken::Class::INT_LITERAL,
+      SourceToken::Class::INT_LITERAL,
+      SourceToken::Class::INT_LITERAL,
+      SourceToken::Class::INT_LITERAL,
+      SourceToken::Class::INT_LITERAL,
+      SourceToken::Class::INT_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::CHAR_LITERAL,
+      SourceToken::Class::AND,
+      SourceToken::Class::OR,
+      SourceToken::Class::EQ,
+      SourceToken::Class::NE,
+      SourceToken::Class::LT,
+      SourceToken::Class::GT,
+      SourceToken::Class::LE,
+      SourceToken::Class::GE,
+      SourceToken::Class::PLUS,
+      SourceToken::Class::MINUS,
+      SourceToken::Class::ASTERIX,
+      SourceToken::Class::DIV,
+      SourceToken::Class::REM,
+      SourceToken::Class::DOT,
+      SourceToken::Class::ENDOFFILE};
 
-  std::vector<Token::TokenClass> actual;
+  std::vector<SourceToken::Class> actual;
 
-  Token::TokenClass currToken = Token::TokenClass::INVALID;
-  while (currToken != Token::TokenClass::ENDOFFILE) {
+  SourceToken::Class currToken = SourceToken::Class::INVALID;
+  while (currToken != SourceToken::Class::ENDOFFILE) {
     currToken = lexer.nextToken().tokenClass;
     actual.push_back(currToken);
   }
@@ -100,12 +101,13 @@ TEST(LexerTest, AllTokens) {
 }
 
 TEST(LexerTest, NestedComments) {
-  const std::string abspath = (test_prefix + "lexer/nested_comments.c");
-  Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "lexer/nested_comments.c");
+  ACC::Scanner scanner(src);
   Lexer lexer(scanner);
 
-  Token::TokenClass currToken = Token::TokenClass::INVALID;
-  while (currToken != Token::TokenClass::ENDOFFILE) {
+  SourceToken::Class currToken = SourceToken::Class::INVALID;
+  while (currToken != SourceToken::Class::ENDOFFILE) {
     currToken = lexer.nextToken().tokenClass;
   }
 
@@ -113,12 +115,13 @@ TEST(LexerTest, NestedComments) {
 }
 
 TEST(LexerTest, VarDecls) {
-  const std::string abspath = (test_prefix + "parser/vardecl.c");
-  Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "parser/vardecl.c");
+  ACC::Scanner scanner(src);
   Lexer lexer(scanner);
 
-  Token::TokenClass currToken = Token::TokenClass::INVALID;
-  while (currToken != Token::TokenClass::ENDOFFILE) {
+  SourceToken::Class currToken = SourceToken::Class::INVALID;
+  while (currToken != SourceToken::Class::ENDOFFILE) {
     currToken = lexer.nextToken().tokenClass;
   }
 
@@ -126,12 +129,13 @@ TEST(LexerTest, VarDecls) {
 }
 
 TEST(LexerTest, FunDecl) {
-  const std::string abspath = (test_prefix + "parser/fundecl.c");
-  Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "parser/fundecl.c");
+  ACC::Scanner scanner(src);
   Lexer lexer(scanner);
 
-  Token::TokenClass currToken = Token::TokenClass::INVALID;
-  while (currToken != Token::TokenClass::ENDOFFILE) {
+  SourceToken::Class currToken = SourceToken::Class::INVALID;
+  while (currToken != SourceToken::Class::ENDOFFILE) {
     currToken = lexer.nextToken().tokenClass;
   }
 

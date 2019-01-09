@@ -6,7 +6,7 @@
 using namespace ACC;
 
 Scanner::Scanner(const SourceHandler &source) : column(1), line(1) {
-  if (source.type == SourceHandler::SourceType::FILEPATH) {
+  if (source.type == SourceHandler::Type::FILEPATH) {
     std::ifstream fileStream(source.value);
     if (!fileStream.good())
       throw std::runtime_error("Scanner: Provided filename \"" + abspath +
@@ -14,7 +14,7 @@ Scanner::Scanner(const SourceHandler &source) : column(1), line(1) {
 
     file = std::string((std::istreambuf_iterator<char>(fileStream)),
                        std::istreambuf_iterator<char>());
-  } else if (source.type == SourceHandler::SourceType::RAW) {
+  } else if (source.type == SourceHandler::Type::RAW) {
     file = source.value;
   }
 

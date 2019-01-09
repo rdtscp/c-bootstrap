@@ -17,8 +17,9 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(OptimiserTest, FunDeclsC) {
-  const std::string abspath = (test_prefix + "/parser/fundecls.c");
-  ACC::Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "parser/fundecls.c");
+  ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   std::shared_ptr<ACC::Program> progAST = parser.getAST();

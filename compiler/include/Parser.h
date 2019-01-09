@@ -9,7 +9,7 @@
 
 #include "AST.h"
 #include "Lexer.h"
-#include "Token.h"
+#include "SourceToken.h"
 
 namespace ACC {
 
@@ -23,26 +23,26 @@ public:
   std::shared_ptr<Program> getAST();
 
 private:
-  Token currToken;
+  SourceToken currToken;
   Lexer &lexer;
-  std::vector<Token> tokenBuffer;
+  std::vector<SourceToken> tokenBuffer;
 
   /* ---- Token Operations ---- */
 
   /* Check if we can expect the provided Token to be next. */
-  bool accept(Token::TokenClass expected, int offset = 0);
+  bool accept(SourceToken::Class expected, int offset = 0);
 
   /* Check if we can expect one of the provided Tokens to be next. */
-  bool accept(std::vector<Token::TokenClass> expected, int offset = 0);
+  bool accept(std::vector<SourceToken::Class> expected, int offset = 0);
 
   /* Expect the next Token to be of a certain type. Throws if not. */
-  Token expect(Token::TokenClass expected);
+  SourceToken expect(SourceToken::Class expected);
 
   /* Expect the next Token to be one of a list of types. Throws if not. */
-  Token expect(std::vector<Token::TokenClass> expected);
+  SourceToken expect(std::vector<SourceToken::Class> expected);
 
   /* Looks ahead 'i' number of Tokens. */
-  Token lookAhead(int i);
+  SourceToken lookAhead(int i);
 
   /* Populates currToken with the next unconsumed Token. */
   void nextToken();
@@ -115,7 +115,7 @@ private:
   /* ---- Helpers ---- */
 
   /* Converts an Token to an Type */
-  std::shared_ptr<BaseType> tokenToType(const Token::TokenClass &tc);
+  std::shared_ptr<BaseType> tokenToType(const SourceToken::Class &tc);
 };
 
 }; // namespace ACC

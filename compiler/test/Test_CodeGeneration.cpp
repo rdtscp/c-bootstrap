@@ -39,8 +39,9 @@ TEST(CodeGenerationTest, MIPS_Fibonacci) {
 }
 
 TEST(CodeGenerationTest, X86_fundeclsc) {
-  const std::string abspath = (test_prefix + "parser/fundecls.cpp");
-  ACC::Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "parser/fundecls.c");
+  ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   std::shared_ptr<Program> progAST = parser.getAST();

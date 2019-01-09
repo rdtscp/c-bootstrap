@@ -9,10 +9,10 @@ namespace ACC {
 
 class SourceHandler {
 public:
-  enum class SourceType { FILEPATH, RAW };
-  SourceHandler(const SourceType type, const std::string &value)
+  enum class Type { FILEPATH, RAW };
+  SourceHandler(const Type type, const std::string &value)
       : type(type), value(value) {}
-  const SourceType type;
+  const Type type;
   const std::string &value;
 };
 

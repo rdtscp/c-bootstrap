@@ -2,19 +2,20 @@
 #include <stdexcept>
 
 #include "../include/Lexer.h"
-#include "../include/Token.h"
 
 using namespace ACC;
 
+using TC = SourceToken::Class;
+
 Lexer::Lexer(Scanner &scanner) : scanner(scanner) {}
 
-Token Lexer::nextToken() {
+SourceToken Lexer::nextToken() {
   // Get the next Char.
   char c = scanner.next();
 
   // Find EOF.
   if (c == '\0')
-    return Token(Token::TokenClass::ENDOFFILE, scanner.getPosition());
+    return SourceToken(TC::ENDOFFILE, scanner.getPosition());
 
   // Skip through Comments.
   if (c == '/' && (scanner.peek() == '*' || scanner.peek() == '/')) {
@@ -38,8 +39,8 @@ Token Lexer::nextToken() {
         if (scanner.peek() == '\'') {
           char val = c;
           scanner.next();
-          return Token(Token::TokenClass::CHAR_LITERAL, scanner.getPosition(),
-                       std::to_string('\\' + val));
+          return SourceToken(TC::CHAR_LITERAL, scanner.getPosition(),
+                             std::to_string('\\' + val));
         }
       }
     }
@@ -47,8 +48,8 @@ Token Lexer::nextToken() {
     else if (scanner.peek() == '\'') {
       char val = c;
       scanner.next();
-      return Token(Token::TokenClass::CHAR_LITERAL, scanner.getPosition(),
-                   std::string(1, val));
+      return SourceToken(TC::CHAR_LITERAL, scanner.getPosition(),
+                         std::string(1, val));
     }
   }
   // Recognise IDENTIFIERS & Keyword Tokens.
@@ -60,7 +61,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::CHAR, scanner.getPosition());
+        return SourceToken(TC::CHAR, scanner.getPosition());
     }
     // Check for CONST Token.
     if (c == 'c' && scanner.peek() == 'o') {
@@ -68,7 +69,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::CONST, scanner.getPosition());
+        return SourceToken(TC::CONST, scanner.getPosition());
     }
     // Check for DO Token.
     if (c == 'd' && scanner.peek() == 'o') {
@@ -76,7 +77,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::DO, scanner.getPosition());
+        return SourceToken(TC::DO, scanner.getPosition());
     }
     // Check for ELSE Token.
     else if (c == 'e' && scanner.peek() == 'l') {
@@ -84,7 +85,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::ELSE, scanner.getPosition());
+        return SourceToken(TC::ELSE, scanner.getPosition());
     }
     // Check for ENUM Token.
     else if (c == 'e' && scanner.peek() == 'n') {
@@ -92,7 +93,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::ENUM, scanner.getPosition());
+        return SourceToken(TC::ENUM, scanner.getPosition());
     }
     // Check for EXTERN Token.
     else if (c == 'e' && scanner.peek() == 'x') {
@@ -100,7 +101,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::EXTERN, scanner.getPosition());
+        return SourceToken(TC::EXTERN, scanner.getPosition());
     }
     // Check for IF Token.
     else if (c == 'i' && scanner.peek() == 'f') {
@@ -108,7 +109,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::IF, scanner.getPosition());
+        return SourceToken(TC::IF, scanner.getPosition());
     }
     // Check for INT token.
     else if (c == 'i' && scanner.peek() == 'n') {
@@ -116,7 +117,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::INT, scanner.getPosition());
+        return SourceToken(TC::INT, scanner.getPosition());
     }
     // Check for RETURN Token.
     else if (c == 'r' && scanner.peek() == 'e') {
@@ -124,7 +125,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::RETURN, scanner.getPosition());
+        return SourceToken(TC::RETURN, scanner.getPosition());
     }
     // Check for SIZEOF Token.
     else if (c == 's' && scanner.peek() == 'h') {
@@ -132,7 +133,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::SHORT, scanner.getPosition());
+        return SourceToken(TC::SHORT, scanner.getPosition());
     }
     // Check for SIZEOF Token.
     else if (c == 's' && scanner.peek() == 'i') {
@@ -140,7 +141,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::SIZEOF, scanner.getPosition());
+        return SourceToken(TC::SIZEOF, scanner.getPosition());
     }
     // Check for STRUCT Token.
     else if (c == 's' && scanner.peek() == 't') {
@@ -148,7 +149,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::STRUCT, scanner.getPosition());
+        return SourceToken(TC::STRUCT, scanner.getPosition());
     }
     // Check for TYPEDEF Token.
     else if (c == 't' && scanner.peek() == 'y') {
@@ -156,7 +157,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::TYPEDEF, scanner.getPosition());
+        return SourceToken(TC::TYPEDEF, scanner.getPosition());
     }
     // Check for UNSIGNED Token.
     else if (c == 'u' && scanner.peek() == 'n') {
@@ -164,7 +165,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::UNSIGNED, scanner.getPosition());
+        return SourceToken(TC::UNSIGNED, scanner.getPosition());
     }
     // Check for WHILE Token.
     else if (c == 'w' && scanner.peek() == 'h') {
@@ -172,7 +173,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::WHILE, scanner.getPosition());
+        return SourceToken(TC::WHILE, scanner.getPosition());
     }
     // Check for VOID Token.
     else if (c == 'v' && scanner.peek() == 'o') {
@@ -180,7 +181,7 @@ Token Lexer::nextToken() {
       literal = lexResult.second;
 
       if (lexResult.first)
-        return Token(Token::TokenClass::VOID, scanner.getPosition());
+        return SourceToken(TC::VOID, scanner.getPosition());
     }
 
     // No keyword Token has been returned.
@@ -191,14 +192,12 @@ Token Lexer::nextToken() {
       // If the next character is whitespace, the IDENTIFIER has been
       // identified.
       if (std::isspace(peek)) {
-        return Token(Token::TokenClass::IDENTIFIER, scanner.getPosition(),
-                     literal);
+        return SourceToken(TC::IDENTIFIER, scanner.getPosition(), literal);
       }
       // If the next character is an illegal characater for an IDENTIFIER, we
       // have finished finding the token.
       if (!isalpha(peek) && !isdigit(peek) && peek != '_' && peek != '$') {
-        return Token(Token::TokenClass::IDENTIFIER, scanner.getPosition(),
-                     literal);
+        return SourceToken(TC::IDENTIFIER, scanner.getPosition(), literal);
       }
       // We are still Lexing the token.
       c = scanner.next();
@@ -217,73 +216,72 @@ Token Lexer::nextToken() {
         literal += scanner.next();
     }
 
-    return Token(Token::TokenClass::INT_LITERAL, scanner.getPosition(),
-                 literal);
+    return SourceToken(TC::INT_LITERAL, scanner.getPosition(), literal);
   }
 
   /* Recognise Two Symbol Tokens. */
   if (c == '=' && scanner.peek() == '=') {
     scanner.next();
-    return Token(Token::TokenClass::EQ, scanner.getPosition());
+    return SourceToken(TC::EQ, scanner.getPosition());
   }
   if (c == '!' && scanner.peek() == '=') {
     scanner.next();
-    return Token(Token::TokenClass::NE, scanner.getPosition());
+    return SourceToken(TC::NE, scanner.getPosition());
   }
   if (c == '<' && scanner.peek() == '=') {
     scanner.next();
-    return Token(Token::TokenClass::LE, scanner.getPosition());
+    return SourceToken(TC::LE, scanner.getPosition());
   }
   if (c == '>' && scanner.peek() == '=') {
     scanner.next();
-    return Token(Token::TokenClass::GE, scanner.getPosition());
+    return SourceToken(TC::GE, scanner.getPosition());
   }
   if (c == '&' && scanner.peek() == '&') {
     scanner.next();
-    return Token(Token::TokenClass::AND, scanner.getPosition());
+    return SourceToken(TC::AND, scanner.getPosition());
   }
   if (c == '|' && scanner.peek() == '|') {
     scanner.next();
-    return Token(Token::TokenClass::OR, scanner.getPosition());
+    return SourceToken(TC::OR, scanner.getPosition());
   }
 
   /* Recognise One Symbol Tokens. */
   if (c == '=')
-    return Token(Token::TokenClass::ASSIGN, scanner.getPosition());
+    return SourceToken(TC::ASSIGN, scanner.getPosition());
   if (c == '{')
-    return Token(Token::TokenClass::LBRA, scanner.getPosition());
+    return SourceToken(TC::LBRA, scanner.getPosition());
   if (c == '}')
-    return Token(Token::TokenClass::RBRA, scanner.getPosition());
+    return SourceToken(TC::RBRA, scanner.getPosition());
   if (c == '(')
-    return Token(Token::TokenClass::LPAR, scanner.getPosition());
+    return SourceToken(TC::LPAR, scanner.getPosition());
   if (c == ')')
-    return Token(Token::TokenClass::RPAR, scanner.getPosition());
+    return SourceToken(TC::RPAR, scanner.getPosition());
   if (c == '[')
-    return Token(Token::TokenClass::LSBR, scanner.getPosition());
+    return SourceToken(TC::LSBR, scanner.getPosition());
   if (c == ']')
-    return Token(Token::TokenClass::RSBR, scanner.getPosition());
+    return SourceToken(TC::RSBR, scanner.getPosition());
   if (c == ';')
-    return Token(Token::TokenClass::SC, scanner.getPosition());
+    return SourceToken(TC::SC, scanner.getPosition());
   if (c == ',')
-    return Token(Token::TokenClass::COMMA, scanner.getPosition());
+    return SourceToken(TC::COMMA, scanner.getPosition());
   if (c == '+')
-    return Token(Token::TokenClass::PLUS, scanner.getPosition());
+    return SourceToken(TC::PLUS, scanner.getPosition());
   if (c == '-')
-    return Token(Token::TokenClass::MINUS, scanner.getPosition());
+    return SourceToken(TC::MINUS, scanner.getPosition());
   if (c == '*')
-    return Token(Token::TokenClass::ASTERIX, scanner.getPosition());
+    return SourceToken(TC::ASTERIX, scanner.getPosition());
   if (c == '%')
-    return Token(Token::TokenClass::REM, scanner.getPosition());
+    return SourceToken(TC::REM, scanner.getPosition());
   if (c == '.')
-    return Token(Token::TokenClass::DOT, scanner.getPosition());
+    return SourceToken(TC::DOT, scanner.getPosition());
   if (c == '/')
-    return Token(Token::TokenClass::DIV, scanner.getPosition());
+    return SourceToken(TC::DIV, scanner.getPosition());
   if (c == '>')
-    return Token(Token::TokenClass::GT, scanner.getPosition());
+    return SourceToken(TC::GT, scanner.getPosition());
   if (c == '<')
-    return Token(Token::TokenClass::LT, scanner.getPosition());
+    return SourceToken(TC::LT, scanner.getPosition());
   if (c == '&')
-    return Token(Token::TokenClass::REF, scanner.getPosition());
+    return SourceToken(TC::REF, scanner.getPosition());
 
   // Skip Whitespace.
   if (std::isspace(c))
@@ -294,7 +292,7 @@ Token Lexer::nextToken() {
                            scanner.getPosition().toString());
 }
 
-Token Lexer::lexStringLiteral() {
+SourceToken Lexer::lexStringLiteral() {
   std::string literal;
   int currLine = scanner.getPosition().line;
 
@@ -320,8 +318,7 @@ Token Lexer::lexStringLiteral() {
       literal += c;
     }
   }
-  return Token(Token::TokenClass::STRING_LITERAL, scanner.getPosition(),
-               literal);
+  return SourceToken(TC::STRING_LITERAL, scanner.getPosition(), literal);
 }
 
 void Lexer::passComment() {
@@ -347,7 +344,7 @@ void Lexer::passComment() {
     }
   }
   throw std::runtime_error(
-      "Lexer: Parsing Comment Returned Unexpected Token(s). " +
+      "Lexer: Parsing Comment Returned Unexpected SourceToken(s). " +
       scanner.getPosition().toString());
 }
 

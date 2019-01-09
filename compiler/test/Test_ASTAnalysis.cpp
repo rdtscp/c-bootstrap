@@ -18,8 +18,9 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(ASTAnalysisTest, DotGraph) {
-  const std::string abspath = (test_prefix + "/parser/fundecls.c");
-  Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "parser/fundecls.c");
+  ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -30,8 +31,9 @@ TEST(ASTAnalysisTest, DotGraph) {
 }
 
 TEST(ASTAnalysisTest, NameAnalysis) {
-  const std::string abspath = (test_prefix + "/parser/fundecls.c");
-  Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "parser/fundecls.c");
+  ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -43,8 +45,9 @@ TEST(ASTAnalysisTest, NameAnalysis) {
 }
 
 TEST(ASTAnalysisTest, DuplicateFunction) {
-  const std::string abspath = (test_prefix + "sem/dupefun.c");
-  Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "sem/dupefun.c");
+  ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -57,8 +60,9 @@ TEST(ASTAnalysisTest, DuplicateFunction) {
 }
 
 TEST(ASTAnalysisTest, DuplicateVariable) {
-  const std::string abspath = (test_prefix + "sem/dupevar.c");
-  Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "sem/dupevar.c");
+  ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -71,8 +75,9 @@ TEST(ASTAnalysisTest, DuplicateVariable) {
 }
 
 TEST(ASTAnalysisTest, AmbiguousIdentifier) {
-  const std::string abspath = (test_prefix + "sem/ambig.c");
-  Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "sem/ambig.c");
+  ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -85,8 +90,9 @@ TEST(ASTAnalysisTest, AmbiguousIdentifier) {
 }
 
 TEST(ASTAnalysisTest, NoMainFunc) {
-  const std::string abspath = (test_prefix + "sem/nomain.c");
-  Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "sem/nomain.c");
+  ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -98,8 +104,9 @@ TEST(ASTAnalysisTest, NoMainFunc) {
 }
 
 TEST(ASTAnalysisTest, Fibonacci) {
-  const std::string abspath = (test_prefix + "fibonacci.c");
-  Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "fibonacci.c");
+  ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -114,8 +121,9 @@ TEST(ASTAnalysisTest, Fibonacci) {
 }
 
 TEST(ASTAnalysisTest, TicTacToe) {
-  const std::string abspath = (test_prefix + "tictactoe.c");
-  Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "tictactoe.c");
+  ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
 

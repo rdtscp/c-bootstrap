@@ -5,7 +5,7 @@
 #include "gtest/gtest.h"
 
 #include "../include/Scanner.h"
-#include "../include/Token.h"
+#include "../include/SourceToken.h"
 
 using namespace ACC;
 
@@ -14,7 +14,9 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(ScannerTest, TestAPI) {
-  Scanner scanner(test_prefix + "scanner/scanner.c");
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "scanner/scanner.c");
+  ACC::Scanner scanner(src);
 
   std::string output;
   ASSERT_EQ(scanner.getPosition().column, 1);
@@ -58,7 +60,9 @@ TEST(ScannerTest, TestAPI) {
 }
 
 TEST(ScannerTest, FetchingPastEOF) {
-  Scanner scanner(test_prefix + "scanner/eof.c");
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "scanner/eof.c");
+  ACC::Scanner scanner(src);
   ASSERT_EQ(scanner.next(), 'c');
   ASSERT_EQ(scanner.next(), 'h');
   ASSERT_EQ(scanner.next(), 'a');
@@ -74,7 +78,9 @@ TEST(ScannerTest, FetchingPastEOF) {
 }
 
 TEST(ScannerTest, PeekingPastEOF) {
-  Scanner scanner(test_prefix + "scanner/eof.c");
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "scanner/eof.c");
+  ACC::Scanner scanner(src);
   ASSERT_EQ(scanner.next(), 'c');
   ASSERT_EQ(scanner.peek(), 'h');
   ASSERT_EQ(scanner.next(), 'h');

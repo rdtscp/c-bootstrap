@@ -5,7 +5,8 @@
 #include "gtest/gtest.h"
 
 #include "../include/Parser.h"
-#include "../include/Token.h"
+#include "../include/SourceHandler.h"
+#include "../include/SourceToken.h"
 
 using namespace ACC;
 
@@ -15,8 +16,9 @@ std::string test_prefix = "../../test/tests/";
 
 
 TEST(ParserTest, AllTokens) {
-  const std::string abspath = (test_prefix + "/lexer/alltokens.c");
-  ACC::Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "lexer/alltokens.c");
+  ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   try {
@@ -35,10 +37,10 @@ TEST(ParserTest, AllTokens) {
 }
 
 TEST(ParserTest, InvalidIdentifier) {
-  const std::string abspath = (test_prefix + "lexer/errors.c");
-
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "lexer/errors.c");
+  ACC::Scanner scanner(src);
   try {
-    ACC::Scanner scanner(abspath);
     ACC::Lexer lexer(scanner);
     ACC::Parser parser(lexer);
     parser.getAST();
@@ -56,8 +58,9 @@ TEST(ParserTest, InvalidIdentifier) {
 }
 
 TEST(ParserTest, NestedComments) {
-  const std::string abspath = (test_prefix + "lexer/nested_comments.c");
-  ACC::Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "lexer/nested_comments.c");
+  ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   std::shared_ptr<Program> p = parser.getAST();
@@ -66,8 +69,9 @@ TEST(ParserTest, NestedComments) {
 }
 
 TEST(ParserTest, StructDecl) {
-  const std::string abspath = (test_prefix + "parser/structdecl.c");
-  ACC::Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "parser/structdecl.c");
+  ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   std::shared_ptr<Program> actual = parser.getAST();
@@ -91,8 +95,9 @@ TEST(ParserTest, StructDecl) {
 }
 
 TEST(ParserTest, VarDecls) {
-  const std::string abspath = (test_prefix + "parser/vardecl.c");
-  ACC::Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "parser/vardecl.c");
+  ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   std::shared_ptr<Program> actual = parser.getAST();
@@ -161,8 +166,9 @@ TEST(ParserTest, VarDecls) {
 }
 
 TEST(ParserTest, FunDecl) {
-  const std::string abspath = (test_prefix + "parser/fundecl.c");
-  ACC::Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "parser/fundecl.c");
+  ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   std::shared_ptr<Program> actual = parser.getAST();
@@ -189,8 +195,9 @@ TEST(ParserTest, FunDecl) {
 }
 
 TEST(ParserTest, BinOp) {
-  const std::string abspath = (test_prefix + "parser/binop.c");
-  ACC::Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "parser/binop.c");
+  ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   std::shared_ptr<Program> actual = parser.getAST();
@@ -217,8 +224,9 @@ TEST(ParserTest, BinOp) {
 }
 
 TEST(ParserTest, ComplexBinOp) {
-  const std::string abspath = (test_prefix + "parser/fundecls.c");
-  ACC::Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "parser/fundecls.c");
+  ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   std::shared_ptr<Program> actual = parser.getAST();
@@ -226,8 +234,9 @@ TEST(ParserTest, ComplexBinOp) {
 }
 
 TEST(ParserTest, InvalidSignatureFunDef) {
-  const std::string abspath = (test_prefix + "parser/invalidfundef.c");
-  ACC::Scanner scanner(abspath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "parser/invalidfundef.c");
+  ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   try {

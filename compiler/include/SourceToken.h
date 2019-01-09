@@ -7,10 +7,10 @@
 
 namespace ACC {
 
-class Token final {
+class SourceToken final {
 
 public:
-  enum class TokenClass {
+  enum class Class {
 
     // the \ (backslash) is used as an escape character in the regular
     // expression below
@@ -88,111 +88,112 @@ public:
 
   std::string data;
   Position position;
-  TokenClass tokenClass;
+  Class tokenClass;
 
-  Token()
-      : tokenClass(Token::TokenClass::INVALID), position(Position(-1, -1, "")),
-        data("") {}
+  SourceToken()
+      : tokenClass(Class::INVALID), position(Position(-1, -1, "")), data("") {}
 
-  Token(TokenClass tokenClass, Position p, std::string data = "")
+  SourceToken(Class tokenClass, Position p, std::string data = "")
       : tokenClass(tokenClass), position(p), data(data) {}
 
-  bool operator==(const Token &rhs) { return tokenClass == rhs.tokenClass; }
+  bool operator==(const SourceToken &rhs) {
+    return tokenClass == rhs.tokenClass;
+  }
 };
 
-static std::string tokToStr(const Token::TokenClass &tok) {
+static std::string tokToStr(const SourceToken::Class &tok) {
   switch (tok) {
-  case Token::TokenClass::IDENTIFIER:
+  case SourceToken::Class::IDENTIFIER:
     return "IDENTIFIER";
-  case Token::TokenClass::ASSIGN:
+  case SourceToken::Class::ASSIGN:
     return "=";
-  case Token::TokenClass::LBRA:
+  case SourceToken::Class::LBRA:
     return "{";
-  case Token::TokenClass::RBRA:
+  case SourceToken::Class::RBRA:
     return "}";
-  case Token::TokenClass::LPAR:
+  case SourceToken::Class::LPAR:
     return "(";
-  case Token::TokenClass::RPAR:
+  case SourceToken::Class::RPAR:
     return ")";
-  case Token::TokenClass::LSBR:
+  case SourceToken::Class::LSBR:
     return "[";
-  case Token::TokenClass::RSBR:
+  case SourceToken::Class::RSBR:
     return "]";
-  case Token::TokenClass::SC:
+  case SourceToken::Class::SC:
     return ";";
-  case Token::TokenClass::COMMA:
+  case SourceToken::Class::COMMA:
     return "COMMA";
-  case Token::TokenClass::INT:
+  case SourceToken::Class::INT:
     return "INT";
-  case Token::TokenClass::VOID:
+  case SourceToken::Class::VOID:
     return "VOID";
-  case Token::TokenClass::CHAR:
+  case SourceToken::Class::CHAR:
     return "CHAR";
-  case Token::TokenClass::IF:
+  case SourceToken::Class::IF:
     return "IF";
-  case Token::TokenClass::ELSE:
+  case SourceToken::Class::ELSE:
     return "ELSE";
-  case Token::TokenClass::DO:
+  case SourceToken::Class::DO:
     return "DO";
-  case Token::TokenClass::WHILE:
+  case SourceToken::Class::WHILE:
     return "WHILE";
-  case Token::TokenClass::RETURN:
+  case SourceToken::Class::RETURN:
     return "RETURN";
-  case Token::TokenClass::STRUCT:
+  case SourceToken::Class::STRUCT:
     return "STRUCT";
-  case Token::TokenClass::SIZEOF:
+  case SourceToken::Class::SIZEOF:
     return "SIZEOF";
-  case Token::TokenClass::STRING_LITERAL:
+  case SourceToken::Class::STRING_LITERAL:
     return "STRING_LITERAL";
-  case Token::TokenClass::INT_LITERAL:
+  case SourceToken::Class::INT_LITERAL:
     return "INT_LITERAL";
-  case Token::TokenClass::CHAR_LITERAL:
+  case SourceToken::Class::CHAR_LITERAL:
     return "CHAR_LITERAL";
-  case Token::TokenClass::AND:
+  case SourceToken::Class::AND:
     return "&&";
-  case Token::TokenClass::OR:
+  case SourceToken::Class::OR:
     return "||";
-  case Token::TokenClass::EQ:
+  case SourceToken::Class::EQ:
     return "==";
-  case Token::TokenClass::NE:
+  case SourceToken::Class::NE:
     return "!=";
-  case Token::TokenClass::LT:
+  case SourceToken::Class::LT:
     return "<";
-  case Token::TokenClass::GT:
+  case SourceToken::Class::GT:
     return ">";
-  case Token::TokenClass::LE:
+  case SourceToken::Class::LE:
     return "<=";
-  case Token::TokenClass::GE:
+  case SourceToken::Class::GE:
     return ">=";
-  case Token::TokenClass::PLUS:
+  case SourceToken::Class::PLUS:
     return "+";
-  case Token::TokenClass::MINUS:
+  case SourceToken::Class::MINUS:
     return "-";
-  case Token::TokenClass::ASTERIX:
+  case SourceToken::Class::ASTERIX:
     return "*";
-  case Token::TokenClass::DIV:
+  case SourceToken::Class::DIV:
     return "/";
-  case Token::TokenClass::REM:
+  case SourceToken::Class::REM:
     return "%";
-  case Token::TokenClass::DOT:
+  case SourceToken::Class::DOT:
     return ".";
-  case Token::TokenClass::ENDOFFILE:
+  case SourceToken::Class::ENDOFFILE:
     return "EOF";
-  case Token::TokenClass::INVALID:
+  case SourceToken::Class::INVALID:
     return "INVALID";
-  case Token::TokenClass::REF:
+  case SourceToken::Class::REF:
     return "&";
-  case Token::TokenClass::CONST:
+  case SourceToken::Class::CONST:
     return "CONST";
-  case Token::TokenClass::EXTERN:
+  case SourceToken::Class::EXTERN:
     return "EXTERN";
-  case Token::TokenClass::TYPEDEF:
+  case SourceToken::Class::TYPEDEF:
     return "TYPEDEF";
-  case Token::TokenClass::ENUM:
+  case SourceToken::Class::ENUM:
     return "ENUM";
-  case Token::TokenClass::UNSIGNED:
+  case SourceToken::Class::UNSIGNED:
     return "UNSIGNED";
-  case Token::TokenClass::SHORT:
+  case SourceToken::Class::SHORT:
     return "SHORT";
   }
 }
