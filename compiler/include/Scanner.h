@@ -19,6 +19,8 @@ public:
 
   Scanner(const Scanner &rhs) = delete;
 
+  Scanner operator=(const Scanner &rhs) = delete;
+
   char next();
 
   char peek();
