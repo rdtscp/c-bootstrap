@@ -105,7 +105,7 @@ TEST(ASTAnalysisTest, NoMainFunc) {
 
 TEST(ASTAnalysisTest, Fibonacci) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "fibonacci.cpp");
+                          test_prefix + "fibonacci.c");
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
