@@ -181,6 +181,9 @@ std::string DotGraph::visit(IntLiteral &il) {
   declare(intID, il.getLiteral());
   return intID;
 }
+std::string DotGraph::visit(Namespace &n) {
+  return n.namespaceBlock->accept(*this);
+}
 std::string DotGraph::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);
 }

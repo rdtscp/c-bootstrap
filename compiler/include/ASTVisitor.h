@@ -20,6 +20,7 @@ class FunDecl;
 class FunDef;
 class If;
 class IntLiteral;
+class Namespace;
 class ParenthExpr;
 class PointerType;
 class Program;
@@ -55,6 +56,7 @@ public:
   virtual T visit(FunDef &fd) = 0;
   virtual T visit(If &i) = 0;
   virtual T visit(IntLiteral &il) = 0;
+  virtual T visit(Namespace &n) = 0;
   virtual T visit(ParenthExpr &pe) = 0;
   virtual T visit(PointerType &pt) = 0;
   virtual T visit(Program &p) = 0;

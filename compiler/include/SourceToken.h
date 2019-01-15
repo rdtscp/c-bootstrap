@@ -37,18 +37,20 @@ public:
     SHORT, // "short"
 
     // keywords
-    IF,       // "if"
-    ELSE,     // "else"
-    DO,       // "do"
-    WHILE,    // "while"
-    RETURN,   // "return"
-    STRUCT,   // "struct"
-    SIZEOF,   // "sizeof"
-    CONST,    // "const"
-    EXTERN,   // "extern"
-    TYPEDEF,  // "typedef"
-    ENUM,     // "enum"
-    UNSIGNED, // "unsigned"
+    IF,        // "if"
+    ELSE,      // "else"
+    DO,        // "do"
+    WHILE,     // "while"
+    RETURN,    // "return"
+    STRUCT,    // "struct"
+    SIZEOF,    // "sizeof"
+    CONST,     // "const"
+    EXTERN,    // "extern"
+    TYPEDEF,   // "typedef"
+    ENUM,      // "enum"
+    UNSIGNED,  // "unsigned"
+    NAMESPACE, // "namespace"
+    INLINE,    // "inline"
 
     // literals
     STRING_LITERAL, // \".*\"  any sequence of characters enclosed within two
@@ -195,6 +197,10 @@ static std::string tokToStr(const SourceToken::Class &tok) {
     return "UNSIGNED";
   case SourceToken::Class::SHORT:
     return "SHORT";
+  case SourceToken::Class::NAMESPACE:
+    return "NAMESPACE";
+  case SourceToken::Class::INLINE:
+    return "INLINE";
   }
 }
 

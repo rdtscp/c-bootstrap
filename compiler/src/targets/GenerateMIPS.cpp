@@ -231,7 +231,7 @@ MIPS::Register GenerateMIPS::visit(FunDef &fd) {
 
   /* ---- Load Registers [ $s0-$s7 ] && $ra ---- */
   stackPop(MIPS::ra);
-  std::reverse(std::begin(saveRegs), std::end(saveRegs));
+  std::reverse(saveRegs.begin(), saveRegs.end());
   for (const MIPS::Register &saveReg : saveRegs)
     stackPop(saveReg);
 
@@ -252,6 +252,10 @@ MIPS::Register GenerateMIPS::visit(If &i) {
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(IntLiteral &il) { return MIPS::Register(); }
+MIPS::Register GenerateMIPS::visit(Namespace &n) {
+  n.namespaceBlock->accept(*this);
+  return MIPS::Register();
+}
 MIPS::Register GenerateMIPS::visit(ParenthExpr &pe) {
   pe.innerExpr->accept(*this);
   return MIPS::Register();

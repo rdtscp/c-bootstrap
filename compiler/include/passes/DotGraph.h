@@ -43,6 +43,7 @@ private:
   std::string visit(FunDef &fd) override;
   std::string visit(If &i) override;
   std::string visit(IntLiteral &il) override;
+  std::string visit(Namespace &n) override;
   std::string visit(ParenthExpr &pe) override;
   std::string visit(PointerType &pt) override;
   std::string visit(Program &p) override;

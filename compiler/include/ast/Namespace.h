@@ -1,29 +1,23 @@
 #pragma once
 
-#ifndef ACC_PROGRAM_H
-#define ACC_PROGRAM_H
-
-#include <map>
+#ifndef ACC_NAMESPACE_H
+#define ACC_NAMESPACE_H
 
 #include "../ASTNode.h"
-
-#include "FunDecl.h"
-#include "Namespace.h"
-#include "StructTypeDecl.h"
-#include "VarDecl.h"
+#include "Block.h"
 
 namespace ACC {
 
-class Program : public ASTNode {
+class Namespace : public ASTNode,
+                  public std::enable_shared_from_this<Namespace> {
 
 public:
-  std::vector<std::shared_ptr<Decl>> decls;
-  std::vector<std::shared_ptr<FunDecl>> funDecls;
-  std::vector<std::shared_ptr<VarDecl>> globalVars;
-  std::shared_ptr<Block> globalScope = nullptr;
-  std::map<std::string, Namespace> namespaces;
+  std::shared_ptr<Block> namespaceBlock;
 
-  Program(const std::vector<std::shared_ptr<Decl>> &decls);
+  Namespace(const std::string &identifier,
+            const std::shared_ptr<Block> &namespaceBlock);
+
+  std::shared_ptr<Namespace> getptr();
 
   void accept(ASTVisitor<void> &v) override;
   std::string accept(ASTVisitor<std::string> &v) override;

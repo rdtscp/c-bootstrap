@@ -20,6 +20,7 @@
 #include "ast/FunDef.h"
 #include "ast/If.h"
 #include "ast/IntLiteral.h"
+#include "ast/Namespace.h"
 #include "ast/Op.h"
 #include "ast/ParenthExpr.h"
 #include "ast/PointerType.h"

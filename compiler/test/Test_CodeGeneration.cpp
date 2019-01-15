@@ -21,7 +21,7 @@ using namespace ACC;
 std::string test_prefix = "../../test/tests/";
 
 TEST(CodeGenerationTest, MIPS_Fibonacci) {
-  // Preprocessor preprocessor(test_prefix + "fibonacci.c");
+  // Preprocessor preprocessor(test_prefix + "fibonacci.cpp");
   // Lexer lexer(scanner);
   // Parser parser(lexer);
   // std::shared_ptr<Program> progAST = parser.getAST();

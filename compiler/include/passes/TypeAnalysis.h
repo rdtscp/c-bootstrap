@@ -51,6 +51,7 @@ private:
   std::shared_ptr<Type> visit(FunDef &fd) override;
   std::shared_ptr<Type> visit(If &i) override;
   std::shared_ptr<Type> visit(IntLiteral &il) override;
+  std::shared_ptr<Type> visit(Namespace &n) override;
   std::shared_ptr<Type> visit(ParenthExpr &pe) override;
   std::shared_ptr<Type> visit(PointerType &pt) override;
   std::shared_ptr<Type> visit(Program &p) override;

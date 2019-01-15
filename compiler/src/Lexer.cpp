@@ -111,13 +111,30 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::IF, scanner.getPosition());
     }
-    // Check for INT token.
+    // Check for INT/INLINE token.
     else if (c == 'i' && scanner.peek() == 'n') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("int");
+      c = scanner.next();
+      if (scanner.peek() == 't') {
+        std::pair<bool, std::string> lexResult = tryLexKeyword("nt");
+        literal = lexResult.second;
+
+        if (lexResult.first)
+          return SourceToken(TC::INT, scanner.getPosition());
+      } else if (scanner.peek() == 'l') {
+        std::pair<bool, std::string> lexResult = tryLexKeyword("nline");
+        literal = lexResult.second;
+
+        if (lexResult.first)
+          return SourceToken(TC::INLINE, scanner.getPosition());
+      }
+    }
+    // Check for NAMESPACE token.
+    else if (c == 'n' && scanner.peek() == 'a') {
+      std::pair<bool, std::string> lexResult = tryLexKeyword("namespace");
       literal = lexResult.second;
 
       if (lexResult.first)
-        return SourceToken(TC::INT, scanner.getPosition());
+        return SourceToken(TC::NAMESPACE, scanner.getPosition());
     }
     // Check for RETURN Token.
     else if (c == 'r' && scanner.peek() == 'e') {

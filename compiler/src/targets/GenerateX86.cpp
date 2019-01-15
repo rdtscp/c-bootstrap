@@ -100,7 +100,7 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(FieldAccess &fa) {
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(FunCall &fc) {
   std::vector<std::shared_ptr<Expr>> revArgs = fc.funArgs;
-  std::reverse(std::begin(revArgs), std::end(revArgs));
+  std::reverse(revArgs.begin(), revArgs.end());
   for (const auto &arg : revArgs) {
     std::shared_ptr<X86::Operand> argReg = arg->accept(*this);
     // x86.push(argReg);
@@ -207,6 +207,9 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(IntLiteral &il) {
   x86.mov(X86::eax,
           std::make_shared<X86::IntValue>(X86::IntValue(il.getLiteral())));
   return X86::eax;
+}
+std::shared_ptr<X86::Operand> GenerateX86::visit(Namespace &n) {
+  return n.namespaceBlock->accept(*this);
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);

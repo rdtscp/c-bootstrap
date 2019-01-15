@@ -157,6 +157,11 @@ std::shared_ptr<ASTNode> Optimiser::visit(If &i) {
 std::shared_ptr<ASTNode> Optimiser::visit(IntLiteral &il) {
   return il.getptr();
 }
+std::shared_ptr<ASTNode> Optimiser::visit(Namespace &n) {
+  n.namespaceBlock =
+      std::static_pointer_cast<Block>(n.namespaceBlock->accept(*this));
+  return n.getptr();
+}
 std::shared_ptr<ASTNode> Optimiser::visit(ParenthExpr &pe) {
   pe.innerExpr = std::static_pointer_cast<Expr>(pe.innerExpr->accept(*this));
   return pe.getptr();

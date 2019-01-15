@@ -91,6 +91,7 @@ void NameAnalysis::visit(If &i) {
     i.elseBody->accept(*this);
 }
 void NameAnalysis::visit(IntLiteral &il) {}
+void NameAnalysis::visit(Namespace &n) { n.namespaceBlock->accept(*this); }
 void NameAnalysis::visit(ParenthExpr &pe) { pe.innerExpr->accept(*this); }
 void NameAnalysis::visit(PointerType &pt) {}
 void NameAnalysis::visit(Program &p) {

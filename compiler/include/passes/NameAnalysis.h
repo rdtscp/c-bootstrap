@@ -51,6 +51,7 @@ private:
   void visit(FunDef &fd) override;
   void visit(If &i) override;
   void visit(IntLiteral &il) override;
+  void visit(Namespace &n) override;
   void visit(ParenthExpr &pe) override;
   void visit(PointerType &pt) override;
   void visit(Program &p) override;

@@ -51,6 +51,7 @@ private:
   std::shared_ptr<ASTNode> visit(FunDef &fd) override;
   std::shared_ptr<ASTNode> visit(If &i) override;
   std::shared_ptr<ASTNode> visit(IntLiteral &il) override;
+  std::shared_ptr<ASTNode> visit(Namespace &n) override;
   std::shared_ptr<ASTNode> visit(ParenthExpr &pe) override;
   std::shared_ptr<ASTNode> visit(PointerType &pt) override;
   std::shared_ptr<ASTNode> visit(Program &p) override;

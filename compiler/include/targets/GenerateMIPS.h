@@ -83,6 +83,7 @@ private:
   MIPS::Register visit(FunDef &fd) override;
   MIPS::Register visit(If &i) override;
   MIPS::Register visit(IntLiteral &il) override;
+  MIPS::Register visit(Namespace &n) override;
   MIPS::Register visit(ParenthExpr &pe) override;
   MIPS::Register visit(PointerType &pt) override;
   MIPS::Register visit(Program &p) override;

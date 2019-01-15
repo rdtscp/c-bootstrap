@@ -19,6 +19,7 @@ add_library(AST SHARED
   src/ast/FunDef.cpp
   src/ast/If.cpp
   src/ast/IntLiteral.cpp
+  src/ast/Namespace.cpp
   src/ast/ParenthExpr.cpp
   src/ast/PointerType.cpp
   src/ast/Program.cpp
