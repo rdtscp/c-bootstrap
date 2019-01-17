@@ -1,6 +1,6 @@
 # c-bootstrap
 
-[![Build Status](https://travis-ci.com/acwilson96/c-bootstrap.svg?branch=master)](https://travis-ci.com/acwilson96/c-bootstrap)
+[![Build Status](https://travis-ci.com/rdtscp/c-bootstrap.svg?branch=master)](https://travis-ci.com/rdtscp/c-bootstrap)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)
 
 * Bootstrapping a simple C based compiler written in C++.
