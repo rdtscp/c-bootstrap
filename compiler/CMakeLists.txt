@@ -80,8 +80,9 @@ install(
           X86
   DESTINATION lib
 )
+
 install(
-  DIRECTORY ./include
+  DIRECTORY ${CMAKE_SOURCE_DIR}/include
   DESTINATION include
 )
 
