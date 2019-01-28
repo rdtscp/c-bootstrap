@@ -81,7 +81,7 @@ install(
   DESTINATION lib
 )
 install(
-  DIRECTORY include
+  DIRECTORY ./include
   DESTINATION include
 )
 
