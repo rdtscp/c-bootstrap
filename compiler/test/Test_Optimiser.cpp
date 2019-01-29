@@ -1,3 +1,4 @@
+#include "atl/include/string.h"
 #include <iostream>
 
 #include "gtest/gtest.h"
@@ -8,8 +9,6 @@
 #include "../include/passes/Optimiser.h"
 #include "../include/passes/TypeAnalysis.h"
 
-#include "atl/include/string.h"
-
 using namespace ACC;
 
 // atl::string test_prefix =
@@ -18,7 +17,7 @@ atl::string test_prefix = "../../test/tests/";
 
 TEST(OptimiserTest, FunDeclsC) {
   const atl::string filepath = test_prefix + "parser/fundecls.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath.c_str());
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
