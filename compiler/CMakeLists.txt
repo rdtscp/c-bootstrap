@@ -3,13 +3,15 @@ set (CMAKE_CXX_STANDARD 14)
 
 project(acc)
 
-# include(ExternalProject)
-
-# ExternalProject_Add(atl
-#   GIT_REPOSITORY    https://github.com/rdtscp/atl
-#   GIT_TAG           master
-#   SOURCE_DIR        "${CMAKE_BINARY_DIR}/atl-src"
-# )
+include(ExternalProject)
+ExternalProject_Add(atl
+  GIT_REPOSITORY    https://github.com/rdtscp/atl
+  GIT_TAG           master
+  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/atl
+  # Disable install step
+  INSTALL_COMMAND ""
+)
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/atl/src/")
 
 add_library(AST SHARED
   src/ast/ArrayAccess.cpp
