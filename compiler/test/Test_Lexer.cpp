@@ -1,5 +1,5 @@
+#include "atl/include/string.h"
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include "gtest/gtest.h"
@@ -10,13 +10,13 @@
 
 using namespace ACC;
 
-// std::string test_prefix =
+// atl::string test_prefix =
 // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-std::string test_prefix = "../../test/tests/";
+atl::string test_prefix = "../../test/tests/";
 
 TEST(LexerTest, AllTokens) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "lexer/alltokens.c");
+  const atl::string filepath = test_prefix + "lexer/alltokens.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
 
@@ -101,8 +101,8 @@ TEST(LexerTest, AllTokens) {
 }
 
 TEST(LexerTest, NestedComments) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "lexer/nested_comments.c");
+  const atl::string filepath = test_prefix + "lexer/nested_comments.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
 
@@ -115,8 +115,8 @@ TEST(LexerTest, NestedComments) {
 }
 
 TEST(LexerTest, VarDecls) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "parser/vardecl.c");
+  const atl::string filepath = test_prefix + "parser/vardecl.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
 
@@ -129,8 +129,8 @@ TEST(LexerTest, VarDecls) {
 }
 
 TEST(LexerTest, FunDecl) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "parser/fundecl.c");
+  const atl::string filepath = test_prefix + "parser/fundecl.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
 

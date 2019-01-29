@@ -1,6 +1,5 @@
+#include "atl/include/string.h"
 #include <iostream>
-#include <string>
-#include <vector>
 
 #include "gtest/gtest.h"
 
@@ -9,13 +8,13 @@
 
 using namespace ACC;
 
-// std::string test_prefix =
+// atl::string test_prefix =
 // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-std::string test_prefix = "../../test/tests/";
+atl::string test_prefix = "../../test/tests/";
 
 TEST(ScannerTest, TestAPI) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "scanner/scanner.c");
+  const atl::string filepath = test_prefix + "scanner/scanner.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
 
   std::string output;
@@ -60,8 +59,8 @@ TEST(ScannerTest, TestAPI) {
 }
 
 TEST(ScannerTest, FetchingPastEOF) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "scanner/eof.c");
+  const atl::string filepath = test_prefix + "scanner/eof.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ASSERT_EQ(scanner.next(), 'c');
   ASSERT_EQ(scanner.next(), 'h');
@@ -78,8 +77,8 @@ TEST(ScannerTest, FetchingPastEOF) {
 }
 
 TEST(ScannerTest, PeekingPastEOF) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "scanner/eof.c");
+  const atl::string filepath = test_prefix + "scanner/eof.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ASSERT_EQ(scanner.next(), 'c');
   ASSERT_EQ(scanner.peek(), 'h');

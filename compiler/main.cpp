@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 
+#include "atl/include/string.h"
+
 #include "include/AST.h"
 #include "include/Parser.h"
 #include "include/passes/DotGraph.h"
@@ -17,7 +19,7 @@ int main(int argc, char const *argv[]) {
               << std::endl;
     return 1;
   }
-  const std::string inFilename(argv[1]);
+  const atl::string inFilename(argv[1]);
   const std::string outFilename(argv[2]);
   const std::string target(argv[3]);
 

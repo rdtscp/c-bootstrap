@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include "gtest/gtest.h"
@@ -10,14 +9,14 @@
 
 using namespace ACC;
 
-// std::string test_prefix =
+// atl::string test_prefix =
 // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-std::string test_prefix = "../../test/tests/";
+atl::string test_prefix = "../../test/tests/";
 
 
 TEST(ParserTest, AllTokens) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "lexer/alltokens.c");
+  const atl::string filepath = test_prefix + "lexer/alltokens.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
@@ -37,8 +36,8 @@ TEST(ParserTest, AllTokens) {
 }
 
 TEST(ParserTest, InvalidIdentifier) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "lexer/errors.c");
+  const atl::string filepath = test_prefix + "lexer/errors.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   try {
     ACC::Lexer lexer(scanner);
@@ -58,8 +57,8 @@ TEST(ParserTest, InvalidIdentifier) {
 }
 
 TEST(ParserTest, NestedComments) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "lexer/nested_comments.c");
+  const atl::string filepath = test_prefix + "lexer/nested_comments.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
@@ -69,8 +68,8 @@ TEST(ParserTest, NestedComments) {
 }
 
 TEST(ParserTest, StructDecl) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "parser/structdecl.c");
+  const atl::string filepath = test_prefix + "parser/structdecl.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
@@ -95,8 +94,8 @@ TEST(ParserTest, StructDecl) {
 }
 
 TEST(ParserTest, VarDecls) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "parser/vardecl.c");
+  const atl::string filepath = test_prefix + "parser/vardecl.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
@@ -166,8 +165,8 @@ TEST(ParserTest, VarDecls) {
 }
 
 TEST(ParserTest, FunDecl) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "parser/fundecl.c");
+  const atl::string filepath = test_prefix + "parser/fundecl.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
@@ -195,8 +194,8 @@ TEST(ParserTest, FunDecl) {
 }
 
 TEST(ParserTest, BinOp) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "parser/binop.c");
+  const atl::string filepath = test_prefix + "parser/binop.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
@@ -224,8 +223,8 @@ TEST(ParserTest, BinOp) {
 }
 
 TEST(ParserTest, ComplexBinOp) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "parser/fundecls.c");
+  const atl::string filepath = test_prefix + "parser/fundecls.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
@@ -234,8 +233,8 @@ TEST(ParserTest, ComplexBinOp) {
 }
 
 TEST(ParserTest, InvalidSignatureFunDef) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "parser/invalidfundef.c");
+  const atl::string filepath = test_prefix + "parser/invalidfundef.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);

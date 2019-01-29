@@ -1,5 +1,5 @@
+#include "atl/include/string.h"
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include "gtest/gtest.h"
@@ -16,31 +16,13 @@
 
 using namespace ACC;
 
-// std::string test_prefix =
+// atl::string test_prefix =
 // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-std::string test_prefix = "../../test/tests/";
-
-TEST(CodeGenerationTest, MIPS_Fibonacci) {
-  // Preprocessor preprocessor(test_prefix + "fibonacci.cpp");
-  // Lexer lexer(scanner);
-  // Parser parser(lexer);
-  // std::shared_ptr<Program> progAST = parser.getAST();
-
-  // NameAnalysis nameAnalysis(progAST);
-  // nameAnalysis.run();
-  // ASSERT_EQ(0, nameAnalysis.errorCount);
-
-  // TypeAnalysis typeAnalysis(progAST);
-  // typeAnalysis.run();
-  // ASSERT_EQ(0, typeAnalysis.errorCount);
-
-  // GenerateMIPS mipsGenerator(progAST, "./fibonacci_mips.asm");
-  // mipsGenerator.run();
-}
+atl::string test_prefix = "../../test/tests/";
 
 TEST(CodeGenerationTest, X86_fundeclsc) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "parser/fundecls.c");
+  const atl::string filepath = test_prefix + "parser/fundecls.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);

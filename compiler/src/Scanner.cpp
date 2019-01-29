@@ -7,15 +7,20 @@ using namespace ACC;
 
 Scanner::Scanner(const SourceHandler &src) : column(1), line(1) {
   if (src.type == SourceHandler::Type::FILEPATH) {
-    std::ifstream fileStream(src.value);
+    // TEMP: Convert atl::string to std::string so we can use the std::ifstream.
+    std::string filename(src.value.c_str());
+    std::ifstream fileStream(filename);
     if (!fileStream.good())
-      throw std::runtime_error("Scanner: Provided filename \"" + abspath +
+      throw std::runtime_error("Scanner: Provided filename \"" + filename +
                                "\" could not be read.");
 
     file = std::string((std::istreambuf_iterator<char>(fileStream)),
                        std::istreambuf_iterator<char>());
   } else if (src.type == SourceHandler::Type::RAW) {
-    file = src.value;
+    // TEMP: Convert atl::string to std::string until atl::string supports
+    // iterators.
+    const atl::string atlval = src.value;
+    file = std::string(atlval.c_str());
   }
 
   currChar = file.begin();
@@ -49,7 +54,8 @@ char Scanner::peek() {
 }
 
 SourceHandler Scanner::getFileContents() const {
-  return SourceHandler(SourceHandler::Type::RAW, file);
+  const atl::string fileStr(file.c_str());
+  return SourceHandler(SourceHandler::Type::RAW, fileStr);
 }
 
 std::string Scanner::getFilename() const {

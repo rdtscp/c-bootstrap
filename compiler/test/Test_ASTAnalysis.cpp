@@ -1,5 +1,5 @@
+#include "atl/include/string.h"
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include "gtest/gtest.h"
@@ -13,13 +13,13 @@
 
 using namespace ACC;
 
-// std::string test_prefix =
+// atl::string test_prefix =
 // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-std::string test_prefix = "../../test/tests/";
+atl::string test_prefix = "../../test/tests/";
 
 TEST(ASTAnalysisTest, DotGraph) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "parser/fundecls.c");
+  const atl::string filepath = test_prefix + "parser/fundecls.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
@@ -31,8 +31,8 @@ TEST(ASTAnalysisTest, DotGraph) {
 }
 
 TEST(ASTAnalysisTest, NameAnalysis) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "parser/fundecls.c");
+  const atl::string filepath = test_prefix + "parser/fundecls.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
@@ -45,8 +45,8 @@ TEST(ASTAnalysisTest, NameAnalysis) {
 }
 
 TEST(ASTAnalysisTest, DuplicateFunction) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "sem/dupefun.c");
+  const atl::string filepath = test_prefix + "sem/dupefun.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
@@ -60,8 +60,8 @@ TEST(ASTAnalysisTest, DuplicateFunction) {
 }
 
 TEST(ASTAnalysisTest, DuplicateVariable) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "sem/dupevar.c");
+  const atl::string filepath = test_prefix + "sem/dupevar.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
@@ -75,8 +75,8 @@ TEST(ASTAnalysisTest, DuplicateVariable) {
 }
 
 TEST(ASTAnalysisTest, AmbiguousIdentifier) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "sem/ambig.c");
+  const atl::string filepath = test_prefix + "sem/ambig.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
@@ -90,8 +90,8 @@ TEST(ASTAnalysisTest, AmbiguousIdentifier) {
 }
 
 TEST(ASTAnalysisTest, NoMainFunc) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "sem/nomain.c");
+  const atl::string filepath = test_prefix + "sem/nomain.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
@@ -104,8 +104,8 @@ TEST(ASTAnalysisTest, NoMainFunc) {
 }
 
 TEST(ASTAnalysisTest, Fibonacci) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "fibonacci.c");
+  const atl::string filepath = test_prefix + "fibonacci.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);
@@ -121,8 +121,8 @@ TEST(ASTAnalysisTest, Fibonacci) {
 }
 
 TEST(ASTAnalysisTest, TicTacToe) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "tictactoe.c");
+  const atl::string filepath = test_prefix + "tictactoe.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
   Parser parser(lexer);

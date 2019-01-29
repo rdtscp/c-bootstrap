@@ -1,6 +1,4 @@
 #include <iostream>
-#include <string>
-#include <vector>
 
 #include "gtest/gtest.h"
 
@@ -10,15 +8,17 @@
 #include "../include/passes/Optimiser.h"
 #include "../include/passes/TypeAnalysis.h"
 
+#include "atl/include/string.h"
+
 using namespace ACC;
 
-// std::string test_prefix =
+// atl::string test_prefix =
 // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-std::string test_prefix = "../../test/tests/";
+atl::string test_prefix = "../../test/tests/";
 
 TEST(OptimiserTest, FunDeclsC) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "parser/fundecls.c");
+  const atl::string filepath = test_prefix + "parser/fundecls.c";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath.c_str());
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
