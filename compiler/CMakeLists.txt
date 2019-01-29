@@ -83,6 +83,7 @@ install(
 
 install(
   DIRECTORY ${CMAKE_SOURCE_DIR}/include
+  DESTINATION include
 )
 
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
