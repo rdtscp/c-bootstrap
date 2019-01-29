@@ -57,6 +57,8 @@ add_library(TypeAnalysis SHARED src/passes/TypeAnalysis.cpp)
 add_library(Scanner SHARED src/Scanner.cpp)
 add_library(X86 SHARED src/targets/X86.cpp)
 
+add_dependencies(Scanner atl)
+
 target_link_libraries(AST MIPS X86)
 target_link_libraries(DotGraph AST)
 target_link_libraries(GenerateMIPS AST MIPS)
@@ -134,4 +136,5 @@ IF(CMAKE_BUILD_TYPE MATCHES Debug)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 add_executable(acc main.cpp)
+add_dependencies(acc atl)
 target_link_libraries(acc AST DotGraph GenerateMIPS GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis)
