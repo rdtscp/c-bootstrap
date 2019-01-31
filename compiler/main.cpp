@@ -20,8 +20,8 @@ int main(int argc, char const *argv[]) {
     return 1;
   }
   const atl::string inFilename(argv[1]);
-  const std::string outFilename(argv[2]);
-  const std::string target(argv[3]);
+  const atl::string outFilename(argv[2]);
+  const atl::string target(argv[3]);
 
   bool outputMIPS = false;
   bool outputX86 = false;
@@ -39,7 +39,7 @@ int main(int argc, char const *argv[]) {
   bool optimise = false;
   if (argc > 3) {
     for (int i = 4; i < argc; i++) {
-      const std::string flag(argv[i]);
+      const atl::string flag(argv[i]);
       if (flag == "-p" || flag == "--print")
         outputGraph = true;
       if (flag == "-o" || flag == "--opt")

@@ -8,7 +8,7 @@ std::shared_ptr<ValueAt> ValueAt::getptr() { return shared_from_this(); }
 
 void ValueAt::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string ValueAt::accept(ASTVisitor<std::string> &v) {
+atl::string ValueAt::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -30,4 +30,4 @@ ValueAt::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string ValueAt::astClass() const { return "ValueAt"; }
+atl::string ValueAt::astClass() const { return "ValueAt"; }

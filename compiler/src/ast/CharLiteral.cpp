@@ -2,17 +2,17 @@
 
 using namespace ACC;
 
-CharLiteral::CharLiteral(std::string literal) : value(literal) {}
+CharLiteral::CharLiteral(const atl::string &literal) : value(literal) {}
 
 std::shared_ptr<CharLiteral> CharLiteral::getptr() {
   return shared_from_this();
 }
 
-std::string CharLiteral::getLiteral() const { return value; }
+atl::string CharLiteral::getLiteral() const { return value; }
 
 void CharLiteral::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string CharLiteral::accept(ASTVisitor<std::string> &v) {
+atl::string CharLiteral::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -35,4 +35,4 @@ CharLiteral::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string CharLiteral::astClass() const { return "CharLiteral"; }
+atl::string CharLiteral::astClass() const { return "CharLiteral"; }

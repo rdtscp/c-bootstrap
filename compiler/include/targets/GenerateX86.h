@@ -3,6 +3,7 @@
 #ifndef ACC_GENERATEX86_H
 #define ACC_GENERATEX86_H
 
+#include "atl/include/string.h"
 #include <algorithm>
 #include <memory>
 #include <set>
@@ -19,11 +20,11 @@ class GenerateX86 : public ASTVisitor<std::shared_ptr<X86::Operand>> {
 
 public:
   int errorCount = 0;
-  std::vector<std::string> errors;
+  std::vector<atl::string> errors;
 
-  GenerateX86(std::shared_ptr<Program> progAST, std::string outputFile);
+  GenerateX86(std::shared_ptr<Program> progAST, const atl::string &outputFile);
 
-  void error(std::string error);
+  void error(atl::string error);
 
   void printErrors() const;
 

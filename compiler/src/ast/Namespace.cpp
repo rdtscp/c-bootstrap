@@ -9,7 +9,7 @@ void Namespace::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 std::shared_ptr<Namespace> Namespace::getptr() { return shared_from_this(); }
 
-std::string Namespace::accept(ASTVisitor<std::string> &v) {
+atl::string Namespace::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -31,4 +31,4 @@ Namespace::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string Namespace::astClass() const { return "Program"; }
+atl::string Namespace::astClass() const { return "Program"; }

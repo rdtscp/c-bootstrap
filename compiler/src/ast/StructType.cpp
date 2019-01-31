@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-StructType::StructType(const std::string &identifier)
+StructType::StructType(const atl::string &identifier)
     : identifier(identifier) {}
 
 std::shared_ptr<StructType> StructType::getptr() { return shared_from_this(); }
@@ -36,7 +36,7 @@ bool StructType::operator!=(const StructType &rhs) const {
 
 void StructType::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string StructType::accept(ASTVisitor<std::string> &v) {
+atl::string StructType::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -58,4 +58,4 @@ StructType::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string StructType::astClass() const { return "StructType"; }
+atl::string StructType::astClass() const { return "StructType"; }

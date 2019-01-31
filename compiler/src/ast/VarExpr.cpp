@@ -2,13 +2,13 @@
 
 using namespace ACC;
 
-VarExpr::VarExpr(std::string identifier) : identifier(identifier) {}
+VarExpr::VarExpr(const atl::string &identifier) : identifier(identifier) {}
 
 std::shared_ptr<VarExpr> VarExpr::getptr() { return shared_from_this(); }
 
 void VarExpr::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string VarExpr::accept(ASTVisitor<std::string> &v) {
+atl::string VarExpr::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -30,4 +30,4 @@ VarExpr::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string VarExpr::astClass() const { return "VarExpr"; }
+atl::string VarExpr::astClass() const { return "VarExpr"; }

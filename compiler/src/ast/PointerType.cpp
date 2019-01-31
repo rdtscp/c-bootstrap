@@ -29,7 +29,7 @@ int PointerType::getBytes() const { return 4; }
 
 void PointerType::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string PointerType::accept(ASTVisitor<std::string> &v) {
+atl::string PointerType::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -52,4 +52,4 @@ PointerType::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string PointerType::astClass() const { return "PointerType"; }
+atl::string PointerType::astClass() const { return "PointerType"; }

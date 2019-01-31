@@ -37,13 +37,13 @@ bool StructTypeDecl::operator!=(const StructTypeDecl &rhs) const {
   return !(*this == rhs);
 }
 
-std::string StructTypeDecl::getIdentifier() const {
-  return "struct " + structType->identifier;
+atl::string StructTypeDecl::getIdentifier() const {
+  return atl::string("struct ") + structType->identifier;
 }
 
 void StructTypeDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string StructTypeDecl::accept(ASTVisitor<std::string> &v) {
+atl::string StructTypeDecl::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -66,4 +66,4 @@ StructTypeDecl::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string StructTypeDecl::astClass() const { return "StructTypeDecl"; }
+atl::string StructTypeDecl::astClass() const { return "StructTypeDecl"; }

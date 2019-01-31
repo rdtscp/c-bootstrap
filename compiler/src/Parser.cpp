@@ -38,9 +38,11 @@ SourceToken Parser::expect(TC expected) {
     return output;
   }
   throw std::runtime_error(
-      "Parsing: Expected Token " + ACC::tokToStr(expected) + " at " +
-      currToken.position.toString() + " but found: " +
-      ACC::tokToStr(currToken.tokenClass) + "(" + currToken.data + ")");
+      std::string("Parsing: Expected Token ") +
+      ACC::tokToStr(expected).c_str() + " at " +
+      currToken.position.toString().c_str() +
+      " but found: " + ACC::tokToStr(currToken.tokenClass).c_str() + "(" +
+      currToken.data.c_str() + ")");
 }
 
 SourceToken Parser::expect(std::vector<TC> expected) {
@@ -51,8 +53,8 @@ SourceToken Parser::expect(std::vector<TC> expected) {
       return output;
     }
   }
-  throw std::runtime_error("Parsing: Invalid Token at " +
-                           currToken.position.toString());
+  throw std::runtime_error(std::string("Parsing: Invalid Token at ") +
+                           currToken.position.toString().c_str());
 }
 
 SourceToken Parser::lookAhead(int i) {
@@ -265,7 +267,7 @@ std::shared_ptr<Decl> Parser::parseDecl() {
 }
 std::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
   expect(TC::ENUM);
-  std::string ident = "";
+  atl::string ident = "";
   if (accept(TC::IDENTIFIER))
     ident = expect(TC::IDENTIFIER).data;
   expect(TC::LBRA);
@@ -273,13 +275,13 @@ std::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
   bool moreStates = false;
   std::map<std::string, std::string> states;
   do {
-    std::string ident = expect(TC::IDENTIFIER).data;
-    std::string value = "";
+    atl::string ident = expect(TC::IDENTIFIER).data;
+    atl::string value = "";
     if (accept(TC::ASSIGN)) {
       expect(TC::ASSIGN);
       value = expect(TC::INT_LITERAL).data;
     }
-    states[ident] = value;
+    states[std::string(ident.c_str())] = std::string(value.c_str());
     if (accept(TC::COMMA)) {
       expect(TC::COMMA);
       moreStates = true;
@@ -294,7 +296,7 @@ std::shared_ptr<FunDecl> Parser::parseFunDecl() {
     expect(TC::EXTERN);
   }
   std::shared_ptr<Type> funType = parseType();
-  std::string funIdent = expect(TC::IDENTIFIER).data;
+  atl::string funIdent = expect(TC::IDENTIFIER).data;
   expect(TC::LPAR);
   std::vector<std::shared_ptr<VarDecl>> funParams;
 
@@ -355,7 +357,7 @@ std::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
   } else {
     aliasedType = parseType();
   }
-  std::string typeAlias = expect(TC::IDENTIFIER).data;
+  atl::string typeAlias = expect(TC::IDENTIFIER).data;
   return std::make_shared<TypeDefDecl>(TypeDefDecl(aliasedType, typeAlias));
 }
 std::shared_ptr<VarDecl> Parser::parseVarDecl() {
@@ -365,10 +367,10 @@ std::shared_ptr<VarDecl> Parser::parseVarDecl() {
     isExtern = true;
   }
   std::shared_ptr<Type> varType = parseType();
-  std::string varIdentifier = expect(TC::IDENTIFIER).data;
+  atl::string varIdentifier = expect(TC::IDENTIFIER).data;
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
-    std::string arraySize;
+    atl::string arraySize;
     if (!isExtern || accept(TC::INT_LITERAL))
       arraySize = expect(TC::INT_LITERAL).data;
     expect(TC::RSBR);
@@ -380,7 +382,7 @@ std::shared_ptr<VarDecl> Parser::parseVarDecl() {
 /* -- Types -- */
 std::shared_ptr<StructType> Parser::parseStructType() {
   expect(TC::STRUCT);
-  std::string structIdentifier = expect(TC::IDENTIFIER).data;
+  atl::string structIdentifier = expect(TC::IDENTIFIER).data;
   return std::make_shared<StructType>(StructType(structIdentifier));
 }
 std::shared_ptr<Type> Parser::parseType() {
@@ -525,12 +527,12 @@ std::shared_ptr<While> Parser::parseWhile() {
 
 std::shared_ptr<VarDecl> Parser::parseParam() {
   std::shared_ptr<Type> varType = parseType();
-  std::string varIdentifier = "";
+  atl::string varIdentifier = "";
   if (accept(TC::IDENTIFIER))
     varIdentifier = expect(TC::IDENTIFIER).data;
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
-    std::string arraySize = expect(TC::INT_LITERAL).data;
+    atl::string arraySize = expect(TC::INT_LITERAL).data;
     expect(TC::RSBR);
     varType = std::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
@@ -664,7 +666,7 @@ std::shared_ptr<Expr> Parser::parseUnaryExpr() {
 }
 std::shared_ptr<Expr> Parser::parseObjExpr() {
   if (accept(TC::IDENTIFIER)) {
-    std::string ident = expect(TC::IDENTIFIER).data;
+    atl::string ident = expect(TC::IDENTIFIER).data;
     if (accept(TC::LPAR)) {
       expect(TC::LPAR);
 
@@ -685,7 +687,7 @@ std::shared_ptr<Expr> Parser::parseObjExpr() {
   std::shared_ptr<Expr> lhs = parseLitExpr();
   if (accept(TC::DOT)) {
     expect(TC::DOT);
-    std::string fieldIdent = expect(TC::IDENTIFIER).data;
+    atl::string fieldIdent = expect(TC::IDENTIFIER).data;
     return std::make_shared<FieldAccess>(FieldAccess(lhs, fieldIdent));
   }
   if (accept(TC::LSBR)) {
@@ -713,8 +715,8 @@ std::shared_ptr<Expr> Parser::parseLitExpr() {
   if (acceptExpr())
     return parseExpr();
 
-  throw std::runtime_error("Parsing: Expected an Expression at " +
-                           currToken.position.toString());
+  throw std::runtime_error(std::string("Parsing: Expected an Expression at ") +
+                           currToken.position.toString().c_str());
 }
 
 /* ---- Helpers ---- */
@@ -730,7 +732,7 @@ std::shared_ptr<BaseType> Parser::tokenToType(const TC &tc) {
   case TC::VOID:
     return std::make_shared<BaseType>(BaseType(PrimitiveType::VOID));
   default:
-    throw std::runtime_error("Parsing: Cannot resolve Token " + tokToStr(tc) +
-                             "  to a type.");
+    throw std::runtime_error(std::string("Parsing: Cannot resolve Token ") +
+                             tokToStr(tc).c_str() + "  to a type.");
   }
 }

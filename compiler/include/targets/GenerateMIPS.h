@@ -3,6 +3,7 @@
 #ifndef ACC_GENERATEMIPS_H
 #define ACC_GENERATEMIPS_H
 
+#include "atl/include/string.h"
 #include <algorithm>
 #include <memory>
 #include <set>
@@ -19,11 +20,11 @@ class GenerateMIPS : public ASTVisitor<MIPS::Register> {
 
 public:
   int errorCount = 0;
-  std::vector<std::string> errors;
+  std::vector<atl::string> errors;
 
-  GenerateMIPS(std::shared_ptr<Program> progAST, std::string outputFile);
+  GenerateMIPS(std::shared_ptr<Program> progAST, const atl::string &outputFile);
 
-  void error(std::string error);
+  void error(const atl::string &error);
 
   void printErrors() const;
 

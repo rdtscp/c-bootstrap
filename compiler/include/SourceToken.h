@@ -3,6 +3,8 @@
 #ifndef ACC_TOKEN_H
 #define ACC_TOKEN_H
 
+#include "atl/include/string.h"
+
 #include "Position.h"
 
 namespace ACC {
@@ -88,14 +90,14 @@ public:
     INVALID // in case we cannot recognise a character as part of a valid token
   };
 
-  std::string data;
+  atl::string data;
   Position position;
   Class tokenClass;
 
   SourceToken()
       : tokenClass(Class::INVALID), position(Position(-1, -1, "")), data("") {}
 
-  SourceToken(Class tokenClass, Position p, std::string data = "")
+  SourceToken(Class tokenClass, Position p, atl::string data = "")
       : tokenClass(tokenClass), position(p), data(data) {}
 
   bool operator==(const SourceToken &rhs) {
@@ -103,7 +105,7 @@ public:
   }
 };
 
-static std::string tokToStr(const SourceToken::Class &tok) {
+static atl::string tokToStr(const SourceToken::Class &tok) {
   switch (tok) {
   case SourceToken::Class::IDENTIFIER:
     return "IDENTIFIER";

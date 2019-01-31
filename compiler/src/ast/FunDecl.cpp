@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-FunDecl::FunDecl(std::string funName,
+FunDecl::FunDecl(const atl::string &funName,
                  std::vector<std::shared_ptr<VarDecl>> funParams,
                  std::shared_ptr<Type> funType)
     : funName(funName), funParams(funParams), funType(funType) {}
@@ -36,11 +36,11 @@ bool FunDecl::operator==(const FunDecl &rhs) const {
 
 bool FunDecl::operator!=(const FunDecl &rhs) const { return !(*this == rhs); }
 
-std::string FunDecl::getIdentifier() const { return funName; }
+atl::string FunDecl::getIdentifier() const { return funName; }
 
 void FunDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string FunDecl::accept(ASTVisitor<std::string> &v) {
+atl::string FunDecl::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -62,4 +62,4 @@ FunDecl::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string FunDecl::astClass() const { return "FunDecl"; }
+atl::string FunDecl::astClass() const { return "FunDecl"; }

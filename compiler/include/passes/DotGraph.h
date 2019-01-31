@@ -3,6 +3,7 @@
 #ifndef ACC_DOTGRAPH_H
 #define ACC_DOTGRAPH_H
 
+#include "atl/include/string.h"
 #include <iostream>
 
 #include "../AST.h"
@@ -10,7 +11,7 @@
 
 namespace ACC {
 
-class DotGraph : public ASTVisitor<std::string> {
+class DotGraph : public ASTVisitor<atl::string> {
 
 public:
   DotGraph(std::shared_ptr<Program> progAST);
@@ -20,44 +21,44 @@ private:
   int nodeCount = 0;
   std::shared_ptr<Program> progAST;
 
-  void declare(const std::string &nodeID, const std::string &label);
+  void declare(const atl::string &nodeID, const atl::string &label);
 
-  void join(const std::string &lhs, const std::string &rhs);
+  void join(const atl::string &lhs, const atl::string &rhs);
 
-  void put(const std::string &str);
+  void put(const atl::string &str);
 
   /* ---- Visit AST ---- */
 
-  std::string visit(ArrayAccess &aa) override;
-  std::string visit(ArrayType &at) override;
-  std::string visit(Assign &as) override;
-  std::string visit(BaseType &bt) override;
-  std::string visit(BinOp &bo) override;
-  std::string visit(Block &b) override;
-  std::string visit(CharLiteral &cl) override;
-  std::string visit(DoWhile &dw) override;
-  std::string visit(EnumTypeDecl &etd) override;
-  std::string visit(FieldAccess &fa) override;
-  std::string visit(FunCall &fc) override;
-  std::string visit(FunDecl &fd) override;
-  std::string visit(FunDef &fd) override;
-  std::string visit(If &i) override;
-  std::string visit(IntLiteral &il) override;
-  std::string visit(Namespace &n) override;
-  std::string visit(ParenthExpr &pe) override;
-  std::string visit(PointerType &pt) override;
-  std::string visit(Program &p) override;
-  std::string visit(Return &r) override;
-  std::string visit(SizeOf &so) override;
-  std::string visit(StringLiteral &sl) override;
-  std::string visit(StructType &st) override;
-  std::string visit(StructTypeDecl &std) override;
-  std::string visit(TypeCast &tc) override;
-  std::string visit(TypeDefDecl &td) override;
-  std::string visit(ValueAt &va) override;
-  std::string visit(VarDecl &vd) override;
-  std::string visit(VarExpr &ve) override;
-  std::string visit(While &w) override;
+  atl::string visit(ArrayAccess &aa) override;
+  atl::string visit(ArrayType &at) override;
+  atl::string visit(Assign &as) override;
+  atl::string visit(BaseType &bt) override;
+  atl::string visit(BinOp &bo) override;
+  atl::string visit(Block &b) override;
+  atl::string visit(CharLiteral &cl) override;
+  atl::string visit(DoWhile &dw) override;
+  atl::string visit(EnumTypeDecl &etd) override;
+  atl::string visit(FieldAccess &fa) override;
+  atl::string visit(FunCall &fc) override;
+  atl::string visit(FunDecl &fd) override;
+  atl::string visit(FunDef &fd) override;
+  atl::string visit(If &i) override;
+  atl::string visit(IntLiteral &il) override;
+  atl::string visit(Namespace &n) override;
+  atl::string visit(ParenthExpr &pe) override;
+  atl::string visit(PointerType &pt) override;
+  atl::string visit(Program &p) override;
+  atl::string visit(Return &r) override;
+  atl::string visit(SizeOf &so) override;
+  atl::string visit(StringLiteral &sl) override;
+  atl::string visit(StructType &st) override;
+  atl::string visit(StructTypeDecl &std) override;
+  atl::string visit(TypeCast &tc) override;
+  atl::string visit(TypeDefDecl &td) override;
+  atl::string visit(ValueAt &va) override;
+  atl::string visit(VarDecl &vd) override;
+  atl::string visit(VarExpr &ve) override;
+  atl::string visit(While &w) override;
 };
 
 }; // namespace ACC

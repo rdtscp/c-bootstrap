@@ -50,51 +50,64 @@ std::shared_ptr<ASTNode> Optimiser::visit(BinOp &bo) {
     std::shared_ptr<IntLiteral> rhsIntLiteral =
         std::static_pointer_cast<IntLiteral>(bo.rhs);
 
-    int lhsVal = std::stoi(lhsIntLiteral->getLiteral());
-    int rhsVal = std::stoi(rhsIntLiteral->getLiteral());
+    int lhsVal = std::stoi(lhsIntLiteral->getLiteral().c_str());
+    int rhsVal = std::stoi(rhsIntLiteral->getLiteral().c_str());
 
     int newVal;
     optimised("Converted a BinOp of Two IntLiterals into its Result.");
     switch (bo.operation) {
     case Op::ADD:
       newVal = lhsVal + rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     case Op::AND:
       newVal = lhsVal && rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     case Op::DIV:
       newVal = lhsVal / rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     case Op::EQ:
       newVal = lhsVal == rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     case Op::GE:
       newVal = lhsVal >= rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     case Op::GT:
       newVal = lhsVal > rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     case Op::LE:
       newVal = lhsVal <= rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     case Op::LT:
       newVal = lhsVal < rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     case Op::MOD:
       newVal = lhsVal % rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     case Op::MUL:
       newVal = lhsVal * rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     case Op::NE:
       newVal = lhsVal != rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     case Op::OR:
       newVal = lhsVal || rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     case Op::SUB:
       newVal = lhsVal - rhsVal;
-      return std::make_shared<IntLiteral>(IntLiteral(std::to_string(newVal)));
+      return std::make_shared<IntLiteral>(
+          IntLiteral(std::to_string(newVal).c_str()));
     }
   }
   bo.lhs = std::static_pointer_cast<Expr>(bo.lhs->accept(*this));

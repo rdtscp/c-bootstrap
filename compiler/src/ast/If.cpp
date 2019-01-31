@@ -13,7 +13,7 @@ std::shared_ptr<If> If::getptr() { return shared_from_this(); }
 
 void If::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string If::accept(ASTVisitor<std::string> &v) { return v.visit(*this); }
+atl::string If::accept(ASTVisitor<atl::string> &v) { return v.visit(*this); }
 
 std::shared_ptr<Type> If::accept(ASTVisitor<std::shared_ptr<Type>> &v) {
   return v.visit(*this);
@@ -32,4 +32,4 @@ std::shared_ptr<ASTNode> If::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string If::astClass() const { return "If"; }
+atl::string If::astClass() const { return "If"; }

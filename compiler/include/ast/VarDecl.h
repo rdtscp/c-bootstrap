@@ -18,12 +18,12 @@ class VarDecl : public Decl,
 public:
   bool isExtern;
   std::shared_ptr<Type> type;
-  std::string identifer;
+  atl::string identifer;
   std::shared_ptr<FunDecl> parentFunc;
 
   int fpOffset = 0;
 
-  VarDecl(std::shared_ptr<Type> type, std::string p_identifer,
+  VarDecl(std::shared_ptr<Type> type, const atl::string &identifer,
           bool isExtern = false);
 
   std::shared_ptr<VarDecl::Decl> getptr();
@@ -36,17 +36,17 @@ public:
 
   int getBytes() const;
 
-  std::string getIdentifier() const override;
+  atl::string getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
-  std::string accept(ASTVisitor<std::string> &v) override;
+  atl::string accept(ASTVisitor<atl::string> &v) override;
   std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
   MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
   std::shared_ptr<X86::Operand>
   accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) override;
   std::shared_ptr<ASTNode>
   accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) override;
-  std::string astClass() const override;
+  atl::string astClass() const override;
 };
 
 }; // namespace ACC

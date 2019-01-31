@@ -8,7 +8,7 @@ std::shared_ptr<SizeOf> SizeOf::getptr() { return shared_from_this(); }
 
 void SizeOf::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string SizeOf::accept(ASTVisitor<std::string> &v) {
+atl::string SizeOf::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -30,4 +30,4 @@ SizeOf::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string SizeOf::astClass() const { return "SizeOf"; }
+atl::string SizeOf::astClass() const { return "SizeOf"; }

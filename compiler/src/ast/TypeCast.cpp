@@ -9,7 +9,7 @@ std::shared_ptr<TypeCast> TypeCast::getptr() { return shared_from_this(); }
 
 void TypeCast::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string TypeCast::accept(ASTVisitor<std::string> &v) {
+atl::string TypeCast::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -31,4 +31,4 @@ TypeCast::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string TypeCast::astClass() const { return "TypeCast"; }
+atl::string TypeCast::astClass() const { return "TypeCast"; }

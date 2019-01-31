@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-FieldAccess::FieldAccess(std::shared_ptr<Expr> object, std::string field)
+FieldAccess::FieldAccess(std::shared_ptr<Expr> object, const atl::string &field)
     : object(object), field(field) {}
 
 std::shared_ptr<FieldAccess> FieldAccess::getptr() {
@@ -11,7 +11,7 @@ std::shared_ptr<FieldAccess> FieldAccess::getptr() {
 
 void FieldAccess::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string FieldAccess::accept(ASTVisitor<std::string> &v) {
+atl::string FieldAccess::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -34,4 +34,4 @@ FieldAccess::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string FieldAccess::astClass() const { return "FieldAccess"; }
+atl::string FieldAccess::astClass() const { return "FieldAccess"; }

@@ -9,7 +9,7 @@ namespace ACC {
 
 class Literal : public Expr {
 public:
-  virtual std::string getLiteral() const = 0;
+  virtual atl::string getLiteral() const = 0;
 };
 
 }; // namespace ACC

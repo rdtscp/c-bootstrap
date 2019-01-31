@@ -5,7 +5,7 @@ using namespace ACC;
 NameAnalysis::NameAnalysis(std::shared_ptr<Program> progAST)
     : progAST(progAST) {}
 
-void NameAnalysis::error(std::string error) {
+void NameAnalysis::error(const atl::string &error) {
   errorCount++;
   errors.push_back(error);
 }
@@ -13,7 +13,7 @@ void NameAnalysis::error(std::string error) {
 void NameAnalysis::printErrors() {
   std::cerr << "Name Analysis Errors:" << std::endl;
   for (const auto &error : errors)
-    std::cerr << "\t" << error << std::endl;
+    std::cerr << "\t" << error.c_str() << std::endl;
 }
 
 void NameAnalysis::run() { visit(*progAST); }
@@ -49,7 +49,8 @@ void NameAnalysis::visit(EnumTypeDecl &etd) {}
 void NameAnalysis::visit(FieldAccess &fa) { fa.object->accept(*this); }
 void NameAnalysis::visit(FunCall &fc) {
   if (currScope->find(fc.funName) == nullptr)
-    return error("Attempted to call undeclared function: " + fc.funName);
+    return error(atl::string("Attempted to call undeclared function: ") +
+                 fc.funName);
   for (const auto &arg : fc.funArgs)
     arg->accept(*this);
 }
@@ -71,9 +72,11 @@ void NameAnalysis::visit(FunDecl &fd) {
 }
 void NameAnalysis::visit(FunDef &fd) {
   if (currScope->findLocal(fd.getIdentifier()))
-    return error("Attempted to declare a Function with an identifier that is "
-                 "already in use: " +
-                 fd.getIdentifier());
+    return error(
+        atl::string(
+            "Attempted to declare a Function with an identifier that is "
+            "already in use: ") +
+        fd.getIdentifier());
   currScope->insertDecl(fd.getptr());
 
   fd.funBlock->setOuterBlock(currScope);
@@ -114,20 +117,22 @@ void NameAnalysis::visit(StringLiteral &sl) {}
 void NameAnalysis::visit(StructType &st) {}
 void NameAnalysis::visit(StructTypeDecl &std) {
   if (currScope->findLocal(std.getIdentifier()))
-    return error("Attempted to declare a Struct with an identifier that is "
-                 "already in use: " +
-                 std.getIdentifier());
+    return error(
+        atl::string("Attempted to declare a Struct with an identifier that is "
+                    "already in use: ") +
+        std.getIdentifier());
 
   currScope->insertDecl(std.getptr());
 
   /* Check that the fields in this struct are unique */
   std::set<std::string> structTypeFields;
   for (const std::shared_ptr<VarDecl> field : std.varDecls) {
-    if (structTypeFields.find(field->getIdentifier()) != structTypeFields.end())
-      return error("Struct " + std.getIdentifier() +
+    if (structTypeFields.find(field->getIdentifier().c_str()) !=
+        structTypeFields.end())
+      return error(atl::string("Struct ") + std.getIdentifier() +
                    " contained multiple fields with the same identifier: " +
                    field->getIdentifier());
-    structTypeFields.insert(field->identifer);
+    structTypeFields.insert(field->identifer.c_str());
   }
 }
 void NameAnalysis::visit(TypeCast &tc) { tc.expr->accept(*this); }
@@ -135,14 +140,16 @@ void NameAnalysis::visit(TypeDefDecl &td) {}
 void NameAnalysis::visit(ValueAt &va) { va.derefExpr->accept(*this); }
 void NameAnalysis::visit(VarDecl &vd) {
   if (currScope->findLocal(vd.getIdentifier()))
-    return error("Attempted to declare a Variable with an identifier that is "
-                 "already in use: " +
-                 vd.getIdentifier());
+    return error(
+        atl::string(
+            "Attempted to declare a Variable with an identifier that is "
+            "already in use: ") +
+        vd.getIdentifier());
   currScope->insertDecl(vd.getptr());
 }
 void NameAnalysis::visit(VarExpr &ve) {
   if (currScope->find(ve.identifier) == nullptr)
-    return error("Attempted to reference undeclared variable: " +
+    return error(atl::string("Attempted to reference undeclared variable: ") +
                  ve.identifier);
 }
 void NameAnalysis::visit(While &w) {

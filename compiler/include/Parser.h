@@ -4,7 +4,6 @@
 #define ACC_PARSER_H
 
 #include <memory>
-#include <string>
 #include <vector>
 
 #include "AST.h"

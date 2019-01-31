@@ -11,7 +11,7 @@ std::shared_ptr<ParenthExpr> ParenthExpr::getptr() {
 
 void ParenthExpr::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string ParenthExpr::accept(ASTVisitor<std::string> &v) {
+atl::string ParenthExpr::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -34,4 +34,4 @@ ParenthExpr::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string ParenthExpr::astClass() const { return "ParenthExpr"; }
+atl::string ParenthExpr::astClass() const { return "ParenthExpr"; }

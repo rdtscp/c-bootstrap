@@ -2,21 +2,21 @@
 
 using namespace ACC;
 
-IntLiteral::IntLiteral(std::string literal) : value(literal) {}
+IntLiteral::IntLiteral(const atl::string &literal) : value(literal) {}
 
 std::shared_ptr<IntLiteral> IntLiteral::getptr() { return shared_from_this(); }
 
-std::string IntLiteral::getLiteral() const {
-  if (value.find("x") != std::string::npos) {
-    unsigned int intValue = std::stoul(value, nullptr, 16);
-    return std::to_string(intValue);
+atl::string IntLiteral::getLiteral() const {
+  if (value.find('x') != atl::string::npos) {
+    unsigned int intValue = std::stoul(std::string(value.c_str()), nullptr, 16);
+    return std::to_string(intValue).c_str();
   }
   return value;
 }
 
 void IntLiteral::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string IntLiteral::accept(ASTVisitor<std::string> &v) {
+atl::string IntLiteral::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -38,4 +38,4 @@ IntLiteral::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string IntLiteral::astClass() const { return "IntLiteral"; }
+atl::string IntLiteral::astClass() const { return "IntLiteral"; }

@@ -33,7 +33,7 @@ int BaseType::getBytes() const {
 
 void BaseType::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string BaseType::accept(ASTVisitor<std::string> &v) {
+atl::string BaseType::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -55,4 +55,4 @@ BaseType::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string BaseType::astClass() const { return "BaseType"; }
+atl::string BaseType::astClass() const { return "BaseType"; }

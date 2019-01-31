@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-FunCall::FunCall(std::string funName,
+FunCall::FunCall(const atl::string &funName,
                  std::vector<std::shared_ptr<Expr>> funArgs)
     : funName(funName), funArgs(funArgs) {}
 
@@ -10,7 +10,7 @@ std::shared_ptr<FunCall> FunCall::getptr() { return shared_from_this(); }
 
 void FunCall::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string FunCall::accept(ASTVisitor<std::string> &v) {
+atl::string FunCall::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -32,4 +32,4 @@ FunCall::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string FunCall::astClass() const { return "FunCall"; }
+atl::string FunCall::astClass() const { return "FunCall"; }

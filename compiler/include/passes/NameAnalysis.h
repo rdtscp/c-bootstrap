@@ -17,11 +17,11 @@ class NameAnalysis : public ASTVisitor<void> {
 
 public:
   int errorCount = 0;
-  std::vector<std::string> errors;
+  std::vector<atl::string> errors;
 
   NameAnalysis(std::shared_ptr<Program> progAST);
 
-  void error(std::string error);
+  void error(const atl::string &error);
 
   void printErrors();
 

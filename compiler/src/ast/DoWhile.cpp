@@ -9,7 +9,7 @@ std::shared_ptr<DoWhile> DoWhile::getptr() { return shared_from_this(); }
 
 void DoWhile::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string DoWhile::accept(ASTVisitor<std::string> &v) {
+atl::string DoWhile::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -31,4 +31,4 @@ DoWhile::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string DoWhile::astClass() const { return "DoWhile"; }
+atl::string DoWhile::astClass() const { return "DoWhile"; }

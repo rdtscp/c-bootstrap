@@ -10,7 +10,7 @@ std::shared_ptr<Return> Return::getptr() { return shared_from_this(); }
 
 void Return::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string Return::accept(ASTVisitor<std::string> &v) {
+atl::string Return::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -32,4 +32,4 @@ Return::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string Return::astClass() const { return "Return"; }
+atl::string Return::astClass() const { return "Return"; }

@@ -16,7 +16,7 @@ Program::Program(const std::vector<std::shared_ptr<Decl>> &decls)
 
 void Program::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string Program::accept(ASTVisitor<std::string> &v) {
+atl::string Program::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -38,4 +38,4 @@ Program::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string Program::astClass() const { return "Program"; }
+atl::string Program::astClass() const { return "Program"; }

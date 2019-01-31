@@ -40,7 +40,7 @@ SourceToken Lexer::nextToken() {
           char val = c;
           scanner.next();
           return SourceToken(TC::CHAR_LITERAL, scanner.getPosition(),
-                             std::to_string('\\' + val));
+                             atl::string(1, '\\') + val);
         }
       }
     }
@@ -49,15 +49,15 @@ SourceToken Lexer::nextToken() {
       char val = c;
       scanner.next();
       return SourceToken(TC::CHAR_LITERAL, scanner.getPosition(),
-                         std::string(1, val));
+                         atl::string(1, val));
     }
   }
   // Recognise IDENTIFIERS & Keyword Tokens.
   if (isalpha(c) || c == '_') {
-    std::string literal(1, c);
+    atl::string literal(1, c);
     // Check for CHAR Token.
     if (c == 'c' && scanner.peek() == 'h') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("char");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("char");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -65,7 +65,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for CONST Token.
     if (c == 'c' && scanner.peek() == 'o') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("const");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("const");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -73,7 +73,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for DO Token.
     if (c == 'd' && scanner.peek() == 'o') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("do");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("do");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -81,7 +81,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for ELSE Token.
     else if (c == 'e' && scanner.peek() == 'l') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("else");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("else");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -89,7 +89,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for ENUM Token.
     else if (c == 'e' && scanner.peek() == 'n') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("enum");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("enum");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -97,7 +97,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for EXTERN Token.
     else if (c == 'e' && scanner.peek() == 'x') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("extern");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("extern");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -105,7 +105,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for IF Token.
     else if (c == 'i' && scanner.peek() == 'f') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("if");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("if");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -115,13 +115,13 @@ SourceToken Lexer::nextToken() {
     else if (c == 'i' && scanner.peek() == 'n') {
       c = scanner.next();
       if (scanner.peek() == 't') {
-        std::pair<bool, std::string> lexResult = tryLexKeyword("nt");
+        std::pair<bool, atl::string> lexResult = tryLexKeyword("nt");
         literal = lexResult.second;
 
         if (lexResult.first)
           return SourceToken(TC::INT, scanner.getPosition());
       } else if (scanner.peek() == 'l') {
-        std::pair<bool, std::string> lexResult = tryLexKeyword("nline");
+        std::pair<bool, atl::string> lexResult = tryLexKeyword("nline");
         literal = lexResult.second;
 
         if (lexResult.first)
@@ -130,7 +130,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for NAMESPACE token.
     else if (c == 'n' && scanner.peek() == 'a') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("namespace");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("namespace");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -138,7 +138,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for RETURN Token.
     else if (c == 'r' && scanner.peek() == 'e') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("return");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("return");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -146,7 +146,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for SIZEOF Token.
     else if (c == 's' && scanner.peek() == 'h') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("short");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("short");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -154,7 +154,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for SIZEOF Token.
     else if (c == 's' && scanner.peek() == 'i') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("sizeof");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("sizeof");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -162,7 +162,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for STRUCT Token.
     else if (c == 's' && scanner.peek() == 't') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("struct");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("struct");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -170,7 +170,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for TYPEDEF Token.
     else if (c == 't' && scanner.peek() == 'y') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("typedef");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("typedef");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -178,7 +178,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for UNSIGNED Token.
     else if (c == 'u' && scanner.peek() == 'n') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("unsigned");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("unsigned");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -186,7 +186,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for WHILE Token.
     else if (c == 'w' && scanner.peek() == 'h') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("while");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("while");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -194,7 +194,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for VOID Token.
     else if (c == 'v' && scanner.peek() == 'o') {
-      std::pair<bool, std::string> lexResult = tryLexKeyword("void");
+      std::pair<bool, atl::string> lexResult = tryLexKeyword("void");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -223,7 +223,7 @@ SourceToken Lexer::nextToken() {
   }
   // Recognise INT_LITERAL Token.
   if (isdigit(c)) {
-    std::string literal(1, c);
+    atl::string literal(1, c);
     if (scanner.peek() == 'x') {
       literal += scanner.next();
       while (std::isalpha(scanner.peek()) || std::isdigit(scanner.peek()))
@@ -305,24 +305,26 @@ SourceToken Lexer::nextToken() {
     return nextToken();
 
   // if we reach this point, it means we did not recognise a valid token
-  throw std::runtime_error("Lexer: Unexpected Token. " +
-                           scanner.getPosition().toString());
+  throw std::runtime_error(std::string("Lexer: Unexpected Token. ") +
+                           scanner.getPosition().toString().c_str());
 }
 
 SourceToken Lexer::lexStringLiteral() {
-  std::string literal;
+  atl::string literal;
   int currLine = scanner.getPosition().line;
 
   char c;
   while (true) {
     c = scanner.next();
     if (c == '\0')
-      throw std::runtime_error("Lexer: Unexpected EOF in String Literal. " +
-                               scanner.getPosition().toString());
+      throw std::runtime_error(
+          std::string("Lexer: Unexpected EOF in String Literal. ") +
+          scanner.getPosition().toString().c_str());
     if (c == '\n')
       throw std::runtime_error(
-          "Lexer: Unexpected Newline Character in String Literal. " +
-          scanner.getPosition().toString());
+          std::string(
+              "Lexer: Unexpected Newline Character in String Literal. ") +
+          scanner.getPosition().toString().c_str());
 
     // Check if we are about to see an escaped character.
     if (c == '\\') {
@@ -361,18 +363,19 @@ void Lexer::passComment() {
     }
   }
   throw std::runtime_error(
-      "Lexer: Lexing Comment Returned Unexpected SourceToken(s). " +
-      scanner.getPosition().toString());
+      std::string(
+          "Lexer: Lexing Comment Returned Unexpected SourceToken(s). ") +
+      scanner.getPosition().toString().c_str());
 }
 
-std::pair<bool, std::string> Lexer::tryLexKeyword(const std::string &keyword) {
+std::pair<bool, atl::string> Lexer::tryLexKeyword(const atl::string &keyword) {
   bool keywordMatch = false;
-  std::string literal(1, keyword[0]);
+  atl::string literal(1, keyword[0]);
 
   for (int i = 1; i < keyword.length(); i++) {
     char peek = scanner.peek();
     if (scanner.peek() != keyword[i])
-      return std::pair<bool, std::string>(false, literal);
+      return std::pair<bool, atl::string>(false, literal);
 
     literal += scanner.next();
   }
@@ -382,5 +385,5 @@ std::pair<bool, std::string> Lexer::tryLexKeyword(const std::string &keyword) {
       (peek != '_'))
     keywordMatch = true;
 
-  return std::pair<bool, std::string>(keywordMatch, literal);
+  return std::pair<bool, atl::string>(keywordMatch, literal);
 }

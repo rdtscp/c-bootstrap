@@ -3,10 +3,10 @@
 #ifndef ACC_MIPS_H
 #define ACC_MIPS_H
 
+#include "atl/include/string.h"
 #include <fstream>
 #include <iostream>
 #include <memory>
-#include <string>
 #include <vector>
 
 namespace ACC {
@@ -16,31 +16,31 @@ namespace MIPS {
 class Register final {
 public:
   int num;
-  std::string name;
+  atl::string name;
 
   Register();
-  Register(int num, std::string name);
+  Register(const int num, const atl::string &name);
   bool operator==(const Register &rhs);
-  std::string toString() const;
+  atl::string toString() const;
 };
 
 class Writer final {
 public:
-  Writer(std::string filename);
+  Writer(const atl::string &filename);
 
   void ADDI(const MIPS::Register &dest, const MIPS::Register &src,
             const int val);
-  void alloc(const std::string &varName, const int size);
-  void BLOCK(const std::string &blockName);
-  void comment(const std::string &comment);
-  void JAL(const std::string &blockName);
+  void alloc(const atl::string &varName, const int size);
+  void BLOCK(const atl::string &blockName);
+  void comment(const atl::string &comment);
+  void JAL(const atl::string &blockName);
   void LW(const MIPS::Register &destReg, const int addr, const int offset = 0);
   void LW(const MIPS::Register &destReg, const MIPS::Register &addr,
           const int offset = 0);
   void SW(const MIPS::Register &regCtnt, const int addr, const int offset = 0);
   void SW(const MIPS::Register &regCtnt, const MIPS::Register &addr,
           const int offset = 0);
-  void write(const std::string &str);
+  void write(const atl::string &str);
 
 private:
   std::ofstream mipsOutput;

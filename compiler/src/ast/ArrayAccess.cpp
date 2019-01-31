@@ -12,7 +12,7 @@ std::shared_ptr<ArrayAccess> ArrayAccess::getptr() {
 
 void ArrayAccess::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string ArrayAccess::accept(ASTVisitor<std::string> &v) {
+atl::string ArrayAccess::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -35,4 +35,4 @@ ArrayAccess::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string ArrayAccess::astClass() const { return "ArrayAccess"; }
+atl::string ArrayAccess::astClass() const { return "ArrayAccess"; }

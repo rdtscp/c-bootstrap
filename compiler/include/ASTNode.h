@@ -3,7 +3,7 @@
 #ifndef ACC_ASTNODE_H
 #define ACC_ASTNODE_H
 
-#include <string>
+#include "atl/include/string.h"
 
 #include "ASTVisitor.h"
 #include "Position.h"
@@ -19,7 +19,7 @@ public:
   virtual ~ASTNode() {}
 
   virtual void accept(ASTVisitor<void> &v) = 0;
-  virtual std::string accept(ASTVisitor<std::string> &v) = 0;
+  virtual atl::string accept(ASTVisitor<atl::string> &v) = 0;
   virtual std::shared_ptr<Type>
   accept(ASTVisitor<std::shared_ptr<Type>> &v) = 0;
   virtual MIPS::Register accept(ASTVisitor<MIPS::Register> &v) = 0;
@@ -27,7 +27,7 @@ public:
   accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) = 0;
   virtual std::shared_ptr<ASTNode>
   accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) = 0;
-  virtual std::string astClass() const = 0;
+  virtual atl::string astClass() const = 0;
 };
 
 }; // namespace ACC

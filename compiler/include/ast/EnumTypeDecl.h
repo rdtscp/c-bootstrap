@@ -17,17 +17,18 @@ class EnumTypeDecl : public Decl,
                      public std::enable_shared_from_this<EnumTypeDecl> {
 
 public:
-  std::string identifer;
+  atl::string identifer;
   std::map<std::string, std::string> states;
 
-  EnumTypeDecl(std::string ident, std::map<std::string, std::string> states);
+  EnumTypeDecl(const atl::string &ident,
+               std::map<std::string, std::string> states);
 
   std::shared_ptr<EnumTypeDecl::Decl> getptr();
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
 
-  std::string getIdentifier() const override;
+  atl::string getIdentifier() const override;
 
   int getBytes() const override;
   bool operator==(Type &rhs) const override;
@@ -37,7 +38,7 @@ public:
   bool operator!=(const EnumTypeDecl &rhs) const;
 
   void accept(ASTVisitor<void> &v) override;
-  std::string accept(ASTVisitor<std::string> &v) override;
+  atl::string accept(ASTVisitor<atl::string> &v) override;
 
   std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
 
@@ -46,7 +47,7 @@ public:
   accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) override;
   std::shared_ptr<ASTNode>
   accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) override;
-  std::string astClass() const override;
+  atl::string astClass() const override;
 };
 
 }; // namespace ACC

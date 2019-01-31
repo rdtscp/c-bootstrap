@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-EnumTypeDecl::EnumTypeDecl(std::string ident,
+EnumTypeDecl::EnumTypeDecl(const atl::string &ident,
                            std::map<std::string, std::string> states)
     : states(states) {}
 
@@ -18,7 +18,7 @@ bool EnumTypeDecl::operator==(Decl &rhs) const {
 
 bool EnumTypeDecl::operator!=(Decl &rhs) const { return !(*this == rhs); }
 
-std::string EnumTypeDecl::getIdentifier() const { return identifer; }
+atl::string EnumTypeDecl::getIdentifier() const { return identifer; }
 
 bool EnumTypeDecl::operator==(Type &rhs) const {
   if (rhs.astClass() == astClass())
@@ -40,7 +40,7 @@ bool EnumTypeDecl::operator!=(const EnumTypeDecl &rhs) const {
 
 void EnumTypeDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string EnumTypeDecl::accept(ASTVisitor<std::string> &v) {
+atl::string EnumTypeDecl::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -63,4 +63,4 @@ EnumTypeDecl::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string EnumTypeDecl::astClass() const { return "EnumTypeDecl"; }
+atl::string EnumTypeDecl::astClass() const { return "EnumTypeDecl"; }

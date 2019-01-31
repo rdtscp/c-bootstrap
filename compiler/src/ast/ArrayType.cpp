@@ -3,7 +3,7 @@
 using namespace ACC;
 
 ArrayType::ArrayType(std::shared_ptr<Type> arrayType,
-                     const std::string &arraySize)
+                     const atl::string &arraySize)
     : arraySize(arraySize), arrayType(arrayType) {}
 
 std::shared_ptr<ArrayType> ArrayType::getptr() { return shared_from_this(); }
@@ -26,12 +26,12 @@ bool ArrayType::operator!=(const ArrayType &rhs) const {
 
 int ArrayType::getBytes() const {
   int elementSize = arrayType->getBytes();
-  return std::stoi(arraySize) * elementSize;
+  return std::stoi(std::string(arraySize.c_str())) * elementSize;
 }
 
 void ArrayType::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string ArrayType::accept(ASTVisitor<std::string> &v) {
+atl::string ArrayType::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -53,4 +53,4 @@ ArrayType::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string ArrayType::astClass() const { return "ArrayType"; }
+atl::string ArrayType::astClass() const { return "ArrayType"; }

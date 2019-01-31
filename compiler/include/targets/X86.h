@@ -3,10 +3,10 @@
 #ifndef ACC_X86_H
 #define ACC_X86_H
 
+#include "atl/include/string.h"
 #include <fstream>
 #include <iostream>
 #include <memory>
-#include <string>
 #include <vector>
 
 namespace ACC {
@@ -17,76 +17,76 @@ class Operand {
 public:
   virtual ~Operand() {}
 
-  virtual std::string opType() const = 0;
-  virtual std::string toString() const = 0;
+  virtual atl::string opType() const = 0;
+  virtual atl::string toString() const = 0;
 };
 
 class Register : public Operand {
 public:
-  int bits;
-  std::string name;
+  const int bits;
+  const atl::string name;
 
-  Register(int bits, std::string name);
+  Register(int bits, const atl::string &name);
   bool operator==(const Register &rhs);
-  std::string opType() const override;
-  std::string toString() const override;
+  atl::string opType() const override;
+  atl::string toString() const override;
 };
 
 class GlobalVariable : public Operand {
 public:
-  std::string name;
-  int size;
+  const atl::string name;
+  const int size;
 
-  GlobalVariable(std::string name, int size);
+  GlobalVariable(const atl::string &name, int size);
   bool operator==(const GlobalVariable &rhs);
-  std::string opType() const override;
-  std::string toString() const override;
+  atl::string opType() const override;
+  atl::string toString() const override;
 };
 
 class IntValue : public Operand {
 public:
-  std::string val;
+  const atl::string val;
 
-  IntValue(std::string val);
+  IntValue(const atl::string &val);
   bool operator==(const IntValue &rhs);
-  std::string opType() const override;
-  std::string toString() const override;
+  atl::string opType() const override;
+  atl::string toString() const override;
 };
 
 class None : public Operand {
 public:
-  std::string opType() const override;
-  std::string toString() const override;
+  atl::string opType() const override;
+  atl::string toString() const override;
 };
 
 class Writer final {
 public:
-  Writer(std::string filename);
+  Writer(const atl::string &filename);
 
   void add(const std::shared_ptr<X86::Operand> &op1,
            const std::shared_ptr<X86::Operand> &op2,
-           const std::string &comment = "");
-  void block(std::string blockName, const std::string &comment = "");
-  void call(const std::string &ident, const std::string &comment = "");
+           const atl::string &comment = "");
+  void block(atl::string blockName, const atl::string &comment = "");
+  void call(const atl::string &ident, const atl::string &comment = "");
   void cmp(const std::shared_ptr<X86::Operand> &reg, const int value,
-           const std::string &comment = "");
-  void comment(const std::string &comment);
+           const atl::string &comment = "");
+  void comment(const atl::string &comment);
   void imul(const std::shared_ptr<X86::Operand> &dst,
             const std::shared_ptr<X86::Operand> &src,
-            const std::string &comment = "");
-  void jeq(const std::string &label, const std::string &comment = "");
-  void jmp(const std::string &label, const std::string &comment = "");
+            const atl::string &comment = "");
+  void jeq(const atl::string &label, const atl::string &comment = "");
+  void jmp(const atl::string &label, const atl::string &comment = "");
   void mov(const std::shared_ptr<X86::Operand> &dst,
            const std::shared_ptr<X86::Operand> &src,
-           const std::string &comment = "");
+           const atl::string &comment = "");
   void pop(const std::shared_ptr<X86::Operand> &reg,
-           const std::string &comment = "");
+           const atl::string &comment = "");
   void push(const std::shared_ptr<X86::Operand> &op,
-            const std::string &comment = "");
-  void ret(const std::string &comment = "");
+            const atl::string &comment = "");
+  void ret(const atl::string &comment = "");
   void sub(const std::shared_ptr<X86::Operand> &reg, const int value,
-           const std::string &comment = "");
-  void write(const std::string &str);
+           const atl::string &comment = "");
+  void write(const atl::string &str);
 
 private:
   std::ofstream x86Output;

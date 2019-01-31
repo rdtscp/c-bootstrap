@@ -9,7 +9,7 @@ std::shared_ptr<Assign> Assign::getptr() { return shared_from_this(); }
 
 void Assign::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string Assign::accept(ASTVisitor<std::string> &v) {
+atl::string Assign::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -31,4 +31,4 @@ Assign::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string Assign::astClass() const { return "Assign"; }
+atl::string Assign::astClass() const { return "Assign"; }

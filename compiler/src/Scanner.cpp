@@ -58,9 +58,9 @@ SourceHandler Scanner::getFileContents() const {
   return SourceHandler(SourceHandler::Type::RAW, fileStr);
 }
 
-std::string Scanner::getFilename() const {
-  std::vector<std::string> directories;
-  std::string currDir;
+atl::string Scanner::getFilename() const {
+  std::vector<atl::string> directories;
+  atl::string currDir;
   for (const char currChar : abspath) {
     if (currChar == '/') {
       directories.push_back(currDir);
@@ -74,9 +74,9 @@ std::string Scanner::getFilename() const {
   return directories[directories.size() - 1];
 }
 
-std::string Scanner::getFilepath() const {
-  std::vector<std::string> directories;
-  std::string currDir;
+atl::string Scanner::getFilepath() const {
+  std::vector<atl::string> directories;
+  atl::string currDir;
   for (const char currChar : abspath) {
     if (currChar == '/') {
       directories.push_back(currDir);
@@ -87,7 +87,7 @@ std::string Scanner::getFilepath() const {
   }
   directories.push_back(currDir);
 
-  std::string filepath;
+  atl::string filepath;
   for (int i = 0; i < directories.size() - 1; i++)
     filepath += directories[i] + '/';
 

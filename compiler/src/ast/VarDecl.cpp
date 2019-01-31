@@ -2,9 +2,9 @@
 
 using namespace ACC;
 
-VarDecl::VarDecl(std::shared_ptr<Type> type, std::string p_identifer,
+VarDecl::VarDecl(std::shared_ptr<Type> type, const atl::string &identifer,
                  bool isExtern)
-    : identifer(p_identifer), type(type), isExtern(isExtern) {}
+    : identifer(identifer), type(type), isExtern(isExtern) {}
 
 std::shared_ptr<VarDecl::Decl> VarDecl::getptr() { return shared_from_this(); }
 
@@ -29,11 +29,11 @@ bool VarDecl::operator!=(const VarDecl &rhs) const { return !(*this == rhs); }
 
 int VarDecl::getBytes() const { return type->getBytes(); }
 
-std::string VarDecl::getIdentifier() const { return identifer; }
+atl::string VarDecl::getIdentifier() const { return identifer; }
 
 void VarDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string VarDecl::accept(ASTVisitor<std::string> &v) {
+atl::string VarDecl::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
@@ -55,4 +55,4 @@ VarDecl::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string VarDecl::astClass() const { return "VarDecl"; }
+atl::string VarDecl::astClass() const { return "VarDecl"; }

@@ -9,9 +9,9 @@
 
 using namespace ACC;
 
-// std::string test_prefix =
+// atl::string test_prefix =
 // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-std::string test_prefix = "../../test/tests/";
+atl::string test_prefix = "../../test/tests/";
 
 TEST(ASTTest, BaseTypeComparisons) {
 
@@ -78,9 +78,9 @@ TEST(ASTTest, PointerTypeComparisons) {
 }
 
 TEST(ASTTest, StructTypeComparisons) {
-  StructType structType(std::string("struct1"));
-  StructType structType2(std::string("struct2"));
-  StructType structType3(std::string("struct2"));
+  StructType structType(atl::string("struct1"));
+  StructType structType2(atl::string("struct2"));
+  StructType structType3(atl::string("struct2"));
 
   ASSERT_FALSE(structType == structType2);
 
@@ -89,11 +89,11 @@ TEST(ASTTest, StructTypeComparisons) {
 
 TEST(ASTTest, VarDeclComparisons) {
   VarDecl vd1(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-              std::string("myInt"));
+              atl::string("myInt"));
   VarDecl vd2(std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-              std::string("myChar"));
+              atl::string("myChar"));
   VarDecl vd3(std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-              std::string("myChar"));
+              atl::string("myChar"));
 
   ASSERT_FALSE(vd1 == vd2);
   ASSERT_TRUE(vd2 == vd3);

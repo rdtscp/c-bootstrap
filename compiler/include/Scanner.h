@@ -27,9 +27,9 @@ public:
 
   SourceHandler getFileContents() const;
 
-  std::string getFilename() const;
+  atl::string getFilename() const;
 
-  std::string getFilepath() const;
+  atl::string getFilepath() const;
 
   Position getPosition() const;
 

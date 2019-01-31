@@ -4,10 +4,10 @@
 using namespace ACC;
 
 GenerateMIPS::GenerateMIPS(std::shared_ptr<Program> progAST,
-                           std::string outputFile)
+                           const atl::string &outputFile)
     : MIPS(outputFile), progAST(progAST) {}
 
-void GenerateMIPS::error(std::string error) {
+void GenerateMIPS::error(const atl::string &error) {
   errorCount++;
   errors.push_back(error);
 }
@@ -15,7 +15,7 @@ void GenerateMIPS::error(std::string error) {
 void GenerateMIPS::printErrors() const {
   std::cerr << "FATAL MIPS Generation Errors:" << std::endl;
   for (const auto &error : errors)
-    std::cerr << "\t" << error << std::endl;
+    std::cerr << "\t" << error.c_str() << std::endl;
 }
 
 void GenerateMIPS::run() {
@@ -299,7 +299,7 @@ MIPS::Register GenerateMIPS::visit(ValueAt &va) {
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(VarDecl &vd) {
-  MIPS.comment("Allocating for VarDecl: " + vd.getIdentifier());
+  MIPS.comment(atl::string("Allocating for VarDecl: ") + vd.getIdentifier());
   int bytesRequired = vd.getBytes();
   MIPS.ADDI(MIPS::sp, MIPS::sp, -bytesRequired);
   currFpOffset -= bytesRequired;

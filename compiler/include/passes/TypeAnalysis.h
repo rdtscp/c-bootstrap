@@ -17,11 +17,11 @@ class TypeAnalysis : public ASTVisitor<std::shared_ptr<Type>> {
 
 public:
   int errorCount = 0;
-  std::vector<std::string> errors;
+  std::vector<atl::string> errors;
 
   TypeAnalysis(std::shared_ptr<Program> progAST);
 
-  std::shared_ptr<Type> error(std::string error);
+  std::shared_ptr<Type> error(const atl::string &error);
 
   void printErrors();
 

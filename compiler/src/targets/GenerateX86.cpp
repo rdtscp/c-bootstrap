@@ -4,10 +4,10 @@
 using namespace ACC;
 
 GenerateX86::GenerateX86(std::shared_ptr<Program> progAST,
-                         std::string outputFile)
+                         const atl::string &outputFile)
     : x86(outputFile), progAST(progAST) {}
 
-void GenerateX86::error(std::string error) {
+void GenerateX86::error(atl::string error) {
   errorCount++;
   errors.push_back(error);
 }
@@ -15,13 +15,14 @@ void GenerateX86::error(std::string error) {
 void GenerateX86::printErrors() const {
   std::cerr << "FATAL x86 Generation Errors:" << std::endl;
   for (const auto &error : errors)
-    std::cerr << "\t" << error << std::endl;
+    std::cerr << "\t" << error.c_str() << std::endl;
 }
 
 void GenerateX86::run() { visit(*progAST); }
 
 void GenerateX86::alloc(const VarDecl &vd) {
-  x86.write(vd.getIdentifier() + ": db " + std::to_string(vd.getBytes()));
+  x86.write(vd.getIdentifier() + ": db " +
+            std::to_string(vd.getBytes()).c_str());
 }
 
 /* ---- Visit AST ---- */
@@ -48,7 +49,8 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
   if (lhsOperand->opType() != "GlobalVariable")
     x86.push(lhsOperand, "Store LHS to Stack");
   else
-    x86.comment("LHS is a GlobalVariable: " + lhsOperand->toString());
+    x86.comment(atl::string("LHS is a GlobalVariable: ") +
+                lhsOperand->toString());
 
   /* Evaluate RHS and Store in EAX */
   std::shared_ptr<X86::Operand> rhsOperand = bo.rhs->accept(*this);
@@ -57,7 +59,8 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
     x86.pop(X86::ecx, "Restore LHS from Stack");
   else
     x86.mov(X86::ecx, rhsOperand,
-            "Restore LHS from GlobalVariable: " + rhsOperand->toString());
+            atl::string("Restore LHS from GlobalVariable: ") +
+                rhsOperand->toString());
 
   /* Perform BinOp */
   switch (bo.operation) {
@@ -174,11 +177,12 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(FunDef &fd) {
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(If &i) {
   /* Calculate Names for Blocks */
-  const std::string trueBlockName =
-      "ifTrueBlock" + std::to_string(blockCount++);
-  const std::string falseBlockName =
-      "ifFalseBlock" + std::to_string(blockCount++);
-  const std::string endBlockName = "ifEndBlock" + std::to_string(blockCount++);
+  const atl::string trueBlockName =
+      atl::string("ifTrueBlock") + std::to_string(blockCount++).c_str();
+  const atl::string falseBlockName =
+      atl::string("ifFalseBlock") + std::to_string(blockCount++).c_str();
+  const atl::string endBlockName =
+      atl::string("ifEndBlock") + std::to_string(blockCount++).c_str();
 
   /* Calculate the result of the if condition. */
   std::shared_ptr<X86::Operand> condResReg = i.ifCondition->accept(*this);
@@ -271,9 +275,10 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(VarDecl &vd) {
   currFpOffset -= bytesRequired;
   vd.fpOffset = currFpOffset;
 
-  std::string comment = "Allocated " + std::to_string(bytesRequired) +
-                        "B for VarDecl: " + vd.getIdentifier() + " @ [ebp" +
-                        std::to_string(currFpOffset) + "]";
+  const atl::string comment =
+      atl::string("Allocated ") + std::to_string(bytesRequired).c_str() +
+      "B for VarDecl: " + vd.getIdentifier() + " @ [ebp" +
+      std::to_string(currFpOffset).c_str() + "]";
 
   x86.sub(X86::esp, bytesRequired, comment);
   return std::make_shared<X86::None>();
@@ -286,11 +291,11 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(VarExpr &ve) {
         ve.variableDecl->getIdentifier(), ve.variableDecl->getBytes()));
 
   if (fpOffset > 0)
-    return std::make_shared<X86::Register>(
-        X86::Register(0, "[ebp+" + std::to_string(fpOffset) + "]"));
+    return std::make_shared<X86::Register>(X86::Register(
+        0, atl::string("[ebp+") + std::to_string(fpOffset).c_str() + "]"));
   else
-    return std::make_shared<X86::Register>(
-        X86::Register(0, "[ebp" + std::to_string(fpOffset) + "]"));
+    return std::make_shared<X86::Register>(X86::Register(
+        0, atl::string("[ebp") + std::to_string(fpOffset).c_str() + "]"));
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(While &w) {
   w.condition->accept(*this);
@@ -301,5 +306,6 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(While &w) {
 /* ---- Helpers ---- */
 
 std::shared_ptr<X86::Operand> GenerateX86::genIntValue(int value) {
-  return std::make_shared<X86::IntValue>(X86::IntValue(std::to_string(value)));
+  return std::make_shared<X86::IntValue>(
+      X86::IntValue(std::to_string(value).c_str()));
 }

@@ -9,7 +9,7 @@ std::shared_ptr<BinOp> BinOp::getptr() { return shared_from_this(); }
 
 void BinOp::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
-std::string BinOp::accept(ASTVisitor<std::string> &v) { return v.visit(*this); }
+atl::string BinOp::accept(ASTVisitor<atl::string> &v) { return v.visit(*this); }
 
 std::shared_ptr<Type> BinOp::accept(ASTVisitor<std::shared_ptr<Type>> &v) {
   return v.visit(*this);
@@ -29,9 +29,9 @@ BinOp::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 
-std::string BinOp::astClass() const { return "BinOp"; }
+atl::string BinOp::astClass() const { return "BinOp"; }
 
-std::string BinOp::opToStr(const Op op) const {
+atl::string BinOp::opToStr(const Op op) const {
   switch (op) {
   case Op::ADD:
     return " + ";
