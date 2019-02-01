@@ -33,12 +33,12 @@ public:
   Position getPosition() const;
 
 private:
-  std::string::const_iterator currChar;
+  atl::string::const_iterator currChar;
   int column;
   int line;
-  std::string file;
+  atl::string file;
 
-  std::string abspath;
+  atl::string abspath;
 
   void updateCurrFile();
 };

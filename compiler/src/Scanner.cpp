@@ -14,13 +14,13 @@ Scanner::Scanner(const SourceHandler &src) : column(1), line(1) {
       throw std::runtime_error("Scanner: Provided filename \"" + filename +
                                "\" could not be read.");
 
-    file = std::string((std::istreambuf_iterator<char>(fileStream)),
-                       std::istreambuf_iterator<char>());
+    file = atl::string(std::string((std::istreambuf_iterator<char>(fileStream)),
+                                   std::istreambuf_iterator<char>())
+                           .c_str());
   } else if (src.type == SourceHandler::Type::RAW) {
     // TEMP: Convert atl::string to std::string until atl::string supports
     // iterators.
-    const atl::string atlval = src.value;
-    file = std::string(atlval.c_str());
+    file = src.value;
   }
 
   currChar = file.begin();
@@ -77,7 +77,8 @@ atl::string Scanner::getFilename() const {
 atl::string Scanner::getFilepath() const {
   atl::vector<atl::string> directories;
   atl::string currDir;
-  for (const char currChar : abspath) {
+  for (int i = 0; i < abspath.length(); i++) {
+    const char currChar = abspath[i];
     if (currChar == '/') {
       directories.push_back(currDir);
       currDir = "";
@@ -112,7 +113,7 @@ void Scanner::updateCurrFile() {
   nextChar = next(); // Skip space;
   nextChar = next(); // Skip quote;
 
-  std::string filename;
+  atl::string filename;
   if (peek() != '<') {
     while (peek() != '\"') {
       filename += next();
