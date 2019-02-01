@@ -3,8 +3,6 @@
 #ifndef ACC_IF_H
 #define ACC_IF_H
 
-#include <string>
-
 #include "Expr.h"
 
 namespace ACC {

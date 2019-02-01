@@ -21,8 +21,7 @@ void GenerateX86::printErrors() const {
 void GenerateX86::run() { visit(*progAST); }
 
 void GenerateX86::alloc(const VarDecl &vd) {
-  x86.write(vd.getIdentifier() + ": db " +
-            std::to_string(vd.getBytes()).c_str());
+  x86.write(vd.getIdentifier() + ": db " + atl::to_string(vd.getBytes()));
 }
 
 /* ---- Visit AST ---- */
@@ -178,11 +177,11 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(FunDef &fd) {
 std::shared_ptr<X86::Operand> GenerateX86::visit(If &i) {
   /* Calculate Names for Blocks */
   const atl::string trueBlockName =
-      atl::string("ifTrueBlock") + std::to_string(blockCount++).c_str();
+      atl::string("ifTrueBlock") + atl::to_string(blockCount++);
   const atl::string falseBlockName =
-      atl::string("ifFalseBlock") + std::to_string(blockCount++).c_str();
+      atl::string("ifFalseBlock") + atl::to_string(blockCount++);
   const atl::string endBlockName =
-      atl::string("ifEndBlock") + std::to_string(blockCount++).c_str();
+      atl::string("ifEndBlock") + atl::to_string(blockCount++);
 
   /* Calculate the result of the if condition. */
   std::shared_ptr<X86::Operand> condResReg = i.ifCondition->accept(*this);
@@ -275,10 +274,10 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(VarDecl &vd) {
   currFpOffset -= bytesRequired;
   vd.fpOffset = currFpOffset;
 
-  const atl::string comment =
-      atl::string("Allocated ") + std::to_string(bytesRequired).c_str() +
-      "B for VarDecl: " + vd.getIdentifier() + " @ [ebp" +
-      std::to_string(currFpOffset).c_str() + "]";
+  const atl::string comment = atl::string("Allocated ") +
+                              atl::to_string(bytesRequired) +
+                              "B for VarDecl: " + vd.getIdentifier() +
+                              " @ [ebp" + atl::to_string(currFpOffset) + "]";
 
   x86.sub(X86::esp, bytesRequired, comment);
   return std::make_shared<X86::None>();
@@ -292,10 +291,10 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(VarExpr &ve) {
 
   if (fpOffset > 0)
     return std::make_shared<X86::Register>(X86::Register(
-        0, atl::string("[ebp+") + std::to_string(fpOffset).c_str() + "]"));
+        0, atl::string("[ebp+") + atl::to_string(fpOffset) + "]"));
   else
-    return std::make_shared<X86::Register>(X86::Register(
-        0, atl::string("[ebp") + std::to_string(fpOffset).c_str() + "]"));
+    return std::make_shared<X86::Register>(
+        X86::Register(0, atl::string("[ebp") + atl::to_string(fpOffset) + "]"));
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(While &w) {
   w.condition->accept(*this);
@@ -306,6 +305,5 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(While &w) {
 /* ---- Helpers ---- */
 
 std::shared_ptr<X86::Operand> GenerateX86::genIntValue(int value) {
-  return std::make_shared<X86::IntValue>(
-      X86::IntValue(std::to_string(value).c_str()));
+  return std::make_shared<X86::IntValue>(X86::IntValue(atl::to_string(value)));
 }

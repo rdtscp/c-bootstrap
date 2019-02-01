@@ -3,7 +3,6 @@
 #ifndef ACC_FUNCALL_H
 #define ACC_FUNCALL_H
 
-#include <string>
 #include <vector>
 
 #include "Expr.h"

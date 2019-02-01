@@ -3,8 +3,6 @@
 #ifndef ACC_ASSIGN_H
 #define ACC_ASSIGN_H
 
-#include <string>
-
 #include "Expr.h"
 #include "Stmt.h"
 

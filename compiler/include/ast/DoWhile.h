@@ -3,8 +3,6 @@
 #ifndef ACC_DOWHILE_H
 #define ACC_DOWHILE_H
 
-#include <string>
-
 #include "Expr.h"
 #include "Stmt.h"
 

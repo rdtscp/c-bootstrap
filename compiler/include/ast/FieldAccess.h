@@ -3,8 +3,6 @@
 #ifndef ACC_FIELDACCESS_H
 #define ACC_FIELDACCESS_H
 
-#include <string>
-
 #include "Expr.h"
 
 namespace ACC {

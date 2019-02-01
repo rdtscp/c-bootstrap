@@ -3,8 +3,6 @@
 #ifndef ACC_VAREXPR_H
 #define ACC_VAREXPR_H
 
-#include <string>
-
 #include "Expr.h"
 
 namespace ACC {

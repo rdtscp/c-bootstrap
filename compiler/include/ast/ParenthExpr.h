@@ -3,8 +3,6 @@
 #ifndef ACC_PARENTHEXPR_H
 #define ACC_PARENTHEXPR_H
 
-#include <string>
-
 #include "Expr.h"
 
 namespace ACC {

@@ -3,8 +3,6 @@
 #ifndef ACC_BASETYPE_H
 #define ACC_BASETYPE_H
 
-#include <string>
-
 #include "PrimitiveType.h"
 #include "Type.h"
 

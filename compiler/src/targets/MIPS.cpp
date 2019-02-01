@@ -30,14 +30,14 @@ Writer::Writer(const atl::string &filename) {
 void Writer::ADDI(const MIPS::Register &dest, const MIPS::Register &src,
                   const int val) {
   atl::string output = atl::string("ADDI ") + dest.toString() + ", " +
-                       src.toString() + ", " + std::to_string(val).c_str();
+                       src.toString() + ", " + atl::to_string(val);
   output += atl::string("\t# ") + dest.toString() + " = " + src.toString() +
-            " + " + std::to_string(val).c_str();
+            " + " + atl::to_string(val);
   write(output);
 }
 
 void Writer::alloc(const atl::string &varName, const int size) {
-  atl::string output = varName + ": .space" + std::to_string(size).c_str();
+  atl::string output = varName + ": .space" + atl::to_string(size);
   write(output);
 }
 
@@ -54,40 +54,37 @@ void Writer::JAL(const atl::string &blockName) {
 void Writer::LW(const MIPS::Register &destReg, const int addr,
                 const int offset) {
   atl::string output = atl::string("LW ") + destReg.toString() + ", " +
-                       std::to_string(offset).c_str() + "(" +
-                       std::to_string(addr).c_str() + ")";
+                       atl::to_string(offset) + "(" + atl::to_string(addr) +
+                       ")";
   output += atl::string("\t# ") + destReg.toString() + " = " +
-            std::to_string(offset).c_str() + "(" +
-            std::to_string(addr).c_str() + ")";
+            atl::to_string(offset) + "(" + atl::to_string(addr) + ")";
   write(output);
 }
 
 void Writer::LW(const MIPS::Register &destReg, const MIPS::Register &addr,
                 const int offset) {
   atl::string output = atl::string("LW ") + destReg.toString() + ", " +
-                       std::to_string(offset).c_str() + "(" + addr.toString() +
-                       ")";
+                       atl::to_string(offset) + "(" + addr.toString() + ")";
   output += atl::string("\t# ") + destReg.toString() + " = " +
-            std::to_string(offset).c_str() + "(" + addr.toString() + ")";
+            atl::to_string(offset) + "(" + addr.toString() + ")";
   write(output);
 }
 
 void Writer::SW(const MIPS::Register &regCtnt, const int addr,
                 const int offset) {
   atl::string output = atl::string("SW ") + regCtnt.toString() + ", " +
-                       std::to_string(offset).c_str() + "(" +
-                       std::to_string(addr).c_str() + ")";
-  output += atl::string("\t# ") + std::to_string(offset).c_str() + "(" +
-            std::to_string(addr).c_str() + ") = " + regCtnt.toString();
+                       atl::to_string(offset) + "(" + atl::to_string(addr) +
+                       ")";
+  output += atl::string("\t# ") + atl::to_string(offset) + "(" +
+            atl::to_string(addr) + ") = " + regCtnt.toString();
   write(output);
 }
 
 void Writer::SW(const MIPS::Register &regCtnt, const MIPS::Register &addr,
                 const int offset) {
   atl::string output = atl::string("SW ") + regCtnt.toString() + ", " +
-                       std::to_string(offset).c_str() + "(" + addr.toString() +
-                       ")";
-  output += atl::string("\t# ") + std::to_string(offset).c_str() + "(" +
+                       atl::to_string(offset) + "(" + addr.toString() + ")";
+  output += atl::string("\t# ") + atl::to_string(offset) + "(" +
             addr.toString() + ") = " + regCtnt.toString();
   write(output);
 }

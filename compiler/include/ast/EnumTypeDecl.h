@@ -4,7 +4,6 @@
 #define ACC_ENUMTYPEDECL_H
 
 #include <map>
-#include <string>
 
 #include "Decl.h"
 #include "PrimitiveType.h"

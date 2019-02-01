@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 
 #include "atl/include/string.h"
 

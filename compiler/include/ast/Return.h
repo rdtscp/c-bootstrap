@@ -3,8 +3,6 @@
 #ifndef ACC_RETURN_H
 #define ACC_RETURN_H
 
-#include <string>
-
 #include "Expr.h"
 #include "Stmt.h"
 

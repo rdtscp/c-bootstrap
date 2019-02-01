@@ -3,8 +3,6 @@
 #ifndef ACC_TYPECAST_H
 #define ACC_TYPECAST_H
 
-#include <string>
-
 #include "Expr.h"
 #include "Type.h"
 

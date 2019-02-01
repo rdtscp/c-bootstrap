@@ -4,7 +4,6 @@
 #define ACC_STRUCTTYPE_H
 
 #include <memory>
-#include <string>
 
 #include "StructTypeDecl.h"
 #include "Type.h"

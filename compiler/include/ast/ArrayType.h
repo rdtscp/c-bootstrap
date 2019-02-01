@@ -4,7 +4,6 @@
 #define ACC_ARRAYTYPE_H
 
 #include <memory>
-#include <string>
 
 #include "Type.h"
 

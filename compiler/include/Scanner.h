@@ -4,7 +4,7 @@
 #define ACC_SCANNER_H
 
 #include <memory>
-#include <string>
+
 #include <vector>
 
 #include "Position.h"

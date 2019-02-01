@@ -3,8 +3,6 @@
 #ifndef ACC_BINOP_H
 #define ACC_BINOP_H
 
-#include <string>
-
 #include "Expr.h"
 #include "Op.h"
 

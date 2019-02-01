@@ -3,8 +3,6 @@
 #ifndef ACC_WHILE_H
 #define ACC_WHILE_H
 
-#include <string>
-
 #include "Expr.h"
 #include "Stmt.h"
 

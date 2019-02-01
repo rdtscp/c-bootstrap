@@ -3,8 +3,6 @@
 #ifndef ACC_SIZEOF_H
 #define ACC_SIZEOF_H
 
-#include <string>
-
 #include "Expr.h"
 #include "Type.h"
 

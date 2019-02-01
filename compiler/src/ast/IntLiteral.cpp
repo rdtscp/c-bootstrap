@@ -9,7 +9,7 @@ std::shared_ptr<IntLiteral> IntLiteral::getptr() { return shared_from_this(); }
 atl::string IntLiteral::getLiteral() const {
   if (value.find('x') != atl::string::npos) {
     unsigned int intValue = std::stoul(std::string(value.c_str()), nullptr, 16);
-    return std::to_string(intValue).c_str();
+    return atl::to_string(intValue);
   }
   return value;
 }

@@ -3,8 +3,6 @@
 #ifndef ACC_TYPEDEF_H
 #define ACC_TYPEDEF_H
 
-#include <string>
-
 #include "Decl.h"
 #include "Type.h"
 

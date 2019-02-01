@@ -73,8 +73,7 @@ void Writer::call(const atl::string &ident, const atl::string &comment) {
 
 void Writer::cmp(const std::shared_ptr<X86::Operand> &op, const int value,
                  const atl::string &comment) {
-  write(atl::string("cmp ") + op->toString() + ", " +
-        std::to_string(value).c_str());
+  write(atl::string("cmp ") + op->toString() + ", " + atl::to_string(value));
 }
 
 void Writer::comment(const atl::string &comment) {
@@ -141,8 +140,8 @@ void Writer::ret(const atl::string &comment) {
 
 void Writer::sub(const std::shared_ptr<X86::Operand> &op, const int value,
                  const atl::string &comment) {
-  write(atl::string("sub ") + op->toString() + ", " +
-        std::to_string(value).c_str() + "\t; " + comment);
+  write(atl::string("sub ") + op->toString() + ", " + atl::to_string(value) +
+        "\t; " + comment);
 }
 
 void Writer::write(const atl::string &str) {

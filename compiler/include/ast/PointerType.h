@@ -3,8 +3,6 @@
 #ifndef ACC_POINTERTYPE_H
 #define ACC_POINTERTYPE_H
 
-#include <string>
-
 #include "PrimitiveType.h"
 #include "Type.h"
 

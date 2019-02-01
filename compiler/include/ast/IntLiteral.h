@@ -3,8 +3,6 @@
 #ifndef ACC_INTLITERAL_H
 #define ACC_INTLITERAL_H
 
-#include <string>
-
 #include "Expr.h"
 #include "Literal.h"
 
