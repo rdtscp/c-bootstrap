@@ -13,9 +13,7 @@
 
 int main(int argc, char const *argv[]) {
   if (argc < 4) {
-    std::cout << "Usage: acc <input> <output> { x86 | mips } [ --print "
-                 "|  --opt ]"
-              << std::endl;
+    printf("Usage: acc <input> <output> { x86 | mips } [ --print |  --opt ]\n");
     return 1;
   }
   const atl::string inFilename(argv[1]);
@@ -29,8 +27,7 @@ int main(int argc, char const *argv[]) {
   else if (target == "x86")
     outputX86 = true;
   else {
-    std::cout << "Invalid Target Arch, Must be either 'mips' or 'x86'"
-              << std::endl;
+    printf("Invalid Target Arch, Must be either 'mips' or 'x86'\n");
     return 1;
   }
 
@@ -68,7 +65,7 @@ int main(int argc, char const *argv[]) {
 
   if (optimise) {
     ACC::Optimiser optimiser(progAST);
-    std::cerr << "Optimisations Made:" << std::endl;
+    printf("Optimisations Made:\n");
     do {
       optimiser.run();
       optimiser.printOptimisations();

@@ -26,12 +26,11 @@ TEST(ParserTest, AllTokens) {
     ASSERT_TRUE(true);
     return;
   } catch (...) {
-    std::cout << "Expected a std::runtime_error" << std::endl;
+    printf("Expected a std::runtime_error\n");
     ASSERT_TRUE(false);
     return;
   }
-  std::cout << "Expected a std::runtime_error, but no exception was thrown."
-            << std::endl;
+  printf("Expected a std::runtime_error, but no exception was thrown.\n");
   ASSERT_TRUE(false);
 }
 
@@ -47,12 +46,11 @@ TEST(ParserTest, InvalidIdentifier) {
     ASSERT_TRUE(true);
     return;
   } catch (...) {
-    std::cout << "Expected a std::runtime_error" << std::endl;
+    printf("Expected a std::runtime_error\n");
     ASSERT_TRUE(false);
     return;
   }
-  std::cout << "Expected a std::runtime_error, but no exception was thrown."
-            << std::endl;
+  printf("Expected a std::runtime_error, but no exception was thrown.\n");
   ASSERT_TRUE(false);
 }
 
@@ -244,12 +242,11 @@ TEST(ParserTest, InvalidSignatureFunDef) {
     ASSERT_TRUE(true);
     return;
   } catch (...) {
-    std::cout << "Expected a std::runtime_error" << std::endl;
+    printf("Expected a std::runtime_error\n");
     ASSERT_TRUE(false);
     return;
   }
-  std::cout << "Expected a std::runtime_error, but no exception was thrown."
-            << std::endl;
+  printf("Expected a std::runtime_error, but no exception was thrown.\n");
   ASSERT_TRUE(false);
 }
 

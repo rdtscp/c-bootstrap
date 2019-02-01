@@ -10,12 +10,11 @@ void DotGraph::declare(const atl::string &nodeID, const atl::string &label) {
 }
 
 void DotGraph::join(const atl::string &lhs, const atl::string &rhs) {
-  std::cout << lhs.c_str() << " -> " << rhs.c_str() << std::endl;
+  atl::string output = lhs + " -> " + rhs;
+  printf("%s\n", output.c_str());
 }
 
-void DotGraph::put(const atl::string &str) {
-  std::cout << str.c_str() << std::endl;
-}
+void DotGraph::put(const atl::string &str) { printf("%s\n", str.c_str()); }
 
 /* ---- Visit AST ---- */
 
@@ -195,11 +194,11 @@ atl::string DotGraph::visit(PointerType &pt) {
   return pt.pointedType->accept(*this) + "*";
 }
 atl::string DotGraph::visit(Program &p) {
-  std::cout << "digraph prog {" << std::endl;
+  printf("digraph prog {\n");
   for (const auto decl : p.decls) {
     decl->accept(*this);
   }
-  std::cout << "}" << std::endl;
+  printf("}\n");
   return "Node0";
 }
 atl::string DotGraph::visit(Return &r) {
