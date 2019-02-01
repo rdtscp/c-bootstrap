@@ -3,8 +3,8 @@
 #ifndef ACC_TOKENISER_H
 #define ACC_TOKENISER_H
 
+#include "atl/include/pair.h"
 #include "atl/include/string.h"
-#include <utility>
 
 #include "Scanner.h"
 #include "SourceToken.h"
@@ -25,7 +25,7 @@ private:
 
   SourceToken lexStringLiteral();
   void passComment();
-  std::pair<bool, atl::string> tryLexKeyword(const atl::string &keyword);
+  atl::pair<bool, atl::string> tryLexKeyword(const atl::string &keyword);
 };
 
 }; // namespace ACC

@@ -56,7 +56,7 @@ SourceToken Lexer::nextToken() {
     atl::string literal(1, c);
     // Check for CHAR Token.
     if (c == 'c' && scanner.peek() == 'h') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("char");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("char");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -64,7 +64,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for CONST Token.
     if (c == 'c' && scanner.peek() == 'o') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("const");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("const");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -72,7 +72,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for DO Token.
     if (c == 'd' && scanner.peek() == 'o') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("do");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("do");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -80,7 +80,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for ELSE Token.
     else if (c == 'e' && scanner.peek() == 'l') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("else");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("else");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -88,7 +88,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for ENUM Token.
     else if (c == 'e' && scanner.peek() == 'n') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("enum");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("enum");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -96,7 +96,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for EXTERN Token.
     else if (c == 'e' && scanner.peek() == 'x') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("extern");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("extern");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -104,7 +104,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for IF Token.
     else if (c == 'i' && scanner.peek() == 'f') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("if");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("if");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -114,13 +114,13 @@ SourceToken Lexer::nextToken() {
     else if (c == 'i' && scanner.peek() == 'n') {
       c = scanner.next();
       if (scanner.peek() == 't') {
-        std::pair<bool, atl::string> lexResult = tryLexKeyword("nt");
+        atl::pair<bool, atl::string> lexResult = tryLexKeyword("nt");
         literal = lexResult.second;
 
         if (lexResult.first)
           return SourceToken(TC::INT, scanner.getPosition());
       } else if (scanner.peek() == 'l') {
-        std::pair<bool, atl::string> lexResult = tryLexKeyword("nline");
+        atl::pair<bool, atl::string> lexResult = tryLexKeyword("nline");
         literal = lexResult.second;
 
         if (lexResult.first)
@@ -129,7 +129,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for NAMESPACE token.
     else if (c == 'n' && scanner.peek() == 'a') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("namespace");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("namespace");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -137,7 +137,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for RETURN Token.
     else if (c == 'r' && scanner.peek() == 'e') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("return");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("return");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -145,7 +145,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for SIZEOF Token.
     else if (c == 's' && scanner.peek() == 'h') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("short");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("short");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -153,7 +153,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for SIZEOF Token.
     else if (c == 's' && scanner.peek() == 'i') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("sizeof");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("sizeof");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -161,7 +161,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for STRUCT Token.
     else if (c == 's' && scanner.peek() == 't') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("struct");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("struct");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -169,7 +169,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for TYPEDEF Token.
     else if (c == 't' && scanner.peek() == 'y') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("typedef");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("typedef");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -177,7 +177,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for UNSIGNED Token.
     else if (c == 'u' && scanner.peek() == 'n') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("unsigned");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("unsigned");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -185,7 +185,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for WHILE Token.
     else if (c == 'w' && scanner.peek() == 'h') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("while");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("while");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -193,7 +193,7 @@ SourceToken Lexer::nextToken() {
     }
     // Check for VOID Token.
     else if (c == 'v' && scanner.peek() == 'o') {
-      std::pair<bool, atl::string> lexResult = tryLexKeyword("void");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("void");
       literal = lexResult.second;
 
       if (lexResult.first)
@@ -367,14 +367,14 @@ void Lexer::passComment() {
       scanner.getPosition().toString().c_str());
 }
 
-std::pair<bool, atl::string> Lexer::tryLexKeyword(const atl::string &keyword) {
+atl::pair<bool, atl::string> Lexer::tryLexKeyword(const atl::string &keyword) {
   bool keywordMatch = false;
   atl::string literal(1, keyword[0]);
 
   for (int i = 1; i < keyword.length(); i++) {
     char peek = scanner.peek();
     if (scanner.peek() != keyword[i])
-      return std::pair<bool, atl::string>(false, literal);
+      return atl::pair<bool, atl::string>(false, literal);
 
     literal += scanner.next();
   }
@@ -384,5 +384,5 @@ std::pair<bool, atl::string> Lexer::tryLexKeyword(const atl::string &keyword) {
       (peek != '_'))
     keywordMatch = true;
 
-  return std::pair<bool, atl::string>(keywordMatch, literal);
+  return atl::pair<bool, atl::string>(keywordMatch, literal);
 }
