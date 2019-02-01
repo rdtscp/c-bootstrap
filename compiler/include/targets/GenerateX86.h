@@ -6,7 +6,6 @@
 #include "atl/include/string.h"
 #include <algorithm>
 #include <memory>
-#include <set>
 #include <stack>
 #include <vector>
 

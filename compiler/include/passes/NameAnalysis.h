@@ -4,7 +4,6 @@
 #define ACC_NAMEANALYSIS_H
 
 #include <memory>
-#include <set>
 #include <vector>
 
 #include "../AST.h"

@@ -1,5 +1,7 @@
 #include "../../include/passes/NameAnalysis.h"
 
+#include "atl/include/set.h"
+
 using namespace ACC;
 
 NameAnalysis::NameAnalysis(std::shared_ptr<Program> progAST)
@@ -125,14 +127,13 @@ void NameAnalysis::visit(StructTypeDecl &std) {
   currScope->insertDecl(std.getptr());
 
   /* Check that the fields in this struct are unique */
-  std::set<std::string> structTypeFields;
+  atl::set<atl::string> structTypeFields;
   for (const std::shared_ptr<VarDecl> field : std.varDecls) {
-    if (structTypeFields.find(field->getIdentifier().c_str()) !=
-        structTypeFields.end())
+    if (structTypeFields.find(field->getIdentifier()))
       return error(atl::string("Struct ") + std.getIdentifier() +
                    " contained multiple fields with the same identifier: " +
                    field->getIdentifier());
-    structTypeFields.insert(field->identifer.c_str());
+    structTypeFields.insert(field->identifer);
   }
 }
 void NameAnalysis::visit(TypeCast &tc) { tc.expr->accept(*this); }
