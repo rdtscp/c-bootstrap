@@ -12,11 +12,8 @@ std::shared_ptr<Type> TypeAnalysis::error(const atl::string &error) {
 
 void TypeAnalysis::printErrors() {
   printf("Type Analysis Errors:\n");
-  for (const auto &error : errors) {
-    atl::string output("\t");
-    output += error + "\n";
-    printf(output.c_str());
-  }
+  for (const auto &error : errors)
+    printf("\t%s\n", error.c_str());
 }
 
 void TypeAnalysis::run() { visit(*progAST); }
@@ -31,11 +28,10 @@ std::shared_ptr<Type> TypeAnalysis::visit(ArrayAccess &aa) {
                              "which was not an array. Was of type: ") +
                  arrayExprType->astClass());
   if (arrayIndex->astClass() != "BaseType")
-    return error(
-        atl::string(
-            "Type Error: Attempted to index an array using an expression which "
-            "was not of type int. Was of type: ") +
-        arrayIndex->astClass());
+    return error(atl::string("Type Error: Attempted to index an array using "
+                             "an expression which "
+                             "was not of type int. Was of type: ") +
+                 arrayIndex->astClass());
 
   return std::static_pointer_cast<ArrayType>(arrayExprType)->arrayType;
 }

@@ -14,11 +14,8 @@ void GenerateX86::error(atl::string error) {
 
 void GenerateX86::printErrors() const {
   printf("FATAL x86 Generation Errors:\n");
-  for (const auto &error : errors) {
-    atl::string output("\t");
-    output += error + "\n";
-    printf(output.c_str());
-  }
+  for (const auto &error : errors)
+    printf("\t%s\n", error.c_str());
 }
 
 void GenerateX86::run() { visit(*progAST); }

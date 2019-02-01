@@ -12,11 +12,8 @@ void NameAnalysis::error(const atl::string &error) {
 
 void NameAnalysis::printErrors() {
   printf("Name Analysis Errors:\n");
-  for (const auto &error : errors) {
-    atl::string output("\t");
-    output += error + "\n";
-    printf(output.c_str());
-  }
+  for (const auto &error : errors)
+    printf("\t%s\n", error.c_str());
 }
 
 void NameAnalysis::run() { visit(*progAST); }
