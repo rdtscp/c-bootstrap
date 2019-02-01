@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-Namespace::Namespace(const std::string &identifier,
+Namespace::Namespace(const atl::string &identifier,
                      const std::shared_ptr<Block> &namespaceBlock) {}
 
 void Namespace::accept(ASTVisitor<void> &v) { return v.visit(*this); }

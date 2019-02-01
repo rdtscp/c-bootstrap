@@ -14,7 +14,7 @@ class Namespace : public ASTNode,
 public:
   std::shared_ptr<Block> namespaceBlock;
 
-  Namespace(const std::string &identifier,
+  Namespace(const atl::string &identifier,
             const std::shared_ptr<Block> &namespaceBlock);
 
   std::shared_ptr<Namespace> getptr();
