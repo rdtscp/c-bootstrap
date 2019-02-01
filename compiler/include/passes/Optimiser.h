@@ -3,7 +3,6 @@
 #ifndef ACC_OPTIMISER_H
 #define ACC_OPTIMISER_H
 
-#include <iostream>
 #include <memory>
 #include <set>
 #include <vector>
@@ -17,11 +16,11 @@ class Optimiser : public ASTVisitor<std::shared_ptr<ASTNode>> {
 
 public:
   int optimisationsCount = 0;
-  std::vector<std::string> optimisations;
+  std::vector<atl::string> optimisations;
 
   Optimiser(std::shared_ptr<Program> &progAST);
 
-  void optimised(std::string error);
+  void optimised(const atl::string &error);
 
   void printOptimisations();
 

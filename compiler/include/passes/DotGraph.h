@@ -4,7 +4,6 @@
 #define ACC_DOTGRAPH_H
 
 #include "atl/include/string.h"
-#include <iostream>
 
 #include "../AST.h"
 #include "../ASTVisitor.h"

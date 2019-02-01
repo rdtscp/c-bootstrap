@@ -11,9 +11,12 @@ std::shared_ptr<Type> TypeAnalysis::error(const atl::string &error) {
 }
 
 void TypeAnalysis::printErrors() {
-  std::cerr << "Type Analysis Errors:" << std::endl;
-  for (const auto &error : errors)
-    std::cerr << "\t" << error.c_str() << std::endl;
+  printf("Type Analysis Errors:\n");
+  for (const auto &error : errors) {
+    atl::string output("\t");
+    output += error + "\n";
+    printf(output.c_str());
+  }
 }
 
 void TypeAnalysis::run() { visit(*progAST); }

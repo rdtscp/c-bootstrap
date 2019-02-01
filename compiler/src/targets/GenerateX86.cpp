@@ -13,9 +13,12 @@ void GenerateX86::error(atl::string error) {
 }
 
 void GenerateX86::printErrors() const {
-  std::cerr << "FATAL x86 Generation Errors:" << std::endl;
-  for (const auto &error : errors)
-    std::cerr << "\t" << error.c_str() << std::endl;
+  printf("FATAL x86 Generation Errors:\n");
+  for (const auto &error : errors) {
+    atl::string output("\t");
+    output += error + "\n";
+    printf(output.c_str());
+  }
 }
 
 void GenerateX86::run() { visit(*progAST); }

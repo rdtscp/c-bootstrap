@@ -3,7 +3,6 @@
 #ifndef ACC_TYPEANALYSIS_H
 #define ACC_TYPEANALYSIS_H
 
-#include <iostream>
 #include <memory>
 #include <set>
 #include <vector>
@@ -29,7 +28,6 @@ public:
 
 private:
   int nodeCount = 0;
-  std::ostream *output;
   std::shared_ptr<Program> progAST;
 
   std::shared_ptr<Block> currScope;

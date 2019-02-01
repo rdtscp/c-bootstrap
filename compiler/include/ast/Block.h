@@ -3,6 +3,7 @@
 #ifndef ACC_BLOCK_H
 #define ACC_BLOCK_H
 
+#include "atl/include/vector.h"
 #include <map>
 #include <vector>
 

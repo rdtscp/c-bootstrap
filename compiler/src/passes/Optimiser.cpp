@@ -6,14 +6,15 @@ using namespace ACC;
 
 Optimiser::Optimiser(std::shared_ptr<Program> &progAST) : progAST(progAST) {}
 
-void Optimiser::optimised(std::string error) {
+void Optimiser::optimised(const atl::string &error) {
   optimisationsCount++;
   optimisations.push_back(error);
 }
 
 void Optimiser::printOptimisations() {
-  for (const auto &optimisation : optimisations)
-    std::cerr << "\t" << optimisation << std::endl;
+  for (const atl::string &optimisation : optimisations) {
+    printf("\t%s\n", optimisation.c_str());
+  }
 }
 
 void Optimiser::run() {

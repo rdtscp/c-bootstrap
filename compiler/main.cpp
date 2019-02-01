@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "atl/include/string.h"
 
 #include "include/AST.h"

@@ -1,5 +1,5 @@
+#include "atl/include/vector.h"
 #include <fstream>
-#include <iostream>
 
 #include "../include/Scanner.h"
 
@@ -59,7 +59,7 @@ SourceHandler Scanner::getFileContents() const {
 }
 
 atl::string Scanner::getFilename() const {
-  std::vector<atl::string> directories;
+  atl::vector<atl::string> directories;
   atl::string currDir;
   for (const char currChar : abspath) {
     if (currChar == '/') {
@@ -75,7 +75,7 @@ atl::string Scanner::getFilename() const {
 }
 
 atl::string Scanner::getFilepath() const {
-  std::vector<atl::string> directories;
+  atl::vector<atl::string> directories;
   atl::string currDir;
   for (const char currChar : abspath) {
     if (currChar == '/') {

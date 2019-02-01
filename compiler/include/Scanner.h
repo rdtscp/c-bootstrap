@@ -4,8 +4,7 @@
 #define ACC_SCANNER_H
 
 #include <memory>
-
-#include <vector>
+#include <string>
 
 #include "Position.h"
 #include "SourceHandler.h"

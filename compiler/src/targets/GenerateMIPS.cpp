@@ -13,9 +13,12 @@ void GenerateMIPS::error(const atl::string &error) {
 }
 
 void GenerateMIPS::printErrors() const {
-  std::cerr << "FATAL MIPS Generation Errors:" << std::endl;
-  for (const auto &error : errors)
-    std::cerr << "\t" << error.c_str() << std::endl;
+  printf("FATAL MIPS Generation Errors:\n");
+  for (const auto &error : errors) {
+    atl::string output("\t");
+    output += error + "\n";
+    printf(output.c_str());
+  }
 }
 
 void GenerateMIPS::run() {
