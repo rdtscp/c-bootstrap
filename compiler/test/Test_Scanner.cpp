@@ -16,7 +16,7 @@ TEST(ScannerTest, TestAPI) {
   const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
 
-  std::string output;
+  atl::string output;
   ASSERT_EQ(scanner.getPosition().column, 1);
   ASSERT_EQ(scanner.getPosition().line, 1);
 
