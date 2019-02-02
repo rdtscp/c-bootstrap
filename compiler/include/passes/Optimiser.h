@@ -4,7 +4,7 @@
 #define ACC_OPTIMISER_H
 
 #include <memory>
-#include <vector>
+
 
 #include "../AST.h"
 #include "../ASTVisitor.h"
@@ -15,7 +15,7 @@ class Optimiser : public ASTVisitor<std::shared_ptr<ASTNode>> {
 
 public:
   int optimisationsCount = 0;
-  std::vector<atl::string> optimisations;
+  atl::vector<atl::string> optimisations;
 
   Optimiser(std::shared_ptr<Program> &progAST);
 

@@ -118,8 +118,8 @@ atl::string DotGraph::visit(BinOp &bo) {
 atl::string DotGraph::visit(Block &b) {
   atl::string blockID = atl::string("Block") + atl::to_string(nodeCount++);
   declare(blockID, "{}");
-  for (const auto stmt : b.blockStmts)
-    join(blockID, stmt->accept(*this));
+  for (int idx = 0; idx < b.blockStmts.size(); ++idx)
+    join(blockID, b.blockStmts[idx]->accept(*this));
   return blockID;
 }
 atl::string DotGraph::visit(CharLiteral &cl) {
@@ -150,8 +150,8 @@ atl::string DotGraph::visit(FunCall &fc) {
   atl::string funCallID = atl::string("FunCall") + atl::to_string(nodeCount++);
   declare(funCallID, atl::string(fc.funName.c_str()) + "()");
 
-  for (const auto arg : fc.funArgs)
-    join(funCallID, arg->accept(*this));
+  for (int idx = 0; idx < fc.funArgs.size(); ++idx)
+    join(funCallID, fc.funArgs[idx]->accept(*this));
 
   return funCallID;
 }
@@ -195,8 +195,8 @@ atl::string DotGraph::visit(PointerType &pt) {
 }
 atl::string DotGraph::visit(Program &p) {
   printf("digraph prog {\n");
-  for (const auto decl : p.decls) {
-    decl->accept(*this);
+  for (int idx = 0; idx < p.decls.size(); ++idx) {
+    p.decls[idx]->accept(*this);
   }
   printf("}\n");
   return "Node0";
@@ -230,8 +230,8 @@ atl::string DotGraph::visit(StructTypeDecl &std) {
   atl::string structTypeDeclID =
       atl::string("StructTypeDecl") + atl::to_string(nodeCount++);
   declare(structTypeDeclID, std.structType->accept(*this) + " = {}");
-  for (const auto field : std.varDecls)
-    join(structTypeDeclID, field->accept(*this));
+  for (int idx = 0; idx < std.varDecls.size(); ++idx)
+    join(structTypeDeclID, std.varDecls[idx]->accept(*this));
   return structTypeDeclID;
 }
 atl::string DotGraph::visit(TypeCast &tc) {

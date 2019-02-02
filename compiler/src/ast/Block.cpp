@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-Block::Block(const std::vector<std::shared_ptr<Stmt>> &newBlockStmts)
+Block::Block(const atl::vector<std::shared_ptr<Stmt>> &newBlockStmts)
     : blockStmts(newBlockStmts) {}
 
 std::shared_ptr<Block> Block::getptr() { return shared_from_this(); }

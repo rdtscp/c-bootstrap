@@ -4,7 +4,7 @@
 #define ACC_NAMEANALYSIS_H
 
 #include <memory>
-#include <vector>
+
 
 #include "../AST.h"
 #include "../ASTVisitor.h"
@@ -15,7 +15,7 @@ class NameAnalysis : public ASTVisitor<void> {
 
 public:
   int errorCount = 0;
-  std::vector<atl::string> errors;
+  atl::vector<atl::string> errors;
 
   NameAnalysis(std::shared_ptr<Program> progAST);
 

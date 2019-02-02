@@ -23,9 +23,9 @@ bool Parser::accept(TC expected, int offset) {
   return expected == actual;
 }
 
-bool Parser::accept(std::vector<TC> expected, int offset) {
-  for (const TC token : expected) {
-    if (accept(token, offset))
+bool Parser::accept(atl::vector<TC> expected, int offset) {
+  for (int idx = 0; idx < expected.size(); ++idx) {
+    if (accept(expected[idx], offset))
       return true;
   }
   return false;
@@ -45,9 +45,9 @@ SourceToken Parser::expect(TC expected) {
       currToken.data.c_str() + ")");
 }
 
-SourceToken Parser::expect(std::vector<TC> expected) {
-  for (TC token : expected) {
-    if (token == currToken.tokenClass) {
+SourceToken Parser::expect(atl::vector<TC> expected) {
+  for (int idx = 0; idx < expected.size(); ++idx) {
+    if (expected[idx] == currToken.tokenClass) {
       SourceToken output = currToken;
       nextToken();
       return output;
@@ -71,8 +71,8 @@ SourceToken Parser::lookAhead(int i) {
 void Parser::nextToken() {
   // Use Buffer
   if (tokenBuffer.size() != 0) {
-    currToken = tokenBuffer.front();
-    tokenBuffer.erase(tokenBuffer.begin());
+    currToken = tokenBuffer[0];
+    tokenBuffer.erase(0);
   } else {
     currToken = lexer.nextToken();
   }
@@ -223,7 +223,7 @@ bool Parser::acceptExpr(int offset) {
 /* ---- Parsing ---- */
 
 std::shared_ptr<Program> Parser::parseProgram() {
-  std::vector<std::shared_ptr<Decl>> decls;
+  atl::vector<std::shared_ptr<Decl>> decls;
   while (acceptDecl())
     decls.push_back(parseDecl());
 
@@ -298,7 +298,7 @@ std::shared_ptr<FunDecl> Parser::parseFunDecl() {
   std::shared_ptr<Type> funType = parseType();
   atl::string funIdent = expect(TC::IDENTIFIER).data;
   expect(TC::LPAR);
-  std::vector<std::shared_ptr<VarDecl>> funParams;
+  atl::vector<std::shared_ptr<VarDecl>> funParams;
 
   bool isDef = true;
   if (acceptParam())
@@ -328,13 +328,14 @@ std::shared_ptr<FunDecl> Parser::parseFunDecl() {
     expect(TC::SC);
     std::shared_ptr<FunDecl> fd(new FunDecl(funIdent, funParams, funType));
     return fd;
-    // return std::make_shared<FunDecl>(FunDecl(funIdent, funParams, funType));
+    // return std::make_shared<FunDecl>(FunDecl(funIdent, funParams,
+    // funType));
   }
 }
 std::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
   std::shared_ptr<StructType> structType = parseStructType();
   expect(TC::LBRA);
-  std::vector<std::shared_ptr<VarDecl>> fields;
+  atl::vector<std::shared_ptr<VarDecl>> fields;
   do {
     std::shared_ptr<VarDecl> structField = parseVarDecl();
     expect(TC::SC);
@@ -394,7 +395,7 @@ std::shared_ptr<Type> Parser::parseType() {
       type = std::shared_ptr<PointerType>(new PointerType(type));
     }
   } else {
-    std::vector<TC> modifiers;
+    atl::vector<TC> modifiers;
     while (accept(TC::UNSIGNED))
       modifiers.push_back(expect(TC::UNSIGNED).tokenClass);
 
@@ -436,7 +437,7 @@ std::shared_ptr<Assign> Parser::parseAssign() {
 std::shared_ptr<Block> Parser::parseBlock() {
   expect(TC::LBRA);
 
-  std::vector<std::shared_ptr<Stmt>> blockStmts;
+  atl::vector<std::shared_ptr<Stmt>> blockStmts;
 
   while (acceptStmt()) {
     blockStmts.push_back(parseStmt());
@@ -670,7 +671,7 @@ std::shared_ptr<Expr> Parser::parseObjExpr() {
     if (accept(TC::LPAR)) {
       expect(TC::LPAR);
 
-      std::vector<std::shared_ptr<Expr>> params;
+      atl::vector<std::shared_ptr<Expr>> params;
       if (acceptExpr())
         params.push_back(parseLitExpr());
       while (accept(TC::COMMA)) {

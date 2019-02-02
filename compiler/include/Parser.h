@@ -4,7 +4,6 @@
 #define ACC_PARSER_H
 
 #include <memory>
-#include <vector>
 
 #include "AST.h"
 #include "Lexer.h"
@@ -24,7 +23,7 @@ public:
 private:
   SourceToken currToken;
   Lexer &lexer;
-  std::vector<SourceToken> tokenBuffer;
+  atl::vector<SourceToken> tokenBuffer;
 
   /* ---- Token Operations ---- */
 
@@ -32,13 +31,13 @@ private:
   bool accept(SourceToken::Class expected, int offset = 0);
 
   /* Check if we can expect one of the provided Tokens to be next. */
-  bool accept(std::vector<SourceToken::Class> expected, int offset = 0);
+  bool accept(atl::vector<SourceToken::Class> expected, int offset = 0);
 
   /* Expect the next Token to be of a certain type. Throws if not. */
   SourceToken expect(SourceToken::Class expected);
 
   /* Expect the next Token to be one of a list of types. Throws if not. */
-  SourceToken expect(std::vector<SourceToken::Class> expected);
+  SourceToken expect(atl::vector<SourceToken::Class> expected);
 
   /* Looks ahead 'i' number of Tokens. */
   SourceToken lookAhead(int i);

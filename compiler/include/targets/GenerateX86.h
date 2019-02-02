@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <memory>
 #include <stack>
-#include <vector>
+
 
 #include "../AST.h"
 #include "../ASTVisitor.h"
@@ -19,7 +19,7 @@ class GenerateX86 : public ASTVisitor<std::shared_ptr<X86::Operand>> {
 
 public:
   int errorCount = 0;
-  std::vector<atl::string> errors;
+  atl::vector<atl::string> errors;
 
   GenerateX86(std::shared_ptr<Program> progAST, const atl::string &outputFile);
 

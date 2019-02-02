@@ -3,7 +3,7 @@
 #ifndef ACC_STRUCTTYPEDECL_H
 #define ACC_STRUCTTYPEDECL_H
 
-#include <vector>
+
 
 #include "Decl.h"
 #include "StructType.h"
@@ -16,12 +16,12 @@ class StructTypeDecl : public Decl,
 
 public:
   std::shared_ptr<StructType> structType;
-  std::vector<std::shared_ptr<VarDecl>> varDecls;
+  atl::vector<std::shared_ptr<VarDecl>> varDecls;
   int allocSize;
   int compactSize;
 
   StructTypeDecl(std::shared_ptr<StructType> structType,
-                 const std::vector<std::shared_ptr<VarDecl>> &varDecls);
+                 const atl::vector<std::shared_ptr<VarDecl>> &varDecls);
 
   std::shared_ptr<StructTypeDecl> getptr();
 

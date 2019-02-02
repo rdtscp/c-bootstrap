@@ -12,8 +12,11 @@ int StructType::getBytes() const {
   if (typeDefinition == nullptr)
     return aggregateBytes;
 
-  for (const std::shared_ptr<VarDecl> &structField : typeDefinition->varDecls)
+  atl::vector<std::shared_ptr<VarDecl>> typeVarDecls = typeDefinition->varDecls;
+  for (int idx = 0; idx < typeVarDecls.size(); ++idx) {
+    const std::shared_ptr<VarDecl> &structField = typeVarDecls[idx];
     aggregateBytes += structField->type->getBytes();
+  }
 
   return aggregateBytes;
 }

@@ -3,7 +3,7 @@
 #ifndef ACC_FUNCALL_H
 #define ACC_FUNCALL_H
 
-#include <vector>
+
 
 #include "Expr.h"
 
@@ -13,10 +13,10 @@ class FunCall : public Expr, public std::enable_shared_from_this<FunCall> {
 
 public:
   atl::string funName;
-  std::vector<std::shared_ptr<Expr>> funArgs;
+  atl::vector<std::shared_ptr<Expr>> funArgs;
 
   FunCall(const atl::string &funName,
-          std::vector<std::shared_ptr<Expr>> funArgs);
+          atl::vector<std::shared_ptr<Expr>> funArgs);
 
   std::shared_ptr<FunCall> getptr();
 

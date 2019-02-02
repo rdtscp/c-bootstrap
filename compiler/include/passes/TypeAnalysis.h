@@ -4,7 +4,7 @@
 #define ACC_TYPEANALYSIS_H
 
 #include <memory>
-#include <vector>
+
 
 #include "../AST.h"
 #include "../ASTVisitor.h"
@@ -15,7 +15,7 @@ class TypeAnalysis : public ASTVisitor<std::shared_ptr<Type>> {
 
 public:
   int errorCount = 0;
-  std::vector<atl::string> errors;
+  atl::vector<atl::string> errors;
 
   TypeAnalysis(std::shared_ptr<Program> progAST);
 

@@ -14,8 +14,8 @@ void GenerateX86::error(atl::string error) {
 
 void GenerateX86::printErrors() const {
   printf("FATAL x86 Generation Errors:\n");
-  for (const auto &error : errors)
-    printf("\t%s\n", error.c_str());
+  for (int idx = 0; idx < errors.size(); ++idx)
+    printf("\t%s\n", errors[idx].c_str());
 }
 
 void GenerateX86::run() { visit(*progAST); }
@@ -79,8 +79,8 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
   currScope = b.getptr();
-  for (const auto &stmt : b.blockStmts)
-    stmt->accept(*this);
+  for (int idx = 0; idx < b.blockStmts.size(); ++idx)
+    b.blockStmts[idx]->accept(*this);
 
   currScope = b.outerBlock;
   return std::make_shared<X86::None>();
@@ -101,10 +101,8 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(FieldAccess &fa) {
   return std::make_shared<X86::None>();
 }
 std::shared_ptr<X86::Operand> GenerateX86::visit(FunCall &fc) {
-  std::vector<std::shared_ptr<Expr>> revArgs = fc.funArgs;
-  std::reverse(revArgs.begin(), revArgs.end());
-  for (const auto &arg : revArgs) {
-    std::shared_ptr<X86::Operand> argReg = arg->accept(*this);
+  for (int idx = fc.funArgs.size() - 1; idx >= 0; --idx) {
+    std::shared_ptr<X86::Operand> argReg = fc.funArgs[idx]->accept(*this);
     // x86.push(argReg);
   }
   x86.call(fc.funName);
@@ -224,8 +222,10 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   currScope = p.globalScope;
 
   x86.write("SECTION .data");
-  for (std::shared_ptr<VarDecl> globalVar : p.globalVars)
+  for (int idx = 0; idx < p.globalVars.size(); ++idx) {
+    const std::shared_ptr<VarDecl> &globalVar = p.globalVars[idx];
     alloc(*globalVar);
+  }
 
   x86.write("SECTION .text");
 
@@ -235,8 +235,8 @@ std::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   x86.call("main");
   x86.ret();
 
-  for (std::shared_ptr<FunDecl> func : p.funDecls)
-    func->accept(*this);
+  for (int idx = 0; idx < p.funDecls.size(); ++idx)
+    p.funDecls[idx]->accept(*this);
 
   return std::make_shared<X86::None>();
 }

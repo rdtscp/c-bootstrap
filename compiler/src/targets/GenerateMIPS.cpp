@@ -14,8 +14,8 @@ void GenerateMIPS::error(const atl::string &error) {
 
 void GenerateMIPS::printErrors() const {
   printf("FATAL MIPS Generation Errors:\n");
-  for (const auto &error : errors)
-    printf("\t%s\n", error.c_str());
+  for (int idx = 0; idx < errors.size(); ++idx)
+    printf("\t%s\n", errors[idx].c_str());
 }
 
 void GenerateMIPS::run() {
@@ -30,18 +30,18 @@ void GenerateMIPS::freeAllRegs() {
 }
 
 void GenerateMIPS::freeAllArgsRegs() {
-  for (auto rit = MIPS::argsRegs.rbegin(); rit < MIPS::argsRegs.rend(); rit++)
-    freeArgsRegs.push(*rit);
+  for (int idx = MIPS::argsRegs.size() - 1; idx >= 0; --idx)
+    freeArgsRegs.push(MIPS::argsRegs[idx]);
 }
 
 void GenerateMIPS::freeAllSaveRegs() {
-  for (auto rit = MIPS::saveRegs.rbegin(); rit < MIPS::saveRegs.rend(); rit++)
-    freeSaveRegs.push(*rit);
+  for (int idx = MIPS::saveRegs.size() - 1; idx >= 0; --idx)
+    freeSaveRegs.push(MIPS::saveRegs[idx]);
 }
 
 void GenerateMIPS::freeAllTempRegs() {
-  for (auto rit = MIPS::tempRegs.rbegin(); rit < MIPS::tempRegs.rend(); rit++)
-    freeTempRegs.push(*rit);
+  for (int idx = MIPS::tempRegs.size() - 1; idx >= 0; --idx)
+    freeTempRegs.push(MIPS::tempRegs[idx]);
 }
 
 void GenerateMIPS::freeRegister(MIPS::Register reg) {
@@ -126,8 +126,8 @@ MIPS::Register GenerateMIPS::visit(BinOp &bo) {
 }
 MIPS::Register GenerateMIPS::visit(Block &b) {
   currScope = b.getptr();
-  for (const auto &stmt : b.blockStmts)
-    stmt->accept(*this);
+  for (int idx = 0; idx < b.blockStmts.size(); ++idx)
+    b.blockStmts[idx]->accept(*this);
 
   /* Clean up the stack. */
   for (const auto &ident_decl : b.blockDecls) {
@@ -156,14 +156,13 @@ MIPS::Register GenerateMIPS::visit(FieldAccess &fa) {
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(FunCall &fc) {
-
-  for (const auto &arg : fc.funArgs)
-    arg->accept(*this);
+  for (int idx = 0; idx < fc.funArgs.size(); ++idx)
+    fc.funArgs[idx]->accept(*this);
   MIPS.JAL(fc.funName + "FunDecl");
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(FunDecl &fd) {
-  // std::vector<MIPS::Register> saveRegs = MIPS::saveRegs;
+  // atl::vector<MIPS::Register> saveRegs = MIPS::saveRegs;
   // currScope = fd.funBlock;
 
   // MIPS.BLOCK(fd.getIdentifier() + "FunDecl");
@@ -204,7 +203,7 @@ MIPS::Register GenerateMIPS::visit(FunDecl &fd) {
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(FunDef &fd) {
-  std::vector<MIPS::Register> saveRegs = MIPS::saveRegs;
+  atl::vector<MIPS::Register> saveRegs = MIPS::saveRegs;
   currScope = fd.funBlock;
 
   MIPS.BLOCK(fd.getIdentifier() + "FunDecl");
@@ -213,8 +212,8 @@ MIPS::Register GenerateMIPS::visit(FunDef &fd) {
   stackPush(MIPS::fp);
 
   /* ---- Save Registers [ $s0-$s7 ] && $ra ---- */
-  for (const MIPS::Register &saveReg : saveRegs)
-    stackPush(saveReg);
+  for (int idx = 0; idx < saveRegs.size(); ++idx)
+    stackPush(saveRegs[idx]);
   stackPush(MIPS::ra);
 
   /* ---- Construct Arguments ---- */
@@ -231,9 +230,8 @@ MIPS::Register GenerateMIPS::visit(FunDef &fd) {
 
   /* ---- Load Registers [ $s0-$s7 ] && $ra ---- */
   stackPop(MIPS::ra);
-  std::reverse(saveRegs.begin(), saveRegs.end());
-  for (const MIPS::Register &saveReg : saveRegs)
-    stackPop(saveReg);
+  for (int idx = saveRegs.size() - 1; idx >= 0; --idx)
+    stackPop(saveRegs[idx]);
 
   /* ---- Load Caller's $fp ---- */
   stackPop(MIPS::fp);
@@ -267,8 +265,10 @@ MIPS::Register GenerateMIPS::visit(Program &p) {
   freeAllRegs();
 
   MIPS.write(".data");
-  for (std::shared_ptr<VarDecl> globalVar : p.globalVars)
-    MIPS.alloc(globalVar->getIdentifier(), globalVar->getBytes());
+  for (int idx = 0; idx < p.globalVars.size(); ++idx) {
+    MIPS.alloc(p.globalVars[idx]->getIdentifier(),
+               p.globalVars[idx]->getBytes());
+  }
 
   MIPS.write(".text");
   MIPS.JAL("mainFunDecl");

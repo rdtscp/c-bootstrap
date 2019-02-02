@@ -4,7 +4,7 @@ using namespace ACC;
 
 StructTypeDecl::StructTypeDecl(
     std::shared_ptr<StructType> structType,
-    const std::vector<std::shared_ptr<VarDecl>> &varDecls)
+    const atl::vector<std::shared_ptr<VarDecl>> &varDecls)
     : structType(structType), varDecls(varDecls) {}
 
 std::shared_ptr<StructTypeDecl> StructTypeDecl::getptr() {

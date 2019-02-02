@@ -3,7 +3,7 @@
 using namespace ACC;
 
 FunDef::FunDef(std::shared_ptr<Block> funBlock, const atl::string &funName,
-               std::vector<std::shared_ptr<VarDecl>> funParams,
+               atl::vector<std::shared_ptr<VarDecl>> funParams,
                std::shared_ptr<Type> funType)
     : FunDecl(funName, funParams, funType), funBlock(funBlock) {}
 

@@ -1,5 +1,5 @@
 #include "atl/include/string.h"
-#include <vector>
+#include "atl/include/vector.h"
 
 #include "gtest/gtest.h"
 
@@ -19,7 +19,7 @@ TEST(LexerTest, AllTokens) {
   ACC::Scanner scanner(src);
   Lexer lexer(scanner);
 
-  std::vector<SourceToken::Class> expected = {
+  atl::vector<SourceToken::Class> expected = {
       SourceToken::Class::IDENTIFIER,
       SourceToken::Class::ASSIGN,
       SourceToken::Class::LBRA,
@@ -84,7 +84,7 @@ TEST(LexerTest, AllTokens) {
       SourceToken::Class::DOT,
       SourceToken::Class::ENDOFFILE};
 
-  std::vector<SourceToken::Class> actual;
+  atl::vector<SourceToken::Class> actual;
 
   SourceToken::Class currToken = SourceToken::Class::INVALID;
   while (currToken != SourceToken::Class::ENDOFFILE) {

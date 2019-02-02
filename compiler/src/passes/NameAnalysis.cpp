@@ -14,8 +14,8 @@ void NameAnalysis::error(const atl::string &error) {
 
 void NameAnalysis::printErrors() {
   printf("Name Analysis Errors:\n");
-  for (const auto &error : errors)
-    printf("\t%s\n", error.c_str());
+  for (int idx = 0; idx < errors.size(); ++idx)
+    printf("\t%s\n", errors[idx].c_str());
 }
 
 void NameAnalysis::run() { visit(*progAST); }
@@ -38,8 +38,8 @@ void NameAnalysis::visit(Block &b) {
     b.setOuterBlock(currScope);
     currScope = b.getptr();
   }
-  for (const auto &stmt : b.blockStmts)
-    stmt->accept(*this);
+  for (int idx = 0; idx < b.blockStmts.size(); ++idx)
+    b.blockStmts[idx]->accept(*this);
   currScope = b.outerBlock;
 }
 void NameAnalysis::visit(CharLiteral &cl) {}
@@ -53,8 +53,8 @@ void NameAnalysis::visit(FunCall &fc) {
   if (currScope->find(fc.funName) == nullptr)
     return error(atl::string("Attempted to call undeclared function: ") +
                  fc.funName);
-  for (const auto &arg : fc.funArgs)
-    arg->accept(*this);
+  for (int idx = 0; idx < fc.funArgs.size(); ++idx)
+    fc.funArgs[idx]->accept(*this);
 }
 void NameAnalysis::visit(FunDecl &fd) {
   // if (currScope->findLocal(fd.getIdentifier()))
@@ -84,8 +84,8 @@ void NameAnalysis::visit(FunDef &fd) {
   fd.funBlock->setOuterBlock(currScope);
   currScope = fd.funBlock;
 
-  for (const auto &param : fd.funParams)
-    param->accept(*this);
+  for (int idx = 0; idx < fd.funParams.size(); ++idx)
+    fd.funParams[idx]->accept(*this);
   fd.funBlock->accept(*this);
   currScope = fd.funBlock->outerBlock;
 }
@@ -101,9 +101,8 @@ void NameAnalysis::visit(ParenthExpr &pe) { pe.innerExpr->accept(*this); }
 void NameAnalysis::visit(PointerType &pt) {}
 void NameAnalysis::visit(Program &p) {
   currScope = std::make_shared<Block>(Block({}));
-  for (const std::shared_ptr<Decl> &decl : p.decls) {
-    decl->accept(*this);
-  }
+  for (int idx = 0; idx < p.decls.size(); ++idx)
+    p.decls[idx]->accept(*this);
   /* Check for main() function */
   std::shared_ptr<Decl> mainDecl = currScope->find("main");
   if (mainDecl == nullptr || mainDecl->astClass() != "FunDef")
@@ -128,7 +127,8 @@ void NameAnalysis::visit(StructTypeDecl &std) {
 
   /* Check that the fields in this struct are unique */
   atl::set<atl::string> structTypeFields;
-  for (const std::shared_ptr<VarDecl> field : std.varDecls) {
+  for (int idx = 0; idx < std.varDecls.size(); ++idx) {
+    const std::shared_ptr<VarDecl> field = std.varDecls[idx];
     if (structTypeFields.find(field->getIdentifier()))
       return error(atl::string("Struct ") + std.getIdentifier() +
                    " contained multiple fields with the same identifier: " +

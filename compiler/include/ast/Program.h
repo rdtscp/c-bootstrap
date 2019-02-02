@@ -17,13 +17,13 @@ namespace ACC {
 class Program : public ASTNode {
 
 public:
-  std::vector<std::shared_ptr<Decl>> decls;
-  std::vector<std::shared_ptr<FunDecl>> funDecls;
-  std::vector<std::shared_ptr<VarDecl>> globalVars;
+  atl::vector<std::shared_ptr<Decl>> decls;
+  atl::vector<std::shared_ptr<FunDecl>> funDecls;
+  atl::vector<std::shared_ptr<VarDecl>> globalVars;
   std::shared_ptr<Block> globalScope = nullptr;
   std::map<std::string, Namespace> namespaces;
 
-  Program(const std::vector<std::shared_ptr<Decl>> &decls);
+  Program(const atl::vector<std::shared_ptr<Decl>> &decls);
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

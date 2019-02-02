@@ -12,8 +12,8 @@ std::shared_ptr<Type> TypeAnalysis::error(const atl::string &error) {
 
 void TypeAnalysis::printErrors() {
   printf("Type Analysis Errors:\n");
-  for (const auto &error : errors)
-    printf("\t%s\n", error.c_str());
+  for (int idx = 0; idx < errors.size(); ++idx)
+    printf("\t%s\n", errors[idx].c_str());
 }
 
 void TypeAnalysis::run() { visit(*progAST); }
@@ -58,8 +58,8 @@ std::shared_ptr<Type> TypeAnalysis::visit(Block &b) {
     b.setOuterBlock(currScope);
     currScope = b.getptr();
   }
-  for (const auto &stmt : b.blockStmts)
-    stmt->accept(*this);
+  for (int idx = 0; idx < b.blockStmts.size(); ++idx)
+    b.blockStmts[idx]->accept(*this);
   currScope = b.outerBlock;
   return nullptr;
 }
@@ -97,9 +97,9 @@ std::shared_ptr<Type> TypeAnalysis::visit(FieldAccess &fa) {
   std::shared_ptr<StructTypeDecl> structTypeDecl =
       std::static_pointer_cast<StructTypeDecl>(identDecl);
 
-  for (const auto &field : structTypeDecl->varDecls)
-    if (field->identifer == fa.field)
-      return field->type;
+  for (int idx = 0; idx < structTypeDecl->varDecls.size(); ++idx)
+    if (structTypeDecl->varDecls[idx]->identifer == fa.field)
+      return structTypeDecl->varDecls[idx]->type;
 
   return error("Type Analysis: Attempted to access field on a struct that "
                "does not exist.");
@@ -146,8 +146,8 @@ std::shared_ptr<Type> TypeAnalysis::visit(FunDef &fd) {
   fd.funBlock->setOuterBlock(currScope);
   currScope = fd.funBlock;
 
-  for (const auto &param : fd.funParams)
-    param->accept(*this);
+  for (int idx = 0; idx < fd.funParams.size(); ++idx)
+    fd.funParams[idx]->accept(*this);
   fd.funBlock->accept(*this);
   currScope = fd.funBlock->outerBlock;
   return fd.funType;
@@ -185,8 +185,8 @@ std::shared_ptr<Type> TypeAnalysis::visit(PointerType &pt) {
 }
 std::shared_ptr<Type> TypeAnalysis::visit(Program &p) {
   currScope = p.globalScope;
-  for (const std::shared_ptr<Decl> &decl : p.decls)
-    decl->accept(*this);
+  for (int idx = 0; idx < p.decls.size(); ++idx)
+    p.decls[idx]->accept(*this);
   return nullptr;
 }
 std::shared_ptr<Type> TypeAnalysis::visit(Return &r) {

@@ -3,7 +3,7 @@
 #ifndef ACC_FUNDECL_H
 #define ACC_FUNDECL_H
 
-#include <vector>
+
 
 #include "Decl.h"
 #include "Type.h"
@@ -15,11 +15,11 @@ class FunDecl : public Decl, public std::enable_shared_from_this<FunDecl> {
 
 public:
   atl::string funName;
-  std::vector<std::shared_ptr<VarDecl>> funParams;
+  atl::vector<std::shared_ptr<VarDecl>> funParams;
   std::shared_ptr<Type> funType;
 
   FunDecl(const atl::string &funName,
-          std::vector<std::shared_ptr<VarDecl>> funParams,
+          atl::vector<std::shared_ptr<VarDecl>> funParams,
           std::shared_ptr<Type> funType);
   FunDecl(const FunDecl &rhs) = delete;
   virtual ~FunDecl() {}

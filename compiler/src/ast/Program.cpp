@@ -2,9 +2,10 @@
 
 using namespace ACC;
 
-Program::Program(const std::vector<std::shared_ptr<Decl>> &decls)
+Program::Program(const atl::vector<std::shared_ptr<Decl>> &decls)
     : decls(decls) {
-  for (const std::shared_ptr<Decl> decl : decls) {
+  for (int idx = 0; idx < decls.size(); ++idx) {
+    const std::shared_ptr<Decl> decl = decls[idx];
     if (decl->astClass() == "FunDef" || decl->astClass() == "FunDecl") {
       funDecls.push_back(std::static_pointer_cast<FunDecl>(decl));
     }

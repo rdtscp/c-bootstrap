@@ -3,7 +3,7 @@
 using namespace ACC;
 
 FunCall::FunCall(const atl::string &funName,
-                 std::vector<std::shared_ptr<Expr>> funArgs)
+                 atl::vector<std::shared_ptr<Expr>> funArgs)
     : funName(funName), funArgs(funArgs) {}
 
 std::shared_ptr<FunCall> FunCall::getptr() { return shared_from_this(); }

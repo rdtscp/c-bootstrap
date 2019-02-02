@@ -12,9 +12,8 @@ void Optimiser::optimised(const atl::string &error) {
 }
 
 void Optimiser::printOptimisations() {
-  for (const atl::string &optimisation : optimisations) {
-    printf("\t%s\n", optimisation.c_str());
-  }
+  for (int idx = 0; idx < optimisations.size(); ++idx)
+    printf("\t%s\n", optimisations[idx].c_str());
 }
 
 void Optimiser::run() {
@@ -107,8 +106,9 @@ std::shared_ptr<ASTNode> Optimiser::visit(Block &b) {
     b.setOuterBlock(currScope);
     currScope = b.getptr();
   }
-  for (auto &stmt : b.blockStmts)
-    stmt = std::static_pointer_cast<Stmt>(stmt->accept(*this));
+  for (int idx = 0; idx < b.blockStmts.size(); ++idx)
+    b.blockStmts[idx] =
+        std::static_pointer_cast<Stmt>(b.blockStmts[idx]->accept(*this));
   currScope = b.outerBlock;
   return b.getptr();
 }
@@ -124,8 +124,9 @@ std::shared_ptr<ASTNode> Optimiser::visit(FieldAccess &fa) {
   return fa.getptr();
 }
 std::shared_ptr<ASTNode> Optimiser::visit(FunCall &fc) {
-  for (auto &arg : fc.funArgs)
-    arg = std::static_pointer_cast<Expr>(arg->accept(*this));
+  for (int idx = 0; idx < fc.funArgs.size(); ++idx)
+    fc.funArgs[idx] =
+        std::static_pointer_cast<Expr>(fc.funArgs[idx]->accept(*this));
   return fc.getptr();
 }
 std::shared_ptr<ASTNode> Optimiser::visit(FunDecl &fd) {
@@ -172,9 +173,9 @@ std::shared_ptr<ASTNode> Optimiser::visit(PointerType &pt) {
 }
 std::shared_ptr<ASTNode> Optimiser::visit(Program &p) {
   currScope = std::make_shared<Block>(Block({}));
-  for (std::shared_ptr<Decl> &decl : p.decls) {
-    decl = std::static_pointer_cast<Decl>(decl->accept(*this));
-  }
+  for (int idx = 0; idx < p.decls.size(); ++idx)
+    p.decls[idx] = std::static_pointer_cast<Decl>(p.decls[idx]->accept(*this));
+
   p.globalScope = currScope;
   return nullptr;
 }

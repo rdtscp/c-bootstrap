@@ -1,4 +1,4 @@
-#include <vector>
+
 
 #include "gtest/gtest.h"
 
@@ -72,7 +72,7 @@ TEST(ParserTest, StructDecl) {
   ACC::Parser parser(lexer);
   std::shared_ptr<Program> actual = parser.getAST();
 
-  std::vector<std::shared_ptr<Decl>> expectedDecls = {
+  atl::vector<std::shared_ptr<Decl>> expectedDecls = {
       std::make_shared<StructTypeDecl>(StructTypeDecl(
           std::make_shared<StructType>(StructType("FooStruct")),
           {std::make_shared<VarDecl>(
@@ -98,7 +98,7 @@ TEST(ParserTest, VarDecls) {
   ACC::Parser parser(lexer);
   std::shared_ptr<Program> actual = parser.getAST();
 
-  std::vector<std::shared_ptr<Decl>> expectedDecls = {
+  atl::vector<std::shared_ptr<Decl>> expectedDecls = {
       std::make_shared<StructTypeDecl>(StructTypeDecl(
           std::make_shared<StructType>(StructType("FooStruct")),
           {std::make_shared<VarDecl>(
@@ -169,7 +169,7 @@ TEST(ParserTest, FunDecl) {
   ACC::Parser parser(lexer);
   std::shared_ptr<Program> actual = parser.getAST();
   ASSERT_EQ(actual->decls.size(), 2);
-  std::vector<std::shared_ptr<Decl>> expectedDecls = {
+  atl::vector<std::shared_ptr<Decl>> expectedDecls = {
       std::make_shared<VarDecl>(
           VarDecl(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
                   "myGlobalInt")),
@@ -198,7 +198,7 @@ TEST(ParserTest, BinOp) {
   ACC::Parser parser(lexer);
   std::shared_ptr<Program> actual = parser.getAST();
   ASSERT_EQ(actual->decls.size(), 1);
-  std::vector<std::shared_ptr<Decl>> expectedDecls = {
+  atl::vector<std::shared_ptr<Decl>> expectedDecls = {
       std::shared_ptr<FunDef>(new FunDef(
           std::make_shared<Block>(Block(
               {std::make_shared<VarDecl>(VarDecl(

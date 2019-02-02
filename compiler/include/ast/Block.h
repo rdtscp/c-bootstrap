@@ -5,7 +5,6 @@
 
 #include "atl/include/vector.h"
 #include <map>
-#include <vector>
 
 #include "Decl.h"
 #include "Stmt.h"
@@ -16,10 +15,10 @@ class Block : public Stmt, public std::enable_shared_from_this<Block> {
 
 public:
   std::map<std::string, std::shared_ptr<Decl>> blockDecls;
-  std::vector<std::shared_ptr<Stmt>> blockStmts;
+  atl::vector<std::shared_ptr<Stmt>> blockStmts;
   std::shared_ptr<Block> outerBlock = nullptr;
 
-  Block(const std::vector<std::shared_ptr<Stmt>> &newBlockStmts);
+  Block(const atl::vector<std::shared_ptr<Stmt>> &newBlockStmts);
 
   std::shared_ptr<Block> getptr();
 

@@ -3,7 +3,7 @@
 #ifndef ACC_FUNDEF_H
 #define ACC_FUNDEF_H
 
-#include <vector>
+
 
 #include "Block.h"
 #include "Decl.h"
@@ -19,7 +19,7 @@ public:
   std::shared_ptr<Block> funBlock;
 
   FunDef(std::shared_ptr<Block> funBlock, const atl::string &funName,
-         std::vector<std::shared_ptr<VarDecl>> funParams,
+         atl::vector<std::shared_ptr<VarDecl>> funParams,
          std::shared_ptr<Type> funType);
 
   std::shared_ptr<FunDecl> getptr();
