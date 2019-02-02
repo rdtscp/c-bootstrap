@@ -105,7 +105,7 @@ void Scanner::updateCurrFile() {
   nextChar = next();
 
   std::string lineNumStr(1, nextChar);
-  while (!std::isspace(peek())) {
+  while (!atl::isspace(peek())) {
     lineNumStr += next();
   }
   unsigned int lineNum = std::stoul(lineNumStr, nullptr, 10);

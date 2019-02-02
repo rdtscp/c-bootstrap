@@ -207,7 +207,7 @@ SourceToken Lexer::nextToken() {
       peek = scanner.peek();
       // If the next character is whitespace, the IDENTIFIER has been
       // identified.
-      if (std::isspace(peek)) {
+      if (atl::isspace(peek)) {
         return SourceToken(TC::IDENTIFIER, scanner.getPosition(), literal);
       }
       // If the next character is an illegal characater for an IDENTIFIER, we
@@ -225,7 +225,7 @@ SourceToken Lexer::nextToken() {
     atl::string literal(1, c);
     if (scanner.peek() == 'x') {
       literal += scanner.next();
-      while (std::isalpha(scanner.peek()) || std::isdigit(scanner.peek()))
+      while (atl::isalpha(scanner.peek()) || atl::isdigit(scanner.peek()))
         literal += scanner.next();
     } else {
       while (isdigit(scanner.peek()))
@@ -300,7 +300,7 @@ SourceToken Lexer::nextToken() {
     return SourceToken(TC::REF, scanner.getPosition());
 
   // Skip Whitespace.
-  if (std::isspace(c))
+  if (atl::isspace(c))
     return nextToken();
 
   // if we reach this point, it means we did not recognise a valid token
