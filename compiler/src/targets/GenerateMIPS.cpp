@@ -189,7 +189,6 @@ MIPS::Register GenerateMIPS::visit(FunDecl &fd) {
 
   // /* ---- Load Registers [ $s0-$s7 ] && $ra ---- */
   // stackPop(MIPS::ra);
-  // std::reverse(std::begin(saveRegs), std::end(saveRegs));
   // for (const MIPS::Register &saveReg : saveRegs)
   //   stackPop(saveReg);
 
