@@ -35,9 +35,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(ArrayAccess &aa) {
 
   return std::static_pointer_cast<ArrayType>(arrayExprType)->arrayType;
 }
-std::shared_ptr<Type> TypeAnalysis::visit(ArrayType &at) {
-  return std::make_shared<ArrayType>(at);
-}
+std::shared_ptr<Type> TypeAnalysis::visit(ArrayType &at) { return at.getptr(); }
 std::shared_ptr<Type> TypeAnalysis::visit(Assign &as) {
   std::shared_ptr<Type> lhs = as.lhs->accept(*this);
   std::shared_ptr<Type> rhs = as.rhs->accept(*this);
@@ -45,9 +43,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(Assign &as) {
     return error("Assignation has mismatched types.");
   return nullptr;
 }
-std::shared_ptr<Type> TypeAnalysis::visit(BaseType &bt) {
-  return std::make_shared<BaseType>(bt);
-}
+std::shared_ptr<Type> TypeAnalysis::visit(BaseType &bt) { return bt.getptr(); }
 std::shared_ptr<Type> TypeAnalysis::visit(BinOp &bo) {
   bo.lhs->accept(*this);
   bo.rhs->accept(*this);
@@ -181,7 +177,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);
 }
 std::shared_ptr<Type> TypeAnalysis::visit(PointerType &pt) {
-  return std::make_shared<PointerType>(pt);
+  return pt.getptr();
 }
 std::shared_ptr<Type> TypeAnalysis::visit(Program &p) {
   currScope = p.globalScope;
@@ -205,7 +201,7 @@ std::shared_ptr<Type> TypeAnalysis::visit(StructType &st) {
     return error("Attempted to use a StructType that was not declared.");
 
   st.typeDefinition = std::static_pointer_cast<StructTypeDecl>(findDecl);
-  return std::make_shared<StructType>(st);
+  return st.getptr();
 }
 std::shared_ptr<Type> TypeAnalysis::visit(StructTypeDecl &std) {
   return nullptr;
