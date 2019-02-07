@@ -117,7 +117,7 @@ std::shared_ptr<ASTNode> Optimiser::visit(CharLiteral &cl) {
 }
 std::shared_ptr<ASTNode> Optimiser::visit(DoWhile &dw) { return dw.getptr(); }
 std::shared_ptr<ASTNode> Optimiser::visit(EnumTypeDecl &etd) {
-  return etd.getptr();
+  return std::static_pointer_cast<Decl>(etd.getptr());
 }
 std::shared_ptr<ASTNode> Optimiser::visit(FieldAccess &fa) {
   fa.object = std::static_pointer_cast<Expr>(fa.object->accept(*this));
@@ -205,7 +205,9 @@ std::shared_ptr<ASTNode> Optimiser::visit(ValueAt &va) {
   va.derefExpr = std::static_pointer_cast<Expr>(va.derefExpr->accept(*this));
   return va.getptr();
 }
-std::shared_ptr<ASTNode> Optimiser::visit(VarDecl &vd) { return vd.getptr(); }
+std::shared_ptr<ASTNode> Optimiser::visit(VarDecl &vd) {
+  return std::static_pointer_cast<Decl>(vd.getptr());
+}
 std::shared_ptr<ASTNode> Optimiser::visit(VarExpr &ve) { return ve.getptr(); }
 std::shared_ptr<ASTNode> Optimiser::visit(While &w) {
   w.condition = std::static_pointer_cast<Expr>(w.condition->accept(*this));

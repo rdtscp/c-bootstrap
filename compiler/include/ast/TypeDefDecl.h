@@ -18,7 +18,7 @@ public:
 
   TypeDefDecl(std::shared_ptr<Type> type, const atl::string &identifier);
 
-  std::shared_ptr<TypeDefDecl::Decl> getptr();
+  std::shared_ptr<TypeDefDecl> getptr();
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;

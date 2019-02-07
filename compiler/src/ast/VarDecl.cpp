@@ -6,7 +6,7 @@ VarDecl::VarDecl(std::shared_ptr<Type> type, const atl::string &identifer,
                  bool isExtern)
     : identifer(identifer), type(type), isExtern(isExtern) {}
 
-std::shared_ptr<VarDecl::Decl> VarDecl::getptr() { return shared_from_this(); }
+std::shared_ptr<VarDecl> VarDecl::getptr() { return shared_from_this(); }
 
 bool VarDecl::operator==(Decl &rhs) const {
   if (rhs.astClass() == astClass())

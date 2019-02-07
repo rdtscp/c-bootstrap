@@ -6,7 +6,7 @@ TypeDefDecl::TypeDefDecl(std::shared_ptr<Type> type,
                          const atl::string &identifier)
     : type(type), identifier(identifier) {}
 
-std::shared_ptr<TypeDefDecl::Decl> TypeDefDecl::getptr() {
+std::shared_ptr<TypeDefDecl> TypeDefDecl::getptr() {
   return shared_from_this();
 }
 

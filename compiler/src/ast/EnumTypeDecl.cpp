@@ -6,7 +6,7 @@ EnumTypeDecl::EnumTypeDecl(const atl::string &ident,
                            std::map<std::string, std::string> states)
     : states(states) {}
 
-std::shared_ptr<EnumTypeDecl::Decl> EnumTypeDecl::getptr() {
+std::shared_ptr<EnumTypeDecl> EnumTypeDecl::getptr() {
   return shared_from_this();
 }
 

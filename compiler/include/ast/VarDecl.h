@@ -26,7 +26,7 @@ public:
   VarDecl(std::shared_ptr<Type> type, const atl::string &identifer,
           bool isExtern = false);
 
-  std::shared_ptr<VarDecl::Decl> getptr();
+  std::shared_ptr<VarDecl> getptr();
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;

@@ -22,7 +22,7 @@ public:
   EnumTypeDecl(const atl::string &ident,
                std::map<std::string, std::string> states);
 
-  std::shared_ptr<EnumTypeDecl::Decl> getptr();
+  std::shared_ptr<EnumTypeDecl> getptr();
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
