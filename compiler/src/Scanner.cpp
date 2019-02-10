@@ -1,5 +1,6 @@
 #include "atl/include/vector.h"
 #include <fstream>
+#include <stdexcept>
 
 #include "../include/Scanner.h"
 
