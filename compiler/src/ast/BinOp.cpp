@@ -2,16 +2,16 @@
 
 using namespace ACC;
 
-BinOp::BinOp(std::shared_ptr<Expr> lhs, Op operation, std::shared_ptr<Expr> rhs)
+BinOp::BinOp(atl::shared_ptr<Expr> lhs, Op operation, atl::shared_ptr<Expr> rhs)
     : lhs(lhs), operation(operation), rhs(rhs) {}
 
-std::shared_ptr<BinOp> BinOp::getptr() { return shared_from_this(); }
+atl::shared_ptr<BinOp> BinOp::getptr() { return shared_from_this(); }
 
 void BinOp::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 atl::string BinOp::accept(ASTVisitor<atl::string> &v) { return v.visit(*this); }
 
-std::shared_ptr<Type> BinOp::accept(ASTVisitor<std::shared_ptr<Type>> &v) {
+atl::shared_ptr<Type> BinOp::accept(ASTVisitor<atl::shared_ptr<Type>> &v) {
   return v.visit(*this);
 }
 
@@ -19,13 +19,13 @@ MIPS::Register BinOp::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand>
-BinOp::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+atl::shared_ptr<X86::Operand>
+BinOp::accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<ASTNode>
-BinOp::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
+atl::shared_ptr<ASTNode>
+BinOp::accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 

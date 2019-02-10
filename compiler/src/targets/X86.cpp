@@ -52,8 +52,8 @@ Writer::Writer(const atl::string &filename) {
   x86Output.open(std_filename);
 }
 
-void Writer::add(const std::shared_ptr<X86::Operand> &op1,
-                 const std::shared_ptr<X86::Operand> &op2,
+void Writer::add(const atl::shared_ptr<X86::Operand> &op1,
+                 const atl::shared_ptr<X86::Operand> &op2,
                  const atl::string &comment) {
   atl::string output = atl::string("add ") + op1->toString() + ", " +
                        op2->toString() + "\t; eax = " + op1->toString() +
@@ -71,7 +71,7 @@ void Writer::call(const atl::string &ident, const atl::string &comment) {
   write(atl::string("call ") + ident + "FunDecl");
 }
 
-void Writer::cmp(const std::shared_ptr<X86::Operand> &op, const int value,
+void Writer::cmp(const atl::shared_ptr<X86::Operand> &op, const int value,
                  const atl::string &comment) {
   write(atl::string("cmp ") + op->toString() + ", " + atl::to_string(value));
 }
@@ -80,8 +80,8 @@ void Writer::comment(const atl::string &comment) {
   write(atl::string(";") + comment);
 }
 
-void Writer::imul(const std::shared_ptr<X86::Operand> &op1,
-                  const std::shared_ptr<X86::Operand> &op2,
+void Writer::imul(const atl::shared_ptr<X86::Operand> &op1,
+                  const atl::shared_ptr<X86::Operand> &op2,
                   const atl::string &comment) {
   atl::string output = atl::string("imul ") + op1->toString() + ", " +
                        op2->toString() + "\t; eax = " + op1->toString() +
@@ -99,8 +99,8 @@ void Writer::jmp(const atl::string &label, const atl::string &comment) {
   write(atl::string("jmp ") + label);
 }
 
-void Writer::mov(const std::shared_ptr<X86::Operand> &dst,
-                 const std::shared_ptr<X86::Operand> &src,
+void Writer::mov(const atl::shared_ptr<X86::Operand> &dst,
+                 const atl::shared_ptr<X86::Operand> &src,
                  const atl::string &comment) {
   if (dst == src)
     return;
@@ -118,7 +118,7 @@ void Writer::mov(const std::shared_ptr<X86::Operand> &dst,
   write(output);
 }
 
-void Writer::pop(const std::shared_ptr<X86::Operand> &op,
+void Writer::pop(const atl::shared_ptr<X86::Operand> &op,
                  const atl::string &comment) {
   atl::string output = atl::string("pop dword ") + op->toString();
   if (comment != "")
@@ -126,7 +126,7 @@ void Writer::pop(const std::shared_ptr<X86::Operand> &op,
   write(output);
 }
 
-void Writer::push(const std::shared_ptr<X86::Operand> &op,
+void Writer::push(const atl::shared_ptr<X86::Operand> &op,
                   const atl::string &comment) {
   atl::string output = atl::string("push dword ") + op->toString();
   if (comment != "")
@@ -138,7 +138,7 @@ void Writer::ret(const atl::string &comment) {
   x86Output << "ret" << std::endl;
 }
 
-void Writer::sub(const std::shared_ptr<X86::Operand> &op, const int value,
+void Writer::sub(const atl::shared_ptr<X86::Operand> &op, const int value,
                  const atl::string &comment) {
   write(atl::string("sub ") + op->toString() + ", " + atl::to_string(value) +
         "\t; " + comment);

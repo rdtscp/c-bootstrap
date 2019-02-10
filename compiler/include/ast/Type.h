@@ -9,6 +9,7 @@ namespace ACC {
 
 class Type : public ASTNode {
 public:
+  virtual ~Type() {}
   virtual int getBytes() const = 0;
   virtual bool operator==(Type &rhs) const = 0;
   virtual bool operator!=(Type &rhs) const = 0;

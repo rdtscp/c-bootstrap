@@ -2,10 +2,10 @@
 
 using namespace ACC;
 
-PointerType::PointerType(std::shared_ptr<Type> pointedType)
+PointerType::PointerType(atl::shared_ptr<Type> pointedType)
     : pointedType(pointedType) {}
 
-std::shared_ptr<PointerType> PointerType::getptr() {
+atl::shared_ptr<PointerType> PointerType::getptr() {
   return shared_from_this();
 }
 
@@ -33,8 +33,8 @@ atl::string PointerType::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<Type>
-PointerType::accept(ASTVisitor<std::shared_ptr<Type>> &v) {
+atl::shared_ptr<Type>
+PointerType::accept(ASTVisitor<atl::shared_ptr<Type>> &v) {
   return v.visit(*this);
 }
 
@@ -42,13 +42,13 @@ MIPS::Register PointerType::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand>
-PointerType::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+atl::shared_ptr<X86::Operand>
+PointerType::accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<ASTNode>
-PointerType::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
+atl::shared_ptr<ASTNode>
+PointerType::accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 

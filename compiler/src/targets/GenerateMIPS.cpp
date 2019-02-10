@@ -3,7 +3,7 @@
 
 using namespace ACC;
 
-GenerateMIPS::GenerateMIPS(std::shared_ptr<Program> progAST,
+GenerateMIPS::GenerateMIPS(atl::shared_ptr<Program> progAST,
                            const atl::string &outputFile)
     : MIPS(outputFile), progAST(progAST) {}
 
@@ -131,7 +131,7 @@ MIPS::Register GenerateMIPS::visit(Block &b) {
 
   /* Clean up the stack. */
   for (const auto &ident_decl : b.blockDecls) {
-    std::shared_ptr<Decl> currDecl = ident_decl.second;
+    atl::shared_ptr<Decl> currDecl = ident_decl.second;
     if (currDecl->astClass() == "VarDecl") {
       /* ---- Deconstruct VarDecl ---- */
       MIPS.ADDI(MIPS::sp, MIPS::sp, 4);
@@ -271,7 +271,7 @@ MIPS::Register GenerateMIPS::visit(Program &p) {
 
   MIPS.write(".text");
   MIPS.JAL("mainFunDecl");
-  // for (std::shared_ptr<FunDef> func : p.funDefs)
+  // for (atl::shared_ptr<FunDef> func : p.funDefs)
   //   func->accept(*this);
 
   return MIPS::Register();

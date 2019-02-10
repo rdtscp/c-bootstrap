@@ -5,16 +5,16 @@ using namespace ACC;
 StructType::StructType(const atl::string &identifier)
     : identifier(identifier) {}
 
-std::shared_ptr<StructType> StructType::getptr() { return shared_from_this(); }
+atl::shared_ptr<StructType> StructType::getptr() { return shared_from_this(); }
 
 int StructType::getBytes() const {
   int aggregateBytes = 0;
   if (typeDefinition == nullptr)
     return aggregateBytes;
 
-  atl::vector<std::shared_ptr<VarDecl>> typeVarDecls = typeDefinition->varDecls;
+  atl::vector<atl::shared_ptr<VarDecl>> typeVarDecls = typeDefinition->varDecls;
   for (int idx = 0; idx < typeVarDecls.size(); ++idx) {
-    const std::shared_ptr<VarDecl> &structField = typeVarDecls[idx];
+    const atl::shared_ptr<VarDecl> &structField = typeVarDecls[idx];
     aggregateBytes += structField->type->getBytes();
   }
 
@@ -43,7 +43,7 @@ atl::string StructType::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<Type> StructType::accept(ASTVisitor<std::shared_ptr<Type>> &v) {
+atl::shared_ptr<Type> StructType::accept(ASTVisitor<atl::shared_ptr<Type>> &v) {
   return v.visit(*this);
 }
 
@@ -51,13 +51,13 @@ MIPS::Register StructType::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand>
-StructType::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+atl::shared_ptr<X86::Operand>
+StructType::accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<ASTNode>
-StructType::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
+atl::shared_ptr<ASTNode>
+StructType::accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 

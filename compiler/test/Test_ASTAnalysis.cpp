@@ -22,7 +22,7 @@ TEST(ASTAnalysisTest, DotGraph) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  std::shared_ptr<Program> progAST = parser.getAST();
+  atl::shared_ptr<Program> progAST = parser.getAST();
 
   DotGraph dotGraph(progAST);
   dotGraph.print();
@@ -35,7 +35,7 @@ TEST(ASTAnalysisTest, NameAnalysis) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  std::shared_ptr<Program> progAST = parser.getAST();
+  atl::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
@@ -49,10 +49,9 @@ TEST(ASTAnalysisTest, DuplicateFunction) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  std::shared_ptr<Program> progAST = parser.getAST();
+  atl::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
-  ;
   nameAnalysis.run();
   ASSERT_NE(0, nameAnalysis.errorCount);
 }
@@ -64,10 +63,9 @@ TEST(ASTAnalysisTest, DuplicateVariable) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  std::shared_ptr<Program> progAST = parser.getAST();
+  atl::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
-  ;
   nameAnalysis.run();
   ASSERT_NE(0, nameAnalysis.errorCount);
 }
@@ -79,7 +77,7 @@ TEST(ASTAnalysisTest, AmbiguousIdentifier) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  std::shared_ptr<Program> progAST = parser.getAST();
+  atl::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
   ;
@@ -94,7 +92,7 @@ TEST(ASTAnalysisTest, NoMainFunc) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  std::shared_ptr<Program> progAST = parser.getAST();
+  atl::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
@@ -108,7 +106,7 @@ TEST(ASTAnalysisTest, Fibonacci) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  std::shared_ptr<Program> progAST = parser.getAST();
+  atl::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
@@ -125,7 +123,7 @@ TEST(ASTAnalysisTest, TicTacToe) {
   Lexer lexer(scanner);
   Parser parser(lexer);
 
-  std::shared_ptr<Program> progAST = parser.getAST();
+  atl::shared_ptr<Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();

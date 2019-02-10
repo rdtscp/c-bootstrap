@@ -3,23 +3,20 @@
 #ifndef ACC_TYPEANALYSIS_H
 #define ACC_TYPEANALYSIS_H
 
-#include <memory>
-
-
 #include "../AST.h"
 #include "../ASTVisitor.h"
 
 namespace ACC {
 
-class TypeAnalysis : public ASTVisitor<std::shared_ptr<Type>> {
+class TypeAnalysis : public ASTVisitor<atl::shared_ptr<Type>> {
 
 public:
   int errorCount = 0;
   atl::vector<atl::string> errors;
 
-  TypeAnalysis(std::shared_ptr<Program> progAST);
+  TypeAnalysis(atl::shared_ptr<Program> progAST);
 
-  std::shared_ptr<Type> error(const atl::string &error);
+  atl::shared_ptr<Type> error(const atl::string &error);
 
   void printErrors();
 
@@ -27,42 +24,42 @@ public:
 
 private:
   int nodeCount = 0;
-  std::shared_ptr<Program> progAST;
+  atl::shared_ptr<Program> progAST;
 
-  std::shared_ptr<Block> currScope;
+  atl::shared_ptr<Block> currScope;
 
   /* ---- Visit AST ---- */
 
-  std::shared_ptr<Type> visit(ArrayAccess &aa) override;
-  std::shared_ptr<Type> visit(ArrayType &at) override;
-  std::shared_ptr<Type> visit(Assign &as) override;
-  std::shared_ptr<Type> visit(BaseType &bt) override;
-  std::shared_ptr<Type> visit(BinOp &bo) override;
-  std::shared_ptr<Type> visit(Block &b) override;
-  std::shared_ptr<Type> visit(CharLiteral &cl) override;
-  std::shared_ptr<Type> visit(DoWhile &dw) override;
-  std::shared_ptr<Type> visit(EnumTypeDecl &etd) override;
-  std::shared_ptr<Type> visit(FieldAccess &fa) override;
-  std::shared_ptr<Type> visit(FunCall &fc) override;
-  std::shared_ptr<Type> visit(FunDecl &fd) override;
-  std::shared_ptr<Type> visit(FunDef &fd) override;
-  std::shared_ptr<Type> visit(If &i) override;
-  std::shared_ptr<Type> visit(IntLiteral &il) override;
-  std::shared_ptr<Type> visit(Namespace &n) override;
-  std::shared_ptr<Type> visit(ParenthExpr &pe) override;
-  std::shared_ptr<Type> visit(PointerType &pt) override;
-  std::shared_ptr<Type> visit(Program &p) override;
-  std::shared_ptr<Type> visit(Return &r) override;
-  std::shared_ptr<Type> visit(SizeOf &so) override;
-  std::shared_ptr<Type> visit(StringLiteral &sl) override;
-  std::shared_ptr<Type> visit(StructType &st) override;
-  std::shared_ptr<Type> visit(StructTypeDecl &std) override;
-  std::shared_ptr<Type> visit(TypeCast &tc) override;
-  std::shared_ptr<Type> visit(TypeDefDecl &td) override;
-  std::shared_ptr<Type> visit(ValueAt &va) override;
-  std::shared_ptr<Type> visit(VarDecl &vd) override;
-  std::shared_ptr<Type> visit(VarExpr &ve) override;
-  std::shared_ptr<Type> visit(While &w) override;
+  atl::shared_ptr<Type> visit(ArrayAccess &aa) override;
+  atl::shared_ptr<Type> visit(ArrayType &at) override;
+  atl::shared_ptr<Type> visit(Assign &as) override;
+  atl::shared_ptr<Type> visit(BaseType &bt) override;
+  atl::shared_ptr<Type> visit(BinOp &bo) override;
+  atl::shared_ptr<Type> visit(Block &b) override;
+  atl::shared_ptr<Type> visit(CharLiteral &cl) override;
+  atl::shared_ptr<Type> visit(DoWhile &dw) override;
+  atl::shared_ptr<Type> visit(EnumTypeDecl &etd) override;
+  atl::shared_ptr<Type> visit(FieldAccess &fa) override;
+  atl::shared_ptr<Type> visit(FunCall &fc) override;
+  atl::shared_ptr<Type> visit(FunDecl &fd) override;
+  atl::shared_ptr<Type> visit(FunDef &fd) override;
+  atl::shared_ptr<Type> visit(If &i) override;
+  atl::shared_ptr<Type> visit(IntLiteral &il) override;
+  atl::shared_ptr<Type> visit(Namespace &n) override;
+  atl::shared_ptr<Type> visit(ParenthExpr &pe) override;
+  atl::shared_ptr<Type> visit(PointerType &pt) override;
+  atl::shared_ptr<Type> visit(Program &p) override;
+  atl::shared_ptr<Type> visit(Return &r) override;
+  atl::shared_ptr<Type> visit(SizeOf &so) override;
+  atl::shared_ptr<Type> visit(StringLiteral &sl) override;
+  atl::shared_ptr<Type> visit(StructType &st) override;
+  atl::shared_ptr<Type> visit(StructTypeDecl &std) override;
+  atl::shared_ptr<Type> visit(TypeCast &tc) override;
+  atl::shared_ptr<Type> visit(TypeDefDecl &td) override;
+  atl::shared_ptr<Type> visit(ValueAt &va) override;
+  atl::shared_ptr<Type> visit(VarDecl &vd) override;
+  atl::shared_ptr<Type> visit(VarExpr &ve) override;
+  atl::shared_ptr<Type> visit(While &w) override;
 };
 
 }; // namespace ACC

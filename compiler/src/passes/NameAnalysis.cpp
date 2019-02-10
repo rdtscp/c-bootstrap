@@ -4,7 +4,7 @@
 
 using namespace ACC;
 
-NameAnalysis::NameAnalysis(std::shared_ptr<Program> progAST)
+NameAnalysis::NameAnalysis(atl::shared_ptr<Program> progAST)
     : progAST(progAST) {}
 
 void NameAnalysis::error(const atl::string &error) {
@@ -100,11 +100,11 @@ void NameAnalysis::visit(Namespace &n) { n.namespaceBlock->accept(*this); }
 void NameAnalysis::visit(ParenthExpr &pe) { pe.innerExpr->accept(*this); }
 void NameAnalysis::visit(PointerType &pt) {}
 void NameAnalysis::visit(Program &p) {
-  currScope = std::make_shared<Block>(Block({}));
+  currScope = atl::make_shared<Block>(Block({}));
   for (int idx = 0; idx < p.decls.size(); ++idx)
     p.decls[idx]->accept(*this);
   /* Check for main() function */
-  std::shared_ptr<Decl> mainDecl = currScope->find("main");
+  atl::shared_ptr<Decl> mainDecl = currScope->find("main");
   if (mainDecl == nullptr || mainDecl->astClass() != "FunDef")
     error("Program did not contain a main() Function.");
   p.globalScope = currScope;
@@ -128,7 +128,7 @@ void NameAnalysis::visit(StructTypeDecl &std) {
   /* Check that the fields in this struct are unique */
   atl::set<atl::string> structTypeFields;
   for (int idx = 0; idx < std.varDecls.size(); ++idx) {
-    const std::shared_ptr<VarDecl> field = std.varDecls[idx];
+    const atl::shared_ptr<VarDecl> field = std.varDecls[idx];
     if (structTypeFields.find(field->getIdentifier()))
       return error(atl::string("Struct ") + std.getIdentifier() +
                    " contained multiple fields with the same identifier: " +

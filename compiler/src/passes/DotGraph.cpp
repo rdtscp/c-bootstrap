@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-DotGraph::DotGraph(std::shared_ptr<Program> progAST) : progAST(progAST) {}
+DotGraph::DotGraph(atl::shared_ptr<Program> progAST) : progAST(progAST) {}
 void DotGraph::print() { visit(*progAST); }
 
 void DotGraph::declare(const atl::string &nodeID, const atl::string &label) {

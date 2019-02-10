@@ -5,9 +5,7 @@
 
 #include "atl/include/string.h"
 #include <algorithm>
-#include <memory>
 #include <stack>
-
 
 #include "../AST.h"
 #include "../ASTVisitor.h"
@@ -21,7 +19,7 @@ public:
   int errorCount = 0;
   atl::vector<atl::string> errors;
 
-  GenerateMIPS(std::shared_ptr<Program> progAST, const atl::string &outputFile);
+  GenerateMIPS(atl::shared_ptr<Program> progAST, const atl::string &outputFile);
 
   void error(const atl::string &error);
 
@@ -31,9 +29,9 @@ public:
 
 private:
   MIPS::Writer MIPS;
-  std::shared_ptr<Program> progAST;
+  atl::shared_ptr<Program> progAST;
 
-  std::shared_ptr<Block> currScope;
+  atl::shared_ptr<Block> currScope;
   int currFpOffset = 0;
 
   /* ---- Register Management ---- */

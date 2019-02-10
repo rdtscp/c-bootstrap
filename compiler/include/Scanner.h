@@ -3,7 +3,6 @@
 #ifndef ACC_SCANNER_H
 #define ACC_SCANNER_H
 
-#include <memory>
 #include <string>
 
 #include "Position.h"

@@ -6,8 +6,6 @@
 #include "atl/include/string.h"
 #include "atl/include/vector.h"
 #include <fstream>
-#include <memory>
-// 
 
 namespace ACC {
 

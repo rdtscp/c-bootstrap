@@ -11,36 +11,36 @@
 
 namespace ACC {
 
-class Block : public Stmt, public std::enable_shared_from_this<Block> {
+class Block : public Stmt, public atl::enable_shared_from_this<Block> {
 
 public:
-  std::map<std::string, std::shared_ptr<Decl>> blockDecls;
-  atl::vector<std::shared_ptr<Stmt>> blockStmts;
-  std::shared_ptr<Block> outerBlock = nullptr;
+  std::map<std::string, atl::shared_ptr<Decl>> blockDecls;
+  atl::vector<atl::shared_ptr<Stmt>> blockStmts;
+  atl::shared_ptr<Block> outerBlock;
 
-  Block(const atl::vector<std::shared_ptr<Stmt>> &newBlockStmts);
+  Block(const atl::vector<atl::shared_ptr<Stmt>> &newBlockStmts);
 
-  std::shared_ptr<Block> getptr();
+  atl::shared_ptr<Block> getptr();
 
   bool operator==(const Block &rhs) const;
   bool operator!=(const Block &rhs) const;
 
-  std::shared_ptr<Decl> find(const atl::string &identifier);
+  atl::shared_ptr<Decl> find(const atl::string &identifier);
 
-  std::shared_ptr<Decl> findLocal(const atl::string &identifier);
+  atl::shared_ptr<Decl> findLocal(const atl::string &identifier);
 
-  void insertDecl(const std::shared_ptr<Decl> &decl);
+  void insertDecl(const atl::shared_ptr<Decl> &decl);
 
-  void setOuterBlock(const std::shared_ptr<Block> &newOuterBlock);
+  void setOuterBlock(const atl::shared_ptr<Block> &newOuterBlock);
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;
-  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
+  atl::shared_ptr<Type> accept(ASTVisitor<atl::shared_ptr<Type>> &v) override;
   MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
-  std::shared_ptr<X86::Operand>
-  accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) override;
-  std::shared_ptr<ASTNode>
-  accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) override;
+  atl::shared_ptr<X86::Operand>
+  accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) override;
+  atl::shared_ptr<ASTNode>
+  accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) override;
   atl::string astClass() const override;
 };
 

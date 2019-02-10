@@ -3,8 +3,6 @@
 #ifndef ACC_PARSER_H
 #define ACC_PARSER_H
 
-#include <memory>
-
 #include "AST.h"
 #include "Lexer.h"
 #include "SourceToken.h"
@@ -18,7 +16,7 @@ public:
   Parser(Parser &rhs) = delete;
 
   /* Parses the Tokens into an AST with root node Program. */
-  std::shared_ptr<Program> getAST();
+  atl::shared_ptr<Program> getAST();
 
 private:
   SourceToken currToken;
@@ -74,46 +72,46 @@ private:
 
   /* ---- Parsing ---- */
 
-  std::shared_ptr<Program> parseProgram();
+  atl::shared_ptr<Program> parseProgram();
 
   /* -- Decls -- */
-  std::shared_ptr<Decl> parseDecl();
-  std::shared_ptr<EnumTypeDecl> parseEnumTypeDecl();
-  std::shared_ptr<FunDecl> parseFunDecl();
-  std::shared_ptr<StructTypeDecl> parseStructTypeDecl();
-  std::shared_ptr<TypeDefDecl> parseTypeDefDecl();
-  std::shared_ptr<VarDecl> parseVarDecl();
+  atl::shared_ptr<Decl> parseDecl();
+  atl::shared_ptr<EnumTypeDecl> parseEnumTypeDecl();
+  atl::shared_ptr<FunDecl> parseFunDecl();
+  atl::shared_ptr<StructTypeDecl> parseStructTypeDecl();
+  atl::shared_ptr<TypeDefDecl> parseTypeDefDecl();
+  atl::shared_ptr<VarDecl> parseVarDecl();
 
   /* -- Types -- */
-  std::shared_ptr<StructType> parseStructType();
-  std::shared_ptr<Type> parseType();
+  atl::shared_ptr<StructType> parseStructType();
+  atl::shared_ptr<Type> parseType();
 
   /* -- Stmts -- */
-  std::shared_ptr<Assign> parseAssign();
-  std::shared_ptr<Block> parseBlock();
-  std::shared_ptr<DoWhile> parseDoWhile();
-  std::shared_ptr<If> parseIf();
-  std::shared_ptr<Return> parseReturn();
-  std::shared_ptr<Stmt> parseStmt();
-  std::shared_ptr<While> parseWhile();
+  atl::shared_ptr<Assign> parseAssign();
+  atl::shared_ptr<Block> parseBlock();
+  atl::shared_ptr<DoWhile> parseDoWhile();
+  atl::shared_ptr<If> parseIf();
+  atl::shared_ptr<Return> parseReturn();
+  atl::shared_ptr<Stmt> parseStmt();
+  atl::shared_ptr<While> parseWhile();
 
-  std::shared_ptr<VarDecl> parseParam();
+  atl::shared_ptr<VarDecl> parseParam();
 
   /* -- Exprs -- */
-  std::shared_ptr<Expr> parseExpr();
-  std::shared_ptr<Expr> parseBoolExpr();
-  std::shared_ptr<Expr> parseEqualExpr();
-  std::shared_ptr<Expr> parseCompExpr();
-  std::shared_ptr<Expr> parseAddExpr();
-  std::shared_ptr<Expr> parseMulExpr();
-  std::shared_ptr<Expr> parseUnaryExpr();
-  std::shared_ptr<Expr> parseObjExpr();
-  std::shared_ptr<Expr> parseLitExpr();
+  atl::shared_ptr<Expr> parseExpr();
+  atl::shared_ptr<Expr> parseBoolExpr();
+  atl::shared_ptr<Expr> parseEqualExpr();
+  atl::shared_ptr<Expr> parseCompExpr();
+  atl::shared_ptr<Expr> parseAddExpr();
+  atl::shared_ptr<Expr> parseMulExpr();
+  atl::shared_ptr<Expr> parseUnaryExpr();
+  atl::shared_ptr<Expr> parseObjExpr();
+  atl::shared_ptr<Expr> parseLitExpr();
 
   /* ---- Helpers ---- */
 
   /* Converts an Token to an Type */
-  std::shared_ptr<BaseType> tokenToType(const SourceToken::Class &tc);
+  atl::shared_ptr<BaseType> tokenToType(const SourceToken::Class &tc);
 };
 
 }; // namespace ACC

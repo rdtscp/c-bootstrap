@@ -9,6 +9,7 @@ namespace ACC {
 
 class Decl : public ASTNode {
 public:
+  virtual ~Decl() {}
   virtual bool operator==(Decl &rhs) const = 0;
   virtual bool operator!=(Decl &rhs) const = 0;
   virtual atl::string getIdentifier() const = 0;

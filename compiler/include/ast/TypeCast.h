@@ -8,24 +8,24 @@
 
 namespace ACC {
 
-class TypeCast : public Expr, public std::enable_shared_from_this<TypeCast> {
+class TypeCast : public Expr, public atl::enable_shared_from_this<TypeCast> {
 
 public:
-  std::shared_ptr<Type> type;
-  std::shared_ptr<Expr> expr;
+  atl::shared_ptr<Type> type;
+  atl::shared_ptr<Expr> expr;
 
-  TypeCast(std::shared_ptr<Type> type, std::shared_ptr<Expr> expr);
+  TypeCast(atl::shared_ptr<Type> type, atl::shared_ptr<Expr> expr);
 
-  std::shared_ptr<TypeCast> getptr();
+  atl::shared_ptr<TypeCast> getptr();
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;
-  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
+  atl::shared_ptr<Type> accept(ASTVisitor<atl::shared_ptr<Type>> &v) override;
   MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
-  std::shared_ptr<X86::Operand>
-  accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) override;
-  std::shared_ptr<ASTNode>
-  accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) override;
+  atl::shared_ptr<X86::Operand>
+  accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) override;
+  atl::shared_ptr<ASTNode>
+  accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) override;
   atl::string astClass() const override;
 };
 

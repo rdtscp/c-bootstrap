@@ -7,28 +7,28 @@
 
 namespace ACC {
 
-class If : public Stmt, public std::enable_shared_from_this<If> {
+class If : public Stmt, public atl::enable_shared_from_this<If> {
 
 public:
-  std::shared_ptr<Expr> ifCondition;
-  std::shared_ptr<Stmt> ifBody;
-  std::shared_ptr<Stmt> elseBody = nullptr;
+  atl::shared_ptr<Expr> ifCondition;
+  atl::shared_ptr<Stmt> ifBody;
+  atl::shared_ptr<Stmt> elseBody;
 
-  If(std::shared_ptr<Expr> ifCondition, std::shared_ptr<Stmt> ifBody);
+  If(atl::shared_ptr<Expr> ifCondition, atl::shared_ptr<Stmt> ifBody);
 
-  If(std::shared_ptr<Expr> ifCondition, std::shared_ptr<Stmt> ifBody,
-     std::shared_ptr<Stmt> elseBody);
+  If(atl::shared_ptr<Expr> ifCondition, atl::shared_ptr<Stmt> ifBody,
+     atl::shared_ptr<Stmt> elseBody);
 
-  std::shared_ptr<If> getptr();
+  atl::shared_ptr<If> getptr();
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;
-  std::shared_ptr<Type> accept(ASTVisitor<std::shared_ptr<Type>> &v) override;
+  atl::shared_ptr<Type> accept(ASTVisitor<atl::shared_ptr<Type>> &v) override;
   MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
-  std::shared_ptr<X86::Operand>
-  accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) override;
-  std::shared_ptr<ASTNode>
-  accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) override;
+  atl::shared_ptr<X86::Operand>
+  accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) override;
+  atl::shared_ptr<ASTNode>
+  accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) override;
   atl::string astClass() const override;
 };
 

@@ -3,7 +3,6 @@
 #ifndef ACC_NAMEANALYSIS_H
 #define ACC_NAMEANALYSIS_H
 
-#include <memory>
 
 
 #include "../AST.h"
@@ -17,7 +16,7 @@ public:
   int errorCount = 0;
   atl::vector<atl::string> errors;
 
-  NameAnalysis(std::shared_ptr<Program> progAST);
+  NameAnalysis(atl::shared_ptr<Program> progAST);
 
   void error(const atl::string &error);
 
@@ -27,9 +26,9 @@ public:
 
 private:
   int nodeCount = 0;
-  std::shared_ptr<Program> progAST;
+  atl::shared_ptr<Program> progAST;
 
-  std::shared_ptr<Block> currScope;
+  atl::shared_ptr<Block> currScope;
 
   /* ---- Visit AST ---- */
 

@@ -45,7 +45,7 @@ int main(int argc, char const *argv[]) {
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
-  std::shared_ptr<ACC::Program> progAST = parser.getAST();
+  atl::shared_ptr<ACC::Program> progAST = parser.getAST();
 
   ACC::NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();

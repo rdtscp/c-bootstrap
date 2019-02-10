@@ -3,10 +3,9 @@
 #ifndef ACC_X86_H
 #define ACC_X86_H
 
+#include "atl/include/shared_ptr.h"
 #include "atl/include/string.h"
 #include <fstream>
-#include <memory>
-
 
 namespace ACC {
 
@@ -62,28 +61,28 @@ class Writer final {
 public:
   Writer(const atl::string &filename);
 
-  void add(const std::shared_ptr<X86::Operand> &op1,
-           const std::shared_ptr<X86::Operand> &op2,
+  void add(const atl::shared_ptr<X86::Operand> &op1,
+           const atl::shared_ptr<X86::Operand> &op2,
            const atl::string &comment = "");
   void block(atl::string blockName, const atl::string &comment = "");
   void call(const atl::string &ident, const atl::string &comment = "");
-  void cmp(const std::shared_ptr<X86::Operand> &reg, const int value,
+  void cmp(const atl::shared_ptr<X86::Operand> &reg, const int value,
            const atl::string &comment = "");
   void comment(const atl::string &comment);
-  void imul(const std::shared_ptr<X86::Operand> &dst,
-            const std::shared_ptr<X86::Operand> &src,
+  void imul(const atl::shared_ptr<X86::Operand> &dst,
+            const atl::shared_ptr<X86::Operand> &src,
             const atl::string &comment = "");
   void jeq(const atl::string &label, const atl::string &comment = "");
   void jmp(const atl::string &label, const atl::string &comment = "");
-  void mov(const std::shared_ptr<X86::Operand> &dst,
-           const std::shared_ptr<X86::Operand> &src,
+  void mov(const atl::shared_ptr<X86::Operand> &dst,
+           const atl::shared_ptr<X86::Operand> &src,
            const atl::string &comment = "");
-  void pop(const std::shared_ptr<X86::Operand> &reg,
+  void pop(const atl::shared_ptr<X86::Operand> &reg,
            const atl::string &comment = "");
-  void push(const std::shared_ptr<X86::Operand> &op,
+  void push(const atl::shared_ptr<X86::Operand> &op,
             const atl::string &comment = "");
   void ret(const atl::string &comment = "");
-  void sub(const std::shared_ptr<X86::Operand> &reg, const int value,
+  void sub(const atl::shared_ptr<X86::Operand> &reg, const int value,
            const atl::string &comment = "");
   void write(const atl::string &str);
 
@@ -91,14 +90,14 @@ private:
   std::ofstream x86Output;
 };
 
-static std::shared_ptr<Register> eax(new Register(32, "eax"));
-static std::shared_ptr<Register> ebx(new Register(32, "ebx"));
-static std::shared_ptr<Register> ecx(new Register(32, "ecx"));
-static std::shared_ptr<Register> edx(new Register(32, "edx"));
-static std::shared_ptr<Register> esi(new Register(32, "esi"));
-static std::shared_ptr<Register> edi(new Register(32, "edi"));
-static std::shared_ptr<Register> esp(new Register(32, "esp"));
-static std::shared_ptr<Register> ebp(new Register(32, "ebp"));
+static atl::shared_ptr<Register> eax(new Register(32, "eax"));
+static atl::shared_ptr<Register> ebx(new Register(32, "ebx"));
+static atl::shared_ptr<Register> ecx(new Register(32, "ecx"));
+static atl::shared_ptr<Register> edx(new Register(32, "edx"));
+static atl::shared_ptr<Register> esi(new Register(32, "esi"));
+static atl::shared_ptr<Register> edi(new Register(32, "edi"));
+static atl::shared_ptr<Register> esp(new Register(32, "esp"));
+static atl::shared_ptr<Register> ebp(new Register(32, "ebp"));
 
 }; // namespace X86
 

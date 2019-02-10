@@ -20,7 +20,7 @@ TEST(OptimiserTest, FunDeclsC) {
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
-  std::shared_ptr<ACC::Program> progAST = parser.getAST();
+  atl::shared_ptr<ACC::Program> progAST = parser.getAST();
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();

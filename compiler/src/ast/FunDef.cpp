@@ -2,12 +2,12 @@
 
 using namespace ACC;
 
-FunDef::FunDef(std::shared_ptr<Block> funBlock, const atl::string &funName,
-               atl::vector<std::shared_ptr<VarDecl>> funParams,
-               std::shared_ptr<Type> funType)
+FunDef::FunDef(atl::shared_ptr<Block> funBlock, const atl::string &funName,
+               atl::vector<atl::shared_ptr<VarDecl>> funParams,
+               atl::shared_ptr<Type> funType)
     : FunDecl(funName, funParams, funType), funBlock(funBlock) {}
 
-std::shared_ptr<FunDecl> FunDef::getptr() {
+atl::shared_ptr<FunDecl> FunDef::getptr() {
   return FunDecl::shared_from_this();
 }
 
@@ -50,7 +50,7 @@ atl::string FunDef::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<Type> FunDef::accept(ASTVisitor<std::shared_ptr<Type>> &v) {
+atl::shared_ptr<Type> FunDef::accept(ASTVisitor<atl::shared_ptr<Type>> &v) {
   return v.visit(*this);
 }
 
@@ -58,13 +58,13 @@ MIPS::Register FunDef::accept(ASTVisitor<MIPS::Register> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<X86::Operand>
-FunDef::accept(ASTVisitor<std::shared_ptr<X86::Operand>> &v) {
+atl::shared_ptr<X86::Operand>
+FunDef::accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) {
   return v.visit(*this);
 }
 
-std::shared_ptr<ASTNode>
-FunDef::accept(ASTVisitor<std::shared_ptr<ASTNode>> &v) {
+atl::shared_ptr<ASTNode>
+FunDef::accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) {
   return v.visit(*this);
 }
 

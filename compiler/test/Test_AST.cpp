@@ -1,7 +1,3 @@
-#include <memory>
-
-
-
 #include "gtest/gtest.h"
 
 #include "../include/AST.h"
@@ -32,18 +28,18 @@ TEST(ASTTest, BaseTypeComparisons) {
 
 TEST(ASTTest, ArrayTypeComparisons) {
   ArrayType charArray(
-      std::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)), "5");
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)), "5");
   ArrayType intArray(
-      std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)), "5");
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)), "5");
   ArrayType voidArray(
-      std::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)), "5");
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)), "5");
 
   ArrayType charArray2(
-      std::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)), "5");
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)), "5");
   ArrayType intArray2(
-      std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)), "5");
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)), "5");
   ArrayType voidArray2(
-      std::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)), "5");
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)), "5");
 
   ASSERT_FALSE(charArray == intArray);
   ASSERT_FALSE(intArray == voidArray);
@@ -55,18 +51,18 @@ TEST(ASTTest, ArrayTypeComparisons) {
 
 TEST(ASTTest, PointerTypeComparisons) {
   PointerType charPtr(
-      std::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)));
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)));
   PointerType intPtr(
-      std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)));
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)));
   PointerType voidPtr(
-      std::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)));
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)));
 
   PointerType charPtr2(
-      std::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)));
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)));
   PointerType intPtr2(
-      std::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)));
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)));
   PointerType voidPtr2(
-      std::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)));
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)));
 
   ASSERT_FALSE(charPtr == intPtr);
   ASSERT_FALSE(intPtr == voidPtr);
@@ -87,11 +83,11 @@ TEST(ASTTest, StructTypeComparisons) {
 }
 
 TEST(ASTTest, VarDeclComparisons) {
-  VarDecl vd1(std::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+  VarDecl vd1(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
               atl::string("myInt"));
-  VarDecl vd2(std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
+  VarDecl vd2(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
               atl::string("myChar"));
-  VarDecl vd3(std::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
+  VarDecl vd3(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
               atl::string("myChar"));
 
   ASSERT_FALSE(vd1 == vd2);
