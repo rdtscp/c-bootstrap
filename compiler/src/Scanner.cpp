@@ -1,3 +1,4 @@
+#include "atl/include/ifstream.h"
 #include "atl/include/vector.h"
 #include <fstream>
 #include <stdexcept>
@@ -8,19 +9,18 @@ using namespace ACC;
 
 Scanner::Scanner(const SourceHandler &src) : column(1), line(1) {
   if (src.type == SourceHandler::Type::FILEPATH) {
-    // TEMP: Convert atl::string to std::string so we can use the std::ifstream.
-    std::string filename(src.value.c_str());
-    std::ifstream fileStream(filename);
-    if (!fileStream.good())
-      throw std::runtime_error("Scanner: Provided filename \"" + filename +
-                               "\" could not be read.");
-
-    file = atl::string(std::string((std::istreambuf_iterator<char>(fileStream)),
-                                   std::istreambuf_iterator<char>())
-                           .c_str());
+    /* My Compiler */
+    std::ifstream fileStream(src.value.c_str());
+    if (fileStream.good())
+#ifdef ACC_COMPILER
+      file = fileStream.readIntoString();
+#else
+      file =
+          atl::string(std::string((std::istreambuf_iterator<char>(fileStream)),
+                                  std::istreambuf_iterator<char>())
+                          .c_str());
+#endif
   } else if (src.type == SourceHandler::Type::RAW) {
-    // TEMP: Convert atl::string to std::string until atl::string supports
-    // iterators.
     file = src.value;
   }
 
