@@ -10,9 +10,26 @@
       "request": "launch",
       "program": "${workspaceFolder}/acc.py",
       "args": [
-        "compiler/test/tests/parser/fundecls.cpp"
+        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main.cpp"
       ],
       "console": "integratedTerminal"
+    },
+    {
+      "name": "(lldb) acc",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/compiler/build/acc",
+      "args": [
+        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main_.cpp",
+        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main.s",
+        "x86"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "lldb",
+      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
     },
     {
       "name": "(lldb) Scanner Unit Tests",
