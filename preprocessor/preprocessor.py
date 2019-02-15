@@ -10,7 +10,7 @@ class Preprocessor:
         if ".cpp" in inFile:
             # clang++ -std=c++14 -E compiler/main.cpp -o tempSource.cpp
             prepRes = run(["clang++", "-std=c++14",
-                           "-E", inFile, "-o", outFile])
+                           "-E", "-I", "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/build/atl/src/", inFile, "-o", outFile])
             if prepRes.returncode != 0:
                 print("Failed to Preprocess file: " + inFile)
                 exit()
