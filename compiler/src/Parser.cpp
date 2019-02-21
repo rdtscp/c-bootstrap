@@ -189,6 +189,9 @@ bool Parser::acceptAssign(int offset) { return acceptExpr(offset); }
 bool Parser::acceptBlock(int offset) { return accept(TC::LBRA, offset); }
 bool Parser::acceptDoWhile(int offset) { return accept(TC::DO, offset); }
 bool Parser::acceptIf(int offset) { return accept(TC::IF, offset); }
+bool Parser::acceptNamespace(int offset) {
+  return accept(TC::NAMESPACE, offset);
+}
 bool Parser::acceptReturn(int offset) { return accept(TC::RETURN, offset); }
 bool Parser::acceptStmt(int offset) {
   if (acceptVarDecl(offset))
@@ -224,8 +227,12 @@ bool Parser::acceptExpr(int offset) {
 
 atl::shared_ptr<Program> Parser::parseProgram() {
   atl::vector<atl::shared_ptr<Decl>> decls;
-  while (acceptDecl())
-    decls.push_back(parseDecl());
+  while (acceptDecl() || acceptNamespace()) {
+    if (acceptDecl())
+      decls.push_back(parseDecl());
+    else if (acceptNamespace())
+      decls.push_back(parseNamespace());
+  }
 
   expect(TC::ENDOFFILE);
   return atl::make_shared<Program>(Program(decls));
@@ -470,6 +477,21 @@ atl::shared_ptr<If> Parser::parseIf() {
   } else {
     return atl::make_shared<If>(If(ifCondition, ifBody));
   }
+}
+atl::shared_ptr<Namespace> Parser::parseNamespace() {
+  expect(TC::NAMESPACE);
+  atl::string namespaceIdent;
+  if (accept(TC::IDENTIFIER))
+    namespaceIdent = expect(TC::IDENTIFIER).data;
+  expect(TC::LBRA);
+  atl::vector<atl::shared_ptr<Decl>> namespaceDecls;
+  while (acceptDecl() || acceptNamespace()) {
+    if (acceptDecl())
+      namespaceDecls.push_back(parseDecl());
+    else if (acceptNamespace())
+      namespaceDecls.push_back(parseNamespace());
+  }
+  expect(TC::RBRA);
 }
 atl::shared_ptr<Return> Parser::parseReturn() {
   expect(TC::RETURN);

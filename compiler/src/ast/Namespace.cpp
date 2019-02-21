@@ -3,11 +3,22 @@
 using namespace ACC;
 
 Namespace::Namespace(const atl::string &identifier,
-                     const atl::shared_ptr<Block> &namespaceBlock) {}
+                     const atl::vector<atl::shared_ptr<Decl>> &namespaceDecls)
+    : identifier(identifier), namespaceDecls(namespaceDecls) {}
 
 void Namespace::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 atl::shared_ptr<Namespace> Namespace::getptr() { return shared_from_this(); }
+
+bool Namespace::operator==(Decl &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<Namespace *>(&rhs);
+  return false;
+}
+
+bool Namespace::operator!=(Decl &rhs) const { return !(*this == rhs); }
+
+atl::string Namespace::getIdentifier() const { return identifier; }
 
 atl::string Namespace::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);

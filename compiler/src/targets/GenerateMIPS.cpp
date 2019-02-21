@@ -250,7 +250,7 @@ MIPS::Register GenerateMIPS::visit(If &i) {
 }
 MIPS::Register GenerateMIPS::visit(IntLiteral &il) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(Namespace &n) {
-  n.namespaceBlock->accept(*this);
+  // n.namespaceBlock->accept(*this);
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(ParenthExpr &pe) {

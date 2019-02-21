@@ -158,8 +158,10 @@ atl::shared_ptr<ASTNode> Optimiser::visit(IntLiteral &il) {
   return il.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(Namespace &n) {
-  n.namespaceBlock =
-      atl::static_pointer_cast<Block>(n.namespaceBlock->accept(*this));
+  for (int i = 0; i < n.namespaceDecls.size(); ++i) {
+    n.namespaceDecls[i] =
+        atl::static_pointer_cast<Decl>(n.namespaceDecls[i]->accept(*this));
+    }
   return n.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(ParenthExpr &pe) {

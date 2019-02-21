@@ -8,16 +8,21 @@
 
 namespace ACC {
 
-class Namespace : public ASTNode,
-                  public atl::enable_shared_from_this<Namespace> {
+class Namespace : public Decl, public atl::enable_shared_from_this<Namespace> {
 
 public:
-  atl::shared_ptr<Block> namespaceBlock;
+  atl::string identifier;
+  atl::vector<atl::shared_ptr<Decl>> namespaceDecls;
 
   Namespace(const atl::string &identifier,
-            const atl::shared_ptr<Block> &namespaceBlock);
+            const atl::vector<atl::shared_ptr<Decl>> &namespaceDecls);
 
   atl::shared_ptr<Namespace> getptr();
+
+  bool operator==(Decl &rhs) const override;
+  bool operator!=(Decl &rhs) const override;
+
+  atl::string getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

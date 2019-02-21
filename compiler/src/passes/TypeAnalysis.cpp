@@ -170,7 +170,8 @@ atl::shared_ptr<Type> TypeAnalysis::visit(IntLiteral &il) {
   return atl::make_shared<BaseType>(BaseType(PrimitiveType::INT));
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(Namespace &n) {
-  n.namespaceBlock->accept(*this);
+  for (int i = 0; i < n.namespaceDecls.size(); ++i)
+    n.namespaceDecls[i]->accept(*this);
   return nullptr;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(ParenthExpr &pe) {

@@ -210,7 +210,8 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(IntLiteral &il) {
   return X86::eax;
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Namespace &n) {
-  return n.namespaceBlock->accept(*this);
+  return nullptr;
+  // return n.namespaceBlock->accept(*this);
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);

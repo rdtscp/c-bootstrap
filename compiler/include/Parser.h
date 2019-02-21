@@ -62,6 +62,7 @@ private:
   bool acceptBlock(int offset = 0);
   bool acceptDoWhile(int offset = 0);
   bool acceptIf(int offset = 0);
+  bool acceptNamespace(int offset = 0);
   bool acceptReturn(int offset = 0);
   bool acceptStmt(int offset = 0);
   bool acceptWhile(int offset = 0);
@@ -91,6 +92,7 @@ private:
   atl::shared_ptr<Block> parseBlock();
   atl::shared_ptr<DoWhile> parseDoWhile();
   atl::shared_ptr<If> parseIf();
+  atl::shared_ptr<Namespace> parseNamespace();
   atl::shared_ptr<Return> parseReturn();
   atl::shared_ptr<Stmt> parseStmt();
   atl::shared_ptr<While> parseWhile();

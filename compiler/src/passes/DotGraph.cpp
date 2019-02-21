@@ -185,7 +185,11 @@ atl::string DotGraph::visit(IntLiteral &il) {
   return intID;
 }
 atl::string DotGraph::visit(Namespace &n) {
-  return n.namespaceBlock->accept(*this);
+  atl::string namespaceID =
+      atl::string("Namespace") + atl::to_string(nodeCount++);
+  for (int i = 0; i < n.namespaceDecls.size(); ++i)
+    n.namespaceDecls[i]->accept(*this);
+  return namespaceID;
 }
 atl::string DotGraph::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);
