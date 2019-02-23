@@ -41,6 +41,7 @@ add_library(AST SHARED
   src/ast/TypeCast.cpp
   src/ast/TypeDefDecl.cpp
   src/ast/ValueAt.cpp
+  src/ast/VarDef.cpp
   src/ast/VarDecl.cpp
   src/ast/VarExpr.cpp
   src/ast/While.cpp
