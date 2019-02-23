@@ -53,6 +53,7 @@ public:
     UNSIGNED,  // "unsigned"
     NAMESPACE, // "namespace"
     INLINE,    // "inline"
+    CLASS,     // "class"
 
     // literals
     STRING_LITERAL, // \".*\"  any sequence of characters enclosed within two

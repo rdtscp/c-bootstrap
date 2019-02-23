@@ -62,6 +62,14 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::CHAR, scanner.getPosition());
     }
+    // Check for CLASS Token.
+    if (c == 'c' && scanner.peek() == 'l') {
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("class");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return SourceToken(TC::CLASS, scanner.getPosition());
+    }
     // Check for CONST Token.
     if (c == 'c' && scanner.peek() == 'o') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("const");
