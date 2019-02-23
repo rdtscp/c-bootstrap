@@ -204,6 +204,8 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "NAMESPACE";
   case SourceToken::Class::INLINE:
     return "INLINE";
+  case SourceToken::Class::CLASS:
+    return "CLASS";
   }
 }
 
