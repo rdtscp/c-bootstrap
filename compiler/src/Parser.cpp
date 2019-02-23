@@ -492,6 +492,7 @@ atl::shared_ptr<Namespace> Parser::parseNamespace() {
       namespaceDecls.push_back(parseNamespace());
   }
   expect(TC::RBRA);
+  return atl::make_shared<Namespace>(Namespace(namespaceIdent, namespaceDecls));
 }
 atl::shared_ptr<Return> Parser::parseReturn() {
   expect(TC::RETURN);
