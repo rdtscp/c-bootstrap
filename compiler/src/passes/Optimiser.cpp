@@ -113,6 +113,10 @@ atl::shared_ptr<ASTNode> Optimiser::visit(Block &b) {
 atl::shared_ptr<ASTNode> Optimiser::visit(CharLiteral &cl) {
   return cl.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(ClassType &ct) { return ct.getptr(); }
+atl::shared_ptr<ASTNode> Optimiser::visit(ClassTypeDecl &ctd) {
+  return ctd.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(DoWhile &dw) { return dw.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(EnumTypeDecl &etd) {
   return atl::static_pointer_cast<Decl>(etd.getptr());
@@ -161,7 +165,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(Namespace &n) {
   for (int i = 0; i < n.namespaceDecls.size(); ++i) {
     n.namespaceDecls[i] =
         atl::static_pointer_cast<Decl>(n.namespaceDecls[i]->accept(*this));
-    }
+  }
   return n.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(ParenthExpr &pe) {

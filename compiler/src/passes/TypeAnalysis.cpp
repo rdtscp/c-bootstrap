@@ -62,6 +62,10 @@ atl::shared_ptr<Type> TypeAnalysis::visit(Block &b) {
 atl::shared_ptr<Type> TypeAnalysis::visit(CharLiteral &cl) {
   return atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR));
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(ClassType &ct) { return ct.getptr(); }
+atl::shared_ptr<Type> TypeAnalysis::visit(ClassTypeDecl &ctd) {
+  return ctd.classType;
+}
 atl::shared_ptr<Type> TypeAnalysis::visit(DoWhile &dw) {
   dw.body->accept(*this);
   atl::shared_ptr<Type> conditionType = dw.condition->accept(*this);

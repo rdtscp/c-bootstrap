@@ -35,6 +35,8 @@ private:
   atl::string visit(BinOp &bo) override;
   atl::string visit(Block &b) override;
   atl::string visit(CharLiteral &cl) override;
+  atl::string visit(ClassType &ct) override;
+  atl::string visit(ClassTypeDecl &ctd) override;
   atl::string visit(DoWhile &dw) override;
   atl::string visit(EnumTypeDecl &etd) override;
   atl::string visit(FieldAccess &fa) override;

@@ -3,8 +3,6 @@
 #ifndef ACC_NAMEANALYSIS_H
 #define ACC_NAMEANALYSIS_H
 
-
-
 #include "../AST.h"
 #include "../ASTVisitor.h"
 
@@ -39,6 +37,8 @@ private:
   void visit(BinOp &bo) override;
   void visit(Block &b) override;
   void visit(CharLiteral &cl) override;
+  void visit(ClassType &ct) override;
+  void visit(ClassTypeDecl &ctd) override;
   void visit(DoWhile &dw) override;
   void visit(EnumTypeDecl &etd) override;
   void visit(FieldAccess &fa) override;

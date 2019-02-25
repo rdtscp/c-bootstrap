@@ -37,6 +37,8 @@ private:
   atl::shared_ptr<Type> visit(BinOp &bo) override;
   atl::shared_ptr<Type> visit(Block &b) override;
   atl::shared_ptr<Type> visit(CharLiteral &cl) override;
+  atl::shared_ptr<Type> visit(ClassType &ct) override;
+  atl::shared_ptr<Type> visit(ClassTypeDecl &ctd) override;
   atl::shared_ptr<Type> visit(DoWhile &dw) override;
   atl::shared_ptr<Type> visit(EnumTypeDecl &etd) override;
   atl::shared_ptr<Type> visit(FieldAccess &fa) override;

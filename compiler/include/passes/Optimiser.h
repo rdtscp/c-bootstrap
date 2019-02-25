@@ -38,6 +38,8 @@ private:
   atl::shared_ptr<ASTNode> visit(BinOp &bo) override;
   atl::shared_ptr<ASTNode> visit(Block &b) override;
   atl::shared_ptr<ASTNode> visit(CharLiteral &cl) override;
+  atl::shared_ptr<ASTNode> visit(ClassType &ct) override;
+  atl::shared_ptr<ASTNode> visit(ClassTypeDecl &ctd) override;
   atl::shared_ptr<ASTNode> visit(DoWhile &dw) override;
   atl::shared_ptr<ASTNode> visit(EnumTypeDecl &etd) override;
   atl::shared_ptr<ASTNode> visit(FieldAccess &fa) override;

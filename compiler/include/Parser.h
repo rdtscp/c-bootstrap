@@ -46,7 +46,7 @@ private:
   /* ---- Look Ahead ---- */
 
   /* -- Decls -- */
-  bool acceptClass(int offset = 0);
+  bool acceptClassTypeDecl(int offset = 0);
   bool acceptDecl(int offset = 0);
   bool acceptEnumTypeDecl(int offset = 0);
   bool acceptFunDecl(int offset = 0);
@@ -77,7 +77,7 @@ private:
   atl::shared_ptr<Program> parseProgram();
 
   /* -- Decls -- */
-  atl::shared_ptr<Class> parseClass();
+  atl::shared_ptr<ClassTypeDecl> parseClassTypeDecl();
   atl::shared_ptr<Decl> parseDecl();
   atl::shared_ptr<EnumTypeDecl> parseEnumTypeDecl();
   atl::shared_ptr<FunDecl> parseFunDecl();

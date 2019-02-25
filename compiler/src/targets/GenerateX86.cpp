@@ -88,6 +88,12 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(CharLiteral &cl) {
   return atl::make_shared<X86::None>();
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassType &ct) {
+  return atl::make_shared<X86::None>();
+}
+atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassTypeDecl &ctd) {
+  return atl::make_shared<X86::None>();
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(DoWhile &dw) {
   dw.body->accept(*this);
   dw.condition->accept(*this);

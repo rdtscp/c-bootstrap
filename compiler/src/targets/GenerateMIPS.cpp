@@ -142,6 +142,10 @@ MIPS::Register GenerateMIPS::visit(Block &b) {
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(CharLiteral &cl) { return MIPS::Register(); }
+MIPS::Register GenerateMIPS::visit(ClassType &ct) { return MIPS::Register(); }
+MIPS::Register GenerateMIPS::visit(ClassTypeDecl &ctd) {
+  return MIPS::Register();
+}
 MIPS::Register GenerateMIPS::visit(DoWhile &dw) {
   dw.condition->accept(*this);
   dw.body->accept(*this);

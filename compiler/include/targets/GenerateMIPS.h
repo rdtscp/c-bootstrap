@@ -73,6 +73,8 @@ private:
   MIPS::Register visit(BinOp &bo) override;
   MIPS::Register visit(Block &b) override;
   MIPS::Register visit(CharLiteral &cl) override;
+  MIPS::Register visit(ClassType &ct) override;
+  MIPS::Register visit(ClassTypeDecl &ctd) override;
   MIPS::Register visit(DoWhile &dw) override;
   MIPS::Register visit(EnumTypeDecl &etd) override;
   MIPS::Register visit(FieldAccess &fa) override;

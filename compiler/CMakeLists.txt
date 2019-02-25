@@ -21,6 +21,8 @@ add_library(AST SHARED
   src/ast/BinOp.cpp
   src/ast/Block.cpp
   src/ast/CharLiteral.cpp
+  src/ast/ClassType.cpp
+  src/ast/ClassTypeDecl.cpp
   src/ast/DoWhile.cpp
   src/ast/EnumTypeDecl.cpp
   src/ast/FieldAccess.cpp

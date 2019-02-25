@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_STRUCTTYPEDECL_H
-#define ACC_STRUCTTYPEDECL_H
+#ifndef ACC_CLASSTYPEDECL_H
+#define ACC_CLASSTYPEDECL_H
 
 #include "ClassType.h"
 #include "Decl.h"
@@ -14,13 +14,13 @@ class ClassTypeDecl : public Decl,
                       public atl::enable_shared_from_this<ClassTypeDecl> {
 
 public:
-  atl::shared_ptr<StructType> structType;
+  atl::shared_ptr<ClassType> classType;
   atl::vector<atl::shared_ptr<VarDecl>> varDecls;
   atl::vector<atl::shared_ptr<FunDecl>> funDecls;
   int allocSize;
   int compactSize;
 
-  ClassTypeDecl(atl::shared_ptr<ClassType> structType,
+  ClassTypeDecl(atl::shared_ptr<ClassType> classType,
                 const atl::vector<atl::shared_ptr<VarDecl>> &varDecls,
                 const atl::vector<atl::shared_ptr<FunDecl>> &funDecls);
 

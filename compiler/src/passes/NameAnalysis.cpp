@@ -43,6 +43,8 @@ void NameAnalysis::visit(Block &b) {
   currScope = b.outerBlock;
 }
 void NameAnalysis::visit(CharLiteral &cl) {}
+void NameAnalysis::visit(ClassType &ct) {}
+void NameAnalysis::visit(ClassTypeDecl &ctd) {}
 void NameAnalysis::visit(DoWhile &dw) {
   dw.condition->accept(*this);
   dw.body->accept(*this);

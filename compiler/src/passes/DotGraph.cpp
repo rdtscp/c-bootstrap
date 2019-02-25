@@ -127,6 +127,8 @@ atl::string DotGraph::visit(CharLiteral &cl) {
   declare(charID, atl::string("'") + cl.getLiteral() + "'");
   return charID;
 }
+atl::string DotGraph::visit(ClassType &ct) { return ""; }
+atl::string DotGraph::visit(ClassTypeDecl &ctd) { return ""; }
 atl::string DotGraph::visit(DoWhile &dw) {
   atl::string whileID = atl::string("While") + atl::to_string(nodeCount++);
   declare(whileID, "do {} while()");

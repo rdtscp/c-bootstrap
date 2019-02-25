@@ -81,7 +81,9 @@ void Parser::nextToken() {
 /* ---- Look Ahead ---- */
 
 /* -- Decls -- */
-bool Parser::acceptClass(int offset) { return accept(TC::CLASS, offset); }
+bool Parser::acceptClassTypeDecl(int offset) {
+  return accept(TC::CLASS, offset);
+}
 bool Parser::acceptDecl(int offset) {
   if (acceptStructTypeDecl(offset))
     return true;
@@ -240,14 +242,14 @@ atl::shared_ptr<Program> Parser::parseProgram() {
 }
 
 /* -- Decls -- */
-atl::shared_ptr<Class> Parser::parseClass() {
+atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
   expect(TC::CLASS);
-  const atl::string classIdentifier = expect(TC::IDENTIFIER);
+  const atl::string classIdentifier = expect(TC::IDENTIFIER).data;
   expect(TC::LBRA);
 
   expect(TC::RBRA);
   expect(TC::SC);
-  return atl::make_shared(Class());
+  return atl::make_shared(ClassTypeDecl(nullptr, {}, {}));
 }
 atl::shared_ptr<Decl> Parser::parseDecl() {
   if (acceptStructTypeDecl()) {

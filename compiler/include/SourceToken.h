@@ -214,7 +214,7 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
   case SourceToken::Class::PRIVATE:
     return "private:";
   case SourceToken::Class::PROTECTED:
-    return "protected:"
+    return "protected:";
   }
 }
 
