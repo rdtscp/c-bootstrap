@@ -81,6 +81,7 @@ void Parser::nextToken() {
 /* ---- Look Ahead ---- */
 
 /* -- Decls -- */
+bool Parser::acceptClass(int offset) { return accept(TC::CLASS, offset); }
 bool Parser::acceptDecl(int offset) {
   if (acceptStructTypeDecl(offset))
     return true;
@@ -239,6 +240,15 @@ atl::shared_ptr<Program> Parser::parseProgram() {
 }
 
 /* -- Decls -- */
+atl::shared_ptr<Class> Parser::parseClass() {
+  expect(TC::CLASS);
+  const atl::string classIdentifier = expect(TC::IDENTIFIER);
+  expect(TC::LBRA);
+
+  expect(TC::RBRA);
+  expect(TC::SC);
+  return atl::make_shared(Class());
+}
 atl::shared_ptr<Decl> Parser::parseDecl() {
   if (acceptStructTypeDecl()) {
     atl::shared_ptr<StructTypeDecl> std = parseStructTypeDecl();
@@ -282,7 +292,7 @@ atl::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
   bool moreStates = false;
   std::map<std::string, std::string> states;
   do {
-    atl::string ident = expect(TC::IDENTIFIER).data;
+    const atl::string ident = expect(TC::IDENTIFIER).data;
     atl::string value = "";
     if (accept(TC::ASSIGN)) {
       expect(TC::ASSIGN);
@@ -303,7 +313,7 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
     expect(TC::EXTERN);
   }
   atl::shared_ptr<Type> funType = parseType();
-  atl::string funIdent = expect(TC::IDENTIFIER).data;
+  const atl::string funIdent = expect(TC::IDENTIFIER).data;
   expect(TC::LPAR);
   atl::vector<atl::shared_ptr<VarDecl>> funParams;
 
@@ -365,7 +375,7 @@ atl::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
   } else {
     aliasedType = parseType();
   }
-  atl::string typeAlias = expect(TC::IDENTIFIER).data;
+  const atl::string typeAlias = expect(TC::IDENTIFIER).data;
   return atl::make_shared<TypeDefDecl>(TypeDefDecl(aliasedType, typeAlias));
 }
 atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
@@ -375,7 +385,7 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
     isExtern = true;
   }
   atl::shared_ptr<Type> varType = parseType();
-  atl::string varIdentifier = expect(TC::IDENTIFIER).data;
+  const atl::string varIdentifier = expect(TC::IDENTIFIER).data;
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
     atl::string arraySize;
@@ -390,7 +400,7 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
 /* -- Types -- */
 atl::shared_ptr<StructType> Parser::parseStructType() {
   expect(TC::STRUCT);
-  atl::string structIdentifier = expect(TC::IDENTIFIER).data;
+  const atl::string structIdentifier = expect(TC::IDENTIFIER).data;
   return atl::make_shared<StructType>(StructType(structIdentifier));
 }
 atl::shared_ptr<Type> Parser::parseType() {
@@ -406,7 +416,8 @@ atl::shared_ptr<Type> Parser::parseType() {
     while (accept(TC::UNSIGNED))
       modifiers.push_back(expect(TC::UNSIGNED).tokenClass);
 
-    SourceToken baseType = expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT});
+    const SourceToken baseType =
+        expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT});
     PrimitiveType pType;
     switch (baseType.tokenClass) {
     case TC::INT:
@@ -556,7 +567,7 @@ atl::shared_ptr<VarDecl> Parser::parseParam() {
     varIdentifier = expect(TC::IDENTIFIER).data;
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
-    atl::string arraySize = expect(TC::INT_LITERAL).data;
+    const atl::string arraySize = expect(TC::INT_LITERAL).data;
     expect(TC::RSBR);
     varType = atl::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
@@ -690,7 +701,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
 }
 atl::shared_ptr<Expr> Parser::parseObjExpr() {
   if (accept(TC::IDENTIFIER)) {
-    atl::string ident = expect(TC::IDENTIFIER).data;
+    const atl::string ident = expect(TC::IDENTIFIER).data;
     if (accept(TC::LPAR)) {
       expect(TC::LPAR);
 
@@ -711,7 +722,7 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
   atl::shared_ptr<Expr> lhs = parseLitExpr();
   if (accept(TC::DOT)) {
     expect(TC::DOT);
-    atl::string fieldIdent = expect(TC::IDENTIFIER).data;
+    const atl::string fieldIdent = expect(TC::IDENTIFIER).data;
     return atl::make_shared<FieldAccess>(FieldAccess(lhs, fieldIdent));
   }
   if (accept(TC::LSBR)) {
