@@ -10,6 +10,7 @@
 #include "ast/BinOp.h"
 #include "ast/Block.h"
 #include "ast/CharLiteral.h"
+#include "ast/Class.h"
 #include "ast/Decl.h"
 #include "ast/DoWhile.h"
 #include "ast/EnumTypeDecl.h"

@@ -54,6 +54,9 @@ public:
     NAMESPACE, // "namespace"
     INLINE,    // "inline"
     CLASS,     // "class"
+    PUBLIC,    // "public:"
+    PRIVATE,   // "private:"
+    PROTECTED, // "protected:"
 
     // literals
     STRING_LITERAL, // \".*\"  any sequence of characters enclosed within two
@@ -206,6 +209,12 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "INLINE";
   case SourceToken::Class::CLASS:
     return "CLASS";
+  case SourceToken::Class::PUBLIC:
+    return "public:";
+  case SourceToken::Class::PRIVATE:
+    return "private:";
+  case SourceToken::Class::PROTECTED:
+    return "protected:"
   }
 }
 

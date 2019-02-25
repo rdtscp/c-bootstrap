@@ -142,6 +142,27 @@ SourceToken Lexer::nextToken() {
 
       if (lexResult.first)
         return SourceToken(TC::NAMESPACE, scanner.getPosition());
+    } else if (c == 'p' && scanner.peek() == 'r') {
+      c = scanner.next();
+      if (scanner.peek() == 'i') {
+        atl::pair<bool, atl::string> lexResult = tryLexKeyword("ivate:");
+        literal = lexResult.second;
+
+        if (lexResult.first)
+          return SourceToken(TC::PRIVATE, scanner.getPosition());
+      } else if (scanner.peek() == 'o') {
+        atl::pair<bool, atl::string> lexResult = tryLexKeyword("otected:");
+        literal = lexResult.second;
+
+        if (lexResult.first)
+          return SourceToken(TC::PROTECTED, scanner.getPosition());
+      }
+    } else if (c == 'p' && scanner.peek() == 'u') {
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("public:");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return SourceToken(TC::PUBLIC, scanner.getPosition());
     }
     // Check for RETURN Token.
     else if (c == 'r' && scanner.peek() == 'e') {
