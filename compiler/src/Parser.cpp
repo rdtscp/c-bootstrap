@@ -81,10 +81,17 @@ void Parser::nextToken() {
 /* ---- Look Ahead ---- */
 
 /* -- Decls -- */
+bool Parser::acceptAccessModifier(int offset) {
+  return accept(TC::PUBLIC, offset) | accept(TC::PRIVATE, offset) |
+         accept(TC::PROTECTED, offset);
+}
 bool Parser::acceptClassTypeDecl(int offset) {
   return accept(TC::CLASS, offset);
 }
 bool Parser::acceptDecl(int offset) {
+  if (acceptClassTypeDecl(offset))
+    return true;
+
   if (acceptStructTypeDecl(offset))
     return true;
 
@@ -113,7 +120,7 @@ bool Parser::acceptFunDecl(int offset) {
     return accept(TC::IDENTIFIER, offset) && accept(TC::LPAR, offset + 1);
   }
 
-  if (accept(TC::UNSIGNED, offset))
+  if (accept({TC::UNSIGNED, TC::CONST}, offset))
     offset++;
   if (acceptType(offset)) {
     offset++;
@@ -154,9 +161,10 @@ bool Parser::acceptVarDecl(int offset) {
     if (!accept(TC::IDENTIFIER, offset))
       return false;
 
-  } else if (accept({TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UNSIGNED},
+  } else if (accept({TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UNSIGNED,
+                     TC::CONST},
                     offset)) {
-    if (accept(TC::UNSIGNED, offset))
+    if (accept({TC::UNSIGNED, TC::CONST}, offset))
       offset++;
 
     offset++;
@@ -247,11 +255,63 @@ atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
   const atl::string classIdentifier = expect(TC::IDENTIFIER).data;
   expect(TC::LBRA);
 
+  atl::shared_ptr<ClassType> classType(new ClassType(classIdentifier));
+
+  atl::vector<atl::shared_ptr<Decl>> publicDecls;
+  atl::vector<atl::shared_ptr<Decl>> privateDecls;
+  atl::vector<atl::shared_ptr<Decl>> protectedDecls;
+
+  int visiblity = 1; // 0 -> public, 1 -> private, 2 -> protected.
+
+  while (acceptDecl() || acceptAccessModifier()) {
+    if (acceptAccessModifier()) {
+      TC accessModifier =
+          expect({TC::PUBLIC, TC::PRIVATE, TC::PROTECTED}).tokenClass;
+      switch (accessModifier) {
+      case TC::PUBLIC:
+        visiblity = 0;
+        break;
+      case TC::PRIVATE:
+        visiblity = 1;
+        break;
+      case TC::PROTECTED:
+        visiblity = 2;
+        break;
+      default:
+        visiblity = 0;
+        break;
+      }
+      continue;
+    }
+
+    atl::shared_ptr<Decl> declaration = parseDecl();
+    switch (visiblity) {
+    case 0:
+      publicDecls.push_back(declaration);
+      break;
+    case 1:
+      privateDecls.push_back(declaration);
+      break;
+    case 2:
+      protectedDecls.push_back(declaration);
+      break;
+    default:
+      publicDecls.push_back(declaration);
+      break;
+    }
+  }
+
   expect(TC::RBRA);
   expect(TC::SC);
-  return atl::make_shared(ClassTypeDecl(nullptr, {}, {}));
+  return atl::make_shared(
+      ClassTypeDecl(classType, publicDecls, privateDecls, protectedDecls));
 }
 atl::shared_ptr<Decl> Parser::parseDecl() {
+  if (acceptClassTypeDecl()) {
+    atl::shared_ptr<ClassTypeDecl> ctd = parseClassTypeDecl();
+    expect(TC::SC);
+    return ctd;
+  }
   if (acceptStructTypeDecl()) {
     atl::shared_ptr<StructTypeDecl> std = parseStructTypeDecl();
     expect(TC::SC);
@@ -298,7 +358,11 @@ atl::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
     atl::string value = "";
     if (accept(TC::ASSIGN)) {
       expect(TC::ASSIGN);
-      value = expect(TC::INT_LITERAL).data;
+      if (accept(TC::MINUS)) {
+        expect(TC::MINUS);
+        value = "-";
+      }
+      value += expect(TC::INT_LITERAL).data;
     }
     states[std::string(ident.c_str())] = std::string(value.c_str());
     if (accept(TC::COMMA)) {
@@ -415,8 +479,8 @@ atl::shared_ptr<Type> Parser::parseType() {
     }
   } else {
     atl::vector<TC> modifiers;
-    while (accept(TC::UNSIGNED))
-      modifiers.push_back(expect(TC::UNSIGNED).tokenClass);
+    while (accept({TC::UNSIGNED, TC::CONST}))
+      modifiers.push_back(expect({TC::UNSIGNED, TC::CONST}).tokenClass);
 
     const SourceToken baseType =
         expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT});

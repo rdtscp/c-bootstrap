@@ -14,15 +14,17 @@ class ClassTypeDecl : public Decl,
                       public atl::enable_shared_from_this<ClassTypeDecl> {
 
 public:
-  atl::shared_ptr<ClassType> classType;
-  atl::vector<atl::shared_ptr<VarDecl>> varDecls;
-  atl::vector<atl::shared_ptr<FunDecl>> funDecls;
+  const atl::shared_ptr<ClassType> classType;
+  const atl::vector<atl::shared_ptr<Decl>> &publicDecls;
+  const atl::vector<atl::shared_ptr<Decl>> &privateDecls;
+  const atl::vector<atl::shared_ptr<Decl>> &protectedDecls;
   int allocSize;
   int compactSize;
 
   ClassTypeDecl(atl::shared_ptr<ClassType> classType,
-                const atl::vector<atl::shared_ptr<VarDecl>> &varDecls,
-                const atl::vector<atl::shared_ptr<FunDecl>> &funDecls);
+                const atl::vector<atl::shared_ptr<Decl>> &publicDecls,
+                const atl::vector<atl::shared_ptr<Decl>> &privateDecls,
+                const atl::vector<atl::shared_ptr<Decl>> &protectedDecls);
 
   atl::shared_ptr<ClassTypeDecl> getptr();
 

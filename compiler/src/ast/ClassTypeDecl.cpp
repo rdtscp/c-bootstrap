@@ -4,8 +4,11 @@ using namespace ACC;
 
 ClassTypeDecl::ClassTypeDecl(
     atl::shared_ptr<ClassType> classType,
-    const atl::vector<atl::shared_ptr<VarDecl>> &varDecls,
-    const atl::vector<atl::shared_ptr<FunDecl>> &funDecls) {}
+    const atl::vector<atl::shared_ptr<Decl>> &publicDecls,
+    const atl::vector<atl::shared_ptr<Decl>> &privateDecls,
+    const atl::vector<atl::shared_ptr<Decl>> &protectedDecls)
+    : classType(classType), publicDecls(publicDecls),
+      privateDecls(privateDecls), protectedDecls(protectedDecls) {}
 
 atl::shared_ptr<ClassTypeDecl> ClassTypeDecl::getptr() {
   return shared_from_this();
@@ -23,11 +26,25 @@ bool ClassTypeDecl::operator==(const ClassTypeDecl &rhs) const {
   if (*classType != *rhs.classType)
     return false;
 
-  if (varDecls.size() != rhs.varDecls.size())
+  if (publicDecls.size() != rhs.publicDecls.size())
     return false;
 
-  for (int i = 0; i < varDecls.size(); i++)
-    if (*varDecls[i] != *rhs.varDecls[i])
+  if (privateDecls.size() != rhs.privateDecls.size())
+    return false;
+
+  if (protectedDecls.size() != rhs.protectedDecls.size())
+    return false;
+
+  for (int i = 0; i < publicDecls.size(); i++)
+    if (*publicDecls[i] != *rhs.publicDecls[i])
+      return false;
+
+  for (int i = 0; i < privateDecls.size(); i++)
+    if (*privateDecls[i] != *rhs.privateDecls[i])
+      return false;
+
+  for (int i = 0; i < protectedDecls.size(); i++)
+    if (*protectedDecls[i] != *rhs.protectedDecls[i])
       return false;
 
   return true;

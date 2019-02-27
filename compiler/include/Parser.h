@@ -46,6 +46,7 @@ private:
   /* ---- Look Ahead ---- */
 
   /* -- Decls -- */
+  bool acceptAccessModifier(int offset = 0);
   bool acceptClassTypeDecl(int offset = 0);
   bool acceptDecl(int offset = 0);
   bool acceptEnumTypeDecl(int offset = 0);
