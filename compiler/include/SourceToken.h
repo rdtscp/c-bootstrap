@@ -37,6 +37,7 @@ public:
     VOID,  // "void"
     CHAR,  // "char"
     SHORT, // "short"
+    UINT,  // "unsigned int"
 
     // keywords
     IF,        // "if"
@@ -47,12 +48,9 @@ public:
     STRUCT,    // "struct"
     SIZEOF,    // "sizeof"
     CONST,     // "const"
-    EXTERN,    // "extern"
     TYPEDEF,   // "typedef"
     ENUM,      // "enum"
-    UNSIGNED,  // "unsigned"
     NAMESPACE, // "namespace"
-    INLINE,    // "inline"
     CLASS,     // "class"
     PUBLIC,    // "public:"
     PRIVATE,   // "private:"
@@ -193,20 +191,14 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "&";
   case SourceToken::Class::CONST:
     return "CONST";
-  case SourceToken::Class::EXTERN:
-    return "EXTERN";
   case SourceToken::Class::TYPEDEF:
     return "TYPEDEF";
   case SourceToken::Class::ENUM:
     return "ENUM";
-  case SourceToken::Class::UNSIGNED:
-    return "UNSIGNED";
   case SourceToken::Class::SHORT:
     return "SHORT";
   case SourceToken::Class::NAMESPACE:
     return "NAMESPACE";
-  case SourceToken::Class::INLINE:
-    return "INLINE";
   case SourceToken::Class::CLASS:
     return "CLASS";
   case SourceToken::Class::PUBLIC:
