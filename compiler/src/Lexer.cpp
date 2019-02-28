@@ -102,14 +102,6 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::ENUM, scanner.getPosition());
     }
-    // Check for EXTERN Token.
-    else if (c == 'e' && scanner.peek() == 'x') {
-      atl::pair<bool, atl::string> lexResult = tryLexKeyword("extern");
-      literal = lexResult.second;
-
-      if (lexResult.first)
-        return SourceToken(TC::EXTERN, scanner.getPosition());
-    }
     // Check for IF Token.
     else if (c == 'i' && scanner.peek() == 'f') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("if");
@@ -206,11 +198,11 @@ SourceToken Lexer::nextToken() {
     }
     // Check for UNSIGNED Token.
     else if (c == 'u' && scanner.peek() == 'n') {
-      atl::pair<bool, atl::string> lexResult = tryLexKeyword("unsigned");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("unsigned int");
       literal = lexResult.second;
 
       if (lexResult.first)
-        return SourceToken(TC::UNSIGNED, scanner.getPosition());
+        return SourceToken(TC::UINT, scanner.getPosition());
     }
     // Check for WHILE Token.
     else if (c == 'w' && scanner.peek() == 'h') {
