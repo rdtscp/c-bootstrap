@@ -261,7 +261,8 @@ atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
 
   int visiblity = 1; // 0 -> public, 1 -> private, 2 -> protected.
 
-  while (acceptDecl() || acceptAccessModifier()) {
+  while (acceptDecl() || acceptAccessModifier() ||
+         acceptConstructor(classIdentifier)) {
     atl::shared_ptr<Decl> declaration;
     if (acceptAccessModifier()) {
       TC accessModifier =
