@@ -20,8 +20,8 @@
       "request": "launch",
       "program": "${workspaceFolder}/compiler/build/acc",
       "args": [
-        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main_.cpp",
-        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main.s",
+        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/class_.cpp",
+        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/class.s",
         "x86"
       ],
       "stopAtEntry": false,
