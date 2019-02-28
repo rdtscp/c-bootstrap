@@ -55,7 +55,7 @@ bool ClassTypeDecl::operator!=(const ClassTypeDecl &rhs) const {
 }
 
 atl::string ClassTypeDecl::getIdentifier() const {
-  return atl::string("struct ") + classType->identifier;
+  return atl::string("class ") + classType->identifier;
 }
 
 void ClassTypeDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }

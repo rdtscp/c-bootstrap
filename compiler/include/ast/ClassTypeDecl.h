@@ -15,9 +15,9 @@ class ClassTypeDecl : public Decl,
 
 public:
   const atl::shared_ptr<ClassType> classType;
-  const atl::vector<atl::shared_ptr<Decl>> &publicDecls;
-  const atl::vector<atl::shared_ptr<Decl>> &privateDecls;
-  const atl::vector<atl::shared_ptr<Decl>> &protectedDecls;
+  const atl::vector<atl::shared_ptr<Decl>> publicDecls;
+  const atl::vector<atl::shared_ptr<Decl>> privateDecls;
+  const atl::vector<atl::shared_ptr<Decl>> protectedDecls;
   int allocSize;
   int compactSize;
 
