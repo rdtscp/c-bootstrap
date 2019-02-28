@@ -7,7 +7,7 @@
 
 namespace ACC {
 
-enum class PrimitiveType { INT, CHAR, VOID, SHORT };
+enum class PrimitiveType { INT, CHAR, VOID, SHORT, UNSIGNEDINT };
 
 }; // namespace ACC
 
