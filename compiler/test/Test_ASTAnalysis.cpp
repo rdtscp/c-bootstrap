@@ -96,7 +96,7 @@ TEST(ASTAnalysisTest, NoMainFunc) {
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
-  ASSERT_NE(0, nameAnalysis.errorCount);
+  ASSERT_EQ(0, nameAnalysis.errorCount);
 }
 
 TEST(ASTAnalysisTest, Fibonacci) {
