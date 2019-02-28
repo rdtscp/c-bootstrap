@@ -5,6 +5,6 @@ public:
 };
 
 int main(int argc, char *argv) {
-  className foo;
+  // className foo;
   return 1;
 }
