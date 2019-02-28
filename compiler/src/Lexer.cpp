@@ -110,22 +110,13 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::IF, scanner.getPosition());
     }
-    // Check for INT/INLINE token.
+    // Check for INT token.
     else if (c == 'i' && scanner.peek() == 'n') {
-      c = scanner.next();
-      if (scanner.peek() == 't') {
-        atl::pair<bool, atl::string> lexResult = tryLexKeyword("nt");
-        literal = lexResult.second;
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("int");
+      literal = lexResult.second;
 
-        if (lexResult.first)
-          return SourceToken(TC::INT, scanner.getPosition());
-      } else if (scanner.peek() == 'l') {
-        atl::pair<bool, atl::string> lexResult = tryLexKeyword("nline");
-        literal = lexResult.second;
-
-        if (lexResult.first)
-          return SourceToken(TC::INLINE, scanner.getPosition());
-      }
+      if (lexResult.first)
+        return SourceToken(TC::INT, scanner.getPosition());
     }
     // Check for NAMESPACE token.
     else if (c == 'n' && scanner.peek() == 'a') {

@@ -127,8 +127,6 @@ bool Parser::acceptFunDecl(int offset) {
     return accept(TC::IDENTIFIER, offset) && accept(TC::LPAR, offset + 1);
   }
 
-  if (accept({TC::UNSIGNED, TC::CONST}, offset))
-    offset++;
   if (acceptType(offset)) {
     offset++;
     while (accept(TC::ASTERIX, offset))
@@ -165,11 +163,8 @@ bool Parser::acceptVarDecl(int offset) {
     if (!accept(TC::IDENTIFIER, offset))
       return false;
 
-  } else if (accept({TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UNSIGNED,
-                     TC::CONST},
+  } else if (accept({TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UINT},
                     offset)) {
-    if (accept({TC::UNSIGNED, TC::CONST}, offset))
-      offset++;
 
     offset++;
     while (accept(TC::ASTERIX, offset))
@@ -194,9 +189,8 @@ bool Parser::acceptStructType(int offset) {
   return true;
 }
 bool Parser::acceptType(int offset) {
-  return accept(
-      {TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::SHORT, TC::UNSIGNED},
-      offset);
+  return accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::SHORT, TC::UINT},
+                offset);
 }
 
 /* -- Stmts -- */
@@ -516,14 +510,10 @@ atl::shared_ptr<Type> Parser::parseType() {
       type = atl::shared_ptr<PointerType>(new PointerType(type));
     }
   } else {
-    atl::vector<TC> modifiers;
-    while (accept({TC::UNSIGNED, TC::CONST}))
-      modifiers.push_back(expect({TC::UNSIGNED, TC::CONST}).tokenClass);
-
-    const SourceToken baseType =
-        expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT});
+    const TC baseType =
+        expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT, TC::UINT}).tokenClass;
     PrimitiveType pType;
-    switch (baseType.tokenClass) {
+    switch (baseType) {
     case TC::INT:
       pType = PrimitiveType::INT;
       break;
@@ -535,6 +525,9 @@ atl::shared_ptr<Type> Parser::parseType() {
       break;
     case TC::VOID:
       pType = PrimitiveType::VOID;
+      break;
+    case TC::UINT:
+      pType = PrimitiveType::UINT;
       break;
     default:
       pType = PrimitiveType::VOID;
