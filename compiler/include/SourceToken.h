@@ -135,6 +135,8 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "VOID";
   case SourceToken::Class::CHAR:
     return "CHAR";
+  case SourceToken::Class::UINT:
+    return "UINT";
   case SourceToken::Class::IF:
     return "IF";
   case SourceToken::Class::ELSE:
