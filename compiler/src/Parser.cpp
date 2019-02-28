@@ -273,6 +273,7 @@ atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
   int visiblity = 1; // 0 -> public, 1 -> private, 2 -> protected.
 
   while (acceptDecl() || acceptAccessModifier()) {
+    atl::shared_ptr<Decl> declaration;
     if (acceptAccessModifier()) {
       TC accessModifier =
           expect({TC::PUBLIC, TC::PRIVATE, TC::PROTECTED}).tokenClass;
