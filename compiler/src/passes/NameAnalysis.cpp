@@ -108,10 +108,10 @@ void NameAnalysis::visit(Program &p) {
   currScope = atl::make_shared<Block>(Block({}));
   for (int idx = 0; idx < p.decls.size(); ++idx)
     p.decls[idx]->accept(*this);
-  /* Check for main() function */
-  atl::shared_ptr<Decl> mainDecl = currScope->find("main");
-  if (mainDecl == nullptr || mainDecl->astClass() != "FunDef")
-    error("Program did not contain a main() Function.");
+  // /* Check for main() function */
+  // atl::shared_ptr<Decl> mainDecl = currScope->find("main");
+  // if (mainDecl == nullptr || mainDecl->astClass() != "FunDef")
+  //   error("Program did not contain a main() Function.");
   p.globalScope = currScope;
 }
 void NameAnalysis::visit(Return &r) {
