@@ -127,8 +127,40 @@ atl::string DotGraph::visit(CharLiteral &cl) {
   declare(charID, atl::string("'") + cl.getLiteral() + "'");
   return charID;
 }
-atl::string DotGraph::visit(ClassType &ct) { return ""; }
-atl::string DotGraph::visit(ClassTypeDecl &ctd) { return ""; }
+atl::string DotGraph::visit(ClassType &ct) {
+  atl::string classTypeID =
+      atl::string("IntLiteral") + atl::to_string(nodeCount++);
+  declare(classTypeID, ct.identifier);
+  return classTypeID;
+}
+atl::string DotGraph::visit(ClassTypeDecl &ctd) {
+  const atl::string classID =
+      atl::string("Class") + atl::to_string(nodeCount++);
+  declare(classID, ctd.getIdentifier());
+
+  const atl::string publicDecls =
+      atl::string("public") + atl::to_string(nodeCount++);
+  declare(publicDecls, "public:");
+  join(classID, publicDecls);
+  for (int i = 0; i < ctd.publicDecls.size(); ++i)
+    join(publicDecls, ctd.publicDecls[i]->accept(*this));
+
+  const atl::string privateDecls =
+      atl::string("private") + atl::to_string(nodeCount++);
+  declare(privateDecls, "private:");
+  join(classID, privateDecls);
+  for (int i = 0; i < ctd.privateDecls.size(); ++i)
+    join(publicDecls, ctd.privateDecls[i]->accept(*this));
+
+  const atl::string protectedDecls =
+      atl::string("protected") + atl::to_string(nodeCount++);
+  declare(protectedDecls, "protected:");
+  join(classID, protectedDecls);
+  for (int i = 0; i < ctd.protectedDecls.size(); ++i)
+    join(protectedDecls, ctd.protectedDecls[i]->accept(*this));
+
+  return classID;
+}
 atl::string DotGraph::visit(DoWhile &dw) {
   atl::string whileID = atl::string("While") + atl::to_string(nodeCount++);
   declare(whileID, "do {} while()");
