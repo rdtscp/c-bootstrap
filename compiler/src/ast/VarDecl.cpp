@@ -2,9 +2,8 @@
 
 using namespace ACC;
 
-VarDecl::VarDecl(atl::shared_ptr<Type> type, const atl::string &identifer,
-                 bool isExtern)
-    : identifer(identifer), type(type), isExtern(isExtern) {}
+VarDecl::VarDecl(atl::shared_ptr<Type> type, const atl::string &identifer)
+    : identifer(identifer), type(type) {}
 
 atl::shared_ptr<VarDecl> VarDecl::getptr() { return shared_from_this(); }
 

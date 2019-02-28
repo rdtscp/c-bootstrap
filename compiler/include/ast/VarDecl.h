@@ -16,15 +16,13 @@ class VarDecl : public Decl,
                 public atl::enable_shared_from_this<VarDecl> {
 
 public:
-  bool isExtern;
   atl::shared_ptr<Type> type;
   atl::string identifer;
   atl::shared_ptr<FunDecl> parentFunc;
 
   int fpOffset = 0;
 
-  VarDecl(atl::shared_ptr<Type> type, const atl::string &identifer,
-          bool isExtern = false);
+  VarDecl(atl::shared_ptr<Type> type, const atl::string &identifer);
 
   atl::shared_ptr<VarDecl> getptr();
 

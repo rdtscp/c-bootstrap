@@ -120,8 +120,6 @@ bool Parser::acceptDecl(int offset) {
 }
 bool Parser::acceptEnumTypeDecl(int offset) { return accept(TC::ENUM); }
 bool Parser::acceptFunDecl(int offset) {
-  if (accept(TC::EXTERN, offset))
-    offset++;
   if (acceptStructType(offset)) {
     offset += 2;
     while (accept(TC::ASTERIX, offset))
@@ -152,11 +150,8 @@ bool Parser::acceptStructTypeDecl(int offset) {
 }
 bool Parser::acceptTypeDefDecl(int offset) { return accept(TC::TYPEDEF); }
 bool Parser::acceptVarDecl(int offset) {
-  if (!acceptType(offset) && !accept(TC::EXTERN, offset))
+  if (!acceptType(offset))
     return false;
-
-  if (accept(TC::EXTERN, offset))
-    offset++;
 
   if (accept(TC::STRUCT, offset)) {
     offset++;
@@ -426,9 +421,6 @@ atl::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
   return atl::make_shared<EnumTypeDecl>(EnumTypeDecl(ident, states));
 }
 atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
-  if (accept(TC::EXTERN)) {
-    expect(TC::EXTERN);
-  }
   atl::shared_ptr<Type> funType = parseType();
   const atl::string funIdent = expect(TC::IDENTIFIER).data;
   expect(TC::LPAR);
@@ -496,22 +488,17 @@ atl::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
   return atl::make_shared<TypeDefDecl>(TypeDefDecl(aliasedType, typeAlias));
 }
 atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
-  bool isExtern = false;
-  if (accept(TC::EXTERN)) {
-    expect(TC::EXTERN);
-    isExtern = true;
-  }
   atl::shared_ptr<Type> varType = parseType();
   const atl::string varIdentifier = expect(TC::IDENTIFIER).data;
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
     atl::string arraySize;
-    if (!isExtern || accept(TC::INT_LITERAL))
+    if (accept(TC::INT_LITERAL))
       arraySize = expect(TC::INT_LITERAL).data;
     expect(TC::RSBR);
     varType = atl::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
-  return atl::make_shared<VarDecl>(VarDecl(varType, varIdentifier, isExtern));
+  return atl::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
 }
 
 /* -- Types -- */

@@ -19,7 +19,7 @@ public:
   int fpOffset = 0;
 
   VarDef(const atl::shared_ptr<Type> &type, const atl::string &identifer,
-         const atl::shared_ptr<Literal> &value, bool isExtern = false);
+         const atl::shared_ptr<Literal> &value);
 
   atl::shared_ptr<VarDecl> getptr();
 
