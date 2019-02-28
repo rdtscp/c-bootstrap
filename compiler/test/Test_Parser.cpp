@@ -249,6 +249,16 @@ TEST(ParserTest, InvalidSignatureFunDef) {
   ASSERT_TRUE(false);
 }
 
+TEST(ParserTest, ClassDefinition) {
+  const atl::string filepath = test_prefix + "parser/class.cpp";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
+  ACC::Scanner scanner(src);
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> actual = parser.getAST();
+  ASSERT_TRUE(true);
+}
+
 // The fixture for testing class Project1. From google test primer.
 class Test_Parser : public ::testing::Test {
 protected:

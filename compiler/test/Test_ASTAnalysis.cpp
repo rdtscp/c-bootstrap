@@ -133,6 +133,19 @@ TEST(ASTAnalysisTest, TicTacToe) {
   ASSERT_EQ(0, typeAnalysis.errorCount);
 }
 
+TEST(ASTAnalysisTest, DotGraphClass) {
+  const atl::string filepath = test_prefix + "parser/class.cpp";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
+  ACC::Scanner scanner(src);
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  DotGraph dotGraph(progAST);
+  dotGraph.print();
+}
+
 // The fixture for testing class Project1. From google test primer.
 class Test_ASTAnalysis : public ::testing::Test {
 protected:
