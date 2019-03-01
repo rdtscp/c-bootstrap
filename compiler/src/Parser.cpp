@@ -205,6 +205,7 @@ bool Parser::acceptType(int offset) {
 }
 
 /* -- Stmts -- */
+bool Parser::acceptAllocation(int offset) { return accept(TC::NEW, offset); }
 bool Parser::acceptAssign(int offset) { return acceptExpr(offset); }
 bool Parser::acceptBlock(int offset) { return accept(TC::LBRA, offset); }
 bool Parser::acceptDoWhile(int offset) { return accept(TC::DO, offset); }

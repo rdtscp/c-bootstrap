@@ -62,6 +62,7 @@ private:
   bool acceptType(int offset = 0);
 
   /* -- Stmts -- */
+  bool acceptAllocation(int offset = 0);
   bool acceptAssign(int offset = 0);
   bool acceptBlock(int offset = 0);
   bool acceptDoWhile(int offset = 0);
