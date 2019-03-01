@@ -18,6 +18,7 @@ void DotGraph::put(const atl::string &str) { printf("%s\n", str.c_str()); }
 
 /* ---- Visit AST ---- */
 
+atl::string DotGraph::visit(Allocation &a) { return ""; }
 atl::string DotGraph::visit(ArrayAccess &aa) {
   atl::string arrayAccessID =
       atl::string("ArrayAccess") + atl::to_string(nodeCount++);

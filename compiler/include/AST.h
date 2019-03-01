@@ -3,6 +3,7 @@
 #ifndef ACC_AST_H
 #define ACC_AST_H
 
+#include "ast/Allocation.h"
 #include "ast/ArrayAccess.h"
 #include "ast/ArrayType.h"
 #include "ast/Assign.h"

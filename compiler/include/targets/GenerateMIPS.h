@@ -66,6 +66,7 @@ private:
 
   /* ---- Visit AST ---- */
 
+  MIPS::Register visit(Allocation &a) override;
   MIPS::Register visit(ArrayAccess &aa) override;
   MIPS::Register visit(ArrayType &at) override;
   MIPS::Register visit(Assign &as) override;

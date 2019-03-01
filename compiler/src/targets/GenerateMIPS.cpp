@@ -108,6 +108,7 @@ void GenerateMIPS::stackPop(const MIPS::Register &dest) {
 
 /* ---- Visit AST ---- */
 
+MIPS::Register GenerateMIPS::visit(Allocation &a) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(ArrayAccess &aa) {
   aa.array->accept(*this);
   return MIPS::Register();

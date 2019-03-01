@@ -30,6 +30,7 @@ private:
 
   /* ---- Visit AST ---- */
 
+  void visit(Allocation &a) override;
   void visit(ArrayAccess &aa) override;
   void visit(ArrayType &at) override;
   void visit(Assign &as) override;

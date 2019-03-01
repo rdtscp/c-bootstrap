@@ -22,6 +22,7 @@ void NameAnalysis::run() { visit(*progAST); }
 
 /* ---- Visit AST ---- */
 
+void NameAnalysis::visit(Allocation &a) {}
 void NameAnalysis::visit(ArrayAccess &aa) { aa.array->accept(*this); }
 void NameAnalysis::visit(ArrayType &at) {}
 void NameAnalysis::visit(Assign &as) {

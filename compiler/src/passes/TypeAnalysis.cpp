@@ -20,6 +20,7 @@ void TypeAnalysis::run() { visit(*progAST); }
 
 /* ---- Visit AST ---- */
 
+atl::shared_ptr<Type> TypeAnalysis::visit(Allocation &a) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(ArrayAccess &aa) {
   atl::shared_ptr<Type> arrayExprType = aa.array->accept(*this);
   atl::shared_ptr<Type> arrayIndex = aa.index->accept(*this);
