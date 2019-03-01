@@ -212,6 +212,9 @@ atl::shared_ptr<ASTNode> Optimiser::visit(ValueAt &va) {
 atl::shared_ptr<ASTNode> Optimiser::visit(VarDecl &vd) {
   return atl::static_pointer_cast<Decl>(vd.getptr());
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(VarDef &vd) {
+  return atl::static_pointer_cast<Decl>(vd.getptr());
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(VarExpr &ve) { return ve.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(While &w) {
   w.condition = atl::static_pointer_cast<Expr>(w.condition->accept(*this));

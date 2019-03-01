@@ -153,6 +153,15 @@ void NameAnalysis::visit(VarDecl &vd) {
         vd.getIdentifier());
   currScope->insertDecl(vd.getptr());
 }
+void NameAnalysis::visit(VarDef &vd) {
+  if (currScope->findLocal(vd.getIdentifier()))
+    return error(
+        atl::string(
+            "Attempted to declare a Variable with an identifier that is "
+            "already in use: ") +
+        vd.getIdentifier());
+  currScope->insertDecl(vd.getptr());
+}
 void NameAnalysis::visit(VarExpr &ve) {
   if (currScope->find(ve.identifier) == nullptr)
     return error(atl::string("Attempted to reference undeclared variable: ") +

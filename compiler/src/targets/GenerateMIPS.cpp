@@ -309,6 +309,14 @@ MIPS::Register GenerateMIPS::visit(VarDecl &vd) {
   vd.fpOffset = currFpOffset;
   return MIPS::Register();
 }
+MIPS::Register GenerateMIPS::visit(VarDef &vd) {
+  MIPS.comment(atl::string("Allocating for VarDef: ") + vd.getIdentifier());
+  int bytesRequired = vd.getBytes();
+  MIPS.ADDI(MIPS::sp, MIPS::sp, -bytesRequired);
+  currFpOffset -= bytesRequired;
+  vd.fpOffset = currFpOffset;
+  return MIPS::Register();
+}
 MIPS::Register GenerateMIPS::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
   int fpOffset = ve.variableDecl->fpOffset;

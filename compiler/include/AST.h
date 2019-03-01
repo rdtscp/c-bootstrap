@@ -39,6 +39,7 @@
 #include "ast/TypeDefDecl.h"
 #include "ast/ValueAt.h"
 #include "ast/VarDecl.h"
+#include "ast/VarDef.h"
 #include "ast/VarExpr.h"
 #include "ast/While.h"
 

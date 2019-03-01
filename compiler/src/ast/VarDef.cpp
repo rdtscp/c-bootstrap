@@ -30,6 +30,8 @@ bool VarDef::operator==(const VarDef &rhs) const {
 
 bool VarDef::operator!=(const VarDef &rhs) const { return !(*this == rhs); }
 
+int VarDef::getBytes() const { return type->getBytes(); }
+
 atl::string VarDef::getIdentifier() const { return identifer; }
 
 void VarDef::accept(ASTVisitor<void> &v) { return v.visit(*this); }

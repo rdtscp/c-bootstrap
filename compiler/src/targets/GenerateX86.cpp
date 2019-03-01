@@ -289,6 +289,19 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(VarDecl &vd) {
   x86.sub(X86::esp, bytesRequired, comment);
   return atl::make_shared<X86::None>();
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(VarDef &vd) {
+  int bytesRequired = vd.getBytes();
+  currFpOffset -= bytesRequired;
+  vd.fpOffset = currFpOffset;
+
+  const atl::string comment = atl::string("Allocated ") +
+                              atl::to_string(bytesRequired) +
+                              "B for VarDef: " + vd.getIdentifier() +
+                              " @ [ebp" + atl::to_string(currFpOffset) + "]";
+
+  x86.sub(X86::esp, bytesRequired, comment);
+  return atl::make_shared<X86::None>();
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
   int fpOffset = ve.variableDecl->fpOffset;

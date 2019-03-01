@@ -58,6 +58,7 @@ private:
   atl::string visit(TypeDefDecl &td) override;
   atl::string visit(ValueAt &va) override;
   atl::string visit(VarDecl &vd) override;
+  atl::string visit(VarDef &vd) override;
   atl::string visit(VarExpr &ve) override;
   atl::string visit(While &w) override;
 };

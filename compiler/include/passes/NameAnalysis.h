@@ -60,6 +60,7 @@ private:
   void visit(TypeDefDecl &td) override;
   void visit(ValueAt &va) override;
   void visit(VarDecl &vd) override;
+  void visit(VarDef &vd) override;
   void visit(VarExpr &ve) override;
   void visit(While &w) override;
 };

@@ -60,6 +60,7 @@ private:
   atl::shared_ptr<Type> visit(TypeDefDecl &td) override;
   atl::shared_ptr<Type> visit(ValueAt &va) override;
   atl::shared_ptr<Type> visit(VarDecl &vd) override;
+  atl::shared_ptr<Type> visit(VarDef &vd) override;
   atl::shared_ptr<Type> visit(VarExpr &ve) override;
   atl::shared_ptr<Type> visit(While &w) override;
 };

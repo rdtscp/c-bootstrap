@@ -96,6 +96,7 @@ private:
   MIPS::Register visit(TypeDefDecl &td) override;
   MIPS::Register visit(ValueAt &va) override;
   MIPS::Register visit(VarDecl &vd) override;
+  MIPS::Register visit(VarDef &vd) override;
   MIPS::Register visit(VarExpr &ve) override;
   MIPS::Register visit(While &w) override;
 };

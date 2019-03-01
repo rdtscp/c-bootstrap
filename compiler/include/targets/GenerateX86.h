@@ -71,6 +71,7 @@ private:
   atl::shared_ptr<X86::Operand> visit(TypeDefDecl &td) override;
   atl::shared_ptr<X86::Operand> visit(ValueAt &va) override;
   atl::shared_ptr<X86::Operand> visit(VarDecl &vd) override;
+  atl::shared_ptr<X86::Operand> visit(VarDef &vd) override;
   atl::shared_ptr<X86::Operand> visit(VarExpr &ve) override;
   atl::shared_ptr<X86::Operand> visit(While &w) override;
 

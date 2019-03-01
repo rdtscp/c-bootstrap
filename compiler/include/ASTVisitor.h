@@ -35,6 +35,7 @@ class TypeCast;
 class TypeDefDecl;
 class ValueAt;
 class VarDecl;
+class VarDef;
 class VarExpr;
 class While;
 
@@ -73,6 +74,7 @@ public:
   virtual T visit(TypeDefDecl &tc) = 0;
   virtual T visit(ValueAt &va) = 0;
   virtual T visit(VarDecl &vd) = 0;
+  virtual T visit(VarDef &vd) = 0;
   virtual T visit(VarExpr &ve) = 0;
   virtual T visit(While &w) = 0;
 };

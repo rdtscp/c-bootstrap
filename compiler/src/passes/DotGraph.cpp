@@ -294,12 +294,12 @@ atl::string DotGraph::visit(VarDecl &vd) {
   declare(varDeclID, vd.type->accept(*this) + " " + vd.identifer + ";");
   return varDeclID;
 }
-// atl::string DotGraph::visit(VarDef &vd) {
-//   nodeCount++;
-//   atl::string varDeclID = atl::string("VarDef") +
-//   atl::to_string(nodeCount++); declare(varDeclID, vd.type->accept(*this) + "
-//   " + vd.identifer + ";"); return varDeclID;
-// }
+atl::string DotGraph::visit(VarDef &vd) {
+  nodeCount++;
+  atl::string varDeclID = atl::string("VarDef") + atl::to_string(nodeCount++);
+  declare(varDeclID, vd.type->accept(*this) + " " + vd.identifer + ";");
+  return varDeclID;
+}
 atl::string DotGraph::visit(VarExpr &ve) {
   atl::string varID = atl::string("VarExpr") + atl::to_string(nodeCount++);
   declare(varID, ve.identifier.c_str());

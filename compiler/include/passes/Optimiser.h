@@ -61,6 +61,7 @@ private:
   atl::shared_ptr<ASTNode> visit(TypeDefDecl &td) override;
   atl::shared_ptr<ASTNode> visit(ValueAt &va) override;
   atl::shared_ptr<ASTNode> visit(VarDecl &vd) override;
+  atl::shared_ptr<ASTNode> visit(VarDef &vd) override;
   atl::shared_ptr<ASTNode> visit(VarExpr &ve) override;
   atl::shared_ptr<ASTNode> visit(While &w) override;
 };
