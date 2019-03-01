@@ -142,6 +142,12 @@ TEST(ASTAnalysisTest, DotGraphClass) {
 
   atl::shared_ptr<Program> progAST = parser.getAST();
 
+  NameAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+
+  TypeAnalysis typeAnalysis(progAST);
+  typeAnalysis.run();
+
   DotGraph dotGraph(progAST);
   dotGraph.print();
 }
