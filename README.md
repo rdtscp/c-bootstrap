@@ -11,15 +11,20 @@ Progressively changing to adopt new features of the language(s).
 ```
 program      -> (include)* (decl)* EOF
 
-decl         -> ["extern"] structdecl ";"
-             -> ["extern"] vardecl ";"
-             -> ["extern"] arrvardecl ";"
-             -> ["extern"] fundecl ";"
+decl         -> structdecl ";"
+             -> classdecl ";"
+             -> vardecl ";"
+             -> arrvardecl ";"
+             -> fundecl ";"
              -> fundef
              -> typedecl ";"
              -> enumdecl ";"
 
 structdecl   -> structtype "{" (vardecl)+ "}"
+
+classdecl    -> "class" IDENT "{" (decl | accessmod )* "}" ";"
+
+accessmod    -> "public:" | "private:" | "protected:"
 
 vardecl      -> type IDENT
 
@@ -35,14 +40,17 @@ enumdecl     -> "enum" "{" statelist "}"
 
 statelist    -> (IDENT ["=" INT_LITERAL] ",")* IDENT ["=" INT_LITERAL]
 
-type         -> ("int" | "char" | "void" | structtype) (ASTERIX)*
+type         -> ("int" | "char" | "void" | structtype | classtype ) (ASTERIX)*
 
 structtype   -> "struct" IDENT
+
+classtype    -> IDENT
 
 params       -> [ type IDENT ("," type IDENT)* ]
 
 stmt         -> vardecl ";"
               | block
+              | "new" type [ "(" litExpr ("," litExpr)* ")" ] ";"
               | "do" stmt "while" "(" exp ")" ";"
               | "while" "(" exp ")" stmt
               | "if" "(" exp ")" stmt ["else" stmt]
