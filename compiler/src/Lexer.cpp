@@ -125,6 +125,12 @@ SourceToken Lexer::nextToken() {
 
       if (lexResult.first)
         return SourceToken(TC::NAMESPACE, scanner.getPosition());
+    } else if (c == 'n' && scanner.peek() == 'e') {
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("new");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return SourceToken(TC::NEW, scanner.getPosition());
     } else if (c == 'p' && scanner.peek() == 'r') {
       c = scanner.next();
       if (scanner.peek() == 'i') {

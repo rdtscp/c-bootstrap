@@ -55,6 +55,7 @@ public:
     PUBLIC,    // "public:"
     PRIVATE,   // "private:"
     PROTECTED, // "protected:"
+    NEW,       // "new"
 
     // literals
     STRING_LITERAL, // \".*\"  any sequence of characters enclosed within two
