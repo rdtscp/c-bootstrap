@@ -28,6 +28,8 @@ int BaseType::getBytes() const {
     return 4;
   case PrimitiveType::VOID:
     return 4;
+  case PrimitiveType::UINT:
+    return 4;
   }
 }
 
