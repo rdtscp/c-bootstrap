@@ -507,7 +507,13 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
     expect(TC::RSBR);
     varType = atl::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
-  return atl::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
+  if (accept(TC::ASSIGN)) {
+    expect(TC::ASSIGN);
+    atl::shared_ptr<Expr> assignExpr = parseExpr();
+    return atl::make_shared<VarDef>(VarDef(varType, varIdentifier, assignExpr));
+  } else {
+    return atl::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
+  }
 }
 
 /* -- Types -- */

@@ -3,7 +3,7 @@
 using namespace ACC;
 
 VarDef::VarDef(const atl::shared_ptr<Type> &type, const atl::string &identifer,
-               const atl::shared_ptr<Literal> &value)
+               const atl::shared_ptr<Expr> &value)
     : VarDecl(type, identifer), value(value) {}
 
 atl::shared_ptr<VarDecl> VarDef::getptr() {

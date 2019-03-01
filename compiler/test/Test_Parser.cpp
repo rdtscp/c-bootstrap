@@ -201,7 +201,9 @@ TEST(ParserTest, BinOp) {
   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
       atl::shared_ptr<FunDef>(new FunDef(
           atl::make_shared<Block>(Block(
-              {atl::make_shared<VarDecl>(VarDecl(
+              {atl::make_shared<VarDef>(VarDef(
+                   atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+                   "y", atl::make_shared<IntLiteral>(IntLiteral("5")))),atl::make_shared<VarDecl>(VarDecl(
                    atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
                    "x")),
                atl::make_shared<Assign>(Assign(
