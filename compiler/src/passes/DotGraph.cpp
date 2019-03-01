@@ -131,9 +131,9 @@ atl::string DotGraph::visit(CharLiteral &cl) {
 }
 atl::string DotGraph::visit(ClassType &ct) {
   atl::string classTypeID =
-      atl::string("IntLiteral") + atl::to_string(nodeCount++);
+      atl::string("ClassType") + atl::to_string(nodeCount++);
   declare(classTypeID, ct.identifier);
-  return classTypeID;
+  return ct.identifier;
 }
 atl::string DotGraph::visit(ClassTypeDecl &ctd) {
   const atl::string classID =
