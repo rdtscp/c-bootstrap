@@ -62,7 +62,15 @@ atl::shared_ptr<Type> TypeAnalysis::visit(Block &b) {
 atl::shared_ptr<Type> TypeAnalysis::visit(CharLiteral &cl) {
   return atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR));
 }
-atl::shared_ptr<Type> TypeAnalysis::visit(ClassType &ct) { return ct.getptr(); }
+atl::shared_ptr<Type> TypeAnalysis::visit(ClassType &ct) {
+  atl::shared_ptr<Decl> findDecl =
+      currScope->find(atl::string("class ") + ct.identifier);
+  if (findDecl->astClass() != "ClassTypeDecl")
+    return error("Attempted to use a ClassType that was not declared.");
+
+  ct.typeDefinition = atl::static_pointer_cast<ClassTypeDecl>(findDecl);
+  return ct.getptr();
+}
 atl::shared_ptr<Type> TypeAnalysis::visit(ClassTypeDecl &ctd) {
   return ctd.classType;
 }
@@ -201,7 +209,8 @@ atl::shared_ptr<Type> TypeAnalysis::visit(SizeOf &so) {
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(StringLiteral &sl) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(StructType &st) {
-  atl::shared_ptr<Decl> findDecl = currScope->find(st.identifier);
+  atl::shared_ptr<Decl> findDecl =
+      currScope->find(atl::string("struct ") + st.identifier);
   if (findDecl->astClass() != "StructTypeDecl")
     return error("Attempted to use a StructType that was not declared.");
 
@@ -222,7 +231,10 @@ atl::shared_ptr<Type> TypeAnalysis::visit(ValueAt &va) {
         exprType->astClass());
   return atl::static_pointer_cast<PointerType>(exprType)->pointedType;
 }
-atl::shared_ptr<Type> TypeAnalysis::visit(VarDecl &vd) { return nullptr; }
+atl::shared_ptr<Type> TypeAnalysis::visit(VarDecl &vd) {
+  vd.type->accept(*this);
+  return nullptr;
+}
 atl::shared_ptr<Type> TypeAnalysis::visit(VarDef &vd) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(VarExpr &ve) {
   atl::shared_ptr<Decl> identDecl = currScope->find(ve.identifier);

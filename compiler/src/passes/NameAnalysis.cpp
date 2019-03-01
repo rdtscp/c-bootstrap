@@ -44,7 +44,26 @@ void NameAnalysis::visit(Block &b) {
 }
 void NameAnalysis::visit(CharLiteral &cl) {}
 void NameAnalysis::visit(ClassType &ct) {}
-void NameAnalysis::visit(ClassTypeDecl &ctd) {}
+void NameAnalysis::visit(ClassTypeDecl &ctd) {
+  if (currScope->findLocal(ctd.getIdentifier()))
+    return error(
+        atl::string("Attempted to declare a Class with an identifier that is "
+                    "already in use: ") +
+        ctd.getIdentifier());
+
+  currScope->insertDecl(ctd.getptr());
+
+  /* Check that the fields in this struct are unique */
+  // atl::set<atl::string> structTypeFields;
+  // for (int idx = 0; idx < ctd.varDecls.size(); ++idx) {
+  //   const atl::shared_ptr<VarDecl> field = std.varDecls[idx];
+  //   if (structTypeFields.find(field->getIdentifier()))
+  //     return error(atl::string("Struct ") + std.getIdentifier() +
+  //                  " contained multiple fields with the same identifier: " +
+  //                  field->getIdentifier());
+  //   structTypeFields.insert(field->identifer);
+  // }
+}
 void NameAnalysis::visit(DoWhile &dw) {
   dw.condition->accept(*this);
   dw.body->accept(*this);
