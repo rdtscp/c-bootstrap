@@ -40,7 +40,7 @@ script:
   - cd ./build
   - cmake -DCMAKE_BUILD_TYPE=Debug ..
   - make -j
-  - ctest -V
+  - ctest --output-on-failure
   - make clean
   - cmake -DCMAKE_BUILD_TYPE=Release ..
   - make -j
