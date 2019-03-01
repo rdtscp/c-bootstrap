@@ -19,6 +19,7 @@ public:
 private:
   int nodeCount = 0;
   atl::shared_ptr<Program> progAST;
+  std::map<std::string, atl::string> classTypeDeclIDs;
 
   void declare(const atl::string &nodeID, const atl::string &label);
 

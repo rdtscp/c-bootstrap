@@ -132,7 +132,7 @@ atl::string DotGraph::visit(CharLiteral &cl) {
 atl::string DotGraph::visit(ClassType &ct) {
   atl::string classTypeID =
       atl::string("ClassType") + atl::to_string(nodeCount++);
-  declare(classTypeID, ct.identifier);
+  // declare(classTypeID, ct.identifier);
   return ct.identifier;
 }
 atl::string DotGraph::visit(ClassTypeDecl &ctd) {
@@ -161,6 +161,7 @@ atl::string DotGraph::visit(ClassTypeDecl &ctd) {
   for (int i = 0; i < ctd.protectedDecls.size(); ++i)
     join(protectedDecls, ctd.protectedDecls[i]->accept(*this));
 
+  classTypeDeclIDs[ctd.classType->identifier.c_str()] = classID;
   return classID;
 }
 atl::string DotGraph::visit(DoWhile &dw) {
@@ -292,6 +293,11 @@ atl::string DotGraph::visit(VarDecl &vd) {
   nodeCount++;
   atl::string varDeclID = atl::string("VarDecl") + atl::to_string(nodeCount++);
   declare(varDeclID, vd.type->accept(*this) + " " + vd.identifer + ";");
+  if (vd.type->astClass() == "ClassType") {
+    atl::shared_ptr<ClassType> classType =
+        atl::static_pointer_cast<ClassType>(vd.type);
+    join(varDeclID, classTypeDeclIDs[classType->identifier.c_str()]);
+  }
   return varDeclID;
 }
 atl::string DotGraph::visit(VarDef &vd) {
