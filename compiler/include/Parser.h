@@ -57,6 +57,7 @@ private:
   bool acceptVarDecl(int offset = 0);
 
   /* -- Types -- */
+  bool acceptClassType(int offset = 0);
   bool acceptStructType(int offset = 0);
   bool acceptType(int offset = 0);
 

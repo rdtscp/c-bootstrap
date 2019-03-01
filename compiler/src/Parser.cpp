@@ -152,18 +152,19 @@ bool Parser::acceptVarDecl(int offset) {
     return false;
 
   if (accept(TC::STRUCT, offset)) {
-    offset++;
+    ++offset;
     if (!accept(TC::IDENTIFIER, offset))
       return false;
 
-    offset++;
+    ++offset;
     while (accept(TC::ASTERIX, offset))
-      offset++;
+      ++offset;
 
     if (!accept(TC::IDENTIFIER, offset))
       return false;
 
-  } else if (accept({TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UINT},
+  } else if (accept({TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UINT,
+                     TC::IDENTIFIER},
                     offset)) {
 
     offset++;
@@ -179,6 +180,9 @@ bool Parser::acceptVarDecl(int offset) {
 }
 
 /* -- Types -- */
+bool Parser::acceptClassType(int offset) {
+  return accept(TC::IDENTIFIER, offset);
+}
 bool Parser::acceptStructType(int offset) {
   if (!accept(TC::STRUCT, offset))
     return false;
@@ -189,8 +193,15 @@ bool Parser::acceptStructType(int offset) {
   return true;
 }
 bool Parser::acceptType(int offset) {
-  return accept({TC::INT, TC::CHAR, TC::VOID, TC::STRUCT, TC::SHORT, TC::UINT},
-                offset);
+  if (accept({TC::INT, TC::CHAR, TC::VOID, TC::UINT}, offset))
+    return true;
+  if (accept(TC::STRUCT, offset) && accept(TC::IDENTIFIER, offset + 1))
+    return true;
+
+  if (accept(TC::IDENTIFIER, offset))
+    return true;
+
+  return false;
 }
 
 /* -- Stmts -- */
@@ -454,7 +465,9 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
   }
 }
 atl::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
-  atl::shared_ptr<StructType> structType = parseStructType();
+  expect(TC::STRUCT);
+  const atl::string structIdentifier = expect(TC::IDENTIFIER).data;
+  atl::shared_ptr<StructType> structType(new StructType(structIdentifier));
   expect(TC::LBRA);
   atl::vector<atl::shared_ptr<VarDecl>> fields;
   do {
@@ -497,19 +510,15 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
 }
 
 /* -- Types -- */
-atl::shared_ptr<StructType> Parser::parseStructType() {
-  expect(TC::STRUCT);
-  const atl::string structIdentifier = expect(TC::IDENTIFIER).data;
-  return atl::make_shared<StructType>(StructType(structIdentifier));
-}
 atl::shared_ptr<Type> Parser::parseType() {
   atl::shared_ptr<Type> type;
   if (acceptStructType()) {
-    type = parseStructType();
-    while (accept(TC::ASTERIX)) {
-      expect(TC::ASTERIX);
-      type = atl::shared_ptr<PointerType>(new PointerType(type));
-    }
+    expect(TC::STRUCT);
+    const atl::string structIdentifier = expect(TC::IDENTIFIER).data;
+    type = atl::make_shared<StructType>(StructType(structIdentifier));
+  } else if (acceptClassType()) {
+    const atl::string classIdentifer = expect(TC::IDENTIFIER).data;
+    type = atl::make_shared<ClassType>(ClassType(classIdentifer));
   } else {
     const TC baseType =
         expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT, TC::UINT}).tokenClass;
@@ -535,10 +544,10 @@ atl::shared_ptr<Type> Parser::parseType() {
       break;
     }
     type = atl::shared_ptr<BaseType>(new BaseType(pType));
-    while (accept(TC::ASTERIX)) {
-      expect(TC::ASTERIX);
-      type = atl::shared_ptr<PointerType>(new PointerType(type));
-    }
+  }
+  while (accept(TC::ASTERIX)) {
+    expect(TC::ASTERIX);
+    type = atl::shared_ptr<PointerType>(new PointerType(type));
   }
   return type;
 }
