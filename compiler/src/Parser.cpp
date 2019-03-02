@@ -205,7 +205,6 @@ bool Parser::acceptType(int offset) {
 }
 
 /* -- Stmts -- */
-bool Parser::acceptAllocation(int offset) { return accept(TC::NEW, offset); }
 bool Parser::acceptAssign(int offset) { return acceptExpr(offset); }
 bool Parser::acceptBlock(int offset) { return accept(TC::LBRA, offset); }
 bool Parser::acceptDoWhile(int offset) { return accept(TC::DO, offset); }
@@ -267,57 +266,42 @@ atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
 
   atl::shared_ptr<ClassType> classType(new ClassType(classIdentifier));
 
-  atl::vector<atl::shared_ptr<Decl>> publicDecls;
-  atl::vector<atl::shared_ptr<Decl>> privateDecls;
-  atl::vector<atl::shared_ptr<Decl>> protectedDecls;
-
-  int visiblity = 1; // 0 -> public, 1 -> private, 2 -> protected.
+  atl::vector<atl::shared_ptr<Decl>> classDecls;
+  TC currVisibility = TC::PRIVATE;
 
   while (acceptDecl() || acceptAccessModifier() ||
          acceptConstructor(classIdentifier)) {
     atl::shared_ptr<Decl> declaration;
     if (acceptAccessModifier()) {
-      TC accessModifier =
+      currVisibility =
           expect({TC::PUBLIC, TC::PRIVATE, TC::PROTECTED}).tokenClass;
-      switch (accessModifier) {
-      case TC::PUBLIC:
-        visiblity = 0;
-        break;
-      case TC::PRIVATE:
-        visiblity = 1;
-        break;
-      case TC::PROTECTED:
-        visiblity = 2;
-        break;
-      default:
-        visiblity = 0;
-        break;
-      }
       continue;
     } else if (acceptDecl()) {
       declaration = parseDecl();
     } else {
       declaration = parseConstructor();
     }
-    switch (visiblity) {
-    case 0:
-      publicDecls.push_back(declaration);
+
+    switch (currVisibility) {
+    case TC::PUBLIC:
+      declaration->visibility = Decl::Visibility::PUBLIC;
       break;
-    case 1:
-      privateDecls.push_back(declaration);
+    case TC::PRIVATE:
+      declaration->visibility = Decl::Visibility::PRIVATE;
       break;
-    case 2:
-      protectedDecls.push_back(declaration);
+    case TC::PROTECTED:
+      declaration->visibility = Decl::Visibility::PROTECTED;
       break;
     default:
-      publicDecls.push_back(declaration);
+      declaration->visibility = Decl::Visibility::NONE;
       break;
     }
+
+    classDecls.push_back(declaration);
   }
 
   expect(TC::RBRA);
-  return atl::make_shared(
-      ClassTypeDecl(classType, publicDecls, privateDecls, protectedDecls));
+  return atl::make_shared(ClassTypeDecl(classType, classDecls));
 }
 atl::shared_ptr<FunDecl> Parser::parseConstructor() {
   const atl::string funIdent = expect(TC::IDENTIFIER).data;
@@ -809,6 +793,9 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     atl::shared_ptr<IntLiteral> lhs(new IntLiteral("0"));
     atl::shared_ptr<Expr> rhs = parseObjExpr();
     return atl::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs));
+  }
+  if (accept(TC::NEW)) {
+    /* TODO: Parse Heap Allocation. */
   }
 
   return parseObjExpr();

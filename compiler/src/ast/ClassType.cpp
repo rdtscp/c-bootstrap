@@ -12,27 +12,11 @@ int ClassType::getBytes() const {
     return aggregateBytes;
 
   // @TODO: Calculate SUM of VarDecls.
-  const int publicDeclSize = typeDefinition->publicDecls.size();
-  const int privateDeclSize = typeDefinition->privateDecls.size();
-  const int protectedDeclSize = typeDefinition->protectedDecls.size();
-  for (int i = 0; i < publicDeclSize; ++i) {
-    if (typeDefinition->publicDecls[i]->astClass() == "VarDecl") {
+  const int classDeclsSize = typeDefinition->classDecls.size();
+  for (int i = 0; i < classDeclsSize; ++i) {
+    if (typeDefinition->classDecls[i]->astClass() == "VarDecl") {
       aggregateBytes +=
-          atl::static_pointer_cast<VarDecl>(typeDefinition->publicDecls[i])
-              ->getBytes();
-    }
-  }
-  for (int i = 0; i < privateDeclSize; ++i) {
-    if (typeDefinition->privateDecls[i]->astClass() == "VarDecl") {
-      aggregateBytes +=
-          atl::static_pointer_cast<VarDecl>(typeDefinition->privateDecls[i])
-              ->getBytes();
-    }
-  }
-  for (int i = 0; i < protectedDeclSize; ++i) {
-    if (typeDefinition->protectedDecls[i]->astClass() == "VarDecl") {
-      aggregateBytes +=
-          atl::static_pointer_cast<VarDecl>(typeDefinition->protectedDecls[i])
+          atl::static_pointer_cast<VarDecl>(typeDefinition->classDecls[i])
               ->getBytes();
     }
   }

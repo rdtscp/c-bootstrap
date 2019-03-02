@@ -143,24 +143,26 @@ atl::string DotGraph::visit(ClassTypeDecl &ctd) {
 
   const atl::string publicDecls =
       atl::string("public") + atl::to_string(nodeCount++);
-  declare(publicDecls, "public:");
-  join(classID, publicDecls);
-  for (int i = 0; i < ctd.publicDecls.size(); ++i)
-    join(publicDecls, ctd.publicDecls[i]->accept(*this));
-
   const atl::string privateDecls =
       atl::string("private") + atl::to_string(nodeCount++);
-  declare(privateDecls, "private:");
-  join(classID, privateDecls);
-  for (int i = 0; i < ctd.privateDecls.size(); ++i)
-    join(publicDecls, ctd.privateDecls[i]->accept(*this));
-
   const atl::string protectedDecls =
       atl::string("protected") + atl::to_string(nodeCount++);
+
+  declare(publicDecls, "public:");
+  declare(privateDecls, "private:");
   declare(protectedDecls, "protected:");
+  join(classID, publicDecls);
+  join(classID, privateDecls);
   join(classID, protectedDecls);
-  for (int i = 0; i < ctd.protectedDecls.size(); ++i)
-    join(protectedDecls, ctd.protectedDecls[i]->accept(*this));
+
+  for (int i = 0; i < ctd.classDecls.size(); ++i) {
+    if (ctd.classDecls[i]->visibility == Decl::Visibility::PUBLIC)
+      join(publicDecls, ctd.classDecls[i]->accept(*this));
+    if (ctd.classDecls[i]->visibility == Decl::Visibility::PRIVATE)
+      join(privateDecls, ctd.classDecls[i]->accept(*this));
+    if (ctd.classDecls[i]->visibility == Decl::Visibility::PROTECTED)
+      join(protectedDecls, ctd.classDecls[i]->accept(*this));
+  }
 
   classTypeDeclIDs[ctd.classType->identifier.c_str()] = classID;
   return classID;
