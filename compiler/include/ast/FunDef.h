@@ -3,8 +3,6 @@
 #ifndef ACC_FUNDEF_H
 #define ACC_FUNDEF_H
 
-
-
 #include "Block.h"
 #include "Decl.h"
 #include "FunDecl.h"
