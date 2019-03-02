@@ -50,7 +50,6 @@ params       -> [ type IDENT ("," type IDENT)* ]
 
 stmt         -> vardecl ";"
               | block
-              | "new" type [ "(" litExpr ("," litExpr)* ")" ] ";"
               | "do" stmt "while" "(" exp ")" ";"
               | "while" "(" exp ")" stmt
               | "if" "(" exp ")" stmt ["else" stmt]
@@ -90,6 +89,7 @@ unaryExpr    -> "sizeof" "(" type ")"
               | "*" objExpr
               | "(" type ")" objExpr
               | "-" objExpr
+              | "new" type [ "(" litExpr ("," litExpr)* ")" ] ";"
               | objExpr
 
 objExpr      -> IDENT "(" litExpr ("," litExpr)* ")"
