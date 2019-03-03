@@ -24,6 +24,8 @@ add_library(AST SHARED
   src/ast/CharLiteral.cpp
   src/ast/ClassType.cpp
   src/ast/ClassTypeDecl.cpp
+  src/ast/ConstructorDecl.cpp
+  src/ast/ConstructorDef.cpp
   src/ast/DoWhile.cpp
   src/ast/EnumTypeDecl.cpp
   src/ast/FieldAccess.cpp

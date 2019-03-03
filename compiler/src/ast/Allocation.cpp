@@ -2,12 +2,12 @@
 
 using namespace ACC;
 
-Allocation::Allocation(const atl::shared_ptr<Type> &allocationType)
-    : allocationType(allocationType) {}
+Allocation::Allocation(const atl::shared_ptr<Type> &variableType)
+    : variableType(variableType), variableConstructor(nullptr) {}
 
-Allocation::Allocation(const atl::shared_ptr<Type> &allocationType,
-                       const atl::shared_ptr<FunDecl> &contructor)
-    : allocationType(allocationType) {}
+Allocation::Allocation(
+    const atl::shared_ptr<ConstructorDecl> &variableConstructor)
+    : variableType(nullptr), variableConstructor(variableConstructor) {}
 
 atl::shared_ptr<Allocation> Allocation::getptr() { return shared_from_this(); }
 

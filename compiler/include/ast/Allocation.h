@@ -3,20 +3,19 @@
 #ifndef ACC_ALLOCATION_H
 #define ACC_ALLOCATION_H
 
-#include "Stmt.h"
+#include "Expr.h"
 
 namespace ACC {
 
-class Allocation : public Stmt,
+class Allocation : public Expr,
                    public atl::enable_shared_from_this<Allocation> {
 
 public:
-  atl::shared_ptr<Type> allocationType;
+  atl::shared_ptr<Type> variableType;
+  atl::shared_ptr<ConstructorDecl> variableConstructor;
 
-  Allocation(const atl::shared_ptr<Type> &allocationType);
-
-  Allocation(const atl::shared_ptr<Type> &allocationType,
-             const atl::shared_ptr<FunDecl> &contructor);
+  Allocation(const atl::shared_ptr<Type> &variableType);
+  Allocation(const atl::shared_ptr<ConstructorDecl> &variableConstructor);
 
   atl::shared_ptr<Allocation> getptr();
 

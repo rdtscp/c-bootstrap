@@ -167,6 +167,8 @@ atl::string DotGraph::visit(ClassTypeDecl &ctd) {
   classTypeDeclIDs[ctd.classType->identifier.c_str()] = classID;
   return classID;
 }
+atl::string DotGraph::visit(ConstructorDecl &cd) { return ""; }
+atl::string DotGraph::visit(ConstructorDef &cd) { return ""; }
 atl::string DotGraph::visit(DoWhile &dw) {
   atl::string whileID = atl::string("While") + atl::to_string(nodeCount++);
   declare(whileID, "do {} while()");

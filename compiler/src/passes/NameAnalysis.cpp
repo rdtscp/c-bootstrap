@@ -65,6 +65,8 @@ void NameAnalysis::visit(ClassTypeDecl &ctd) {
   //   structTypeFields.insert(field->identifer);
   // }
 }
+void NameAnalysis::visit(ConstructorDecl &cd) {}
+void NameAnalysis::visit(ConstructorDef &cd) {}
 void NameAnalysis::visit(DoWhile &dw) {
   dw.condition->accept(*this);
   dw.body->accept(*this);

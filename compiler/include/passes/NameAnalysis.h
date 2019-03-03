@@ -40,6 +40,8 @@ private:
   void visit(CharLiteral &cl) override;
   void visit(ClassType &ct) override;
   void visit(ClassTypeDecl &ctd) override;
+  void visit(ConstructorDecl &cd) override;
+  void visit(ConstructorDef &cd) override;
   void visit(DoWhile &dw) override;
   void visit(EnumTypeDecl &etd) override;
   void visit(FieldAccess &fa) override;

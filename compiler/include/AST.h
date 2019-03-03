@@ -13,6 +13,8 @@
 #include "ast/CharLiteral.h"
 #include "ast/ClassType.h"
 #include "ast/ClassTypeDecl.h"
+#include "ast/ConstructorDecl.h"
+#include "ast/ConstructorDef.h"
 #include "ast/Decl.h"
 #include "ast/DoWhile.h"
 #include "ast/EnumTypeDecl.h"
