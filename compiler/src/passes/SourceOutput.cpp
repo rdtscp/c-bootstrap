@@ -21,7 +21,12 @@ void SourceOutput::put(const atl::string &str) { printf("%s\n", str.c_str()); }
 /* ---- Visit AST ---- */
 
 atl::string SourceOutput::visit(Allocation &a) {
-  atl::string output;
+  atl::string output = "new ";
+  if (a.variableType)
+    output += a.variableType->accept(*this);
+  else
+    output += a.variableConstructorCall->accept(*this);
+
   return output;
 }
 atl::string SourceOutput::visit(ArrayAccess &aa) {
@@ -29,7 +34,10 @@ atl::string SourceOutput::visit(ArrayAccess &aa) {
   return output;
 }
 atl::string SourceOutput::visit(ArrayType &at) {
-  atl::string output;
+  atl::string output = at.arrayType->accept(*this);
+  output += "[";
+  output += at.arraySize;
+  output += "]";
   return output;
 }
 atl::string SourceOutput::visit(Assign &as) {
@@ -108,7 +116,10 @@ atl::string SourceOutput::visit(Block &b) {
   output += "\n}";
   return output;
 }
-atl::string SourceOutput::visit(CharLiteral &cl) { return cl.getLiteral(); }
+atl::string SourceOutput::visit(CharLiteral &cl) {
+  atl::string output = "'";
+  return output + cl.getLiteral() + "'";
+}
 atl::string SourceOutput::visit(ClassType &ct) { return ct.identifier; }
 atl::string SourceOutput::visit(ClassTypeDecl &ctd) {
   atl::string output = ctd.getIdentifier() + " {";
@@ -171,7 +182,17 @@ atl::string SourceOutput::visit(DoWhile &dw) {
 }
 atl::string SourceOutput::visit(EnumTypeDecl &etd) { return ""; }
 atl::string SourceOutput::visit(FieldAccess &fa) { return ""; }
-atl::string SourceOutput::visit(FunCall &fc) { return ""; }
+atl::string SourceOutput::visit(FunCall &fc) {
+  atl::string output = fc.funName + "(";
+  for (int i = 0; i < fc.funArgs.size(); ++i) {
+    atl::string currParam = fc.funArgs[i]->accept(*this);
+    if (i != (fc.funArgs.size() - 1))
+      currParam += ", ";
+    output += currParam;
+  }
+  output += ")";
+  return output;
+}
 atl::string SourceOutput::visit(FunDecl &fd) {
   atl::string output = fd.funType->accept(*this) + " ";
   output += fd.getIdentifier() + "(";
