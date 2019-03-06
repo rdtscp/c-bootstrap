@@ -790,6 +790,27 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
   }
   if (accept(TC::NEW)) {
     /* TODO: Parse Heap Allocation. */
+    expect(TC::NEW);
+    /* Constructor Call */
+    if (accept(TC::IDENTIFIER) && accept(TC::LPAR, 1)) {
+      atl::shared_ptr<Expr> funCall = parseObjExpr();
+      if (funCall->astClass() != "FunCall")
+        throw std::runtime_error(
+            std::string("Parsing: Expected a FunCall at ") +
+            currToken.position.toString().c_str());
+      return atl::make_shared<Allocation>(
+          Allocation(atl::static_pointer_cast<FunCall>(funCall)));
+    } else {
+      atl::shared_ptr<Type> allocatedType = parseType();
+      if (accept(TC::LSBR)) {
+        expect(TC::LSBR);
+        SourceToken arraySize = expect(TC::INT_LITERAL);
+        expect(TC::RSBR);
+        allocatedType = atl::shared_ptr<ArrayType>(
+            new ArrayType(allocatedType, arraySize.data));
+        return atl::make_shared<Allocation>(Allocation(allocatedType));
+      }
+    }
   }
 
   return parseObjExpr();

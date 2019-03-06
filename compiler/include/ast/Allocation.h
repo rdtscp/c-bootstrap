@@ -12,10 +12,10 @@ class Allocation : public Expr,
 
 public:
   atl::shared_ptr<Type> variableType;
-  atl::shared_ptr<ConstructorDecl> variableConstructor;
+  atl::shared_ptr<FunCall> variableConstructorCall;
 
   Allocation(const atl::shared_ptr<Type> &variableType);
-  Allocation(const atl::shared_ptr<ConstructorDecl> &variableConstructor);
+  Allocation(const atl::shared_ptr<FunCall> &variableConstructorCall);
 
   atl::shared_ptr<Allocation> getptr();
 
