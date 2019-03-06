@@ -119,11 +119,20 @@ atl::string DotGraph::visit(BinOp &bo) {
   return binOpID;
 }
 atl::string DotGraph::visit(Block &b) {
-  atl::string blockID = atl::string("Block") + atl::to_string(nodeCount++);
-  declare(blockID, "{}");
-  for (int idx = 0; idx < b.blockStmts.size(); ++idx)
-    join(blockID, b.blockStmts[idx]->accept(*this));
-  return blockID;
+  if (b.blockStmts.size() == 0) {
+    const atl::string emptyBlock =
+        atl::string("Block") + atl::to_string(nodeCount++);
+    declare(emptyBlock, "{}");
+    return emptyBlock;
+  }
+  const atl::string stmtOne = b.blockStmts[0]->accept(*this);
+  atl::string prevStmt = stmtOne;
+  for (int idx = 1; idx < b.blockStmts.size(); ++idx) {
+    const atl::string nextStmt = b.blockStmts[idx]->accept(*this);
+    join(prevStmt, nextStmt);
+    prevStmt = nextStmt;
+  }
+  return stmtOne;
 }
 atl::string DotGraph::visit(CharLiteral &cl) {
   atl::string charID = atl::string("CharLiteral") + atl::to_string(nodeCount++);
@@ -205,7 +214,16 @@ atl::string DotGraph::visit(FunDecl &fd) {
 }
 atl::string DotGraph::visit(FunDef &fd) {
   atl::string funcID = atl::string("FunDecl") + atl::to_string(nodeCount++);
-  declare(funcID, fd.funName);
+  atl::string funParams = "(";
+  for (int i = 0; i < fd.funParams.size(); ++i) {
+    atl::string currParam = fd.funParams[i]->type->accept(*this) + " " +
+                            fd.funParams[i]->getIdentifier();
+    if (i != (fd.funParams.size() - 1))
+      currParam += ", ";
+    funParams += currParam;
+  }
+  funParams += ")";
+  declare(funcID, fd.funName + funParams);
   join(funcID, fd.funBlock->accept(*this));
   return funcID;
 }
@@ -298,11 +316,11 @@ atl::string DotGraph::visit(VarDecl &vd) {
   nodeCount++;
   atl::string varDeclID = atl::string("VarDecl") + atl::to_string(nodeCount++);
   declare(varDeclID, vd.type->accept(*this) + " " + vd.identifer + ";");
-  if (vd.type->astClass() == "ClassType") {
-    atl::shared_ptr<ClassType> classType =
-        atl::static_pointer_cast<ClassType>(vd.type);
-    join(varDeclID, classTypeDeclIDs[classType->identifier.c_str()]);
-  }
+  // if (vd.type->astClass() == "ClassType") {
+  //   atl::shared_ptr<ClassType> classType =
+  //       atl::static_pointer_cast<ClassType>(vd.type);
+  //   join(varDeclID, classTypeDeclIDs[classType->identifier.c_str()]);
+  // }
   return varDeclID;
 }
 atl::string DotGraph::visit(VarDef &vd) {

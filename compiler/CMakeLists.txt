@@ -59,6 +59,7 @@ add_library(MIPS SHARED src/targets/MIPS.cpp)
 add_library(NameAnalysis SHARED src/passes/NameAnalysis.cpp)
 add_library(Optimiser SHARED src/passes/Optimiser.cpp)
 add_library(Parser SHARED src/Parser.cpp)
+add_library(SourceOutput SHARED src/passes/SourceOutput.cpp)
 add_library(TypeAnalysis SHARED src/passes/TypeAnalysis.cpp)
 add_library(Scanner SHARED src/Scanner.cpp)
 add_library(X86 SHARED src/targets/X86.cpp)
@@ -83,6 +84,7 @@ target_link_libraries(Lexer Scanner)
 target_link_libraries(NameAnalysis AST)
 target_link_libraries(Optimiser AST)
 target_link_libraries(Parser AST Lexer)
+target_link_libraries(SourceOutput AST)
 target_link_libraries(TypeAnalysis AST)
 
 install(
@@ -96,6 +98,7 @@ install(
           Optimiser
           Parser
           Scanner
+          SourceOutput
           TypeAnalysis
           X86
   DESTINATION lib
@@ -153,4 +156,4 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 add_executable(acc main.cpp)
 add_dependencies(acc atl)
-target_link_libraries(acc AST DotGraph GenerateMIPS GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis)
+target_link_libraries(acc AST DotGraph GenerateMIPS GenerateX86 NameAnalysis Optimiser Parser SourceOutput TypeAnalysis)
