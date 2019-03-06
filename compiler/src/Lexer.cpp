@@ -33,7 +33,8 @@ SourceToken Lexer::nextToken() {
       char peek = scanner.peek();
       // Valid Escapes: '\t' | '\b' | '\n' | '\r' | '\f' | '\'' | '\"' | '\\'
       if (peek == 't' || peek == 'b' || peek == 'n' || peek == 'r' ||
-          peek == 'f' || peek == '\'' || peek == '"' || peek == '\\') {
+          peek == 'f' || peek == '\'' || peek == '"' || peek == '\\' ||
+          peek == '0') {
         c = scanner.next();
         if (scanner.peek() == '\'') {
           char val = c;
