@@ -132,8 +132,35 @@ atl::string SourceOutput::visit(ClassTypeDecl &ctd) {
   output += "\n};";
   return output;
 }
-atl::string SourceOutput::visit(ConstructorDecl &cd) { return ""; }
-atl::string SourceOutput::visit(ConstructorDef &cd) { return ""; }
+atl::string SourceOutput::visit(ConstructorDecl &cd) {
+  atl::string output = cd.classType->accept(*this);
+  output += "(";
+  for (int i = 0; i < cd.constructorParams.size(); ++i) {
+    atl::string currParam = cd.constructorParams[i]->type->accept(*this) + " " +
+                            cd.constructorParams[i]->getIdentifier();
+    if (i != (cd.constructorParams.size() - 1))
+      currParam += ", ";
+    output += currParam;
+  }
+  output += ");";
+
+  return output;
+}
+atl::string SourceOutput::visit(ConstructorDef &cd) {
+  atl::string output = cd.classType->accept(*this);
+  output += "(";
+  for (int i = 0; i < cd.constructorParams.size(); ++i) {
+    atl::string currParam = cd.constructorParams[i]->type->accept(*this) + " " +
+                            cd.constructorParams[i]->getIdentifier();
+    if (i != (cd.constructorParams.size() - 1))
+      currParam += ", ";
+    output += currParam;
+  }
+  output += ")";
+  output += cd.constructorBlock->accept(*this);
+
+  return output;
+}
 atl::string SourceOutput::visit(DoWhile &dw) {
   atl::string output = "do";
   output += dw.body->accept(*this);

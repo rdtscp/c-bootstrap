@@ -88,11 +88,11 @@ bool Parser::acceptAccessModifier(int offset) {
 bool Parser::acceptClassTypeDecl(int offset) {
   return accept(TC::CLASS, offset);
 }
-bool Parser::acceptConstructor(const atl::string &className, int offset) {
+bool Parser::acceptConstructor(int offset) {
   if (!accept(TC::IDENTIFIER))
     return false;
 
-  if (lookAhead(offset).data != className)
+  if (lookAhead(offset + 1).tokenClass != TC::LPAR)
     return false;
 
   return true;
@@ -269,8 +269,7 @@ atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
   atl::vector<atl::shared_ptr<Decl>> classDecls;
   TC currVisibility = TC::PRIVATE;
 
-  while (acceptDecl() || acceptAccessModifier() ||
-         acceptConstructor(classIdentifier)) {
+  while (acceptDecl() || acceptAccessModifier() || acceptConstructor()) {
     atl::shared_ptr<Decl> declaration;
     if (acceptAccessModifier()) {
       currVisibility =
@@ -303,44 +302,39 @@ atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
   expect(TC::RBRA);
   return atl::make_shared(ClassTypeDecl(classType, classDecls));
 }
-atl::shared_ptr<FunDecl> Parser::parseConstructor() {
-  const atl::string funIdent = expect(TC::IDENTIFIER).data;
+atl::shared_ptr<ConstructorDecl> Parser::parseConstructor() {
+  const atl::string constructorIdent = expect(TC::IDENTIFIER).data;
+  const atl::shared_ptr<ClassType> classType(new ClassType(constructorIdent));
   expect(TC::LPAR);
-  atl::vector<atl::shared_ptr<VarDecl>> funParams;
+  atl::vector<atl::shared_ptr<VarDecl>> constructorParams;
 
   bool isDef = true;
   if (acceptParam())
-    funParams.push_back(parseParam());
+    constructorParams.push_back(parseParam());
   while (accept(TC::COMMA)) {
     expect(TC::COMMA);
     atl::shared_ptr<VarDecl> currParam = parseParam();
     if (currParam->identifer == "")
       isDef = false;
 
-    funParams.push_back(currParam);
+    constructorParams.push_back(currParam);
   }
 
   expect(TC::RPAR);
 
   if (acceptBlock() && !isDef) {
     throw std::runtime_error(
-        "Parser: FunDef signature did not provide names for parameters.");
+        "Parser: Constructor signature did not provide names for parameters.");
   } else if (acceptBlock()) {
-    atl::shared_ptr<Block> funBlock = parseBlock();
-    atl::shared_ptr<FunDef> fd(
-        new FunDef(funBlock, funIdent, funParams,
-                   atl::shared_ptr<Type>(new BaseType(PrimitiveType::VOID))));
-    return fd;
-    // return atl::make_shared<FunDef>(
-    //     FunDef(funBlock, funIdent, funParams, funType));
+    atl::shared_ptr<Block> constructorBlock = parseBlock();
+    atl::shared_ptr<ConstructorDef> cd(
+        new ConstructorDef(classType, constructorParams, constructorBlock));
+    return cd;
   } else {
     expect(TC::SC);
-    atl::shared_ptr<FunDecl> fd(
-        new FunDecl(funIdent, funParams,
-                    atl::shared_ptr<Type>(new BaseType(PrimitiveType::VOID))));
-    return fd;
-    // return atl::make_shared<FunDecl>(FunDecl(funIdent, funParams,
-    // funType));
+    atl::shared_ptr<ConstructorDecl> cd(
+        new ConstructorDecl(classType, constructorParams));
+    return cd;
   }
 }
 atl::shared_ptr<Decl> Parser::parseDecl() {
