@@ -176,8 +176,29 @@ atl::string DotGraph::visit(ClassTypeDecl &ctd) {
   classTypeDeclIDs[ctd.classType->identifier.c_str()] = classID;
   return classID;
 }
-atl::string DotGraph::visit(ConstructorDecl &cd) { return ""; }
-atl::string DotGraph::visit(ConstructorDef &cd) { return ""; }
+atl::string DotGraph::visit(ConstructorDecl &cd) {
+  atl::string constructorID =
+      atl::string("ConstructorDecl") + atl::to_string(nodeCount++);
+  // declare(funcID, fd.funName);
+  // join(funcID, fd.funBlock->accept(*this));
+  return constructorID;
+}
+atl::string DotGraph::visit(ConstructorDef &cd) {
+  atl::string constructorID =
+      atl::string("ConstructorDef") + atl::to_string(nodeCount++);
+  atl::string funParams = "(";
+  for (int i = 0; i < cd.constructorParams.size(); ++i) {
+    atl::string currParam = cd.constructorParams[i]->type->accept(*this) + " " +
+                            cd.constructorParams[i]->getIdentifier();
+    if (i != (cd.constructorParams.size() - 1))
+      currParam += ", ";
+    funParams += currParam;
+  }
+  funParams += ")";
+  declare(constructorID, cd.classType->identifier + funParams);
+  join(constructorID, cd.constructorBlock->accept(*this));
+  return constructorID;
+}
 atl::string DotGraph::visit(DoWhile &dw) {
   atl::string whileID = atl::string("While") + atl::to_string(nodeCount++);
   declare(whileID, "do {} while()");
@@ -213,7 +234,7 @@ atl::string DotGraph::visit(FunDecl &fd) {
   return funcID;
 }
 atl::string DotGraph::visit(FunDef &fd) {
-  atl::string funcID = atl::string("FunDecl") + atl::to_string(nodeCount++);
+  atl::string funcID = atl::string("FunDef") + atl::to_string(nodeCount++);
   atl::string funParams = "(";
   for (int i = 0; i < fd.funParams.size(); ++i) {
     atl::string currParam = fd.funParams[i]->type->accept(*this) + " " +
