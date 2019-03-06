@@ -102,7 +102,7 @@ atl::string SourceOutput::visit(BinOp &bo) {
 }
 atl::string SourceOutput::visit(Block &b) {
   atl::string output = "{\n";
-  for (int idx = 1; idx < b.blockStmts.size(); ++idx) {
+  for (int idx = 0; idx < b.blockStmts.size(); ++idx) {
     output += b.blockStmts[idx]->accept(*this);
   }
   output += "\n}";
