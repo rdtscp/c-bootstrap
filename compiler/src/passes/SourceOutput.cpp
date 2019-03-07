@@ -250,6 +250,11 @@ atl::string SourceOutput::visit(ParenthExpr &pe) {
 atl::string SourceOutput::visit(PointerType &pt) {
   return pt.pointedType->accept(*this) + "*";
 }
+atl::string SourceOutput::visit(PrefixInc &pi) {
+  atl::string output = "++";
+  output += pi.incrementVar->identifier;
+  return output;
+}
 atl::string SourceOutput::visit(Program &p) {
   atl::string output;
   for (int idx = 0; idx < p.decls.size(); ++idx) {

@@ -90,6 +90,7 @@ private:
   MIPS::Register visit(Namespace &n) override;
   MIPS::Register visit(ParenthExpr &pe) override;
   MIPS::Register visit(PointerType &pt) override;
+  MIPS::Register visit(PrefixInc &pi) override;
   MIPS::Register visit(Program &p) override;
   MIPS::Register visit(Return &r) override;
   MIPS::Register visit(SizeOf &so) override;

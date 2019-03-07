@@ -29,6 +29,7 @@ class IntLiteral;
 class Namespace;
 class ParenthExpr;
 class PointerType;
+class PrefixInc;
 class Program;
 class Return;
 class SizeOf;
@@ -72,6 +73,7 @@ public:
   virtual T visit(Namespace &n) = 0;
   virtual T visit(ParenthExpr &pe) = 0;
   virtual T visit(PointerType &pt) = 0;
+  virtual T visit(PrefixInc &pi) = 0;
   virtual T visit(Program &p) = 0;
   virtual T visit(Return &r) = 0;
   virtual T visit(SizeOf &so) = 0;

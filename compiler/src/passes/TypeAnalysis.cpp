@@ -200,6 +200,10 @@ atl::shared_ptr<Type> TypeAnalysis::visit(ParenthExpr &pe) {
 atl::shared_ptr<Type> TypeAnalysis::visit(PointerType &pt) {
   return pt.getptr();
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(PrefixInc &pi) {
+  // TODO
+  return nullptr;
+}
 atl::shared_ptr<Type> TypeAnalysis::visit(Program &p) {
   currScope = p.globalScope;
   for (int idx = 0; idx < p.decls.size(); ++idx)

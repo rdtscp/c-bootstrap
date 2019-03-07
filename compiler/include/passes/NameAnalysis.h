@@ -54,6 +54,7 @@ private:
   void visit(Namespace &n) override;
   void visit(ParenthExpr &pe) override;
   void visit(PointerType &pt) override;
+  void visit(PrefixInc &pi) override;
   void visit(Program &p) override;
   void visit(Return &r) override;
   void visit(SizeOf &so) override;

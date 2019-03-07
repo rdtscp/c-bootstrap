@@ -283,6 +283,13 @@ atl::string DotGraph::visit(ParenthExpr &pe) {
 atl::string DotGraph::visit(PointerType &pt) {
   return pt.pointedType->accept(*this) + "*";
 }
+atl::string DotGraph::visit(PrefixInc &pi) {
+  atl::string preficIncID =
+      atl::string("PrefixInc") + atl::to_string(nodeCount++);
+  declare(preficIncID, "\"PrefixInc\"");
+  join(preficIncID, pi.incrementVar->accept(*this));
+  return preficIncID;
+}
 atl::string DotGraph::visit(Program &p) {
   printf("digraph prog {\n");
   for (int idx = 0; idx < p.decls.size(); ++idx) {

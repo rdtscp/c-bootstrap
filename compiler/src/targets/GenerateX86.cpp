@@ -237,6 +237,10 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(ParenthExpr &pe) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(PointerType &pt) {
   return atl::make_shared<X86::None>();
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(PrefixInc &pi) {
+  // TODO
+  return atl::make_shared<X86::None>();
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   currScope = p.globalScope;
 

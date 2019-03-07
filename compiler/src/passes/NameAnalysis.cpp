@@ -73,7 +73,13 @@ void NameAnalysis::visit(DoWhile &dw) {
 }
 void NameAnalysis::visit(EnumTypeDecl &etd) {}
 void NameAnalysis::visit(FieldAccess &fa) { fa.object->accept(*this); }
-void NameAnalysis::visit(For &f) {}
+void NameAnalysis::visit(For &f) {
+  // TODO: Scope the entire for loop.
+  f.initialVarDecl->accept(*this);
+  f.condition->accept(*this);
+  f.endBodyExpr->accept(*this);
+  f.body->accept(*this);
+}
 void NameAnalysis::visit(FunCall &fc) {
   if (currScope->find(fc.funName) == nullptr)
     return error(atl::string("Attempted to call undeclared function: ") +
@@ -127,6 +133,7 @@ void NameAnalysis::visit(Namespace &n) {
 }
 void NameAnalysis::visit(ParenthExpr &pe) { pe.innerExpr->accept(*this); }
 void NameAnalysis::visit(PointerType &pt) {}
+void NameAnalysis::visit(PrefixInc &pi) { pi.incrementVar->accept(*this); }
 void NameAnalysis::visit(Program &p) {
   currScope = atl::make_shared<Block>(Block({}));
   for (int idx = 0; idx < p.decls.size(); ++idx)

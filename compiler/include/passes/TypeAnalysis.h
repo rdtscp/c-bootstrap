@@ -54,6 +54,7 @@ private:
   atl::shared_ptr<Type> visit(Namespace &n) override;
   atl::shared_ptr<Type> visit(ParenthExpr &pe) override;
   atl::shared_ptr<Type> visit(PointerType &pt) override;
+  atl::shared_ptr<Type> visit(PrefixInc &pi) override;
   atl::shared_ptr<Type> visit(Program &p) override;
   atl::shared_ptr<Type> visit(Return &r) override;
   atl::shared_ptr<Type> visit(SizeOf &so) override;

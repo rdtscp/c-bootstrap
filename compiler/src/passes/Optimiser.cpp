@@ -183,6 +183,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(ParenthExpr &pe) {
 atl::shared_ptr<ASTNode> Optimiser::visit(PointerType &pt) {
   return pt.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(PrefixInc &pi) { return pi.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(Program &p) {
   currScope = atl::make_shared<Block>(Block({}));
   for (int idx = 0; idx < p.decls.size(); ++idx)

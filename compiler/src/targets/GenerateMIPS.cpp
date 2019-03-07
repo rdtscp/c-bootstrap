@@ -269,6 +269,7 @@ MIPS::Register GenerateMIPS::visit(ParenthExpr &pe) {
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(PointerType &pt) { return MIPS::Register(); }
+MIPS::Register GenerateMIPS::visit(PrefixInc &p) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(Program &p) {
   currScope = p.globalScope;
 

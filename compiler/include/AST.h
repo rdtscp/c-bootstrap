@@ -30,6 +30,7 @@
 #include "ast/Op.h"
 #include "ast/ParenthExpr.h"
 #include "ast/PointerType.h"
+#include "ast/PrefixInc.h"
 #include "ast/PrimitiveType.h"
 #include "ast/Program.h"
 #include "ast/Return.h"

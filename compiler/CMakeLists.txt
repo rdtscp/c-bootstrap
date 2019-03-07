@@ -38,6 +38,7 @@ add_library(AST SHARED
   src/ast/Namespace.cpp
   src/ast/ParenthExpr.cpp
   src/ast/PointerType.cpp
+  src/ast/PrefixInc.cpp
   src/ast/Program.cpp
   src/ast/Return.cpp
   src/ast/SizeOf.cpp
