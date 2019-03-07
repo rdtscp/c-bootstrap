@@ -248,7 +248,8 @@ bool Parser::acceptParam(int offset) { return acceptType(offset); }
 
 bool Parser::acceptExpr(int offset) {
   return accept({TC::LPAR, TC::SIZEOF, TC::ASTERIX, TC::MINUS, TC::IDENTIFIER,
-                 TC::INT_LITERAL, TC::CHAR_LITERAL, TC::STRING_LITERAL},
+                 TC::INT_LITERAL, TC::CHAR_LITERAL, TC::STRING_LITERAL, TC::NEW,
+                 TC::PREFIXINC},
                 offset);
 }
 
@@ -829,7 +830,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
       throw "Attempted operator++ on Expr that was not a VarExpr";
     const atl::shared_ptr<VarExpr> incrementVar =
         atl::static_pointer_cast<VarExpr>(incrementExpr);
-    // return atl::make_shared<PrefixInc>(PrefixInc(incrementVar));
+    return atl::make_shared<PrefixInc>(PrefixInc(incrementVar));
   }
   if (accept(TC::NEW)) {
     /* TODO: Parse Heap Allocation. */
