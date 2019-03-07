@@ -872,7 +872,11 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
       }
     }
   }
-
+  if (accept(TC::REF)) {
+    expect(TC::REF);
+    const atl::shared_ptr<Expr> addrOfExpr = parseObjExpr();
+    return atl::make_shared<AddressOf>(AddressOf(addrOfExpr));
+  }
   return parseObjExpr();
 }
 atl::shared_ptr<Expr> Parser::parseObjExpr() {
