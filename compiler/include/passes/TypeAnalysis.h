@@ -45,6 +45,7 @@ private:
   atl::shared_ptr<Type> visit(DoWhile &dw) override;
   atl::shared_ptr<Type> visit(EnumTypeDecl &etd) override;
   atl::shared_ptr<Type> visit(FieldAccess &fa) override;
+  atl::shared_ptr<Type> visit(For &f) override;
   atl::shared_ptr<Type> visit(FunCall &fc) override;
   atl::shared_ptr<Type> visit(FunDecl &fd) override;
   atl::shared_ptr<Type> visit(FunDef &fd) override;

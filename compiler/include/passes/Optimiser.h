@@ -46,6 +46,7 @@ private:
   atl::shared_ptr<ASTNode> visit(DoWhile &dw) override;
   atl::shared_ptr<ASTNode> visit(EnumTypeDecl &etd) override;
   atl::shared_ptr<ASTNode> visit(FieldAccess &fa) override;
+  atl::shared_ptr<ASTNode> visit(For &f) override;
   atl::shared_ptr<ASTNode> visit(FunCall &fc) override;
   atl::shared_ptr<ASTNode> visit(FunDecl &fd) override;
   atl::shared_ptr<ASTNode> visit(FunDef &fd) override;

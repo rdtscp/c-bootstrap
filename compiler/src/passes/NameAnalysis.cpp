@@ -73,6 +73,7 @@ void NameAnalysis::visit(DoWhile &dw) {
 }
 void NameAnalysis::visit(EnumTypeDecl &etd) {}
 void NameAnalysis::visit(FieldAccess &fa) { fa.object->accept(*this); }
+void NameAnalysis::visit(For &f) {}
 void NameAnalysis::visit(FunCall &fc) {
   if (currScope->find(fc.funName) == nullptr)
     return error(atl::string("Attempted to call undeclared function: ") +

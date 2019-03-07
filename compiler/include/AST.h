@@ -20,6 +20,7 @@
 #include "ast/EnumTypeDecl.h"
 #include "ast/Expr.h"
 #include "ast/FieldAccess.h"
+#include "ast/For.h"
 #include "ast/FunCall.h"
 #include "ast/FunDecl.h"
 #include "ast/FunDef.h"

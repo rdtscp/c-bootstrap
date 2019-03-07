@@ -29,6 +29,7 @@ add_library(AST SHARED
   src/ast/DoWhile.cpp
   src/ast/EnumTypeDecl.cpp
   src/ast/FieldAccess.cpp
+  src/ast/For.cpp
   src/ast/FunCall.cpp
   src/ast/FunDecl.cpp
   src/ast/FunDef.cpp

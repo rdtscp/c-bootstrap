@@ -132,6 +132,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(FieldAccess &fa) {
   fa.object = atl::static_pointer_cast<Expr>(fa.object->accept(*this));
   return fa.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(For &f) { return f.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(FunCall &fc) {
   for (int idx = 0; idx < fc.funArgs.size(); ++idx)
     fc.funArgs[idx] =

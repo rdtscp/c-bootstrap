@@ -119,6 +119,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(FieldAccess &fa) {
   return error("Type Analysis: Attempted to access field on a struct that "
                "does not exist.");
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(For &f) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
   atl::shared_ptr<Decl> identDecl = currScope->find(fc.funName);
   if (identDecl == nullptr)

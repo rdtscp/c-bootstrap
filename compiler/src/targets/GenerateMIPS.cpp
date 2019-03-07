@@ -161,11 +161,11 @@ MIPS::Register GenerateMIPS::visit(DoWhile &dw) {
 MIPS::Register GenerateMIPS::visit(EnumTypeDecl &etd) {
   return MIPS::Register();
 }
-
 MIPS::Register GenerateMIPS::visit(FieldAccess &fa) {
   fa.object->accept(*this);
   return MIPS::Register();
 }
+MIPS::Register GenerateMIPS::visit(For &f) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(FunCall &fc) {
   for (int idx = 0; idx < fc.funArgs.size(); ++idx)
     fc.funArgs[idx]->accept(*this);

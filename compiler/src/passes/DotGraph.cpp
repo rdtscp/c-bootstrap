@@ -218,6 +218,11 @@ atl::string DotGraph::visit(FieldAccess &fa) {
 
   return fieldAccessID;
 }
+atl::string DotGraph::visit(For &f) {
+  atl::string forID = atl::string("For") + atl::to_string(nodeCount++);
+
+  return forID;
+}
 atl::string DotGraph::visit(FunCall &fc) {
   atl::string funCallID = atl::string("FunCall") + atl::to_string(nodeCount++);
   declare(funCallID, atl::string(fc.funName.c_str()) + "()");

@@ -115,6 +115,9 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(FieldAccess &fa) {
   fa.object->accept(*this);
   return atl::make_shared<X86::None>();
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(For &f) {
+  return atl::make_shared<X86::None>();
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(FunCall &fc) {
   for (int idx = fc.funArgs.size() - 1; idx >= 0; --idx) {
     atl::shared_ptr<X86::Operand> argReg = fc.funArgs[idx]->accept(*this);

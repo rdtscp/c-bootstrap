@@ -182,6 +182,7 @@ atl::string SourceOutput::visit(DoWhile &dw) {
 }
 atl::string SourceOutput::visit(EnumTypeDecl &etd) { return ""; }
 atl::string SourceOutput::visit(FieldAccess &fa) { return ""; }
+atl::string SourceOutput::visit(For &f) { return ""; }
 atl::string SourceOutput::visit(FunCall &fc) {
   atl::string output = fc.funName + "(";
   for (int i = 0; i < fc.funArgs.size(); ++i) {
