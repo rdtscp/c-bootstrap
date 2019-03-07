@@ -324,7 +324,7 @@ SourceToken Lexer::nextToken() {
   if (c == '&')
     return SourceToken(TC::REF, scanner.getPosition());
   if (c == '+' && scanner.peek() == '+')
-    return SourceToken(TC::PREFIXOP, scanner.getPosition());
+    return SourceToken(TC::PREFIXINC, scanner.getPosition());
   else if (c == '+')
     return SourceToken(TC::PLUS, scanner.getPosition());
 
