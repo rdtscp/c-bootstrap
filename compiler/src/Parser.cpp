@@ -864,7 +864,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
       atl::shared_ptr<Type> allocatedType = parseType();
       if (accept(TC::LSBR)) {
         expect(TC::LSBR);
-        const atl::shared_ptr<Expr> arraySize = parseObjExpr();
+        const atl::shared_ptr<Expr> arraySize = parseExpr();
         expect(TC::RSBR);
         allocatedType =
             atl::shared_ptr<ArrayType>(new ArrayType(allocatedType, arraySize));
