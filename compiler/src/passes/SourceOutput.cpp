@@ -20,6 +20,10 @@ void SourceOutput::put(const atl::string &str) { printf("%s\n", str.c_str()); }
 
 /* ---- Visit AST ---- */
 
+atl::string SourceOutput::visit(AddressOf &ao) {
+  atl::string output = "&";
+  return output + ao.addressOfExpr->accept(*this);
+}
 atl::string SourceOutput::visit(Allocation &a) {
   atl::string output = "new ";
   if (a.variableType)

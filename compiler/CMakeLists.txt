@@ -14,6 +14,7 @@ ExternalProject_Add(atl
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/atl/src/")
 
 add_library(AST SHARED
+  src/ast/AddressOf.cpp
   src/ast/Allocation.cpp
   src/ast/ArrayAccess.cpp
   src/ast/ArrayType.cpp
@@ -40,6 +41,7 @@ add_library(AST SHARED
   src/ast/PointerType.cpp
   src/ast/PrefixInc.cpp
   src/ast/Program.cpp
+  src/ast/ReferenceType.cpp
   src/ast/Return.cpp
   src/ast/SizeOf.cpp
   src/ast/StringLiteral.cpp

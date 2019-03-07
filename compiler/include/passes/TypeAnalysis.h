@@ -30,6 +30,7 @@ private:
 
   /* ---- Visit AST ---- */
 
+  atl::shared_ptr<Type> visit(AddressOf &ao) override;
   atl::shared_ptr<Type> visit(Allocation &a) override;
   atl::shared_ptr<Type> visit(ArrayAccess &aa) override;
   atl::shared_ptr<Type> visit(ArrayType &at) override;

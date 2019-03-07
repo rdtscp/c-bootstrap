@@ -22,6 +22,7 @@ void Optimiser::run() {
 
 /* ---- Visit AST ---- */
 
+atl::shared_ptr<ASTNode> Optimiser::visit(AddressOf &ao) { return ao.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(Allocation &a) { return a.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(ArrayAccess &aa) {
   aa.array = atl::static_pointer_cast<Expr>(aa.array->accept(*this));

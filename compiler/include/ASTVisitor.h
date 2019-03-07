@@ -5,6 +5,7 @@
 
 namespace ACC {
 
+class AddressOf;
 class Allocation;
 class ArrayAccess;
 class ArrayType;
@@ -50,6 +51,7 @@ template <typename T> class ASTVisitor {
 public:
   virtual ~ASTVisitor() {}
 
+  virtual T visit(AddressOf &ao) = 0;
   virtual T visit(Allocation &a) = 0;
   virtual T visit(ArrayAccess &aa) = 0;
   virtual T visit(ArrayType &at) = 0;

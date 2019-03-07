@@ -29,6 +29,7 @@ private:
 
   /* ---- Visit AST ---- */
 
+  atl::string visit(AddressOf &ao) override;
   atl::string visit(Allocation &a) override;
   atl::string visit(ArrayAccess &aa) override;
   atl::string visit(ArrayType &at) override;

@@ -26,6 +26,9 @@ void GenerateX86::alloc(const VarDecl &vd) {
 
 /* ---- Visit AST ---- */
 
+atl::shared_ptr<X86::Operand> GenerateX86::visit(AddressOf &ao) {
+  return atl::make_shared<X86::None>();
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Allocation &a) {
   return atl::make_shared<X86::None>();
 }
