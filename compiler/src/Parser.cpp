@@ -172,8 +172,15 @@ bool Parser::acceptVarDecl(int offset) {
                     offset)) {
 
     offset++;
-    while (accept(TC::ASTERIX, offset))
+    if (accept(TC::ASTERIX, offset) && !accept(TC::REF, offset))
+      while (accept(TC::ASTERIX, offset))
+        offset++;
+
+    else if (accept(TC::REF, offset)) {
       offset++;
+      if (accept(TC::REF, offset + 1))
+        offset++;
+    }
 
     if (!accept(TC::IDENTIFIER, offset))
       return false;
@@ -543,9 +550,18 @@ atl::shared_ptr<Type> Parser::parseType() {
     }
     type = atl::shared_ptr<BaseType>(new BaseType(pType));
   }
-  while (accept(TC::ASTERIX)) {
-    expect(TC::ASTERIX);
-    type = atl::shared_ptr<PointerType>(new PointerType(type));
+  if (accept(TC::ASTERIX)) {
+    while (accept(TC::ASTERIX)) {
+      expect(TC::ASTERIX);
+      type = atl::shared_ptr<PointerType>(new PointerType(type));
+    }
+  } else if (accept(TC::REF)) {
+    expect(TC::REF);
+    type = atl::shared_ptr<ReferenceType>(new ReferenceType(type));
+    if (accept(TC::REF)) {
+      expect(TC::REF);
+      type = atl::shared_ptr<ReferenceType>(new ReferenceType(type));
+    }
   }
 
   type->typeModifiers = typeModifiers;
@@ -848,7 +864,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
       atl::shared_ptr<Type> allocatedType = parseType();
       if (accept(TC::LSBR)) {
         expect(TC::LSBR);
-        const atl::shared_ptr<Expr> arraySize = parseExpr();
+        const atl::shared_ptr<Expr> arraySize = parseObjExpr();
         expect(TC::RSBR);
         allocatedType =
             atl::shared_ptr<ArrayType>(new ArrayType(allocatedType, arraySize));
