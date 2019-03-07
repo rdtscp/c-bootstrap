@@ -15,7 +15,8 @@ public:
   atl::shared_ptr<Stmt> endBodyStmt;
   atl::shared_ptr<Stmt> body;
 
-  For();
+  For(atl::shared_ptr<VarDecl> initialVarDecl, atl::shared_ptr<Expr> condition,
+      atl::shared_ptr<Stmt> endBodyStmt, atl::shared_ptr<Stmt> body);
 
   atl::shared_ptr<For> getptr();
 
