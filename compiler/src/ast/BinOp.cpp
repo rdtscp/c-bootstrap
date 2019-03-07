@@ -7,6 +7,29 @@ BinOp::BinOp(atl::shared_ptr<Expr> lhs, Op operation, atl::shared_ptr<Expr> rhs)
 
 atl::shared_ptr<BinOp> BinOp::getptr() { return shared_from_this(); }
 
+bool BinOp::operator==(Expr &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<BinOp *>(&rhs);
+  return false;
+}
+
+bool BinOp::operator!=(Expr &rhs) const { return !(*this == rhs); }
+
+bool BinOp::operator==(const BinOp &other) const {
+  if (*lhs != *other.lhs)
+    return false;
+
+  if (operation != other.operation)
+    return false;
+
+  if (rhs != other.rhs)
+    return false;
+
+  return true;
+}
+
+bool BinOp::operator!=(const BinOp &rhs) const { return !(*this == rhs); }
+
 void BinOp::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 atl::string BinOp::accept(ASTVisitor<atl::string> &v) { return v.visit(*this); }

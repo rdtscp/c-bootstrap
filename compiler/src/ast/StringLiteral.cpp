@@ -2,13 +2,40 @@
 
 using namespace ACC;
 
-StringLiteral::StringLiteral(const atl::string &literal) : value(literal) {}
+StringLiteral::StringLiteral(const atl::string &literal) : Literal(literal) {}
 
 atl::shared_ptr<StringLiteral> StringLiteral::getptr() {
   return shared_from_this();
 }
 
 atl::string StringLiteral::getLiteral() const { return value; }
+
+bool StringLiteral::operator==(Expr &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<StringLiteral *>(&rhs);
+  return false;
+}
+
+bool StringLiteral::operator!=(Expr &rhs) const { return !(*this == rhs); }
+
+bool StringLiteral::operator==(Literal &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<StringLiteral *>(&rhs);
+  return false;
+}
+
+bool StringLiteral::operator!=(Literal &rhs) const { return !(*this == rhs); }
+
+bool StringLiteral::operator==(const StringLiteral &rhs) const {
+  if (value != rhs.value)
+    return false;
+
+  return true;
+}
+
+bool StringLiteral::operator!=(const StringLiteral &rhs) const {
+  return !(*this == rhs);
+}
 
 void StringLiteral::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 

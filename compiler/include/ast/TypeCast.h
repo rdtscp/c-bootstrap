@@ -18,6 +18,12 @@ public:
 
   atl::shared_ptr<TypeCast> getptr();
 
+  bool operator==(Expr &rhs) const override;
+  bool operator!=(Expr &rhs) const override;
+
+  bool operator==(const TypeCast &rhs) const;
+  bool operator!=(const TypeCast &rhs) const;
+
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;
   atl::shared_ptr<Type> accept(ASTVisitor<atl::shared_ptr<Type>> &v) override;

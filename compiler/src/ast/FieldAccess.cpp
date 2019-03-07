@@ -9,6 +9,28 @@ atl::shared_ptr<FieldAccess> FieldAccess::getptr() {
   return shared_from_this();
 }
 
+bool FieldAccess::operator==(Expr &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<FieldAccess *>(&rhs);
+  return false;
+}
+
+bool FieldAccess::operator!=(Expr &rhs) const { return !(*this == rhs); }
+
+bool FieldAccess::operator==(const FieldAccess &rhs) const {
+  if (*object != *rhs.object)
+    return false;
+
+  if (field != rhs.field)
+    return false;
+
+  return true;
+}
+
+bool FieldAccess::operator!=(const FieldAccess &rhs) const {
+  return !(*this == rhs);
+}
+
 void FieldAccess::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 atl::string FieldAccess::accept(ASTVisitor<atl::string> &v) {

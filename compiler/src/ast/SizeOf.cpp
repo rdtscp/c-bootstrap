@@ -6,6 +6,23 @@ SizeOf::SizeOf(atl::shared_ptr<Type> type) : type(type) {}
 
 atl::shared_ptr<SizeOf> SizeOf::getptr() { return shared_from_this(); }
 
+bool SizeOf::operator==(Expr &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<SizeOf *>(&rhs);
+  return false;
+}
+
+bool SizeOf::operator!=(Expr &rhs) const { return !(*this == rhs); }
+
+bool SizeOf::operator==(const SizeOf &rhs) const {
+  if (*type != *rhs.type)
+    return false;
+
+  return true;
+}
+
+bool SizeOf::operator!=(const SizeOf &rhs) const { return !(*this == rhs); }
+
 void SizeOf::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 atl::string SizeOf::accept(ASTVisitor<atl::string> &v) {

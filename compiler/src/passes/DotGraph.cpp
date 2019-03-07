@@ -33,7 +33,7 @@ atl::string DotGraph::visit(ArrayAccess &aa) {
   return arrayAccessID;
 }
 atl::string DotGraph::visit(ArrayType &at) {
-  return at.arrayType->accept(*this) + "[" + at.arraySize.c_str() + "]";
+  return at.arrayType->accept(*this) + "[" + at.arraySize->accept(*this) + "]";
 }
 atl::string DotGraph::visit(Assign &as) {
   atl::string assignID = atl::string("Assign") + atl::to_string(nodeCount++);

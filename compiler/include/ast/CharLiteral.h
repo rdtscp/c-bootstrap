@@ -20,6 +20,15 @@ public:
 
   atl::string getLiteral() const override;
 
+  bool operator==(Expr &rhs) const override;
+  bool operator!=(Expr &rhs) const override;
+
+  bool operator==(Literal &rhs) const override;
+  bool operator!=(Literal &rhs) const override;
+
+  bool operator==(const CharLiteral &rhs) const;
+  bool operator!=(const CharLiteral &rhs) const;
+
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;
   atl::shared_ptr<Type> accept(ASTVisitor<atl::shared_ptr<Type>> &v) override;

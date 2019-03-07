@@ -4,6 +4,7 @@
 #define ACC_ALLOCATION_H
 
 #include "Expr.h"
+#include "Type.h"
 
 namespace ACC {
 
@@ -16,8 +17,15 @@ public:
 
   Allocation(const atl::shared_ptr<Type> &variableType);
   Allocation(const atl::shared_ptr<FunCall> &variableConstructorCall);
+  virtual ~Allocation() {}
 
   atl::shared_ptr<Allocation> getptr();
+
+  bool operator==(Expr &rhs) const override;
+  bool operator!=(Expr &rhs) const override;
+
+  bool operator==(const Allocation &rhs) const;
+  bool operator!=(const Allocation &rhs) const;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

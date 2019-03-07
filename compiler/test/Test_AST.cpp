@@ -28,18 +28,24 @@ TEST(ASTTest, BaseTypeComparisons) {
 
 TEST(ASTTest, ArrayTypeComparisons) {
   ArrayType charArray(
-      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)), "5");
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+      atl::shared_ptr<IntLiteral>(new IntLiteral("5")));
   ArrayType intArray(
-      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)), "5");
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+      atl::shared_ptr<IntLiteral>(new IntLiteral("5")));
   ArrayType voidArray(
-      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)), "5");
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)),
+      atl::shared_ptr<IntLiteral>(new IntLiteral("5")));
 
   ArrayType charArray2(
-      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)), "5");
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+      atl::shared_ptr<IntLiteral>(new IntLiteral("5")));
   ArrayType intArray2(
-      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)), "5");
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+      atl::shared_ptr<IntLiteral>(new IntLiteral("5")));
   ArrayType voidArray2(
-      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)), "5");
+      atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)),
+      atl::shared_ptr<IntLiteral>(new IntLiteral("5")));
 
   ASSERT_FALSE(charArray == intArray);
   ASSERT_FALSE(intArray == voidArray);

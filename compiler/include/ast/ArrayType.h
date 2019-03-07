@@ -3,6 +3,7 @@
 #ifndef ACC_ARRAYTYPE_H
 #define ACC_ARRAYTYPE_H
 
+#include "Expr.h"
 #include "Type.h"
 
 namespace ACC {
@@ -10,10 +11,10 @@ namespace ACC {
 class ArrayType : public Type, public atl::enable_shared_from_this<ArrayType> {
 
 public:
-  const atl::string arraySize;
   atl::shared_ptr<Type> arrayType;
+  atl::shared_ptr<Expr> arraySize;
 
-  ArrayType(atl::shared_ptr<Type> arrayType, const atl::string &arraySize);
+  ArrayType(atl::shared_ptr<Type> arrayType, atl::shared_ptr<Expr> arraySize);
 
   atl::shared_ptr<ArrayType> getptr();
 

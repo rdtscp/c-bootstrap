@@ -135,14 +135,16 @@ TEST(ParserTest, VarDecls) {
               PointerType(atl::make_shared<PointerType>(PointerType(
                   atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID)))))),
           "myVoidPtrPtr")),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<ArrayType>(ArrayType(
-              atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)), "5")),
-          "myIntArr")),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<ArrayType>(ArrayType(
-              atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)), "5")),
-          "myCharArr")),
+      atl::make_shared<VarDecl>(
+          VarDecl(atl::make_shared<ArrayType>(ArrayType(
+                      atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+                      atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
+                  "myIntArr")),
+      atl::make_shared<VarDecl>(
+          VarDecl(atl::make_shared<ArrayType>(ArrayType(
+                      atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
+                      atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
+                  "myCharArr")),
       atl::make_shared<VarDecl>(
           VarDecl(atl::make_shared<StructType>(StructType("FooStruct")),
                   "myFooStruct")),
@@ -150,10 +152,11 @@ TEST(ParserTest, VarDecls) {
           VarDecl(atl::make_shared<PointerType>(PointerType(
                       atl::make_shared<StructType>(StructType("FooStruct")))),
                   "myFooStructPtr")),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<ArrayType>(ArrayType(
-              atl::make_shared<StructType>(StructType("FooStruct")), "5")),
-          "myFooStructArr"))};
+      atl::make_shared<VarDecl>(
+          VarDecl(atl::make_shared<ArrayType>(ArrayType(
+                      atl::make_shared<StructType>(StructType("FooStruct")),
+                      atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
+                  "myFooStructArr"))};
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 

@@ -6,6 +6,23 @@ VarExpr::VarExpr(const atl::string &identifier) : identifier(identifier) {}
 
 atl::shared_ptr<VarExpr> VarExpr::getptr() { return shared_from_this(); }
 
+bool VarExpr::operator==(Expr &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<VarExpr *>(&rhs);
+  return false;
+}
+
+bool VarExpr::operator!=(Expr &rhs) const { return !(*this == rhs); }
+
+bool VarExpr::operator==(const VarExpr &rhs) const {
+  if (identifier != rhs.identifier)
+    return false;
+
+  return true;
+}
+
+bool VarExpr::operator!=(const VarExpr &rhs) const { return !(*this == rhs); }
+
 void VarExpr::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 atl::string VarExpr::accept(ASTVisitor<atl::string> &v) {

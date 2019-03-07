@@ -1,10 +1,11 @@
 #include "../../include/ast/ArrayType.h"
+#include "../../include/ast/IntLiteral.h"
 
 using namespace ACC;
 
 ArrayType::ArrayType(atl::shared_ptr<Type> arrayType,
-                     const atl::string &arraySize)
-    : arraySize(arraySize), arrayType(arrayType) {}
+                     atl::shared_ptr<Expr> arraySize)
+    : arrayType(arrayType), arraySize(arraySize) {}
 
 atl::shared_ptr<ArrayType> ArrayType::getptr() { return shared_from_this(); }
 
@@ -17,7 +18,7 @@ bool ArrayType::operator==(Type &rhs) const {
 bool ArrayType::operator!=(Type &t) const { return !(*this == t); }
 
 bool ArrayType::operator==(const ArrayType &rhs) const {
-  return (*arrayType == *rhs.arrayType && arraySize == rhs.arraySize);
+  return (*arrayType == *rhs.arrayType && *arraySize == *rhs.arraySize);
 }
 
 bool ArrayType::operator!=(const ArrayType &rhs) const {
@@ -26,7 +27,14 @@ bool ArrayType::operator!=(const ArrayType &rhs) const {
 
 int ArrayType::getBytes() const {
   int elementSize = arrayType->getBytes();
-  return std::stoi(std::string(arraySize.c_str())) * elementSize;
+  if (arraySize->astClass() != "IntLiteral")
+    throw "Internal Error: Attempted to getBytes() of dynamic "
+          "ArrayType.";
+
+  const atl::shared_ptr<IntLiteral> arraySizeIntLiteral =
+      atl::static_pointer_cast<IntLiteral>(arraySize);
+  return std::stoi(std::string(arraySizeIntLiteral->getLiteral().c_str())) *
+         elementSize;
 }
 
 void ArrayType::accept(ASTVisitor<void> &v) { return v.visit(*this); }

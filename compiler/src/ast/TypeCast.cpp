@@ -7,6 +7,26 @@ TypeCast::TypeCast(atl::shared_ptr<Type> type, atl::shared_ptr<Expr> expr)
 
 atl::shared_ptr<TypeCast> TypeCast::getptr() { return shared_from_this(); }
 
+bool TypeCast::operator==(Expr &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<TypeCast *>(&rhs);
+  return false;
+}
+
+bool TypeCast::operator!=(Expr &rhs) const { return !(*this == rhs); }
+
+bool TypeCast::operator==(const TypeCast &rhs) const {
+  if (*type != *rhs.type)
+    return false;
+
+  if (*expr != *rhs.expr)
+    return false;
+
+  return true;
+}
+
+bool TypeCast::operator!=(const TypeCast &rhs) const { return !(*this == rhs); }
+
 void TypeCast::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 atl::string TypeCast::accept(ASTVisitor<atl::string> &v) {

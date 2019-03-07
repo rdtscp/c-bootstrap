@@ -9,6 +9,25 @@ atl::shared_ptr<ParenthExpr> ParenthExpr::getptr() {
   return shared_from_this();
 }
 
+bool ParenthExpr::operator==(Expr &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<ParenthExpr *>(&rhs);
+  return false;
+}
+
+bool ParenthExpr::operator!=(Expr &rhs) const { return !(*this == rhs); }
+
+bool ParenthExpr::operator==(const ParenthExpr &rhs) const {
+  if (*innerExpr != *rhs.innerExpr)
+    return false;
+
+  return true;
+}
+
+bool ParenthExpr::operator!=(const ParenthExpr &rhs) const {
+  return !(*this == rhs);
+}
+
 void ParenthExpr::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 atl::string ParenthExpr::accept(ASTVisitor<atl::string> &v) {

@@ -20,6 +20,12 @@ public:
 
   atl::shared_ptr<ArrayAccess> getptr();
 
+  bool operator==(Expr &rhs) const override;
+  bool operator!=(Expr &rhs) const override;
+
+  bool operator==(const ArrayAccess &rhs) const;
+  bool operator!=(const ArrayAccess &rhs) const;
+
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;
   atl::shared_ptr<Type> accept(ASTVisitor<atl::shared_ptr<Type>> &v) override;

@@ -1,3 +1,4 @@
+#include "atl/include/set.h"
 #include <cassert>
 #include <stdexcept>
 
@@ -151,6 +152,9 @@ bool Parser::acceptVarDecl(int offset) {
   if (!acceptType(offset))
     return false;
 
+  if (accept(TC::CONST))
+    ++offset;
+
   if (accept(TC::STRUCT, offset)) {
     ++offset;
     if (!accept(TC::IDENTIFIER, offset))
@@ -193,6 +197,8 @@ bool Parser::acceptStructType(int offset) {
   return true;
 }
 bool Parser::acceptType(int offset) {
+  if (accept(TC::CONST))
+    ++offset;
   if (accept({TC::INT, TC::CHAR, TC::VOID, TC::UINT}, offset))
     return true;
   if (accept(TC::STRUCT, offset) && accept(TC::IDENTIFIER, offset + 1))
@@ -479,9 +485,7 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
   const atl::string varIdentifier = expect(TC::IDENTIFIER).data;
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
-    atl::string arraySize;
-    if (accept(TC::INT_LITERAL))
-      arraySize = expect(TC::INT_LITERAL).data;
+    const atl::shared_ptr<Expr> arraySize = parseLitExpr();
     expect(TC::RSBR);
     varType = atl::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
@@ -496,6 +500,11 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
 
 /* -- Types -- */
 atl::shared_ptr<Type> Parser::parseType() {
+  atl::set<Type::Modifiers> typeModifiers;
+  if (accept(TC::CONST)) {
+    expect(TC::CONST);
+    typeModifiers.insert(Type::Modifiers::CONST);
+  }
   atl::shared_ptr<Type> type;
   if (acceptStructType()) {
     expect(TC::STRUCT);
@@ -534,6 +543,8 @@ atl::shared_ptr<Type> Parser::parseType() {
     expect(TC::ASTERIX);
     type = atl::shared_ptr<PointerType>(new PointerType(type));
   }
+
+  type->typeModifiers = typeModifiers;
   return type;
 }
 
@@ -659,7 +670,7 @@ atl::shared_ptr<VarDecl> Parser::parseParam() {
     varIdentifier = expect(TC::IDENTIFIER).data;
   if (accept(TC::LSBR)) {
     expect(TC::LSBR);
-    const atl::string arraySize = expect(TC::INT_LITERAL).data;
+    const atl::shared_ptr<Expr> arraySize = parseLitExpr();
     expect(TC::RSBR);
     varType = atl::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
   }
@@ -804,10 +815,10 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
       atl::shared_ptr<Type> allocatedType = parseType();
       if (accept(TC::LSBR)) {
         expect(TC::LSBR);
-        SourceToken arraySize = expect(TC::INT_LITERAL);
+        const atl::shared_ptr<Expr> arraySize = parseExpr();
         expect(TC::RSBR);
-        allocatedType = atl::shared_ptr<ArrayType>(
-            new ArrayType(allocatedType, arraySize.data));
+        allocatedType =
+            atl::shared_ptr<ArrayType>(new ArrayType(allocatedType, arraySize));
         return atl::make_shared<Allocation>(Allocation(allocatedType));
       }
     }

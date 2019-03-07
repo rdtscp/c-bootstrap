@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-IntLiteral::IntLiteral(const atl::string &literal) : value(literal) {}
+IntLiteral::IntLiteral(const atl::string &literal) : Literal(literal) {}
 
 atl::shared_ptr<IntLiteral> IntLiteral::getptr() { return shared_from_this(); }
 
@@ -12,6 +12,33 @@ atl::string IntLiteral::getLiteral() const {
     return atl::to_string(intValue);
   }
   return value;
+}
+
+bool IntLiteral::operator==(Expr &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<IntLiteral *>(&rhs);
+  return false;
+}
+
+bool IntLiteral::operator!=(Expr &rhs) const { return !(*this == rhs); }
+
+bool IntLiteral::operator==(Literal &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<IntLiteral *>(&rhs);
+  return false;
+}
+
+bool IntLiteral::operator!=(Literal &rhs) const { return !(*this == rhs); }
+
+bool IntLiteral::operator==(const IntLiteral &rhs) const {
+  if (value != rhs.value)
+    return false;
+
+  return true;
+}
+
+bool IntLiteral::operator!=(const IntLiteral &rhs) const {
+  return !(*this == rhs);
 }
 
 void IntLiteral::accept(ASTVisitor<void> &v) { return v.visit(*this); }

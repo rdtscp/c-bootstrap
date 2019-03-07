@@ -10,6 +10,28 @@ Allocation::Allocation(const atl::shared_ptr<FunCall> &variableConstructorCall)
 
 atl::shared_ptr<Allocation> Allocation::getptr() { return shared_from_this(); }
 
+bool Allocation::operator==(Expr &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<Allocation *>(&rhs);
+  return false;
+}
+
+bool Allocation::operator!=(Expr &rhs) const { return !(*this == rhs); }
+
+bool Allocation::operator==(const Allocation &rhs) const {
+  if (*variableType != *rhs.variableType)
+    return false;
+
+  if (variableConstructorCall != rhs.variableConstructorCall)
+    return false;
+
+  return true;
+}
+
+bool Allocation::operator!=(const Allocation &rhs) const {
+  return !(*this == rhs);
+}
+
 void Allocation::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 atl::string Allocation::accept(ASTVisitor<atl::string> &v) {

@@ -10,15 +10,21 @@ namespace ACC {
 
 class IntLiteral : public Literal,
                    public atl::enable_shared_from_this<IntLiteral> {
-private:
-  const atl::string value;
-
 public:
   IntLiteral(const atl::string &literal);
 
   atl::shared_ptr<IntLiteral> getptr();
 
   atl::string getLiteral() const override;
+
+  bool operator==(Expr &rhs) const override;
+  bool operator!=(Expr &rhs) const override;
+
+  bool operator==(Literal &rhs) const override;
+  bool operator!=(Literal &rhs) const override;
+
+  bool operator==(const IntLiteral &rhs) const;
+  bool operator!=(const IntLiteral &rhs) const;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;
