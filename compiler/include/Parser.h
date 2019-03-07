@@ -99,6 +99,7 @@ private:
   atl::shared_ptr<Assign> parseAssign();
   atl::shared_ptr<Block> parseBlock();
   atl::shared_ptr<DoWhile> parseDoWhile();
+  atl::shared_ptr<For> parseFor();
   atl::shared_ptr<If> parseIf();
   atl::shared_ptr<Namespace> parseNamespace();
   atl::shared_ptr<Return> parseReturn();

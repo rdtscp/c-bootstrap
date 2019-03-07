@@ -229,6 +229,8 @@ bool Parser::acceptStmt(int offset) {
     return true;
   if (acceptDoWhile(offset))
     return true;
+  if (acceptFor())
+    return true;
   if (acceptIf(offset))
     return true;
   if (acceptReturn(offset))
@@ -579,6 +581,23 @@ atl::shared_ptr<DoWhile> Parser::parseDoWhile() {
 
   return atl::make_shared<DoWhile>(DoWhile(whileBody, whileCondition));
 }
+atl::shared_ptr<For> Parser::parseFor() {
+  expect(TC::FOR);
+  expect(TC::LPAR);
+  const atl::shared_ptr<VarDecl> initialVarDecl = parseVarDecl();
+  expect(TC::SC);
+  const atl::shared_ptr<Expr> condition = parseExpr();
+  expect(TC::SC);
+  const atl::shared_ptr<Expr> endBodyExpr = parseExpr();
+  /* TODO: Check this Stmt is Valid ASTNode Type. */
+  if (endBodyExpr->astClass() != "PrefixInc")
+    throw "TEMP: For Loops do not support end of body expressions other than "
+          "prefix increments";
+  expect(TC::RPAR);
+  const atl::shared_ptr<Stmt> body = parseStmt();
+  return atl::make_shared<For>(
+      For(initialVarDecl, condition, endBodyExpr, body));
+}
 atl::shared_ptr<If> Parser::parseIf() {
   expect(TC::IF);
   expect(TC::LPAR);
@@ -635,6 +654,9 @@ atl::shared_ptr<Stmt> Parser::parseStmt() {
 
   if (acceptDoWhile())
     return parseDoWhile();
+
+  if (acceptFor())
+    return parseFor();
 
   if (acceptIf())
     return parseIf();
@@ -799,6 +821,15 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     atl::shared_ptr<IntLiteral> lhs(new IntLiteral("0"));
     atl::shared_ptr<Expr> rhs = parseObjExpr();
     return atl::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs));
+  }
+  if (accept(TC::PREFIXINC)) {
+    expect(TC::PREFIXINC);
+    atl::shared_ptr<Expr> incrementExpr = parseObjExpr();
+    if (incrementExpr->astClass() != "VarExpr")
+      throw "Attempted operator++ on Expr that was not a VarExpr";
+    const atl::shared_ptr<VarExpr> incrementVar =
+        atl::static_pointer_cast<VarExpr>(incrementExpr);
+    // return atl::make_shared<PrefixInc>(PrefixInc(incrementVar));
   }
   if (accept(TC::NEW)) {
     /* TODO: Parse Heap Allocation. */

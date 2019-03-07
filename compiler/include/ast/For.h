@@ -12,11 +12,11 @@ class For : public Stmt, public atl::enable_shared_from_this<For> {
 public:
   atl::shared_ptr<VarDecl> initialVarDecl;
   atl::shared_ptr<Expr> condition;
-  atl::shared_ptr<Stmt> endBodyStmt;
+  atl::shared_ptr<Expr> endBodyExpr;
   atl::shared_ptr<Stmt> body;
 
   For(atl::shared_ptr<VarDecl> initialVarDecl, atl::shared_ptr<Expr> condition,
-      atl::shared_ptr<Stmt> endBodyStmt, atl::shared_ptr<Stmt> body);
+      atl::shared_ptr<Expr> endBodyExpr, atl::shared_ptr<Stmt> body);
 
   atl::shared_ptr<For> getptr();
 
