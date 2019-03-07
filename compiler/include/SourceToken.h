@@ -56,6 +56,7 @@ public:
     PRIVATE,   // "private:"
     PROTECTED, // "protected:"
     NEW,       // "new"
+    FOR,       // "for"
 
     // literals
     STRING_LITERAL, // \".*\"  any sequence of characters enclosed within two
@@ -212,6 +213,8 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "protected:";
   case SourceToken::Class::NEW:
     return "new";
+  case SourceToken::Class::FOR:
+    return "for";
   }
 }
 

@@ -103,6 +103,14 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::ENUM, scanner.getPosition());
     }
+    // Check for ENUM Token.
+    else if (c == 'f' && scanner.peek() == 'o') {
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("for");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return SourceToken(TC::FOR, scanner.getPosition());
+    }
     // Check for IF Token.
     else if (c == 'i' && scanner.peek() == 'f') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("if");
