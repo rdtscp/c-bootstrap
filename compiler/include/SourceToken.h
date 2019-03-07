@@ -57,11 +57,12 @@ public:
     PROTECTED, // "protected:"
     NEW,       // "new"
     FOR,       // "for"
+    PREFIXOP,  // "++{}"
 
     // literals
-    STRING_LITERAL, // \".*\"  any sequence of characters enclosed within two
-                    // double quote " (please be aware of the escape character
-                    // backslash \)
+    STRING_LITERAL, // \".*\"  any sequence of characters enclosed within
+                    // two double quote " (please be aware of the escape
+                    // character backslash \)
     INT_LITERAL,    // ('0'|...|'9')+
     CHAR_LITERAL, // \'('a'|...|'z'|'A'|...|'Z'|'\t'|'\b'|'\n'|'\r'|'\f'|'\''|'\"'|'\\'|'.'|','|'_'|...)\'
                   // a character starts and end with a single quote '
@@ -215,6 +216,8 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "new";
   case SourceToken::Class::FOR:
     return "for";
+  case SourceToken::Class::PREFIXOP:
+    return "++";
   }
 }
 

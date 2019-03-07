@@ -307,8 +307,6 @@ SourceToken Lexer::nextToken() {
     return SourceToken(TC::SC, scanner.getPosition());
   if (c == ',')
     return SourceToken(TC::COMMA, scanner.getPosition());
-  if (c == '+')
-    return SourceToken(TC::PLUS, scanner.getPosition());
   if (c == '-')
     return SourceToken(TC::MINUS, scanner.getPosition());
   if (c == '*')
@@ -325,6 +323,10 @@ SourceToken Lexer::nextToken() {
     return SourceToken(TC::LT, scanner.getPosition());
   if (c == '&')
     return SourceToken(TC::REF, scanner.getPosition());
+  if (c == '+' && scanner.peek() == '+')
+    return SourceToken(TC::PREFIXOP, scanner.getPosition());
+  else if (c == '+')
+    return SourceToken(TC::PLUS, scanner.getPosition());
 
   // Skip Whitespace.
   if (atl::isspace(c))
