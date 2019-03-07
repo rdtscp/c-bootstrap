@@ -263,6 +263,9 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
 
   return atl::make_shared<X86::None>();
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(ReferenceType &rt) {
+  return atl::make_shared<X86::None>();
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Return &r) {
   if (r.returnExpr) {
     atl::shared_ptr<X86::Operand> rVal = r.returnExpr->accept(*this);

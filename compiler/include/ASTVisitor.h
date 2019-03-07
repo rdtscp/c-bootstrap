@@ -31,6 +31,7 @@ class ParenthExpr;
 class PointerType;
 class PrefixInc;
 class Program;
+class ReferenceType;
 class Return;
 class SizeOf;
 class StringLiteral;
@@ -75,6 +76,7 @@ public:
   virtual T visit(PointerType &pt) = 0;
   virtual T visit(PrefixInc &pi) = 0;
   virtual T visit(Program &p) = 0;
+  virtual T visit(ReferenceType &rt) = 0;
   virtual T visit(Return &r) = 0;
   virtual T visit(SizeOf &so) = 0;
   virtual T visit(StringLiteral &sl) = 0;

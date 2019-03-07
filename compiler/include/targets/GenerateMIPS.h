@@ -92,6 +92,7 @@ private:
   MIPS::Register visit(PointerType &pt) override;
   MIPS::Register visit(PrefixInc &pi) override;
   MIPS::Register visit(Program &p) override;
+  MIPS::Register visit(ReferenceType &rt) override;
   MIPS::Register visit(Return &r) override;
   MIPS::Register visit(SizeOf &so) override;
   MIPS::Register visit(StringLiteral &sl) override;

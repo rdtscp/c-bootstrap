@@ -144,6 +144,9 @@ void NameAnalysis::visit(Program &p) {
   //   error("Program did not contain a main() Function.");
   p.globalScope = currScope;
 }
+void NameAnalysis::visit(ReferenceType &rt) {
+    rt.referencedType->accept(*this);
+}
 void NameAnalysis::visit(Return &r) {
   if (r.returnExpr)
     r.returnExpr->accept(*this);

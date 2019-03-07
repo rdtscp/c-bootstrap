@@ -298,6 +298,9 @@ atl::string DotGraph::visit(Program &p) {
   printf("}\n");
   return "Node0";
 }
+atl::string DotGraph::visit(ReferenceType &rt) {
+  return rt.referencedType->accept(*this) + " &";
+}
 atl::string DotGraph::visit(Return &r) {
   atl::string returnID = atl::string("Return") + atl::to_string(nodeCount++);
   declare(returnID, "return");

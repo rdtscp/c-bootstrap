@@ -55,6 +55,7 @@ private:
   atl::string visit(PointerType &pt) override;
   atl::string visit(PrefixInc &pi) override;
   atl::string visit(Program &p) override;
+  atl::string visit(ReferenceType &rt) override;
   atl::string visit(Return &r) override;
   atl::string visit(SizeOf &so) override;
   atl::string visit(StringLiteral &sl) override;

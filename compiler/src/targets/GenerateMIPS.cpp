@@ -288,6 +288,9 @@ MIPS::Register GenerateMIPS::visit(Program &p) {
 
   return MIPS::Register();
 }
+MIPS::Register GenerateMIPS::visit(ReferenceType &rt) {
+  return MIPS::Register();
+}
 MIPS::Register GenerateMIPS::visit(Return &r) {
   if (r.returnExpr)
     r.returnExpr->accept(*this);

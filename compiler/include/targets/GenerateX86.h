@@ -67,6 +67,7 @@ private:
   atl::shared_ptr<X86::Operand> visit(PointerType &pt) override;
   atl::shared_ptr<X86::Operand> visit(PrefixInc &pi) override;
   atl::shared_ptr<X86::Operand> visit(Program &p) override;
+  atl::shared_ptr<X86::Operand> visit(ReferenceType &rt) override;
   atl::shared_ptr<X86::Operand> visit(Return &r) override;
   atl::shared_ptr<X86::Operand> visit(SizeOf &so) override;
   atl::shared_ptr<X86::Operand> visit(StringLiteral &sl) override;

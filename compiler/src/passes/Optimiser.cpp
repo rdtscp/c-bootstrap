@@ -192,6 +192,9 @@ atl::shared_ptr<ASTNode> Optimiser::visit(Program &p) {
   p.globalScope = currScope;
   return nullptr;
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(ReferenceType &rt) {
+  return rt.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(Return &r) {
   if (r.returnExpr)
     r.returnExpr = atl::static_pointer_cast<Expr>(r.returnExpr->accept(*this));

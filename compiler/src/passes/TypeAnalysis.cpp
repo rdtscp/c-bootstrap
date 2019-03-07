@@ -210,6 +210,9 @@ atl::shared_ptr<Type> TypeAnalysis::visit(Program &p) {
     p.decls[idx]->accept(*this);
   return nullptr;
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(ReferenceType &rt) {
+  return rt.getptr();
+}
 atl::shared_ptr<Type> TypeAnalysis::visit(Return &r) {
   if (r.returnExpr)
     return r.returnExpr->accept(*this);

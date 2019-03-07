@@ -56,6 +56,7 @@ private:
   void visit(PointerType &pt) override;
   void visit(PrefixInc &pi) override;
   void visit(Program &p) override;
+  void visit(ReferenceType &rt) override;
   void visit(Return &r) override;
   void visit(SizeOf &so) override;
   void visit(StringLiteral &sl) override;

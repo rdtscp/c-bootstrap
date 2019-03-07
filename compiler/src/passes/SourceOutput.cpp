@@ -262,6 +262,10 @@ atl::string SourceOutput::visit(Program &p) {
   }
   return output;
 }
+atl::string SourceOutput::visit(ReferenceType &rt) {
+    return rt.referencedType->accept(*this) + " &";
+
+}
 atl::string SourceOutput::visit(Return &r) {
   atl::string output = "return";
   if (r.returnExpr) {
