@@ -66,6 +66,7 @@ private:
   bool acceptAssign(int offset = 0);
   bool acceptBlock(int offset = 0);
   bool acceptDoWhile(int offset = 0);
+  bool acceptFor(int offset = 0);
   bool acceptIf(int offset = 0);
   bool acceptNamespace(int offset = 0);
   bool acceptReturn(int offset = 0);

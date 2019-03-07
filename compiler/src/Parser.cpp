@@ -214,6 +214,7 @@ bool Parser::acceptType(int offset) {
 bool Parser::acceptAssign(int offset) { return acceptExpr(offset); }
 bool Parser::acceptBlock(int offset) { return accept(TC::LBRA, offset); }
 bool Parser::acceptDoWhile(int offset) { return accept(TC::DO, offset); }
+bool Parser::acceptFor(int offset) { return accept(TC::FOR, offset); }
 bool Parser::acceptIf(int offset) { return accept(TC::IF, offset); }
 bool Parser::acceptNamespace(int offset) {
   return accept(TC::NAMESPACE, offset);
