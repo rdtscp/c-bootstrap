@@ -119,7 +119,7 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::IF, scanner.getPosition());
     }
-    // Check for INT token.
+    // Check for INT Token.
     else if (c == 'i' && scanner.peek() == 'n') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("int");
       literal = lexResult.second;
@@ -127,35 +127,41 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::INT, scanner.getPosition());
     }
-    // Check for NAMESPACE token.
+    // Check for NAMESPACE Token.
     else if (c == 'n' && scanner.peek() == 'a') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("namespace");
       literal = lexResult.second;
 
       if (lexResult.first)
         return SourceToken(TC::NAMESPACE, scanner.getPosition());
-    } else if (c == 'n' && scanner.peek() == 'e') {
+    }
+    // Check for NEW Token.
+    else if (c == 'n' && scanner.peek() == 'e') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("new");
       literal = lexResult.second;
 
       if (lexResult.first)
         return SourceToken(TC::NEW, scanner.getPosition());
-    } else if (c == 'p' && scanner.peek() == 'r') {
+    }
+    // Check for PRIVATE/PROTECTED Tokens.
+    else if (c == 'p' && scanner.peek() == 'r') {
       c = scanner.next();
       if (scanner.peek() == 'i') {
-        atl::pair<bool, atl::string> lexResult = tryLexKeyword("ivate:");
-        literal = lexResult.second;
+        atl::pair<bool, atl::string> lexResult = tryLexKeyword("rivate:");
+        literal = atl::string("p") + lexResult.second;
 
         if (lexResult.first)
           return SourceToken(TC::PRIVATE, scanner.getPosition());
       } else if (scanner.peek() == 'o') {
         atl::pair<bool, atl::string> lexResult = tryLexKeyword("otected:");
-        literal = lexResult.second;
+        literal = atl::string("p") + lexResult.second;
 
         if (lexResult.first)
           return SourceToken(TC::PROTECTED, scanner.getPosition());
       }
-    } else if (c == 'p' && scanner.peek() == 'u') {
+    }
+    // Check for PUBLIC Token.
+    else if (c == 'p' && scanner.peek() == 'u') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("public:");
       literal = lexResult.second;
 
