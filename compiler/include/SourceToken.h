@@ -57,7 +57,8 @@ public:
     PROTECTED, // "protected:"
     NEW,       // "new"
     FOR,       // "for"
-    PREFIXINC, // "++{}"
+    PREFIXINC, // "++{}",
+    THIS,      // "this"
 
     // literals
     STRING_LITERAL, // \".*\"  any sequence of characters enclosed within
@@ -218,6 +219,8 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "for";
   case SourceToken::Class::PREFIXINC:
     return "++";
+  case SourceToken::Class::THIS:
+    return "this";
   }
 }
 

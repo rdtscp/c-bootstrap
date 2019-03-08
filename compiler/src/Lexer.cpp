@@ -200,6 +200,14 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::STRUCT, scanner.getPosition());
     }
+    // Check for THIS Token.
+    else if (c == 't' && scanner.peek() == 'h') {
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("this");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return SourceToken(TC::THIS, scanner.getPosition());
+    }
     // Check for TYPEDEF Token.
     else if (c == 't' && scanner.peek() == 'y') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("typedef");
