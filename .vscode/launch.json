@@ -15,12 +15,29 @@
       "console": "integratedTerminal"
     },
     {
-      "name": "(lldb) acc",
+      "name": "(lldb) acc - parser/class.cpp",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/compiler/build/acc",
       "args": [
-        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/class_.cpp",
+        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/parser/class.cpp",
+        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/class.s",
+        "x86"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "lldb",
+      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
+    },
+    {
+      "name": "(lldb) acc - main_.cpp",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/compiler/build/acc",
+      "args": [
+        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main_.cpp",
         "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/class.s",
         "x86"
       ],
