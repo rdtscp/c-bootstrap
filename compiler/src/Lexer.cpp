@@ -243,9 +243,8 @@ SourceToken Lexer::nextToken() {
 
     // No keyword Token has been returned.
     // Now Lex an IDENTIFIER.
-    char peek;
     while (true) {
-      peek = scanner.peek();
+      char peek = scanner.peek();
       // If the next character is whitespace, the IDENTIFIER has been
       // identified.
       if (atl::isspace(peek)) {
@@ -356,9 +355,8 @@ SourceToken Lexer::lexStringLiteral() {
   atl::string literal;
   int currLine = scanner.getPosition().line;
 
-  char c;
   while (true) {
-    c = scanner.next();
+    char c = scanner.next();
     if (c == '\0')
       throw std::runtime_error(
           std::string("Lexer: Unexpected EOF in String Literal. ") +
@@ -416,7 +414,6 @@ atl::pair<bool, atl::string> Lexer::tryLexKeyword(const atl::string &keyword) {
   atl::string literal(1, keyword[0]);
 
   for (int i = 1; i < keyword.length(); i++) {
-    char peek = scanner.peek();
     if (scanner.peek() != keyword[i])
       return atl::pair<bool, atl::string>(false, literal);
 
