@@ -5,6 +5,7 @@
 #include "include/passes/DotGraph.h"
 #include "include/passes/NameAnalysis.h"
 #include "include/passes/Optimiser.h"
+#include "include/passes/SourceOutput.h"
 #include "include/passes/TypeAnalysis.h"
 #include "include/targets/GenerateMIPS.h"
 #include "include/targets/GenerateX86.h"
@@ -32,7 +33,7 @@ int main(int argc, char const *argv[]) {
   bool outputGraph = false;
   bool optimise = false;
   if (argc > 3) {
-    for (int i = 4; i < argc; i++) {
+    for (int i = 4; i < argc; ++i) {
       const atl::string flag(argv[i]);
       if (flag == "-p" || flag == "--print")
         outputGraph = true;
@@ -84,6 +85,10 @@ int main(int argc, char const *argv[]) {
     ACC::GenerateX86 x86Generator(progAST, outFilename);
     x86Generator.run();
   }
+
+  printf("\n\n");
+  ACC::SourceOutput sourceOutput(progAST);
+  sourceOutput.print();
 
   return 0;
 }
