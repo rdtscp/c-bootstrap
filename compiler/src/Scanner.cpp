@@ -111,8 +111,8 @@ void Scanner::updateCurrFile() {
   }
   unsigned int lineNum = std::stoul(lineNumStr, nullptr, 10);
 
-  next();            // Skip space;
-  nextChar = next(); // Skip quote;
+  next(); // Skip space;
+  next(); // Skip quote;
 
   atl::string filename;
   if (peek() != '<') {
