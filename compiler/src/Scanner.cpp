@@ -33,18 +33,18 @@ char Scanner::next() {
     return '\0';
 
   if (nextChar == '#') {
-    currChar++;
+    ++currChar;
     updateCurrFile();
     return next();
   }
 
   if (nextChar == '\n' || nextChar == '\r') {
-    line++;
+    ++line;
     column = 1;
   } else {
-    column++;
+    ++column;
   }
-  currChar++;
+  ++currChar;
   return nextChar;
 }
 
