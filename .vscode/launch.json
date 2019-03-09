@@ -22,7 +22,8 @@
       "args": [
         "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/parser/class.cpp",
         "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/class.s",
-        "x86"
+        "x86",
+        "--print"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
