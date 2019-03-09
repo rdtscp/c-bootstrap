@@ -56,13 +56,14 @@ private:
   atl::shared_ptr<X86::Operand> visit(ConstructorDef &cd) override;
   atl::shared_ptr<X86::Operand> visit(DoWhile &dw) override;
   atl::shared_ptr<X86::Operand> visit(EnumTypeDecl &etd) override;
-  atl::shared_ptr<X86::Operand> visit(MemberAccess &fa) override;
   atl::shared_ptr<X86::Operand> visit(For &f) override;
   atl::shared_ptr<X86::Operand> visit(FunCall &fc) override;
   atl::shared_ptr<X86::Operand> visit(FunDecl &fd) override;
   atl::shared_ptr<X86::Operand> visit(FunDef &fd) override;
   atl::shared_ptr<X86::Operand> visit(If &i) override;
   atl::shared_ptr<X86::Operand> visit(IntLiteral &il) override;
+  atl::shared_ptr<X86::Operand> visit(MemberAccess &ma) override;
+  atl::shared_ptr<X86::Operand> visit(MemberCall &mc) override;
   atl::shared_ptr<X86::Operand> visit(Namespace &n) override;
   atl::shared_ptr<X86::Operand> visit(ParenthExpr &pe) override;
   atl::shared_ptr<X86::Operand> visit(PointerType &pt) override;

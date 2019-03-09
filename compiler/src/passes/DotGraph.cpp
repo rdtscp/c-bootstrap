@@ -224,17 +224,6 @@ atl::string DotGraph::visit(DoWhile &dw) {
   return whileID;
 }
 atl::string DotGraph::visit(EnumTypeDecl &etd) { return ""; }
-atl::string DotGraph::visit(MemberAccess &fa) {
-  atl::string fieldAccessID =
-      atl::string("MemberAccess") + atl::to_string(++nodeCount);
-  declare(fieldAccessID, atl::string("MemberAccess.") + fa.field.c_str());
-
-  atl::string objID = fa.object->accept(*this);
-
-  join(fieldAccessID, objID);
-
-  return fieldAccessID;
-}
 atl::string DotGraph::visit(For &f) {
   atl::string forID = atl::string("For") + atl::to_string(++nodeCount);
 
@@ -294,6 +283,18 @@ atl::string DotGraph::visit(Namespace &n) {
     n.namespaceDecls[i]->accept(*this);
   return namespaceID;
 }
+atl::string DotGraph::visit(MemberAccess &ma) {
+  atl::string memberAccessID =
+      atl::string("MemberAccess") + atl::to_string(++nodeCount);
+  declare(memberAccessID, atl::string("MemberAccess.") + ma.field.c_str());
+
+  atl::string objID = ma.object->accept(*this);
+
+  join(memberAccessID, objID);
+
+  return memberAccessID;
+}
+atl::string DotGraph::visit(MemberCall &mc) { return ""; }
 atl::string DotGraph::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);
 }

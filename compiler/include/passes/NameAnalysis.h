@@ -45,13 +45,14 @@ private:
   void visit(ConstructorDef &cd) override;
   void visit(DoWhile &dw) override;
   void visit(EnumTypeDecl &etd) override;
-  void visit(MemberAccess &fa) override;
   void visit(For &f) override;
   void visit(FunCall &fc) override;
   void visit(FunDecl &fd) override;
   void visit(FunDef &fd) override;
   void visit(If &i) override;
   void visit(IntLiteral &il) override;
+  void visit(MemberAccess &ma) override;
+  void visit(MemberCall &mc) override;
   void visit(Namespace &n) override;
   void visit(ParenthExpr &pe) override;
   void visit(PointerType &pt) override;

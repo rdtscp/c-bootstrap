@@ -114,10 +114,6 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(DoWhile &dw) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(EnumTypeDecl &etd) {
   return atl::make_shared<X86::None>();
 }
-atl::shared_ptr<X86::Operand> GenerateX86::visit(MemberAccess &fa) {
-  fa.object->accept(*this);
-  return atl::make_shared<X86::None>();
-}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(For &f) {
   return atl::make_shared<X86::None>();
 }
@@ -229,6 +225,14 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(IntLiteral &il) {
   x86.mov(X86::eax,
           atl::make_shared<X86::IntValue>(X86::IntValue(il.getLiteral())));
   return X86::eax;
+}
+atl::shared_ptr<X86::Operand> GenerateX86::visit(MemberAccess &ma) {
+  ma.object->accept(*this);
+  return atl::make_shared<X86::None>();
+}
+atl::shared_ptr<X86::Operand> GenerateX86::visit(MemberCall &mc) {
+  mc.object->accept(*this);
+  return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Namespace &n) {
   return nullptr;

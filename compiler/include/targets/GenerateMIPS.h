@@ -81,13 +81,14 @@ private:
   MIPS::Register visit(ConstructorDef &cd) override;
   MIPS::Register visit(DoWhile &dw) override;
   MIPS::Register visit(EnumTypeDecl &etd) override;
-  MIPS::Register visit(MemberAccess &fa) override;
   MIPS::Register visit(For &f) override;
   MIPS::Register visit(FunCall &fc) override;
   MIPS::Register visit(FunDecl &fd) override;
   MIPS::Register visit(FunDef &fd) override;
   MIPS::Register visit(If &i) override;
   MIPS::Register visit(IntLiteral &il) override;
+  MIPS::Register visit(MemberAccess &ma) override;
+  MIPS::Register visit(MemberCall &mc) override;
   MIPS::Register visit(Namespace &n) override;
   MIPS::Register visit(ParenthExpr &pe) override;
   MIPS::Register visit(PointerType &pt) override;

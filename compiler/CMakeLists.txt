@@ -36,6 +36,7 @@ add_library(AST SHARED
   src/ast/If.cpp
   src/ast/IntLiteral.cpp
   src/ast/MemberAccess.cpp
+  src/ast/MemberCall.cpp
   src/ast/Namespace.cpp
   src/ast/ParenthExpr.cpp
   src/ast/PointerType.cpp

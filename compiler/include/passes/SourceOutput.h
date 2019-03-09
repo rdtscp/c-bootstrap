@@ -44,13 +44,14 @@ private:
   atl::string visit(ConstructorDef &cd) override;
   atl::string visit(DoWhile &dw) override;
   atl::string visit(EnumTypeDecl &etd) override;
-  atl::string visit(MemberAccess &fa) override;
   atl::string visit(For &f) override;
   atl::string visit(FunCall &fc) override;
   atl::string visit(FunDecl &fd) override;
   atl::string visit(FunDef &fd) override;
   atl::string visit(If &i) override;
   atl::string visit(IntLiteral &il) override;
+  atl::string visit(MemberAccess &ma) override;
+  atl::string visit(MemberCall &mc) override;
   atl::string visit(Namespace &n) override;
   atl::string visit(ParenthExpr &pe) override;
   atl::string visit(PointerType &pt) override;

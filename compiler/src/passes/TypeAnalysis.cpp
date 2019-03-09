@@ -97,32 +97,6 @@ atl::shared_ptr<Type> TypeAnalysis::visit(DoWhile &dw) {
   return nullptr;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(EnumTypeDecl &etd) { return nullptr; }
-atl::shared_ptr<Type> TypeAnalysis::visit(MemberAccess &fa) {
-  atl::shared_ptr<Type> objType = fa.object->accept(*this);
-  if (objType->astClass() != "StructType")
-    return error("Type Analysis: Attempted to access field on expression "
-                 "that is not a struct");
-
-  atl::shared_ptr<StructType> structType =
-      atl::static_pointer_cast<StructType>(objType);
-  atl::shared_ptr<Decl> identDecl = currScope->find(structType->identifier);
-  if (identDecl == nullptr)
-    return error("Type Analysis: Attempted to access field on expression "
-                 "that does not have a type definition.");
-  if (identDecl->astClass() != "StructTypeDecl")
-    return error("Type Analysis: Attempted to access field on expression that "
-                 "does not have a StructTypeDecl");
-
-  atl::shared_ptr<StructTypeDecl> structTypeDecl =
-      atl::static_pointer_cast<StructTypeDecl>(identDecl);
-
-  for (int idx = 0; idx < structTypeDecl->varDecls.size(); ++idx)
-    if (structTypeDecl->varDecls[idx]->identifer == fa.field)
-      return structTypeDecl->varDecls[idx]->type;
-
-  return error("Type Analysis: Attempted to access field on a struct that "
-               "does not exist.");
-}
 atl::shared_ptr<Type> TypeAnalysis::visit(For &f) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
   atl::shared_ptr<Decl> identDecl = currScope->find(fc.funName);
@@ -193,6 +167,33 @@ atl::shared_ptr<Type> TypeAnalysis::visit(If &i) {
 atl::shared_ptr<Type> TypeAnalysis::visit(IntLiteral &il) {
   return atl::make_shared<BaseType>(BaseType(PrimitiveType::INT));
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(MemberAccess &ma) {
+  atl::shared_ptr<Type> objType = ma.object->accept(*this);
+  if (objType->astClass() != "StructType")
+    return error("Type Analysis: Attempted to access field on expression "
+                 "that is not a struct");
+
+  atl::shared_ptr<StructType> structType =
+      atl::static_pointer_cast<StructType>(objType);
+  atl::shared_ptr<Decl> identDecl = currScope->find(structType->identifier);
+  if (identDecl == nullptr)
+    return error("Type Analysis: Attempted to access field on expression "
+                 "that does not have a type definition.");
+  if (identDecl->astClass() != "StructTypeDecl")
+    return error("Type Analysis: Attempted to access field on expression that "
+                 "does not have a StructTypeDecl");
+
+  atl::shared_ptr<StructTypeDecl> structTypeDecl =
+      atl::static_pointer_cast<StructTypeDecl>(identDecl);
+
+  for (int idx = 0; idx < structTypeDecl->varDecls.size(); ++idx)
+    if (structTypeDecl->varDecls[idx]->identifer == ma.field)
+      return structTypeDecl->varDecls[idx]->type;
+
+  return error("Type Analysis: Attempted to access field on a struct that "
+               "does not exist.");
+}
+atl::shared_ptr<Type> TypeAnalysis::visit(MemberCall &mc) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(Namespace &n) {
   for (int i = 0; i < n.namespaceDecls.size(); ++i)
     n.namespaceDecls[i]->accept(*this);

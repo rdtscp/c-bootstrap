@@ -162,10 +162,6 @@ MIPS::Register GenerateMIPS::visit(DoWhile &dw) {
 MIPS::Register GenerateMIPS::visit(EnumTypeDecl &etd) {
   return MIPS::Register();
 }
-MIPS::Register GenerateMIPS::visit(MemberAccess &fa) {
-  fa.object->accept(*this);
-  return MIPS::Register();
-}
 MIPS::Register GenerateMIPS::visit(For &f) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(FunCall &fc) {
   for (int idx = 0; idx < fc.funArgs.size(); ++idx)
@@ -261,6 +257,11 @@ MIPS::Register GenerateMIPS::visit(If &i) {
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(IntLiteral &il) { return MIPS::Register(); }
+MIPS::Register GenerateMIPS::visit(MemberAccess &ma) {
+  ma.object->accept(*this);
+  return MIPS::Register();
+}
+MIPS::Register GenerateMIPS::visit(MemberCall &mc) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(Namespace &n) {
   // n.namespaceBlock->accept(*this);
   return MIPS::Register();

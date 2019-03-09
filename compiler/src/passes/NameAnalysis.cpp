@@ -73,7 +73,6 @@ void NameAnalysis::visit(DoWhile &dw) {
   dw.body->accept(*this);
 }
 void NameAnalysis::visit(EnumTypeDecl &etd) {}
-void NameAnalysis::visit(MemberAccess &fa) { fa.object->accept(*this); }
 void NameAnalysis::visit(For &f) {
   // TODO: Scope the entire for loop.
   f.initialVarDecl->accept(*this);
@@ -128,6 +127,9 @@ void NameAnalysis::visit(If &i) {
     i.elseBody->accept(*this);
 }
 void NameAnalysis::visit(IntLiteral &il) {}
+void NameAnalysis::visit(MemberAccess &ma) { ma.object->accept(*this); }
+void NameAnalysis::visit(MemberCall &mc) {}
+
 void NameAnalysis::visit(Namespace &n) {
   for (int i = 0; i < n.namespaceDecls.size(); ++i)
     n.namespaceDecls[i]->accept(*this);
@@ -146,7 +148,7 @@ void NameAnalysis::visit(Program &p) {
   p.globalScope = currScope;
 }
 void NameAnalysis::visit(ReferenceType &rt) {
-    rt.referencedType->accept(*this);
+  rt.referencedType->accept(*this);
 }
 void NameAnalysis::visit(Return &r) {
   if (r.returnExpr)

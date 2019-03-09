@@ -45,13 +45,14 @@ private:
   atl::shared_ptr<Type> visit(ConstructorDef &cd) override;
   atl::shared_ptr<Type> visit(DoWhile &dw) override;
   atl::shared_ptr<Type> visit(EnumTypeDecl &etd) override;
-  atl::shared_ptr<Type> visit(MemberAccess &fa) override;
   atl::shared_ptr<Type> visit(For &f) override;
   atl::shared_ptr<Type> visit(FunCall &fc) override;
   atl::shared_ptr<Type> visit(FunDecl &fd) override;
   atl::shared_ptr<Type> visit(FunDef &fd) override;
   atl::shared_ptr<Type> visit(If &i) override;
   atl::shared_ptr<Type> visit(IntLiteral &il) override;
+  atl::shared_ptr<Type> visit(MemberAccess &ma) override;
+  atl::shared_ptr<Type> visit(MemberCall &mc) override;
   atl::shared_ptr<Type> visit(Namespace &n) override;
   atl::shared_ptr<Type> visit(ParenthExpr &pe) override;
   atl::shared_ptr<Type> visit(PointerType &pt) override;

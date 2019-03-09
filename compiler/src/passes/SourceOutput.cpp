@@ -185,7 +185,6 @@ atl::string SourceOutput::visit(DoWhile &dw) {
   return output;
 }
 atl::string SourceOutput::visit(EnumTypeDecl &etd) { return ""; }
-atl::string SourceOutput::visit(MemberAccess &fa) { return ""; }
 atl::string SourceOutput::visit(For &f) { return ""; }
 atl::string SourceOutput::visit(FunCall &fc) {
   atl::string output = fc.funName + "(";
@@ -239,6 +238,8 @@ atl::string SourceOutput::visit(If &i) {
   return output;
 }
 atl::string SourceOutput::visit(IntLiteral &il) { return il.getLiteral(); }
+atl::string SourceOutput::visit(MemberAccess &ma) { return ""; }
+atl::string SourceOutput::visit(MemberCall &mc) { return ""; }
 atl::string SourceOutput::visit(Namespace &n) {
   atl::string output = "namespace ";
   output += n.getIdentifier();
@@ -267,8 +268,7 @@ atl::string SourceOutput::visit(Program &p) {
   return output;
 }
 atl::string SourceOutput::visit(ReferenceType &rt) {
-    return rt.referencedType->accept(*this) + " &";
-
+  return rt.referencedType->accept(*this) + " &";
 }
 atl::string SourceOutput::visit(Return &r) {
   atl::string output = "return";

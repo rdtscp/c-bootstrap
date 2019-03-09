@@ -129,10 +129,6 @@ atl::shared_ptr<ASTNode> Optimiser::visit(DoWhile &dw) { return dw.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(EnumTypeDecl &etd) {
   return atl::static_pointer_cast<Decl>(etd.getptr());
 }
-atl::shared_ptr<ASTNode> Optimiser::visit(MemberAccess &fa) {
-  fa.object = atl::static_pointer_cast<Expr>(fa.object->accept(*this));
-  return fa.getptr();
-}
 atl::shared_ptr<ASTNode> Optimiser::visit(For &f) { return f.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(FunCall &fc) {
   for (int idx = 0; idx < fc.funArgs.size(); ++idx)
@@ -169,6 +165,12 @@ atl::shared_ptr<ASTNode> Optimiser::visit(If &i) {
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(IntLiteral &il) {
   return il.getptr();
+}
+atl::shared_ptr<ASTNode> Optimiser::visit(MemberAccess &ma) {
+  return ma.getptr();
+}
+atl::shared_ptr<ASTNode> Optimiser::visit(MemberCall &mc) {
+  return mc.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(Namespace &n) {
   for (int i = 0; i < n.namespaceDecls.size(); ++i) {
