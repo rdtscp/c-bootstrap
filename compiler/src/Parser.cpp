@@ -899,6 +899,11 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
     return atl::make_shared<VarExpr>(VarExpr(ident));
   }
 
+  if (accept(TC::THIS)) {
+    expect(TC::THIS);
+    return atl::make_shared<VarExpr>(VarExpr("this"));
+  }
+
   atl::shared_ptr<Expr> lhs = parseLitExpr();
   if (accept(TC::DOT)) {
     expect(TC::DOT);
