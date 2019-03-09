@@ -10,9 +10,6 @@ namespace ACC {
 
 class StringLiteral : public Literal,
                       public atl::enable_shared_from_this<StringLiteral> {
-private:
-  const atl::string value;
-
 public:
   StringLiteral(const atl::string &literal);
 
