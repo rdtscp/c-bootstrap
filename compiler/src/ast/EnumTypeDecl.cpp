@@ -3,7 +3,7 @@
 using namespace ACC;
 
 EnumTypeDecl::EnumTypeDecl(const atl::string &ident,
-                           std::map<std::string, std::string> states)
+                           const std::map<std::string, std::string> &states)
     : states(states) {}
 
 atl::shared_ptr<EnumTypeDecl> EnumTypeDecl::getptr() {

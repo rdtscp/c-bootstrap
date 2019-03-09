@@ -20,7 +20,7 @@ public:
   std::map<std::string, std::string> states;
 
   EnumTypeDecl(const atl::string &ident,
-               std::map<std::string, std::string> states);
+               const std::map<std::string, std::string> &states);
 
   atl::shared_ptr<EnumTypeDecl> getptr();
 
