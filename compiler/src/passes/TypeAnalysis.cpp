@@ -97,7 +97,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(DoWhile &dw) {
   return nullptr;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(EnumTypeDecl &etd) { return nullptr; }
-atl::shared_ptr<Type> TypeAnalysis::visit(FieldAccess &fa) {
+atl::shared_ptr<Type> TypeAnalysis::visit(MemberAccess &fa) {
   atl::shared_ptr<Type> objType = fa.object->accept(*this);
   if (objType->astClass() != "StructType")
     return error("Type Analysis: Attempted to access field on expression "

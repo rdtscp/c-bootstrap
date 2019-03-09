@@ -129,7 +129,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(DoWhile &dw) { return dw.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(EnumTypeDecl &etd) {
   return atl::static_pointer_cast<Decl>(etd.getptr());
 }
-atl::shared_ptr<ASTNode> Optimiser::visit(FieldAccess &fa) {
+atl::shared_ptr<ASTNode> Optimiser::visit(MemberAccess &fa) {
   fa.object = atl::static_pointer_cast<Expr>(fa.object->accept(*this));
   return fa.getptr();
 }

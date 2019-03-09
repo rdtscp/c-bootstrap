@@ -44,7 +44,7 @@ private:
   atl::string visit(ConstructorDef &cd) override;
   atl::string visit(DoWhile &dw) override;
   atl::string visit(EnumTypeDecl &etd) override;
-  atl::string visit(FieldAccess &fa) override;
+  atl::string visit(MemberAccess &fa) override;
   atl::string visit(For &f) override;
   atl::string visit(FunCall &fc) override;
   atl::string visit(FunDecl &fd) override;

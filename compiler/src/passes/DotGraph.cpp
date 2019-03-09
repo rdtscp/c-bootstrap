@@ -224,10 +224,10 @@ atl::string DotGraph::visit(DoWhile &dw) {
   return whileID;
 }
 atl::string DotGraph::visit(EnumTypeDecl &etd) { return ""; }
-atl::string DotGraph::visit(FieldAccess &fa) {
+atl::string DotGraph::visit(MemberAccess &fa) {
   atl::string fieldAccessID =
-      atl::string("FieldAccess") + atl::to_string(++nodeCount);
-  declare(fieldAccessID, atl::string("FieldAccess.") + fa.field.c_str());
+      atl::string("MemberAccess") + atl::to_string(++nodeCount);
+  declare(fieldAccessID, atl::string("MemberAccess.") + fa.field.c_str());
 
   atl::string objID = fa.object->accept(*this);
 

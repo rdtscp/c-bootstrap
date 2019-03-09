@@ -117,6 +117,7 @@ private:
   atl::shared_ptr<Expr> parseMulExpr();
   atl::shared_ptr<Expr> parseUnaryExpr();
   atl::shared_ptr<Expr> parseObjExpr();
+  atl::shared_ptr<FunCall> parseFunCall();
   atl::shared_ptr<Expr> parseLitExpr();
 
   /* ---- Helpers ---- */

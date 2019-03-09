@@ -114,7 +114,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(DoWhile &dw) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(EnumTypeDecl &etd) {
   return atl::make_shared<X86::None>();
 }
-atl::shared_ptr<X86::Operand> GenerateX86::visit(FieldAccess &fa) {
+atl::shared_ptr<X86::Operand> GenerateX86::visit(MemberAccess &fa) {
   fa.object->accept(*this);
   return atl::make_shared<X86::None>();
 }

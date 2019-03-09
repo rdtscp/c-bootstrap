@@ -29,13 +29,13 @@ add_library(AST SHARED
   src/ast/ConstructorDef.cpp
   src/ast/DoWhile.cpp
   src/ast/EnumTypeDecl.cpp
-  src/ast/FieldAccess.cpp
   src/ast/For.cpp
   src/ast/FunCall.cpp
   src/ast/FunDecl.cpp
   src/ast/FunDef.cpp
   src/ast/If.cpp
   src/ast/IntLiteral.cpp
+  src/ast/MemberAccess.cpp
   src/ast/Namespace.cpp
   src/ast/ParenthExpr.cpp
   src/ast/PointerType.cpp

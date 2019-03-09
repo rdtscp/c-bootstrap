@@ -162,7 +162,7 @@ MIPS::Register GenerateMIPS::visit(DoWhile &dw) {
 MIPS::Register GenerateMIPS::visit(EnumTypeDecl &etd) {
   return MIPS::Register();
 }
-MIPS::Register GenerateMIPS::visit(FieldAccess &fa) {
+MIPS::Register GenerateMIPS::visit(MemberAccess &fa) {
   fa.object->accept(*this);
   return MIPS::Register();
 }

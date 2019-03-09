@@ -185,7 +185,7 @@ atl::string SourceOutput::visit(DoWhile &dw) {
   return output;
 }
 atl::string SourceOutput::visit(EnumTypeDecl &etd) { return ""; }
-atl::string SourceOutput::visit(FieldAccess &fa) { return ""; }
+atl::string SourceOutput::visit(MemberAccess &fa) { return ""; }
 atl::string SourceOutput::visit(For &f) { return ""; }
 atl::string SourceOutput::visit(FunCall &fc) {
   atl::string output = fc.funName + "(";

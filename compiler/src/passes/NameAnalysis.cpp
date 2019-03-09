@@ -73,7 +73,7 @@ void NameAnalysis::visit(DoWhile &dw) {
   dw.body->accept(*this);
 }
 void NameAnalysis::visit(EnumTypeDecl &etd) {}
-void NameAnalysis::visit(FieldAccess &fa) { fa.object->accept(*this); }
+void NameAnalysis::visit(MemberAccess &fa) { fa.object->accept(*this); }
 void NameAnalysis::visit(For &f) {
   // TODO: Scope the entire for loop.
   f.initialVarDecl->accept(*this);

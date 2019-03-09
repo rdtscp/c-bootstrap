@@ -20,7 +20,7 @@ class ConstructorDecl;
 class ConstructorDef;
 class DoWhile;
 class EnumTypeDecl;
-class FieldAccess;
+class MemberAccess;
 class For;
 class FunCall;
 class FunDecl;
@@ -66,7 +66,7 @@ public:
   virtual T visit(ConstructorDef &cd) = 0;
   virtual T visit(DoWhile &dw) = 0;
   virtual T visit(EnumTypeDecl &etd) = 0;
-  virtual T visit(FieldAccess &fa) = 0;
+  virtual T visit(MemberAccess &fa) = 0;
   virtual T visit(For &f) = 0;
   virtual T visit(FunCall &fc) = 0;
   virtual T visit(FunDecl &fd) = 0;
