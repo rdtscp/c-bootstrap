@@ -3,131 +3,129 @@
 [![Build Status](https://travis-ci.com/rdtscp/c-bootstrap.svg?branch=master)](https://travis-ci.com/rdtscp/c-bootstrap)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)
 
-* Bootstrapping a simple C based compiler written in C++.
-* The compiler will intially be used to build simple C programs, and then extend the grammar enough so that it is able to compile itself.
+-   Bootstrapping a simple C based compiler written in C++.
+-   The compiler will intially be used to build simple C programs, and then extend the grammar enough so that it is able to compile itself.
 
 ### Mini-C/C++ Grammar
+
 Progressively changing to adopt new features of the language(s).
-```
-program      -> (include)* (decl)* EOF
 
-decl         -> structdecl ";"
-             -> classdecl ";"
-             -> vardecl ";"
-             -> arrvardecl ";"
-             -> fundecl ";"
-             -> fundef
-             -> typedecl ";"
-             -> enumdecl ";"
+    program      -> (include)* (decl)* EOF
 
-structdecl   -> structtype "{" (vardecl)+ "}"
+    decl         -> structdecl ";"
+                 -> classdecl ";"
+                 -> vardecl ";"
+                 -> arrvardecl ";"
+                 -> fundecl ";"
+                 -> fundef
+                 -> typedecl ";"
+                 -> enumdecl ";"
 
-classdecl    -> "class" IDENT "{" (decl | accessmod )* "}" ";"
+    structdecl   -> structtype "{" (vardecl)+ "}"
 
-accessmod    -> "public:" | "private:" | "protected:"
+    classdecl    -> "class" IDENT "{" (decl | accessmod )* "}" ";"
 
-vardecl      -> type IDENT
+    accessmod    -> "public:" | "private:" | "protected:"
 
-arrvardecl   -> vardecl "[" INT_LITERAL "]"
+    vardecl      -> type IDENT
 
-fundecl      -> type IDENT "(" params ")"
+    arrvardecl   -> vardecl "[" INT_LITERAL "]"
 
-fundef       -> type IDENT "(" params ")" block
+    fundecl      -> type IDENT "(" params ")"
 
-typedecl     -> "typedef" (type | structdecl) IDENT
+    fundef       -> type IDENT "(" params ")" block
 
-enumdecl     -> "enum" "{" statelist "}"
+    typedecl     -> "typedef" (type | structdecl) IDENT
 
-statelist    -> (IDENT ["=" INT_LITERAL] ",")* IDENT ["=" INT_LITERAL]
+    enumdecl     -> "enum" "{" statelist "}"
 
-type         -> ("int" | "char" | "void" | structtype | classtype ) (ASTERIX)*
+    statelist    -> (IDENT ["=" INT_LITERAL] ",")* IDENT ["=" INT_LITERAL]
 
-structtype   -> "struct" IDENT
+    type         -> ("int" | "char" | "void" | structtype | classtype ) (ASTERIX)*
 
-classtype    -> IDENT
+    structtype   -> "struct" IDENT
 
-params       -> [ type IDENT ("," type IDENT)* ]
+    classtype    -> IDENT
 
-stmt         -> vardecl ";"
-              | block
-              | "do" stmt "while" "(" exp ")" ";"
-              | "while" "(" exp ")" stmt
-              | "if" "(" exp ")" stmt ["else" stmt]
-              | "return" [exp] ";"
-              | expr "=" expr ";"
-              | expr ";"
+    params       -> [ type IDENT ("," type IDENT)* ]
 
-block        -> "{" stmt* "}"
+    stmt         -> vardecl ";"
+                  | block
+                  | "do" stmt "while" "(" exp ")" ";"
+                  | "while" "(" exp ")" stmt
+                  | "if" "(" exp ")" stmt ["else" stmt]
+                  | "return" [exp] ";"
+                  | expr "=" expr ";"
+                  | expr ";"
 
-expr         -> "(" boolExpr ")"
-              | boolExpr
+    block        -> "{" stmt* "}"
 
-boolExpr     -> equalExpr
-              | equalExpr "||" equalExpr
-              | equalExpr "&&" equalExpr
+    expr         -> "(" boolExpr ")"
+                  | boolExpr
 
-equalExpr    -> compExpr
-              | compExpr "!=" compExpr
-              | compExpr "==" compExpr
+    boolExpr     -> equalExpr
+                  | equalExpr "||" equalExpr
+                  | equalExpr "&&" equalExpr
 
-compExpr     -> addExpr
-              | addExpr "<" addExpr
-              | addExpr ">" addExpr
-              | addExpr "<=" addExpr
-              | addExpr ">=" addExpr
+    equalExpr    -> compExpr
+                  | compExpr "!=" compExpr
+                  | compExpr "==" compExpr
 
-addExpr      -> mulExpr
-              | mulExpr "+" mulExpr
-              | mulExpr "-" mulExpr
+    compExpr     -> addExpr
+                  | addExpr "<" addExpr
+                  | addExpr ">" addExpr
+                  | addExpr "<=" addExpr
+                  | addExpr ">=" addExpr
 
-mulExpr      -> unaryExpr
-              | unaryExpr "*" unaryExpr
-              | unaryExpr "/" unaryExpr
-              | unaryExpr "%" unaryExpr
+    addExpr      -> mulExpr
+                  | mulExpr "+" mulExpr
+                  | mulExpr "-" mulExpr
 
-unaryExpr    -> "sizeof" "(" type ")"
-              | "*" objExpr
-              | "(" type ")" objExpr
-              | "-" objExpr
-              | "new" type [ "(" litExpr ("," litExpr)* ")" ] ";"
-              | objExpr
+    mulExpr      -> unaryExpr
+                  | unaryExpr "*" unaryExpr
+                  | unaryExpr "/" unaryExpr
+                  | unaryExpr "%" unaryExpr
 
-objExpr      -> IDENT "(" litExpr ("," litExpr)* ")"
-              | IDENT "(" litExpr ")"
-              | IDENT "(" ")"
-              | IDENT
-              | litExpr "." IDENT
-              | litExpr "[" litExpr "]"
-              | litExpr
+    unaryExpr    -> "sizeof" "(" type ")"
+                  | "*" objExpr
+                  | "(" type ")" objExpr
+                  | "-" objExpr
+                  | "new" type [ "(" litExpr ("," litExpr)* ")" ] ";"
+                  | objExpr
 
-litExpr      -> INT_LITERAL
-              | CHAR_LITERAL
-              | STRING_LITERAL
-              | exp
-```
+    objExpr      -> IDENT "(" litExpr ("," litExpr)* ")"
+                  | IDENT "(" litExpr ")"
+                  | IDENT "(" ")"
+                  | IDENT
+                  | litExpr "." IDENT
+                  | litExpr "[" litExpr "]"
+                  | litExpr
+
+    litExpr      -> INT_LITERAL
+                  | CHAR_LITERAL
+                  | STRING_LITERAL
+                  | exp
 
 ### macOS Notes
-```
-# Building Assembly:
-acc main.cpp
-# Building Objects
-nasm -f macho x86.s
-# Link Objects
-ld -macosx_version_min 10.14 -lSystem -o x86 x86.o
-```
+
+    # Building Assembly:
+    acc main.cpp
+    # Building Objects
+    nasm -f macho x86.s
+    # Link Objects
+    ld -macosx_version_min 10.14 -lSystem -o x86 x86.o
 
 ## History
 
 Notes of deprecated/replaced functionality below:
 
 ### Pre-Processor Grammar
-```
- #define
- #endif
- #ifdef
- #ifndef
- #if
- #elif
- #else
- #include
-```
+
+     #define
+     #endif
+     #ifdef
+     #ifndef
+     #if
+     #elif
+     #else
+     #include
