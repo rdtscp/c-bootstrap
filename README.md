@@ -92,15 +92,18 @@ Progressively changing to adopt new features of the language(s).
                   | "(" type ")" objExpr
                   | "-" objExpr
                   | "new" type [ "(" litExpr ("," litExpr)* ")" ] ";"
-                  | objExpr
+                  | "&" objExpr
+                  | objExpr ( ("." funCall) || ("." objExpr) || ("[" objExpr "]") )*
 
-    objExpr      -> IDENT "(" litExpr ("," litExpr)* ")"
+    objExpr      -> funCall
+                  | IDENT
+                  | "this"
+                  | litExpr
+
+    funCall      -> IDENT "(" litExpr ("," litExpr)\* ")"
                   | IDENT "(" litExpr ")"
                   | IDENT "(" ")"
-                  | IDENT
-                  | litExpr "." IDENT
-                  | litExpr "[" litExpr "]"
-                  | litExpr
+
 
     litExpr      -> INT_LITERAL
                   | CHAR_LITERAL
