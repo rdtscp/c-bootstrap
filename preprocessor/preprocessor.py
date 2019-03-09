@@ -6,6 +6,7 @@ class Preprocessor:
 
     # Calls the clang++ preprocessor on an input,
     # and writes the output to an output
+    @staticmethod
     def preprocess(self, inFile, outFile):
         if ".cpp" in inFile:
             # clang++ -std=c++14 -E compiler/main.cpp -o tempSource.cpp
