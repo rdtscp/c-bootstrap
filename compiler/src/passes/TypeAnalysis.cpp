@@ -20,7 +20,10 @@ void TypeAnalysis::run() { visit(*progAST); }
 
 /* ---- Visit AST ---- */
 
-atl::shared_ptr<Type> TypeAnalysis::visit(AddressOf &ao) { return atl::make_shared<PointerType>(PointerType(ao.addressOfExpr->accept(*this))); }
+atl::shared_ptr<Type> TypeAnalysis::visit(AddressOf &ao) {
+  return atl::make_shared<PointerType>(
+      PointerType(ao.addressOfExpr->accept(*this)));
+}
 atl::shared_ptr<Type> TypeAnalysis::visit(Allocation &a) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(ArrayAccess &aa) {
   atl::shared_ptr<Type> arrayExprType = aa.array->accept(*this);
@@ -255,7 +258,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(VarDef &vd) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(VarExpr &ve) {
   atl::shared_ptr<Decl> identDecl = currScope->find(ve.identifier);
 
-  if (identDecl->astClass() != "VarDecl")
+  if (identDecl->astClass() != "VarDecl" && identDecl->astClass() != "VarDef")
     return error(atl::string("Attempted to reference ") +
                  identDecl->astClass() + " as a variable.");
   atl::shared_ptr<VarDecl> veDecl =
