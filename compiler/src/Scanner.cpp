@@ -101,9 +101,9 @@ Position Scanner::getPosition() const {
 }
 
 void Scanner::updateCurrFile() {
-  char nextChar = next(); // Skip space.
+  next(); // Skip space.
 
-  nextChar = next();
+  char nextChar = next();
 
   std::string lineNumStr(1, nextChar);
   while (!atl::isspace(peek())) {
@@ -111,7 +111,7 @@ void Scanner::updateCurrFile() {
   }
   unsigned int lineNum = std::stoul(lineNumStr, nullptr, 10);
 
-  nextChar = next(); // Skip space;
+  next();            // Skip space;
   nextChar = next(); // Skip quote;
 
   atl::string filename;
@@ -121,7 +121,7 @@ void Scanner::updateCurrFile() {
     }
   }
   while (peek() != '\n') {
-    nextChar = next();
+    next();
   }
   abspath = filename;
   line = lineNum;
