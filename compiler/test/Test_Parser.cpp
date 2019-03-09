@@ -82,9 +82,9 @@ TEST(ParserTest, StructDecl) {
           VarDecl(atl::make_shared<StructType>(StructType("FooStruct")),
                   "myFooStruct"))};
 
-  int actualSize = actual->decls.size();
-  int expectSize = expectedDecls.size();
-  ASSERT_EQ(actual->decls.size(), expectedDecls.size());
+  const int actualSize = actual->decls.size();
+  const int expectSize = expectedDecls.size();
+  ASSERT_EQ(actualSize, expectSize);
 
   for (int i = 0; i < expectedDecls.size(); ++i)
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
