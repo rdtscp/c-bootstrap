@@ -6,7 +6,7 @@
 -   Bootstrapping a simple C based compiler written in C++.
 -   The compiler will intially be used to build simple C programs, and then extend the grammar enough so that it is able to compile itself.
 
-### Mini-C/C++ Grammar
+## Mini-C/C++ Grammar
 
 Progressively changing to adopt new features of the language(s).
 
