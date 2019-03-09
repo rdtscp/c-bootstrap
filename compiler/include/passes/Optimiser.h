@@ -24,7 +24,6 @@ public:
 
 private:
   int nodeCount = 0;
-  std::ostream *output;
   atl::shared_ptr<Program> &progAST;
 
   atl::shared_ptr<Block> currScope;
