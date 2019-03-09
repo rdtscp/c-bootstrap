@@ -27,7 +27,7 @@ bool FunDecl::operator==(const FunDecl &rhs) const {
   if (funParams.size() != rhs.funParams.size())
     return false;
 
-  for (int i = 0; i < funParams.size(); i++)
+  for (int i = 0; i < funParams.size(); ++i)
     if (*funParams[i] != *rhs.funParams[i])
       return false;
 

@@ -78,7 +78,7 @@ atl::string Scanner::getFilename() const {
 atl::string Scanner::getFilepath() const {
   atl::vector<atl::string> directories;
   atl::string currDir;
-  for (int i = 0; i < abspath.length(); i++) {
+  for (int i = 0; i < abspath.length(); ++i) {
     const char currChar = abspath[i];
     if (currChar == '/') {
       directories.push_back(currDir);
@@ -90,7 +90,7 @@ atl::string Scanner::getFilepath() const {
   directories.push_back(currDir);
 
   atl::string filepath;
-  for (int i = 0; i < directories.size() - 1; i++)
+  for (int i = 0; i < directories.size() - 1; ++i)
     filepath += directories[i] + '/';
 
   return filepath;

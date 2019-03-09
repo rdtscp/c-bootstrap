@@ -140,7 +140,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
     return error(atl::string("Type Analysis: Attempted to call function: ") +
                  fc.funName + " with incorrect number of arguments");
 
-  for (int i = 0; i < fc.funArgs.size(); i++) {
+  for (int i = 0; i < fc.funArgs.size(); ++i) {
     atl::shared_ptr<Type> argType = fc.funArgs[i]->accept(*this);
     atl::shared_ptr<Type> paramType = funDecl->funParams[i]->type;
     if (*argType != *paramType)

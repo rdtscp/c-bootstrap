@@ -18,7 +18,7 @@ bool Block::operator==(const Block &rhs) const {
   if (blockStmts.size() != rhs.blockStmts.size())
     return false;
 
-  for (int i = 0; i < blockStmts.size(); i++)
+  for (int i = 0; i < blockStmts.size(); ++i)
     /* @TODO Implement comparitors for Stmts. */
     if (blockStmts[i]->astClass() != rhs.blockStmts[i]->astClass())
       return false;

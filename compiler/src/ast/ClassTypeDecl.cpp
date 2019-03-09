@@ -26,7 +26,7 @@ bool ClassTypeDecl::operator==(const ClassTypeDecl &rhs) const {
   if (classDecls.size() != rhs.classDecls.size())
     return false;
 
-  for (int i = 0; i < classDecls.size(); i++)
+  for (int i = 0; i < classDecls.size(); ++i)
     if (*classDecls[i] != *rhs.classDecls[i])
       return false;
 
