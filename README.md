@@ -1,5 +1,6 @@
 # c-bootstrap
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c18ee2ef41274532a7baa1969fe843b7)](https://app.codacy.com/app/rdtscp/c-bootstrap?utm_source=github.com&utm_medium=referral&utm_content=rdtscp/c-bootstrap&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.com/rdtscp/c-bootstrap.svg?branch=master)](https://travis-ci.com/rdtscp/c-bootstrap)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)
 
