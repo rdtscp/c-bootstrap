@@ -252,6 +252,8 @@ bool Parser::acceptNamespace(int offset) {
 }
 bool Parser::acceptReturn(int offset) { return accept(TC::RETURN, offset); }
 bool Parser::acceptStmt(int offset) {
+  if (acceptDeletion(offset))
+    return true;
   if (acceptVarDecl(offset))
     return true;
   if (acceptBlock(offset))
@@ -717,6 +719,12 @@ atl::shared_ptr<Return> Parser::parseReturn() {
   }
 }
 atl::shared_ptr<Stmt> Parser::parseStmt() {
+  if (acceptDeletion()) {
+    atl::shared_ptr<Deletion> d = parseDeletion();
+    expect(TC::SC);
+    return d;
+  }
+
   if (acceptVarDecl()) {
     atl::shared_ptr<VarDecl> vd = parseVarDecl();
     expect(TC::SC);
