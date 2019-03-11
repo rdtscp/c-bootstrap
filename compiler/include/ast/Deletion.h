@@ -11,12 +11,12 @@ namespace ACC {
 class Deletion : public Stmt, public atl::enable_shared_from_this<Deletion> {
 
 public:
-  enum class DeletionType { OBJECT, ARRAY };
+  enum class DelType { OBJECT, ARRAY };
 
-  DeletionType deletionType;
+  DelType deletionType;
   atl::shared_ptr<VarExpr> deletionVar;
 
-  Deletion(const DeletionType deletionType,
+  Deletion(const DelType deletionType,
            const atl::shared_ptr<VarExpr> &deletionVar);
   virtual ~Deletion() {}
 

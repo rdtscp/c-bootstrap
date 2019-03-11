@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-Deletion::Deletion(const DeletionType deletionType,
+Deletion::Deletion(const DelType deletionType,
                    const atl::shared_ptr<VarExpr> &deletionVar)
     : deletionType(deletionType), deletionVar(deletionVar) {}
 

@@ -241,7 +241,7 @@ bool Parser::acceptType(int offset) {
 /* -- Stmts -- */
 bool Parser::acceptAssign(int offset) { return acceptExpr(offset); }
 bool Parser::acceptBlock(int offset) { return accept(TC::LBRA, offset); }
-bool Parser::acceptDelete(int offset) {
+bool Parser::acceptDeletion(int offset) {
   return accept({TC::DELETE, TC::DELETEARR}, offset);
 }
 bool Parser::acceptDoWhile(int offset) { return accept(TC::DO, offset); }
@@ -419,6 +419,16 @@ atl::shared_ptr<Decl> Parser::parseDecl() {
   throw std::runtime_error("Parser: Expected a Struct/Variable/Function "
                            "Declaration but none was found.");
 }
+atl::shared_ptr<Deletion> Parser::parseDeletion() {
+  TC deletionToken = expect({TC::DELETE, TC::DELETEARR}).tokenClass;
+  Deletion::DelType deletionType = Deletion::DelType::OBJECT;
+  if (deletionToken == TC::DELETEARR)
+    deletionType = Deletion::DelType::ARRAY;
+
+  const atl::shared_ptr<VarExpr> deletionVar = parseObjExpr();
+  return atl::make_shared<Deletion>(Deletion(deletionType, deletionVar));
+}
+
 atl::shared_ptr<DestructorDecl> Parser::parseDestructor() {
   expect(TC::DESTRUCTOR);
   const atl::string classIdentifier = expect(TC::IDENTIFIER).data;

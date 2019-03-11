@@ -178,7 +178,7 @@ atl::string SourceOutput::visit(ConstructorDef &cd) {
 }
 atl::string SourceOutput::visit(Deletion &d) {
   atl::string output = "delete";
-  if (d.deletionType == Deletion::DeletionType::ARRAY) {
+  if (d.deletionType == Deletion::DelType::ARRAY) {
     output += "[]";
   }
   output += " ";

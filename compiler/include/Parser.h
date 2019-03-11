@@ -66,7 +66,7 @@ private:
   bool acceptAllocation(int offset = 0);
   bool acceptAssign(int offset = 0);
   bool acceptBlock(int offset = 0);
-  bool acceptDelete(int offset = 0);
+  bool acceptDeletion(int offset = 0);
   bool acceptDoWhile(int offset = 0);
   bool acceptFor(int offset = 0);
   bool acceptIf(int offset = 0);
@@ -101,7 +101,7 @@ private:
   /* -- Stmts -- */
   atl::shared_ptr<Assign> parseAssign();
   atl::shared_ptr<Block> parseBlock();
-  // atl::shared_ptr<Delete> parseDelete();
+  atl::shared_ptr<Deletion> parseDeletion();
   atl::shared_ptr<DoWhile> parseDoWhile();
   atl::shared_ptr<For> parseFor();
   atl::shared_ptr<If> parseIf();
