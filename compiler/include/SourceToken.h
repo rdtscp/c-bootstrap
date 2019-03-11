@@ -40,25 +40,29 @@ public:
     UINT,  // "unsigned int"
 
     // keywords
-    IF,        // "if"
-    ELSE,      // "else"
-    DO,        // "do"
-    WHILE,     // "while"
-    RETURN,    // "return"
-    STRUCT,    // "struct"
-    SIZEOF,    // "sizeof"
-    CONST,     // "const"
-    TYPEDEF,   // "typedef"
-    ENUM,      // "enum"
-    NAMESPACE, // "namespace"
-    CLASS,     // "class"
-    PUBLIC,    // "public:"
-    PRIVATE,   // "private:"
-    PROTECTED, // "protected:"
-    NEW,       // "new"
-    FOR,       // "for"
-    PREFIXINC, // "++{}",
-    THIS,      // "this"
+    IF,         // "if"
+    ELSE,       // "else"
+    DO,         // "do"
+    WHILE,      // "while"
+    RETURN,     // "return"
+    STRUCT,     // "struct"
+    SIZEOF,     // "sizeof"
+    CONST,      // "const"
+    TYPEDEF,    // "typedef"
+    ENUM,       // "enum"
+    NAMESPACE,  // "namespace"
+    CLASS,      // "class"
+    PUBLIC,     // "public:"
+    PRIVATE,    // "private:"
+    PROTECTED,  // "protected:"
+    NEW,        // "new"
+    FOR,        // "for"
+    PREFIXINC,  // "++{}",
+    THIS,       // "this"
+    OPASSIGN,   // "operator="
+    OPEQ,       // "operator=="
+    OPNE,       // "operator!="
+    DESTRUCTOR, // "~"
 
     // literals
     STRING_LITERAL, // \".*\"  any sequence of characters enclosed within
@@ -221,6 +225,14 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "++";
   case SourceToken::Class::THIS:
     return "this";
+  case SourceToken::Class::OPASSIGN:
+    return "operator=";
+  case SourceToken::Class::OPEQ:
+    return "operator==";
+  case SourceToken::Class::OPNE:
+    return "operator!=";
+  case SourceToken::Class::DESTRUCTOR:
+    return "~";
   }
 }
 

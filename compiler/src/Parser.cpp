@@ -90,10 +90,10 @@ bool Parser::acceptClassTypeDecl(int offset) {
   return accept(TC::CLASS, offset);
 }
 bool Parser::acceptConstructor(int offset) {
-  if (!accept(TC::IDENTIFIER))
+  if (!accept(TC::IDENTIFIER, offset))
     return false;
 
-  if (lookAhead(offset + 1).tokenClass != TC::LPAR)
+  if (!accept(TC::LPAR, offset + 1))
     return false;
 
   return true;
@@ -119,21 +119,40 @@ bool Parser::acceptDecl(int offset) {
 
   return false;
 }
+bool Parser::acceptDestructor(int offset) {
+  if (!accept(TC::DESTRUCTOR, offset))
+    return false;
+
+  if (!accept(TC::IDENTIFIER, offset + 1))
+    return false;
+
+  return true;
+}
 bool Parser::acceptEnumTypeDecl(int offset) { return accept(TC::ENUM); }
 bool Parser::acceptFunDecl(int offset) {
   if (acceptStructType(offset)) {
     offset += 2;
     while (accept(TC::ASTERIX, offset))
       offset++;
-    return accept(TC::IDENTIFIER, offset) && accept(TC::LPAR, offset + 1);
+    return accept({TC::IDENTIFIER, TC::OPEQ, TC::OPASSIGN, TC::OPNE}, offset) &&
+           accept(TC::LPAR, offset + 1);
   }
 
   if (acceptType(offset)) {
     offset++;
-    while (accept(TC::ASTERIX, offset))
-      offset++;
+    if (accept(TC::ASTERIX, offset) && !accept(TC::REF, offset))
+      while (accept(TC::ASTERIX, offset))
+        offset++;
 
-    return accept(TC::IDENTIFIER, offset) && accept(TC::LPAR, offset + 1);
+    else if (accept(TC::REF, offset)) {
+      offset++;
+    } else if (accept(TC::AND, offset)) {
+      offset++;
+      offset++;
+    }
+
+    return accept({TC::IDENTIFIER, TC::OPASSIGN, TC::OPEQ, TC::OPNE}, offset) &&
+           accept(TC::LPAR, offset + 1);
   }
 
   return false;
@@ -172,14 +191,16 @@ bool Parser::acceptVarDecl(int offset) {
                     offset)) {
 
     offset++;
-    if (accept(TC::ASTERIX, offset) && !accept(TC::REF, offset))
+    if (accept(TC::ASTERIX, offset) && !accept(TC::REF, offset) &&
+        !accept(TC::AND, offset))
       while (accept(TC::ASTERIX, offset))
         offset++;
 
     else if (accept(TC::REF, offset)) {
       offset++;
-      if (accept(TC::REF, offset + 1))
-        offset++;
+    } else if (accept(TC::AND, offset)) {
+      offset++;
+      offset++;
     }
 
     if (!accept(TC::IDENTIFIER, offset))
@@ -286,7 +307,8 @@ atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
   atl::vector<atl::shared_ptr<Decl>> classDecls;
   TC currVisibility = TC::PRIVATE;
 
-  while (acceptDecl() || acceptAccessModifier() || acceptConstructor()) {
+  while (acceptDecl() || acceptAccessModifier() || acceptConstructor() ||
+         acceptDestructor()) {
     atl::shared_ptr<Decl> declaration;
     if (acceptAccessModifier()) {
       currVisibility =
@@ -294,6 +316,8 @@ atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
       continue;
     } else if (acceptDecl()) {
       declaration = parseDecl();
+    } else if (acceptDestructor()) {
+      // declaration = parseDestructor();
     } else {
       declaration = parseConstructor();
     }
@@ -424,7 +448,12 @@ atl::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
 }
 atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
   atl::shared_ptr<Type> funType = parseType();
-  const atl::string funIdent = expect(TC::IDENTIFIER).data;
+  atl::string funIdent;
+  if (accept({TC::OPNE, TC::OPASSIGN, TC::OPEQ})) {
+    funIdent = expect({TC::OPNE, TC::OPASSIGN, TC::OPEQ}).data;
+  } else {
+    funIdent = expect(TC::IDENTIFIER).data;
+  }
   expect(TC::LPAR);
   atl::vector<atl::shared_ptr<VarDecl>> funParams;
 
@@ -558,10 +587,10 @@ atl::shared_ptr<Type> Parser::parseType() {
   } else if (accept(TC::REF)) {
     expect(TC::REF);
     type = atl::shared_ptr<ReferenceType>(new ReferenceType(type));
-    if (accept(TC::REF)) {
-      expect(TC::REF);
-      type = atl::shared_ptr<ReferenceType>(new ReferenceType(type));
-    }
+  } else if (accept(TC::AND)) {
+    expect(TC::AND);
+    type = atl::shared_ptr<ReferenceType>(new ReferenceType(type));
+    type = atl::shared_ptr<ReferenceType>(new ReferenceType(type));
   }
 
   type->typeModifiers = typeModifiers;
@@ -883,8 +912,8 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
       expect(TC::DOT);
       if (accept(TC::LPAR, 1)) {
         atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
-        // objExpr =
-        // atl::make_shared<MemberCall>(MemberCall(objExpr, memberFunCall));
+        objExpr =
+            atl::make_shared<MemberCall>(MemberCall(objExpr, memberFunCall));
       } else {
         const atl::string fieldIdent = expect(TC::IDENTIFIER).data;
         objExpr =

@@ -143,6 +143,29 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::NEW, scanner.getPosition());
     }
+    // Check for OPASSIGN, OPEQ, OPNE Tokens.
+    else if (c == 'o' && scanner.peek() == 'p') {
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("operator");
+      literal = lexResult.second;
+
+      if (lexResult.first) {
+        c = scanner.next();
+        if (c == '!' || c == '=') {
+          if (scanner.peek() == '=') {
+            // Found operator!= or operator==
+            scanner.next();
+            if (c == '!')
+              return SourceToken(TC::OPNE, scanner.getPosition(), "operator!=");
+            if (c == '=')
+              return SourceToken(TC::OPEQ, scanner.getPosition(), "operator==");
+          } else {
+            // Found operator=
+            return SourceToken(TC::OPASSIGN, scanner.getPosition(),
+                               "operator=");
+          }
+        }
+      }
+    }
     // Check for PRIVATE/PROTECTED Tokens.
     else if (c == 'p' && scanner.peek() == 'r') {
       c = scanner.next();
@@ -302,6 +325,8 @@ SourceToken Lexer::nextToken() {
   }
 
   /* Recognise One Symbol Tokens. */
+  if (c == '~')
+    return SourceToken(TC::DESTRUCTOR, scanner.getPosition());
   if (c == '=')
     return SourceToken(TC::ASSIGN, scanner.getPosition());
   if (c == '{')
