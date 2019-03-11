@@ -87,13 +87,15 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first) {
         if (scanner.peek() == '[') {
           scanner.next();
-          if (scanner.peek() == ']')
+          if (scanner.peek() == ']') {
+            scanner.next();
             return SourceToken(TC::DELETEARR, scanner.getPosition());
-          else
+          } else {
             throw std::runtime_error(
                 std::string(
                     "Lexer: Unexpected Token. Expected 'delete[]' at ") +
                 scanner.getPosition().toString().c_str());
+          }
         }
         return SourceToken(TC::DELETE, scanner.getPosition());
       }
