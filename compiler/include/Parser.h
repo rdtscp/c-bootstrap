@@ -50,6 +50,7 @@ private:
   bool acceptClassTypeDecl(int offset = 0);
   bool acceptConstructor(int offset = 0);
   bool acceptDecl(int offset = 0);
+  bool acceptDestructor(int offset = 0);
   bool acceptEnumTypeDecl(int offset = 0);
   bool acceptFunDecl(int offset = 0);
   bool acceptStructTypeDecl(int offset = 0);
@@ -85,6 +86,7 @@ private:
   atl::shared_ptr<ClassTypeDecl> parseClassTypeDecl();
   atl::shared_ptr<ConstructorDecl> parseConstructor();
   atl::shared_ptr<Decl> parseDecl();
+  // atl::shared_ptr<DestructorDecl> parseDestructor();
   atl::shared_ptr<EnumTypeDecl> parseEnumTypeDecl();
   atl::shared_ptr<FunDecl> parseFunDecl();
   atl::shared_ptr<StructTypeDecl> parseStructTypeDecl();
