@@ -32,7 +32,11 @@ Progressively changing to adopt new features of the language(s).
 
     arrvardecl   -> vardecl "[" INT_LITERAL "]"
 
-    fundecl      -> type IDENT "(" params ")"
+    fundecl      -> type (IDENT | opoverloads) "(" params ")"
+
+    opoverloads  -> "operator="
+                  | "operator=="
+                  | "operator!="
 
     fundef       -> type IDENT "(" params ")" block
 
