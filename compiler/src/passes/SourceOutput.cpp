@@ -176,6 +176,17 @@ atl::string SourceOutput::visit(ConstructorDef &cd) {
 
   return output;
 }
+atl::string SourceOutput::visit(DestructorDecl &dd) {
+  atl::string output = dd.classType->accept(*this);
+  output += "();";
+  return output;
+}
+atl::string SourceOutput::visit(DestructorDef &dd) {
+  atl::string output = dd.classType->accept(*this);
+  output += "()";
+  output += dd.destructorBlock->accept(*this);
+  return output;
+}
 atl::string SourceOutput::visit(DoWhile &dw) {
   atl::string output = "do";
   output += dw.body->accept(*this);

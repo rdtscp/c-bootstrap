@@ -85,6 +85,10 @@ atl::shared_ptr<Type> TypeAnalysis::visit(ConstructorDecl &cd) {
 atl::shared_ptr<Type> TypeAnalysis::visit(ConstructorDef &cd) {
   return nullptr;
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(DestructorDecl &cd) {
+  return nullptr;
+}
+atl::shared_ptr<Type> TypeAnalysis::visit(DestructorDef &cd) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(DoWhile &dw) {
   dw.body->accept(*this);
   atl::shared_ptr<Type> conditionType = dw.condition->accept(*this);

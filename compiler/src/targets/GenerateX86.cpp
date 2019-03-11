@@ -106,6 +106,12 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorDecl &cd) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorDef &cd) {
   return atl::make_shared<X86::None>();
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(DestructorDecl &dd) {
+  return atl::make_shared<X86::None>();
+}
+atl::shared_ptr<X86::Operand> GenerateX86::visit(DestructorDef &dd) {
+  return atl::make_shared<X86::None>();
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(DoWhile &dw) {
   dw.body->accept(*this);
   dw.condition->accept(*this);

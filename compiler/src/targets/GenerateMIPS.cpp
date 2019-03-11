@@ -154,6 +154,12 @@ MIPS::Register GenerateMIPS::visit(ConstructorDecl &cd) {
 MIPS::Register GenerateMIPS::visit(ConstructorDef &cd) {
   return MIPS::Register();
 }
+MIPS::Register GenerateMIPS::visit(DestructorDecl &dd) {
+  return MIPS::Register();
+}
+MIPS::Register GenerateMIPS::visit(DestructorDef &dd) {
+  return MIPS::Register();
+}
 MIPS::Register GenerateMIPS::visit(DoWhile &dw) {
   dw.condition->accept(*this);
   dw.body->accept(*this);

@@ -125,6 +125,12 @@ atl::shared_ptr<ASTNode> Optimiser::visit(ConstructorDecl &cd) {
 atl::shared_ptr<ASTNode> Optimiser::visit(ConstructorDef &cd) {
   return cd.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(DestructorDecl &dd) {
+  return dd.getptr();
+}
+atl::shared_ptr<ASTNode> Optimiser::visit(DestructorDef &dd) {
+  return dd.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(DoWhile &dw) { return dw.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(EnumTypeDecl &etd) {
   return atl::static_pointer_cast<Decl>(etd.getptr());

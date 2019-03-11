@@ -216,6 +216,21 @@ atl::string DotGraph::visit(ConstructorDef &cd) {
   join(constructorID, cd.constructorBlock->accept(*this));
   return constructorID;
 }
+atl::string DotGraph::visit(DestructorDecl &dd) {
+  atl::string destructorID =
+      atl::string("DestructorDecl") + atl::to_string(++nodeCount);
+  // declare(funcID, fd.funName);
+  // join(funcID, fd.funBlock->accept(*this));
+  return destructorID;
+}
+atl::string DotGraph::visit(DestructorDef &dd) {
+  atl::string destructorID =
+      atl::string("ConstructorDef") + atl::to_string(++nodeCount);
+  atl::string funParams = "()";
+  declare(destructorID, dd.classType->identifier + funParams);
+  join(destructorID, dd.destructorBlock->accept(*this));
+  return destructorID;
+}
 atl::string DotGraph::visit(DoWhile &dw) {
   atl::string whileID = atl::string("While") + atl::to_string(++nodeCount);
   declare(whileID, "do {} while()");

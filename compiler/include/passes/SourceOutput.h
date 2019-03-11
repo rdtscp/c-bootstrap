@@ -42,6 +42,8 @@ private:
   atl::string visit(ClassTypeDecl &ctd) override;
   atl::string visit(ConstructorDecl &cd) override;
   atl::string visit(ConstructorDef &cd) override;
+  atl::string visit(DestructorDecl &dd) override;
+  atl::string visit(DestructorDef &dd) override;
   atl::string visit(DoWhile &dw) override;
   atl::string visit(EnumTypeDecl &etd) override;
   atl::string visit(For &f) override;

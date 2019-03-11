@@ -17,6 +17,8 @@
 #include "ast/ConstructorDecl.h"
 #include "ast/ConstructorDef.h"
 #include "ast/Decl.h"
+#include "ast/DestructorDecl.h"
+#include "ast/DestructorDef.h"
 #include "ast/DoWhile.h"
 #include "ast/EnumTypeDecl.h"
 #include "ast/Expr.h"

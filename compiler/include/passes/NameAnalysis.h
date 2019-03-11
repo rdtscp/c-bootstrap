@@ -43,6 +43,8 @@ private:
   void visit(ClassTypeDecl &ctd) override;
   void visit(ConstructorDecl &cd) override;
   void visit(ConstructorDef &cd) override;
+  void visit(DestructorDecl &cd) override;
+  void visit(DestructorDef &dd) override;
   void visit(DoWhile &dw) override;
   void visit(EnumTypeDecl &etd) override;
   void visit(For &f) override;

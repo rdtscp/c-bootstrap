@@ -18,6 +18,8 @@ class ClassType;
 class ClassTypeDecl;
 class ConstructorDecl;
 class ConstructorDef;
+class DestructorDecl;
+class DestructorDef;
 class DoWhile;
 class EnumTypeDecl;
 class For;
@@ -65,6 +67,8 @@ public:
   virtual T visit(ClassTypeDecl &ctd) = 0;
   virtual T visit(ConstructorDecl &cd) = 0;
   virtual T visit(ConstructorDef &cd) = 0;
+  virtual T visit(DestructorDecl &dd) = 0;
+  virtual T visit(DestructorDef &dd) = 0;
   virtual T visit(DoWhile &dw) = 0;
   virtual T visit(EnumTypeDecl &etd) = 0;
   virtual T visit(For &f) = 0;

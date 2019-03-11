@@ -43,6 +43,8 @@ private:
   atl::shared_ptr<ASTNode> visit(ClassTypeDecl &ctd) override;
   atl::shared_ptr<ASTNode> visit(ConstructorDecl &cd) override;
   atl::shared_ptr<ASTNode> visit(ConstructorDef &cd) override;
+  atl::shared_ptr<ASTNode> visit(DestructorDecl &dd) override;
+  atl::shared_ptr<ASTNode> visit(DestructorDef &dd) override;
   atl::shared_ptr<ASTNode> visit(DoWhile &dw) override;
   atl::shared_ptr<ASTNode> visit(EnumTypeDecl &etd) override;
   atl::shared_ptr<ASTNode> visit(For &f) override;

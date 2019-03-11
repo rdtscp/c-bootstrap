@@ -27,6 +27,8 @@ add_library(AST SHARED
   src/ast/ClassTypeDecl.cpp
   src/ast/ConstructorDecl.cpp
   src/ast/ConstructorDef.cpp
+  src/ast/DestructorDecl.cpp
+  src/ast/DestructorDef.cpp
   src/ast/DoWhile.cpp
   src/ast/EnumTypeDecl.cpp
   src/ast/For.cpp
