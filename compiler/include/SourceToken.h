@@ -63,6 +63,8 @@ public:
     OPEQ,       // "operator=="
     OPNE,       // "operator!="
     DESTRUCTOR, // "~"
+    DELETE,     // "delete"
+    DELETEARR,  // "delete[]"
 
     // literals
     STRING_LITERAL, // \".*\"  any sequence of characters enclosed within
@@ -233,6 +235,10 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "operator!=";
   case SourceToken::Class::DESTRUCTOR:
     return "~";
+  case SourceToken::Class::DELETE:
+    return "delete";
+  case SourceToken::Class::DELETEARR:
+    return "delete[]";
   }
 }
 

@@ -79,6 +79,25 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::CONST, scanner.getPosition());
     }
+    // Check for DELETE and DELETEARR Tokens.
+    if (c == 'd' && scanner.peek() == 'e') {
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("delete");
+      literal = lexResult.second;
+
+      if (lexResult.first) {
+        if (scanner.peek() == '[') {
+          scanner.next();
+          if (scanner.peek() == ']')
+            return SourceToken(TC::DELETEARR, scanner.getPosition());
+          else
+            throw std::runtime_error(
+                std::string(
+                    "Lexer: Unexpected Token. Expected 'delete[]' at ") +
+                scanner.getPosition().toString().c_str());
+        }
+        return SourceToken(TC::DELETE, scanner.getPosition());
+      }
+    }
     // Check for DO Token.
     if (c == 'd' && scanner.peek() == 'o') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("do");

@@ -241,6 +241,9 @@ bool Parser::acceptType(int offset) {
 /* -- Stmts -- */
 bool Parser::acceptAssign(int offset) { return acceptExpr(offset); }
 bool Parser::acceptBlock(int offset) { return accept(TC::LBRA, offset); }
+bool Parser::acceptDelete(int offset) {
+  return accept({TC::DELETE, TC::DELETEARR}, offset);
+}
 bool Parser::acceptDoWhile(int offset) { return accept(TC::DO, offset); }
 bool Parser::acceptFor(int offset) { return accept(TC::FOR, offset); }
 bool Parser::acceptIf(int offset) { return accept(TC::IF, offset); }
@@ -317,7 +320,7 @@ atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
     } else if (acceptDecl()) {
       declaration = parseDecl();
     } else if (acceptDestructor()) {
-      // declaration = parseDestructor();
+      declaration = parseDestructor();
     } else {
       declaration = parseConstructor();
     }
@@ -416,6 +419,24 @@ atl::shared_ptr<Decl> Parser::parseDecl() {
   throw std::runtime_error("Parser: Expected a Struct/Variable/Function "
                            "Declaration but none was found.");
 }
+atl::shared_ptr<DestructorDecl> Parser::parseDestructor() {
+  expect(TC::DESTRUCTOR);
+  const atl::string classIdentifier = expect(TC::IDENTIFIER).data;
+  const atl::shared_ptr<ClassType> classType(new ClassType(classIdentifier));
+  expect(TC::LPAR);
+  expect(TC::RPAR);
+  if (acceptBlock()) {
+    const atl::shared_ptr<Block> destructorBlock = parseBlock();
+    const atl::shared_ptr<DestructorDef> dd(
+        new DestructorDef(classType, destructorBlock));
+    return dd;
+  } else {
+    expect(TC::SC);
+    const atl::shared_ptr<DestructorDecl> dd(new DestructorDecl(classType));
+    return dd;
+  }
+}
+
 atl::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
   expect(TC::ENUM);
   atl::string ident = "";

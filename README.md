@@ -60,6 +60,8 @@ Progressively changing to adopt new features of the language(s).
                   | "while" "(" exp ")" stmt
                   | "if" "(" exp ")" stmt ["else" stmt]
                   | "return" [exp] ";"
+                  | "delete" IDENT ";"
+                  | "delete[]" IDENT ";"
                   | expr "=" expr ";"
                   | expr ";"
 
