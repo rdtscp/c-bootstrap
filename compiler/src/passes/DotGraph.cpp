@@ -216,6 +216,13 @@ atl::string DotGraph::visit(ConstructorDef &cd) {
   join(constructorID, cd.constructorBlock->accept(*this));
   return constructorID;
 }
+atl::string DotGraph::visit(Deletion &d) {
+  atl::string deletionID =
+      atl::string("Deletion") + atl::to_string(++nodeCount);
+  // declare(funcID, fd.funName);
+  // join(funcID, fd.funBlock->accept(*this));
+  return deletionID;
+}
 atl::string DotGraph::visit(DestructorDecl &dd) {
   atl::string destructorID =
       atl::string("DestructorDecl") + atl::to_string(++nodeCount);

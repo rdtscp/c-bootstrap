@@ -176,6 +176,16 @@ atl::string SourceOutput::visit(ConstructorDef &cd) {
 
   return output;
 }
+atl::string SourceOutput::visit(Deletion &d) {
+  atl::string output = "delete";
+  if (d.deletionType == Deletion::DeletionType::ARRAY) {
+    output += "[]";
+  }
+  output += " ";
+  output += d.deletionVar->accept(*this);
+  output += ";";
+  return output;
+}
 atl::string SourceOutput::visit(DestructorDecl &dd) {
   atl::string output = dd.classType->accept(*this);
   output += "();";

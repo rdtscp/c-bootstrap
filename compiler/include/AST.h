@@ -17,6 +17,7 @@
 #include "ast/ConstructorDecl.h"
 #include "ast/ConstructorDef.h"
 #include "ast/Decl.h"
+#include "ast/Deletion.h"
 #include "ast/DestructorDecl.h"
 #include "ast/DestructorDef.h"
 #include "ast/DoWhile.h"

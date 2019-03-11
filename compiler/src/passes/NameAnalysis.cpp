@@ -69,6 +69,7 @@ void NameAnalysis::visit(ClassTypeDecl &ctd) {
 void NameAnalysis::visit(ConstructorDecl &cd) {}
 void NameAnalysis::visit(ConstructorDef &cd) {}
 
+void NameAnalysis::visit(Deletion &d) {}
 void NameAnalysis::visit(DestructorDecl &dd) {}
 void NameAnalysis::visit(DestructorDef &dd) {
   dd.destructorBlock->accept(*this);

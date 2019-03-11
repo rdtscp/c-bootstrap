@@ -125,6 +125,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(ConstructorDecl &cd) {
 atl::shared_ptr<ASTNode> Optimiser::visit(ConstructorDef &cd) {
   return cd.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(Deletion &d) { return d.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(DestructorDecl &dd) {
   return dd.getptr();
 }

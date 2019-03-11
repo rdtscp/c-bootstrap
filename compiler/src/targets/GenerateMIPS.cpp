@@ -154,6 +154,7 @@ MIPS::Register GenerateMIPS::visit(ConstructorDecl &cd) {
 MIPS::Register GenerateMIPS::visit(ConstructorDef &cd) {
   return MIPS::Register();
 }
+MIPS::Register GenerateMIPS::visit(Deletion &d) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(DestructorDecl &dd) {
   return MIPS::Register();
 }

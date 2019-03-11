@@ -85,6 +85,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(ConstructorDecl &cd) {
 atl::shared_ptr<Type> TypeAnalysis::visit(ConstructorDef &cd) {
   return nullptr;
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(Deletion &d) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(DestructorDecl &cd) {
   return nullptr;
 }
