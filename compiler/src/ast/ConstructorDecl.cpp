@@ -20,6 +20,9 @@ bool ConstructorDecl::operator==(Decl &rhs) const {
 bool ConstructorDecl::operator!=(Decl &rhs) const { return !(*this == rhs); }
 
 bool ConstructorDecl::operator==(const ConstructorDecl &rhs) const {
+  if (*classType != *rhs.classType)
+    return false;
+
   if (constructorParams.size() != rhs.constructorParams.size())
     return false;
 
