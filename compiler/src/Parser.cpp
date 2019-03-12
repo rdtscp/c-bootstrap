@@ -959,9 +959,9 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     return atl::make_shared<AddressOf>(AddressOf(addrOfExpr));
   }
   atl::shared_ptr<Expr> objExpr = parseObjExpr();
-  while (accept({TC::DOT, TC::LSBR})) {
-    if (accept(TC::DOT)) {
-      expect(TC::DOT);
+  while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
+    if (accept({TC::DOT, TC::PTRDOT})) {
+      expect({TC::DOT, TC::PTRDOT});
       if (accept(TC::LPAR, 1)) {
         atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
         objExpr =
@@ -996,8 +996,8 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
   }
 
   atl::shared_ptr<Expr> lhs = parseLitExpr();
-  if (accept(TC::DOT)) {
-    expect(TC::DOT);
+  if (accept({TC::DOT, TC::PTRDOT})) {
+    expect({TC::DOT, TC::PTRDOT});
     const atl::string fieldIdent = expect(TC::IDENTIFIER).data;
     return atl::make_shared<MemberAccess>(MemberAccess(lhs, fieldIdent));
   }
