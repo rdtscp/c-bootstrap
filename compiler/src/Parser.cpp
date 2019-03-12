@@ -579,6 +579,27 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
     expect(TC::ASSIGN);
     atl::shared_ptr<Expr> assignExpr = parseExpr();
     return atl::make_shared<VarDef>(VarDef(varType, varIdentifier, assignExpr));
+  } else if (accept(TC::LPAR)) {
+    expect(TC::LPAR);
+    if (varType->astClass() != "ClassType")
+      throw std::runtime_error(
+          "Construction of Variable of non-class type not supported at ");
+
+    atl::shared_ptr<ClassType> classType =
+        atl::static_pointer_cast<ClassType>(varType);
+    /* Parse Params */
+    atl::vector<atl::shared_ptr<Expr>> params;
+    if (acceptExpr())
+      params.push_back(parseLitExpr());
+    while (accept(TC::COMMA)) {
+      expect(TC::COMMA);
+      params.push_back(parseLitExpr());
+    }
+    expect(TC::RPAR);
+    const atl::shared_ptr<FunCall> constructorCall(
+        new FunCall(classType->identifier, params));
+    return atl::make_shared<VarDef>(
+        VarDef(varType, varIdentifier, constructorCall));
   } else {
     return atl::make_shared<VarDecl>(VarDecl(varType, varIdentifier));
   }
