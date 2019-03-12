@@ -184,6 +184,9 @@ SourceToken Lexer::nextToken() {
             return SourceToken(TC::OPASSIGN, scanner.getPosition(),
                                "operator=");
           }
+        } else if (c == '[' && scanner.peek() == ']') {
+          scanner.next();
+          return SourceToken(TC::OPAT, scanner.getPosition(), "operator[]");
         }
       }
     }

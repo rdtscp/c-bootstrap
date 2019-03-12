@@ -62,6 +62,7 @@ public:
     OPASSIGN,   // "operator="
     OPEQ,       // "operator=="
     OPNE,       // "operator!="
+    OPAT,       // "operator[]"
     DESTRUCTOR, // "~"
     DELETE,     // "delete"
     DELETEARR,  // "delete[]"
@@ -233,6 +234,8 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "operator==";
   case SourceToken::Class::OPNE:
     return "operator!=";
+  case SourceToken::Class::OPAT:
+    return "operator[]";
   case SourceToken::Class::DESTRUCTOR:
     return "~";
   case SourceToken::Class::DELETE:
