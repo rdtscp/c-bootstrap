@@ -178,12 +178,12 @@ SourceToken Lexer::nextToken() {
           scanner.next();
           return SourceToken(TC::OPEQ, scanner.getPosition(), "operator==");
         }
-        if (c == '+' && scanner.peek() != '+') {
+        if (c == '+' && scanner.peek() != '=') {
           return SourceToken(TC::OPADD, scanner.getPosition(), "operator+");
         }
-        if (c == '+' && scanner.peek() == '+') {
+        if (c == '+' && scanner.peek() == '=') {
           scanner.next();
-          return SourceToken(TC::OPADDTO, scanner.getPosition(), "operator++");
+          return SourceToken(TC::OPADDTO, scanner.getPosition(), "operator+=");
         }
         if (c == '[' && scanner.peek() == ']') {
           scanner.next();
