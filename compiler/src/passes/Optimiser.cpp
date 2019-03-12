@@ -30,8 +30,8 @@ atl::shared_ptr<ASTNode> Optimiser::visit(ArrayAccess &aa) {
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(ArrayType &at) { return at.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(Assign &as) {
-  as.lhs = atl::static_pointer_cast<Expr>(as.lhs->accept(*this));
-  as.rhs = atl::static_pointer_cast<Expr>(as.rhs->accept(*this));
+  as.lhs = as.lhs->accept(*this);
+  as.rhs = as.rhs->accept(*this);
   return as.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(BaseType &bt) { return bt.getptr(); }
