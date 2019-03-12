@@ -62,6 +62,7 @@ Progressively changing to adopt new features of the language(s).
                   | "return" [exp] ";"
                   | "delete" IDENT ";"
                   | "delete[]" IDENT ";"
+                  | "throw" STRING_LITERAL ";"
                   | expr "=" expr ";"
                   | expr ";"
 
