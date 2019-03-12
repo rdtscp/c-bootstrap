@@ -133,25 +133,29 @@ bool Parser::acceptFunDecl(int offset) {
   if (acceptStructType(offset)) {
     offset += 2;
     while (accept(TC::ASTERIX, offset))
-      offset++;
-    return accept({TC::IDENTIFIER, TC::OPEQ, TC::OPASSIGN, TC::OPNE}, offset) &&
+      ++offset;
+    return accept({TC::IDENTIFIER, TC::OPEQ, TC::OPASSIGN, TC::OPNE, TC::OPAT},
+                  offset) &&
            accept(TC::LPAR, offset + 1);
   }
 
   if (acceptType(offset)) {
-    offset++;
+    if (accept(TC::CONST))
+      ++offset;
+    ++offset;
     if (accept(TC::ASTERIX, offset) && !accept(TC::REF, offset))
       while (accept(TC::ASTERIX, offset))
-        offset++;
+        ++offset;
 
     else if (accept(TC::REF, offset)) {
-      offset++;
+      ++offset;
     } else if (accept(TC::AND, offset)) {
-      offset++;
-      offset++;
+      ++offset;
+      ++offset;
     }
 
-    return accept({TC::IDENTIFIER, TC::OPASSIGN, TC::OPEQ, TC::OPNE}, offset) &&
+    return accept({TC::IDENTIFIER, TC::OPASSIGN, TC::OPEQ, TC::OPNE, TC::OPAT},
+                  offset) &&
            accept(TC::LPAR, offset + 1);
   }
 
@@ -190,17 +194,17 @@ bool Parser::acceptVarDecl(int offset) {
                      TC::IDENTIFIER},
                     offset)) {
 
-    offset++;
+    ++offset;
     if (accept(TC::ASTERIX, offset) && !accept(TC::REF, offset) &&
         !accept(TC::AND, offset))
       while (accept(TC::ASTERIX, offset))
-        offset++;
+        ++offset;
 
     else if (accept(TC::REF, offset)) {
-      offset++;
+      ++offset;
     } else if (accept(TC::AND, offset)) {
-      offset++;
-      offset++;
+      ++offset;
+      ++offset;
     }
 
     if (!accept(TC::IDENTIFIER, offset))
@@ -482,8 +486,8 @@ atl::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
 atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
   atl::shared_ptr<Type> funType = parseType();
   atl::string funIdent;
-  if (accept({TC::OPNE, TC::OPASSIGN, TC::OPEQ})) {
-    funIdent = expect({TC::OPNE, TC::OPASSIGN, TC::OPEQ}).data;
+  if (accept({TC::OPNE, TC::OPASSIGN, TC::OPEQ, TC::OPAT})) {
+    funIdent = expect({TC::OPNE, TC::OPASSIGN, TC::OPEQ, TC::OPAT}).data;
   } else {
     funIdent = expect(TC::IDENTIFIER).data;
   }
@@ -503,6 +507,10 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
   }
 
   expect(TC::RPAR);
+
+  if (accept(TC::CONST))
+    expect(TC::CONST);
+  // TODO: Modifiers for FunDecls
 
   if (acceptBlock() && !isDef) {
     throw std::runtime_error(
