@@ -46,7 +46,7 @@ Progressively changing to adopt new features of the language(s).
 
     statelist    -> (IDENT ["=" INT_LITERAL] ",")* IDENT ["=" INT_LITERAL]
 
-    type         -> ("int" | "char" | "void" | structtype | classtype ) (ASTERIX)*
+    type         -> ("int" | "char" | "void", "unsigned int", "bool" | structtype | classtype ) (ASTERIX)*
 
     structtype   -> "struct" IDENT
 
@@ -99,7 +99,7 @@ Progressively changing to adopt new features of the language(s).
                   | "-" objExpr
                   | "new" type [ "(" litExpr ("," litExpr)* ")" ] ";"
                   | "&" objExpr
-                  | objExpr ( ("." funCall) || ("." objExpr) || ("[" objExpr "]") )*
+                  | objExpr ( (("." || "->") funCall) || (("." || "->") objExpr) || ("[" objExpr "]") )\*
 
     objExpr      -> funCall
                   | IDENT
@@ -114,6 +114,8 @@ Progressively changing to adopt new features of the language(s).
     litExpr      -> INT_LITERAL
                   | CHAR_LITERAL
                   | STRING_LITERAL
+                  | "true"
+                  | "false"
                   | exp
 
 ### macOS Notes

@@ -30,6 +30,8 @@ int BaseType::getBytes() const {
     return 4;
   case PrimitiveType::UINT:
     return 4;
+  case PrimitiveType::BOOL:
+    return 1;
   }
 }
 

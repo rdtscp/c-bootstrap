@@ -63,6 +63,8 @@ atl::string SourceOutput::visit(BaseType &bt) {
     return "void";
   case PrimitiveType::UINT:
     return "unsigned int";
+  case PrimitiveType::BOOL:
+    return "bool";
   }
 }
 atl::string SourceOutput::visit(BinOp &bo) {

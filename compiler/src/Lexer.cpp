@@ -55,8 +55,16 @@ SourceToken Lexer::nextToken() {
   // Recognise IDENTIFIERS & Keyword Tokens.
   if (isalpha(c) || c == '_') {
     atl::string literal(1, c);
+    // Check for BOOL Token.
+    if (c == 'b' && scanner.peek() == 'o') {
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("bool");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return SourceToken(TC::BOOL, scanner.getPosition());
+    }
     // Check for CHAR Token.
-    if (c == 'c' && scanner.peek() == 'h') {
+    else if (c == 'c' && scanner.peek() == 'h') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("char");
       literal = lexResult.second;
 
@@ -64,7 +72,7 @@ SourceToken Lexer::nextToken() {
         return SourceToken(TC::CHAR, scanner.getPosition());
     }
     // Check for CLASS Token.
-    if (c == 'c' && scanner.peek() == 'l') {
+    else if (c == 'c' && scanner.peek() == 'l') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("class");
       literal = lexResult.second;
 
@@ -72,7 +80,7 @@ SourceToken Lexer::nextToken() {
         return SourceToken(TC::CLASS, scanner.getPosition());
     }
     // Check for CONST Token.
-    if (c == 'c' && scanner.peek() == 'o') {
+    else if (c == 'c' && scanner.peek() == 'o') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("const");
       literal = lexResult.second;
 
@@ -80,7 +88,7 @@ SourceToken Lexer::nextToken() {
         return SourceToken(TC::CONST, scanner.getPosition());
     }
     // Check for DELETE and DELETEARR Tokens.
-    if (c == 'd' && scanner.peek() == 'e') {
+    else if (c == 'd' && scanner.peek() == 'e') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("delete");
       literal = lexResult.second;
 
@@ -101,7 +109,7 @@ SourceToken Lexer::nextToken() {
       }
     }
     // Check for DO Token.
-    if (c == 'd' && scanner.peek() == 'o') {
+    else if (c == 'd' && scanner.peek() == 'o') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("do");
       literal = lexResult.second;
 
@@ -124,7 +132,14 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::ENUM, scanner.getPosition());
     }
-    // Check for ENUM Token.
+    // Check for FALSE Token.
+    else if (c == 'f' && scanner.peek() == 'a') {
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("false");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return SourceToken(TC::FALSE_VAL, scanner.getPosition());
+    } // Check for ENUM Token.
     else if (c == 'f' && scanner.peek() == 'o') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("for");
       literal = lexResult.second;
@@ -273,6 +288,14 @@ SourceToken Lexer::nextToken() {
 
       if (lexResult.first)
         return SourceToken(TC::THIS, scanner.getPosition());
+    }
+    // Check for TRUE Token.
+    else if (c == 't' && scanner.peek() == 'r') {
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("true");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return SourceToken(TC::TRUE_VAL, scanner.getPosition());
     }
     // Check for TYPEDEF Token.
     else if (c == 't' && scanner.peek() == 'y') {

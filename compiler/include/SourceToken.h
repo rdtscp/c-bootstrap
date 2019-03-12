@@ -38,6 +38,7 @@ public:
     CHAR,  // "char"
     SHORT, // "short"
     UINT,  // "unsigned int"
+    BOOL,  // "bool"
 
     // keywords
     IF,         // "if"
@@ -62,6 +63,8 @@ public:
     DESTRUCTOR, // "~"
     DELETE,     // "delete"
     DELETEARR,  // "delete[]"
+    FALSE_VAL,  // "false"
+    TRUE_VAL,   // "true"
 
     // operators overrides
     OPASSIGN, // "operator="
@@ -158,6 +161,8 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "CHAR";
   case SourceToken::Class::UINT:
     return "UINT";
+  case SourceToken::Class::BOOL:
+    return "bool";
   case SourceToken::Class::IF:
     return "IF";
   case SourceToken::Class::ELSE:
@@ -248,6 +253,10 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "delete";
   case SourceToken::Class::DELETEARR:
     return "delete[]";
+  case SourceToken::Class::FALSE_VAL:
+    return "false";
+  case SourceToken::Class::TRUE_VAL:
+    return "true";
   case SourceToken::Class::OPASSIGN:
     return "operator=";
   case SourceToken::Class::OPEQ:

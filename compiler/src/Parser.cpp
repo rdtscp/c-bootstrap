@@ -193,7 +193,7 @@ bool Parser::acceptVarDecl(int offset) {
     if (!accept(TC::IDENTIFIER, offset))
       return false;
 
-  } else if (accept({TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UINT,
+  } else if (accept({TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UINT, TC::BOOL,
                      TC::IDENTIFIER},
                     offset)) {
 
@@ -234,7 +234,7 @@ bool Parser::acceptStructType(int offset) {
 bool Parser::acceptType(int offset) {
   if (accept(TC::CONST))
     ++offset;
-  if (accept({TC::INT, TC::CHAR, TC::VOID, TC::UINT}, offset))
+  if (accept({TC::INT, TC::CHAR, TC::VOID, TC::UINT, TC::BOOL}, offset))
     return true;
   if (accept(TC::STRUCT, offset) && accept(TC::IDENTIFIER, offset + 1))
     return true;
@@ -601,7 +601,8 @@ atl::shared_ptr<Type> Parser::parseType() {
     type = atl::make_shared<ClassType>(ClassType(classIdentifer));
   } else {
     const TC baseType =
-        expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT, TC::UINT}).tokenClass;
+        expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT, TC::UINT, TC::BOOL})
+            .tokenClass;
     PrimitiveType pType;
     switch (baseType) {
     case TC::INT:
@@ -618,6 +619,9 @@ atl::shared_ptr<Type> Parser::parseType() {
       break;
     case TC::UINT:
       pType = PrimitiveType::UINT;
+      break;
+    case TC::BOOL:
+      pType = PrimitiveType::BOOL;
       break;
     default:
       pType = PrimitiveType::VOID;
@@ -1037,6 +1041,12 @@ atl::shared_ptr<Expr> Parser::parseLitExpr() {
     return atl::make_shared<StringLiteral>(
         StringLiteral(expect(TC::STRING_LITERAL).data));
   }
+  if (accept(TC::TRUE_VAL)) {
+    return atl::make_shared<IntLiteral>(IntLiteral("1"));
+  }
+  if (accept(TC::FALSE_VAL)) {
+    return atl::make_shared<IntLiteral>(IntLiteral("0"));
+  }
   if (acceptExpr())
     return parseExpr();
 
@@ -1056,6 +1066,8 @@ atl::shared_ptr<BaseType> Parser::tokenToType(const TC &tc) {
     return atl::make_shared<BaseType>(BaseType(PrimitiveType::SHORT));
   case TC::VOID:
     return atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID));
+  case TC::BOOL:
+    return atl::make_shared<BaseType>(BaseType(PrimitiveType::BOOL));
   default:
     throw std::runtime_error(std::string("Parsing: Cannot resolve Token ") +
                              tokToStr(tc).c_str() + "  to a type.");
