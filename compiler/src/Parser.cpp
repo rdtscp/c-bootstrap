@@ -279,9 +279,12 @@ bool Parser::acceptStmt(int offset) {
     return true;
   if (acceptExpr(offset))
     return true;
+  if (acceptThrow(offset))
+    return true;
 
   return false;
 }
+bool Parser::acceptThrow(int offset) { return accept(TC::THROW, offset); }
 bool Parser::acceptWhile(int offset) { return accept(TC::WHILE, offset); }
 
 bool Parser::acceptParam(int offset) { return acceptType(offset); }
@@ -289,7 +292,18 @@ bool Parser::acceptParam(int offset) { return acceptType(offset); }
 bool Parser::acceptExpr(int offset) {
   return accept({TC::LPAR, TC::SIZEOF, TC::ASTERIX, TC::MINUS, TC::IDENTIFIER,
                  TC::INT_LITERAL, TC::CHAR_LITERAL, TC::STRING_LITERAL, TC::NEW,
-                 TC::PREFIXINC, TC::TRUE_VAL, TC::FALSE_VAL, TC::NOT},
+                 TC::PREFIXINC, TC::TRUE_VAL, TC::FALSE_VAL, TC::NOT, TC::REF},
+                offset);
+}
+bool Parser::acceptObjExpr(int offset) {
+  return accept({TC::IDENTIFIER, TC::THIS}, offset);
+}
+bool Parser::acceptObjExprOp(int offset) {
+  return accept({TC::DOT, TC::PTRDOT, TC::LSBR}, offset);
+}
+bool Parser::acceptLitExpr(int offset) {
+  return accept({TC::INT_LITERAL, TC::CHAR_LITERAL, TC::STRING_LITERAL,
+                 TC::TRUE_VAL, TC::FALSE_VAL},
                 offset);
 }
 
@@ -787,6 +801,9 @@ atl::shared_ptr<Stmt> Parser::parseStmt() {
   if (acceptReturn())
     return parseReturn();
 
+  if (acceptThrow())
+    return parseThrow();
+
   atl::shared_ptr<Expr> expr = parseExpr();
 
   if (accept(TC::ASSIGN)) {
@@ -798,6 +815,13 @@ atl::shared_ptr<Stmt> Parser::parseStmt() {
 
   expect(TC::SC);
   return expr;
+}
+atl::shared_ptr<Throw> Parser::parseThrow() {
+  expect(TC::THROW);
+  const atl::string stringLiteral = expect(TC::STRING_LITERAL).data;
+  expect(TC::SC);
+  return atl::make_shared<Throw>(
+      Throw(atl::make_shared<StringLiteral>(StringLiteral(stringLiteral))));
 }
 atl::shared_ptr<While> Parser::parseWhile() {
   expect(TC::WHILE);
@@ -987,57 +1011,108 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     expect(TC::NOT);
     // Parse NOT Node.
   }
-  atl::shared_ptr<Expr> objExpr = parseObjExpr();
+
+  return parseObjExpr();
+}
+atl::shared_ptr<Expr> Parser::parseObjExpr() {
+  if (accept(TC::IDENTIFIER) && accept(TC::LPAR, 1)) {
+    atl::shared_ptr<Expr> output = parseFunCall();
+    while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
+      if (accept({TC::DOT, TC::PTRDOT})) {
+        expect({TC::DOT, TC::PTRDOT});
+        if (accept(TC::LPAR, 1)) {
+          atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
+          output =
+              atl::make_shared<MemberCall>(MemberCall(output, memberFunCall));
+        } else {
+          const atl::string fieldIdent = expect(TC::IDENTIFIER).data;
+          output =
+              atl::make_shared<MemberAccess>(MemberAccess(output, fieldIdent));
+        }
+      } else {
+        expect(TC::LSBR);
+        atl::shared_ptr<Expr> arrayIndexExpr = parseObjExpr();
+        expect(TC::RSBR);
+        output =
+            atl::make_shared<ArrayAccess>(ArrayAccess(output, arrayIndexExpr));
+      }
+    }
+    return output;
+  }
+  if (accept(TC::IDENTIFIER)) {
+    const atl::string ident = expect(TC::IDENTIFIER).data;
+    atl::shared_ptr<Expr> output = atl::make_shared<VarExpr>(VarExpr(ident));
+    while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
+      if (accept({TC::DOT, TC::PTRDOT})) {
+        expect({TC::DOT, TC::PTRDOT});
+        if (accept(TC::LPAR, 1)) {
+          atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
+          output =
+              atl::make_shared<MemberCall>(MemberCall(output, memberFunCall));
+        } else {
+          const atl::string fieldIdent = expect(TC::IDENTIFIER).data;
+          output =
+              atl::make_shared<MemberAccess>(MemberAccess(output, fieldIdent));
+        }
+      } else {
+        expect(TC::LSBR);
+        atl::shared_ptr<Expr> arrayIndexExpr = parseObjExpr();
+        expect(TC::RSBR);
+        output =
+            atl::make_shared<ArrayAccess>(ArrayAccess(output, arrayIndexExpr));
+      }
+    }
+    return output;
+  }
+
+  if (accept(TC::THIS)) {
+    expect(TC::THIS);
+    atl::shared_ptr<Expr> output = atl::make_shared<VarExpr>(VarExpr("this"));
+    while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
+      if (accept({TC::DOT, TC::PTRDOT})) {
+        expect({TC::DOT, TC::PTRDOT});
+        if (accept(TC::LPAR, 1)) {
+          atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
+          output =
+              atl::make_shared<MemberCall>(MemberCall(output, memberFunCall));
+        } else {
+          const atl::string fieldIdent = expect(TC::IDENTIFIER).data;
+          output =
+              atl::make_shared<MemberAccess>(MemberAccess(output, fieldIdent));
+        }
+      } else {
+        expect(TC::LSBR);
+        atl::shared_ptr<Expr> arrayIndexExpr = parseObjExpr();
+        expect(TC::RSBR);
+        output =
+            atl::make_shared<ArrayAccess>(ArrayAccess(output, arrayIndexExpr));
+      }
+    }
+    return output;
+  }
+
+  atl::shared_ptr<Expr> output = parseLitExpr();
   while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
     if (accept({TC::DOT, TC::PTRDOT})) {
       expect({TC::DOT, TC::PTRDOT});
       if (accept(TC::LPAR, 1)) {
         atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
-        objExpr =
-            atl::make_shared<MemberCall>(MemberCall(objExpr, memberFunCall));
+        output =
+            atl::make_shared<MemberCall>(MemberCall(output, memberFunCall));
       } else {
         const atl::string fieldIdent = expect(TC::IDENTIFIER).data;
-        objExpr =
-            atl::make_shared<MemberAccess>(MemberAccess(objExpr, fieldIdent));
+        output =
+            atl::make_shared<MemberAccess>(MemberAccess(output, fieldIdent));
       }
     } else {
       expect(TC::LSBR);
       atl::shared_ptr<Expr> arrayIndexExpr = parseObjExpr();
       expect(TC::RSBR);
-      objExpr =
-          atl::make_shared<ArrayAccess>(ArrayAccess(objExpr, arrayIndexExpr));
+      output =
+          atl::make_shared<ArrayAccess>(ArrayAccess(output, arrayIndexExpr));
     }
   }
-  return objExpr;
-}
-atl::shared_ptr<Expr> Parser::parseObjExpr() {
-  if (accept(TC::IDENTIFIER) && accept(TC::LPAR, 1)) {
-    return parseFunCall();
-  }
-  if (accept(TC::IDENTIFIER)) {
-    const atl::string ident = expect(TC::IDENTIFIER).data;
-    return atl::make_shared<VarExpr>(VarExpr(ident));
-  }
-
-  if (accept(TC::THIS)) {
-    expect(TC::THIS);
-    return atl::make_shared<VarExpr>(VarExpr("this"));
-  }
-
-  atl::shared_ptr<Expr> lhs = parseLitExpr();
-  if (accept({TC::DOT, TC::PTRDOT})) {
-    expect({TC::DOT, TC::PTRDOT});
-    const atl::string fieldIdent = expect(TC::IDENTIFIER).data;
-    return atl::make_shared<MemberAccess>(MemberAccess(lhs, fieldIdent));
-  }
-  if (accept(TC::LSBR)) {
-    expect(TC::LSBR);
-    atl::shared_ptr<Expr> index = parseLitExpr();
-    expect(TC::RSBR);
-    return atl::make_shared<ArrayAccess>(ArrayAccess(lhs, index));
-  }
-
-  return lhs;
+  return output;
 }
 atl::shared_ptr<FunCall> Parser::parseFunCall() {
   const atl::string ident = expect(TC::IDENTIFIER).data;
@@ -1077,8 +1152,9 @@ atl::shared_ptr<Expr> Parser::parseLitExpr() {
   if (acceptExpr())
     return parseExpr();
 
-  throw std::runtime_error(std::string("Parsing: Expected an Expression at ") +
-                           currToken.position.toString().c_str());
+  throw std::runtime_error(
+      std::string("Parsing: Expected a Literal Expression at ") +
+      currToken.position.toString().c_str());
 }
 
 /* ---- Helpers ---- */

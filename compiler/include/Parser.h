@@ -74,11 +74,15 @@ private:
   bool acceptNamespace(int offset = 0);
   bool acceptReturn(int offset = 0);
   bool acceptStmt(int offset = 0);
+  bool acceptThrow(int offset = 0);
   bool acceptWhile(int offset = 0);
 
   bool acceptParam(int offset = 0);
 
   bool acceptExpr(int offset = 0);
+  bool acceptObjExpr(int offset = 0);
+  bool acceptObjExprOp(int offset = 0);
+  bool acceptLitExpr(int offset = 0);
 
   /* ---- Parsing ---- */
 
@@ -109,6 +113,7 @@ private:
   atl::shared_ptr<Namespace> parseNamespace();
   atl::shared_ptr<Return> parseReturn();
   atl::shared_ptr<Stmt> parseStmt();
+  atl::shared_ptr<Throw> parseThrow();
   atl::shared_ptr<While> parseWhile();
 
   atl::shared_ptr<VarDecl> parseParam();
@@ -122,6 +127,7 @@ private:
   atl::shared_ptr<Expr> parseMulExpr();
   atl::shared_ptr<Expr> parseUnaryExpr();
   atl::shared_ptr<Expr> parseObjExpr();
+  atl::shared_ptr<Expr> parseObjExprOp();
   atl::shared_ptr<FunCall> parseFunCall();
   atl::shared_ptr<Expr> parseLitExpr();
 
