@@ -289,7 +289,7 @@ bool Parser::acceptParam(int offset) { return acceptType(offset); }
 bool Parser::acceptExpr(int offset) {
   return accept({TC::LPAR, TC::SIZEOF, TC::ASTERIX, TC::MINUS, TC::IDENTIFIER,
                  TC::INT_LITERAL, TC::CHAR_LITERAL, TC::STRING_LITERAL, TC::NEW,
-                 TC::PREFIXINC},
+                 TC::PREFIXINC, TC::TRUE_VAL, TC::FALSE_VAL},
                 offset);
 }
 
@@ -1042,9 +1042,11 @@ atl::shared_ptr<Expr> Parser::parseLitExpr() {
         StringLiteral(expect(TC::STRING_LITERAL).data));
   }
   if (accept(TC::TRUE_VAL)) {
+    expect(TC::TRUE_VAL);
     return atl::make_shared<IntLiteral>(IntLiteral("1"));
   }
   if (accept(TC::FALSE_VAL)) {
+    expect(TC::FALSE_VAL);
     return atl::make_shared<IntLiteral>(IntLiteral("0"));
   }
   if (acceptExpr())
