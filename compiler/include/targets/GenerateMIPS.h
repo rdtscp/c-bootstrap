@@ -103,6 +103,7 @@ private:
   MIPS::Register visit(StringLiteral &sl) override;
   MIPS::Register visit(StructType &st) override;
   MIPS::Register visit(StructTypeDecl &std) override;
+  MIPS::Register visit(Throw &t) override;
   MIPS::Register visit(TypeCast &tc) override;
   MIPS::Register visit(TypeDefDecl &td) override;
   MIPS::Register visit(ValueAt &va) override;

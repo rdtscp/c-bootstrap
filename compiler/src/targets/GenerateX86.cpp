@@ -301,6 +301,9 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(StructType &st) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(StructTypeDecl &std) {
   return atl::make_shared<X86::None>();
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(Throw &t) {
+  return atl::make_shared<X86::None>();
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(TypeCast &tc) {
   return tc.expr->accept(*this);
 }

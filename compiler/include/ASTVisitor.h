@@ -42,6 +42,7 @@ class SizeOf;
 class StringLiteral;
 class StructType;
 class StructTypeDecl;
+class Throw;
 class TypeCast;
 class TypeDefDecl;
 class ValueAt;
@@ -92,6 +93,7 @@ public:
   virtual T visit(StringLiteral &sl) = 0;
   virtual T visit(StructType &st) = 0;
   virtual T visit(StructTypeDecl &std) = 0;
+  virtual T visit(Throw &t) = 0;
   virtual T visit(TypeCast &tc) = 0;
   virtual T visit(TypeDefDecl &tc) = 0;
   virtual T visit(ValueAt &va) = 0;

@@ -45,6 +45,7 @@
 #include "ast/StringLiteral.h"
 #include "ast/StructType.h"
 #include "ast/StructTypeDecl.h"
+#include "ast/Throw.h"
 #include "ast/Type.h"
 #include "ast/TypeCast.h"
 #include "ast/TypeDefDecl.h"

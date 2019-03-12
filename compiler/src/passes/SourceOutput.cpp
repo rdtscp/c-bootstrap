@@ -321,6 +321,12 @@ atl::string SourceOutput::visit(StructTypeDecl &std) {
   output += "\n};";
   return output;
 }
+atl::string SourceOutput::visit(Throw &t) {
+  atl::string output = "throw \"";
+  output += t.exceptionText->accept(*this);
+  output += "\"";
+  return output;
+}
 atl::string SourceOutput::visit(TypeCast &tc) {
   atl::string output = "(";
   output += tc.type->accept(*this);

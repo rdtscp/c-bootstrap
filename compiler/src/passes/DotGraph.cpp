@@ -376,6 +376,12 @@ atl::string DotGraph::visit(StructTypeDecl &std) {
     join(structTypeDeclID, std.varDecls[idx]->accept(*this));
   return structTypeDeclID;
 }
+atl::string DotGraph::visit(Throw &t) {
+  atl::string throwID = atl::string("Throw") + atl::to_string(++nodeCount);
+  declare(throwID, "throw");
+  join(throwID, t.exceptionText->accept(*this));
+  return throwID;
+}
 atl::string DotGraph::visit(TypeCast &tc) {
   atl::string typecastID =
       atl::string("TypeCast") + atl::to_string(++nodeCount);

@@ -67,6 +67,7 @@ private:
   atl::shared_ptr<ASTNode> visit(StringLiteral &sl) override;
   atl::shared_ptr<ASTNode> visit(StructType &st) override;
   atl::shared_ptr<ASTNode> visit(StructTypeDecl &std) override;
+  atl::shared_ptr<ASTNode> visit(Throw &t) override;
   atl::shared_ptr<ASTNode> visit(TypeCast &tc) override;
   atl::shared_ptr<ASTNode> visit(TypeDefDecl &td) override;
   atl::shared_ptr<ASTNode> visit(ValueAt &va) override;

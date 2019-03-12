@@ -51,6 +51,7 @@ add_library(AST SHARED
   src/ast/StringLiteral.cpp
   src/ast/StructType.cpp
   src/ast/StructTypeDecl.cpp
+  src/ast/Throw.cpp
   src/ast/TypeCast.cpp
   src/ast/TypeDefDecl.cpp
   src/ast/ValueAt.cpp

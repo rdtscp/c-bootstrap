@@ -66,6 +66,7 @@ private:
   atl::string visit(StringLiteral &sl) override;
   atl::string visit(StructType &st) override;
   atl::string visit(StructTypeDecl &std) override;
+  atl::string visit(Throw &t) override;
   atl::string visit(TypeCast &tc) override;
   atl::string visit(TypeDefDecl &td) override;
   atl::string visit(ValueAt &va) override;

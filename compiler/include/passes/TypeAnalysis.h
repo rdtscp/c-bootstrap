@@ -67,6 +67,7 @@ private:
   atl::shared_ptr<Type> visit(StringLiteral &sl) override;
   atl::shared_ptr<Type> visit(StructType &st) override;
   atl::shared_ptr<Type> visit(StructTypeDecl &std) override;
+  atl::shared_ptr<Type> visit(Throw &t) override;
   atl::shared_ptr<Type> visit(TypeCast &tc) override;
   atl::shared_ptr<Type> visit(TypeDefDecl &td) override;
   atl::shared_ptr<Type> visit(ValueAt &va) override;

@@ -313,6 +313,7 @@ MIPS::Register GenerateMIPS::visit(StructType &st) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(StructTypeDecl &std) {
   return MIPS::Register();
 }
+MIPS::Register GenerateMIPS::visit(Throw &t) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(TypeCast &tc) {
   return tc.expr->accept(*this);
 }

@@ -183,6 +183,7 @@ void NameAnalysis::visit(StructTypeDecl &std) {
     structTypeFields.insert(field->identifer);
   }
 }
+void NameAnalysis::visit(Throw &t) {}
 void NameAnalysis::visit(TypeCast &tc) { tc.expr->accept(*this); }
 void NameAnalysis::visit(TypeDefDecl &td) {}
 void NameAnalysis::visit(ValueAt &va) { va.derefExpr->accept(*this); }
