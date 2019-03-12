@@ -65,6 +65,7 @@ public:
     DELETEARR,  // "delete[]"
     FALSE_VAL,  // "false"
     TRUE_VAL,   // "true"
+    THROW,      // "throw"
 
     // operators overrides
     OPASSIGN, // "operator="
@@ -277,6 +278,8 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "operator>=";
   case SourceToken::Class::OPNE:
     return "operator!=";
+  case SourceToken::Class::THROW:
+    return "throw";
   }
 }
 

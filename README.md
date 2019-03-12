@@ -99,6 +99,7 @@ Progressively changing to adopt new features of the language(s).
                   | "-" objExpr
                   | "new" type [ "(" litExpr ("," litExpr)* ")" ] ";"
                   | "&" objExpr
+                  | "!" objExpr
                   | objExpr ( (("." || "->") funCall) || (("." || "->") objExpr) || ("[" objExpr "]") )\*
 
     objExpr      -> funCall

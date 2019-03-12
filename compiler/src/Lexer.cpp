@@ -281,13 +281,22 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::STRUCT, scanner.getPosition());
     }
-    // Check for THIS Token.
+    // Check for THIS and THROW Token.
     else if (c == 't' && scanner.peek() == 'h') {
-      atl::pair<bool, atl::string> lexResult = tryLexKeyword("this");
-      literal = lexResult.second;
+      c = scanner.next();
+      if (scanner.peek() == 'i') {
+        atl::pair<bool, atl::string> lexResult = tryLexKeyword("his");
+        literal = lexResult.second;
 
-      if (lexResult.first)
-        return SourceToken(TC::THIS, scanner.getPosition());
+        if (lexResult.first)
+          return SourceToken(TC::THIS, scanner.getPosition());
+      } else if (scanner.peek() == 'r') {
+        atl::pair<bool, atl::string> lexResult = tryLexKeyword("hrow");
+        literal = lexResult.second;
+
+        if (lexResult.first)
+          return SourceToken(TC::THROW, scanner.getPosition());
+      }
     }
     // Check for TRUE Token.
     else if (c == 't' && scanner.peek() == 'r') {
