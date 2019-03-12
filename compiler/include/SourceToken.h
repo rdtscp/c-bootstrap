@@ -59,13 +59,21 @@ public:
     FOR,        // "for"
     PREFIXINC,  // "++{}",
     THIS,       // "this"
-    OPASSIGN,   // "operator="
-    OPEQ,       // "operator=="
-    OPNE,       // "operator!="
-    OPAT,       // "operator[]"
     DESTRUCTOR, // "~"
     DELETE,     // "delete"
     DELETEARR,  // "delete[]"
+
+    // operators overrides
+    OPASSIGN, // "operator="
+    OPEQ,     // "operator=="
+    OPADD,    // "operator+"
+    OPADDTO,  // "operator+="
+    OPAT,     // "operator[]"
+    OPLT,     // "operator<"
+    OPLE,     // "operator<="
+    OPGT,     // "operator>"
+    OPGE,     // "operator>="
+    OPNE,     // "operator!="
 
     // literals
     STRING_LITERAL, // \".*\"  any sequence of characters enclosed within
@@ -228,20 +236,32 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "++";
   case SourceToken::Class::THIS:
     return "this";
-  case SourceToken::Class::OPASSIGN:
-    return "operator=";
-  case SourceToken::Class::OPEQ:
-    return "operator==";
-  case SourceToken::Class::OPNE:
-    return "operator!=";
-  case SourceToken::Class::OPAT:
-    return "operator[]";
   case SourceToken::Class::DESTRUCTOR:
     return "~";
   case SourceToken::Class::DELETE:
     return "delete";
   case SourceToken::Class::DELETEARR:
     return "delete[]";
+  case SourceToken::Class::OPASSIGN:
+    return "operator=";
+  case SourceToken::Class::OPEQ:
+    return "operator==";
+  case SourceToken::Class::OPADD:
+    return "operator+";
+  case SourceToken::Class::OPADDTO:
+    return "operator+=";
+  case SourceToken::Class::OPAT:
+    return "operator[]";
+  case SourceToken::Class::OPLT:
+    return "operator<";
+  case SourceToken::Class::OPLE:
+    return "operator<=";
+  case SourceToken::Class::OPGT:
+    return "operator>";
+  case SourceToken::Class::OPGE:
+    return "operator>=";
+  case SourceToken::Class::OPNE:
+    return "operator!=";
   }
 }
 

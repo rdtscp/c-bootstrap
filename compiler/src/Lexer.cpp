@@ -164,29 +164,48 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::NEW, scanner.getPosition());
     }
-    // Check for OPASSIGN, OPEQ, OPNE Tokens.
+    // Check for operator overload Tokens.
     else if (c == 'o' && scanner.peek() == 'p') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("operator");
       literal = lexResult.second;
 
       if (lexResult.first) {
         c = scanner.next();
-        if (c == '!' || c == '=') {
-          if (scanner.peek() == '=') {
-            // Found operator!= or operator==
-            scanner.next();
-            if (c == '!')
-              return SourceToken(TC::OPNE, scanner.getPosition(), "operator!=");
-            if (c == '=')
-              return SourceToken(TC::OPEQ, scanner.getPosition(), "operator==");
-          } else {
-            // Found operator=
-            return SourceToken(TC::OPASSIGN, scanner.getPosition(),
-                               "operator=");
-          }
-        } else if (c == '[' && scanner.peek() == ']') {
+        if (c == '=' && scanner.peek() != '=') {
+          return SourceToken(TC::OPASSIGN, scanner.getPosition(), "operator=");
+        }
+        if (c == '=' && scanner.peek() == '=') {
           scanner.next();
-          return SourceToken(TC::OPAT, scanner.getPosition(), "operator[]");
+          return SourceToken(TC::OPEQ, scanner.getPosition(), "operator==");
+        }
+        if (c == '+' && scanner.peek() != '+') {
+          return SourceToken(TC::OPADD, scanner.getPosition(), "operator+");
+        }
+        if (c == '+' && scanner.peek() == '+') {
+          scanner.next();
+          return SourceToken(TC::OPADDTO, scanner.getPosition(), "operator++");
+        }
+        if (c == '[' && scanner.peek() == ']') {
+          scanner.next();
+          return SourceToken(TC::OPADDTO, scanner.getPosition(), "operator[]");
+        }
+        if (c == '<' && scanner.peek() != '=') {
+          return SourceToken(TC::OPLT, scanner.getPosition(), "operator<");
+        }
+        if (c == '<' && scanner.peek() == '=') {
+          scanner.next();
+          return SourceToken(TC::OPLE, scanner.getPosition(), "operator<=");
+        }
+        if (c == '>' && scanner.peek() != '=') {
+          return SourceToken(TC::OPGT, scanner.getPosition(), "operator>");
+        }
+        if (c == '>' && scanner.peek() == '=') {
+          scanner.next();
+          return SourceToken(TC::OPGE, scanner.getPosition(), "operator>=");
+        }
+        if (c == '!' && scanner.peek() == '=') {
+          scanner.next();
+          return SourceToken(TC::OPNE, scanner.getPosition(), "operator!=");
         }
       }
     }
