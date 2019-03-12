@@ -188,45 +188,41 @@ SourceToken Lexer::nextToken() {
         c = scanner.next();
         if (c == '=' && scanner.peek() != '=') {
           return SourceToken(TC::OPASSIGN, scanner.getPosition(), "operator=");
-        }
-        if (c == '=' && scanner.peek() == '=') {
+        } else if (c == '=' && scanner.peek() == '=') {
           scanner.next();
           return SourceToken(TC::OPEQ, scanner.getPosition(), "operator==");
-        }
-        if (c == '+' && scanner.peek() != '=') {
+        } else if (c == '+' && scanner.peek() != '=') {
           return SourceToken(TC::OPADD, scanner.getPosition(), "operator+");
-        }
-        if (c == '+' && scanner.peek() == '=') {
+        } else if (c == '+' && scanner.peek() == '=') {
           scanner.next();
           return SourceToken(TC::OPADDTO, scanner.getPosition(), "operator+=");
-        }
-        if (c == '[' && scanner.peek() == ']') {
+        } else if (c == '[' && scanner.peek() == ']') {
           scanner.next();
           return SourceToken(TC::OPADDTO, scanner.getPosition(), "operator[]");
-        }
-        if (c == '<' && scanner.peek() != '=') {
+        } else if (c == '<' && scanner.peek() != '=') {
           return SourceToken(TC::OPLT, scanner.getPosition(), "operator<");
-        }
-        if (c == '<' && scanner.peek() == '=') {
+        } else if (c == '<' && scanner.peek() == '=') {
           scanner.next();
           return SourceToken(TC::OPLE, scanner.getPosition(), "operator<=");
-        }
-        if (c == '>' && scanner.peek() != '=') {
+        } else if (c == '>' && scanner.peek() != '=') {
           return SourceToken(TC::OPGT, scanner.getPosition(), "operator>");
-        }
-        if (c == '>' && scanner.peek() == '=') {
+        } else if (c == '>' && scanner.peek() == '=') {
           scanner.next();
           return SourceToken(TC::OPGE, scanner.getPosition(), "operator>=");
-        }
-        if (c == '!' && scanner.peek() == '=') {
+        } else if (c == '!' && scanner.peek() == '=') {
           scanner.next();
           return SourceToken(TC::OPNE, scanner.getPosition(), "operator!=");
+        } else {
+          atl::string error = atl::string("Could not Lex operator overload: ") +
+                              scanner.getPosition().toString();
+          throw std::runtime_error(error.c_str());
         }
       }
     }
     // Check for PRIVATE/PROTECTED Tokens.
     else if (c == 'p' && scanner.peek() == 'r') {
       c = scanner.next();
+      literal += c;
       if (scanner.peek() == 'i') {
         atl::pair<bool, atl::string> lexResult = tryLexKeyword("rivate:");
         literal = atl::string("p") + lexResult.second;
@@ -273,17 +269,28 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::SIZEOF, scanner.getPosition());
     }
-    // Check for STRUCT Token.
+    // Check for STRUCT and STATIC Token.
     else if (c == 's' && scanner.peek() == 't') {
-      atl::pair<bool, atl::string> lexResult = tryLexKeyword("struct");
-      literal = lexResult.second;
+      c = scanner.next();
+      literal += c;
+      if (scanner.peek() == 'a') {
+        atl::pair<bool, atl::string> lexResult = tryLexKeyword("tatic");
+        literal = lexResult.second;
 
-      if (lexResult.first)
-        return SourceToken(TC::STRUCT, scanner.getPosition());
+        if (lexResult.first)
+          return SourceToken(TC::STATIC, scanner.getPosition());
+      } else if (scanner.peek() == 'r') {
+        atl::pair<bool, atl::string> lexResult = tryLexKeyword("truct");
+        literal = lexResult.second;
+
+        if (lexResult.first)
+          return SourceToken(TC::STRUCT, scanner.getPosition());
+      }
     }
     // Check for THIS and THROW Token.
     else if (c == 't' && scanner.peek() == 'h') {
       c = scanner.next();
+      literal += c;
       if (scanner.peek() == 'i') {
         atl::pair<bool, atl::string> lexResult = tryLexKeyword("his");
         literal = lexResult.second;

@@ -66,6 +66,7 @@ public:
     FALSE_VAL,  // "false"
     TRUE_VAL,   // "true"
     THROW,      // "throw"
+    STATIC,     // "static"
 
     // operators overrides
     OPASSIGN, // "operator="
@@ -280,6 +281,8 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "operator!=";
   case SourceToken::Class::THROW:
     return "throw";
+  case SourceToken::Class::STATIC:
+    return "static";
   }
 }
 
