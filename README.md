@@ -98,6 +98,7 @@ Progressively changing to adopt new features of the language(s).
                   | "*" objExpr (objExprOp)*
                   | "(" type ")" objExpr(objExprOp)*
                   | "-" objExpr (objExprOp)*
+                  | "++" objExpr (objExprOp)*
                   | "new" type [ "(" litExpr ("," litExpr)* ")" ] ";"
                   | "&" objExpr (objExprOp)*
                   | "!" objExpr (objExprOp)*
