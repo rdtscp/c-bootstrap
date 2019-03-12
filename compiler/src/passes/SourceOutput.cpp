@@ -341,7 +341,7 @@ atl::string SourceOutput::visit(VarDecl &vd) {
   return output;
 }
 atl::string SourceOutput::visit(VarDef &vd) {
-  atl::string output = vd.type->accept(*this);
+  atl::string output = vd.type->accept(*this) + " ";
   output += vd.getIdentifier() + " = ";
   output += vd.value->accept(*this);
   output += ";";
