@@ -134,8 +134,7 @@ bool Parser::acceptFunDecl(int offset) {
     offset += 2;
     while (accept(TC::ASTERIX, offset))
       ++offset;
-    return accept({TC::IDENTIFIER, TC::OPEQ, TC::OPASSIGN, TC::OPNE, TC::OPAT},
-                  offset) &&
+    return (accept(TC::IDENTIFIER, offset) || acceptOpOverload(offset)) &&
            accept(TC::LPAR, offset + 1);
   }
 
@@ -154,12 +153,16 @@ bool Parser::acceptFunDecl(int offset) {
       ++offset;
     }
 
-    return accept({TC::IDENTIFIER, TC::OPASSIGN, TC::OPEQ, TC::OPNE, TC::OPAT},
-                  offset) &&
+    return (accept(TC::IDENTIFIER, offset) || acceptOpOverload(offset)) &&
            accept(TC::LPAR, offset + 1);
   }
 
   return false;
+}
+bool Parser::acceptOpOverload(int offset) {
+  return accept({TC::OPASSIGN, TC::OPAT, TC::OPADD, TC::OPADDTO, TC::OPEQ,
+                 TC::OPGE, TC::OPGT, TC::OPLE, TC::OPLT, TC::OPNE},
+                offset);
 }
 bool Parser::acceptStructTypeDecl(int offset) {
   if (!acceptStructType(offset))
@@ -486,8 +489,10 @@ atl::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
 atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
   atl::shared_ptr<Type> funType = parseType();
   atl::string funIdent;
-  if (accept({TC::OPNE, TC::OPASSIGN, TC::OPEQ, TC::OPAT})) {
-    funIdent = expect({TC::OPNE, TC::OPASSIGN, TC::OPEQ, TC::OPAT}).data;
+  if (acceptOpOverload()) {
+    funIdent = expect({TC::OPASSIGN, TC::OPAT, TC::OPADD, TC::OPADDTO, TC::OPEQ,
+                       TC::OPGE, TC::OPGT, TC::OPLE, TC::OPLT, TC::OPNE})
+                   .data;
   } else {
     funIdent = expect(TC::IDENTIFIER).data;
   }

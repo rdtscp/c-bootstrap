@@ -53,6 +53,7 @@ private:
   bool acceptDestructor(int offset = 0);
   bool acceptEnumTypeDecl(int offset = 0);
   bool acceptFunDecl(int offset = 0);
+  bool acceptOpOverload(int offset = 0);
   bool acceptStructTypeDecl(int offset = 0);
   bool acceptTypeDefDecl(int offset = 0);
   bool acceptVarDecl(int offset = 0);
