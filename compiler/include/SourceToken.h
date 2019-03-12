@@ -104,7 +104,8 @@ public:
     REF,     // '&'
 
     // struct member access
-    DOT, // '.'
+    DOT,    // '.'
+    PTRDOT, // "->"
 
     // special tokens
     ENDOFFILE, // signal end of file
@@ -204,6 +205,8 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "%";
   case SourceToken::Class::DOT:
     return ".";
+  case SourceToken::Class::PTRDOT:
+    return "->";
   case SourceToken::Class::ENDOFFILE:
     return "EOF";
   case SourceToken::Class::INVALID:

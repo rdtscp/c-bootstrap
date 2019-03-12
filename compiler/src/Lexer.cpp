@@ -366,6 +366,14 @@ SourceToken Lexer::nextToken() {
     scanner.next();
     return SourceToken(TC::OR, scanner.getPosition());
   }
+  if (c == '+' && scanner.peek() == '+') {
+    scanner.next();
+    return SourceToken(TC::PREFIXINC, scanner.getPosition());
+  }
+  if (c == '-' && scanner.peek() == '>') {
+    scanner.next();
+    return SourceToken(TC::PTRDOT, scanner.getPosition());
+  }
 
   /* Recognise One Symbol Tokens. */
   if (c == '~')
@@ -404,10 +412,7 @@ SourceToken Lexer::nextToken() {
     return SourceToken(TC::LT, scanner.getPosition());
   if (c == '&')
     return SourceToken(TC::REF, scanner.getPosition());
-  if (c == '+' && scanner.peek() == '+') {
-    scanner.next();
-    return SourceToken(TC::PREFIXINC, scanner.getPosition());
-  } else if (c == '+')
+  if (c == '+')
     return SourceToken(TC::PLUS, scanner.getPosition());
 
   // Skip Whitespace.
