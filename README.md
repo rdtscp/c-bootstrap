@@ -95,18 +95,18 @@ Progressively changing to adopt new features of the language(s).
                   | unaryExpr "%" unaryExpr
 
     unaryExpr    -> "sizeof" "(" type ")"
-                  | "*" objExpr (objExprOp)*
-                  | "(" type ")" objExpr(objExprOp)*
-                  | "-" objExpr (objExprOp)*
-                  | "++" objExpr (objExprOp)*
+                  | "*" objExpr
+                  | "(" type ")"
+                  | "-" objExpr
+                  | "++" objExpr
                   | "new" type [ "(" litExpr ("," litExpr)* ")" ] ";"
-                  | "&" objExpr (objExprOp)*
-                  | "!" objExpr (objExprOp)*
-                  | objExpr (objExprOp)*
+                  | "&" objExpr
+                  | "!" objExpr
+                  | objExpr
 
-    objExpr      -> funCall 
-                  | IDENT
-                  | "this"
+    objExpr      -> funCall (objExprOp)*
+                  | IDENT (objExprOp)*
+                  | "this" (objExprOp)*
                   | litExpr
                 
     objExprOp    -> "." funCall
