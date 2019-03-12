@@ -414,6 +414,8 @@ SourceToken Lexer::nextToken() {
     return SourceToken(TC::REF, scanner.getPosition());
   if (c == '+')
     return SourceToken(TC::PLUS, scanner.getPosition());
+  if (c == '!')
+    return SourceToken(TC::NOT, scanner.getPosition());
 
   // Skip Whitespace.
   if (atl::isspace(c))

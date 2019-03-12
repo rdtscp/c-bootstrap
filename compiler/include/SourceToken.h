@@ -84,6 +84,7 @@ public:
                   // a character starts and end with a single quote '
 
     // logical operators
+    NOT, // "!"
     AND, // "&&"
     OR,  // "||"
 
@@ -177,6 +178,8 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "INT_LITERAL";
   case SourceToken::Class::CHAR_LITERAL:
     return "CHAR_LITERAL";
+  case SourceToken::Class::NOT:
+    return "!";
   case SourceToken::Class::AND:
     return "&&";
   case SourceToken::Class::OR:
