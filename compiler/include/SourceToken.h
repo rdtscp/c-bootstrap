@@ -89,9 +89,11 @@ public:
                   // a character starts and end with a single quote '
 
     // logical operators
-    NOT, // "!"
-    AND, // "&&"
-    OR,  // "||"
+    NOT,          // "!"
+    AND,          // "&&"
+    OR,           // "||"
+    TERTIARYIF,   // "?"
+    TERTIARYELSE, // ":"
 
     // comparisons
     EQ, // "=="
@@ -102,12 +104,13 @@ public:
     GE, // ">="
 
     // operators
-    PLUS,    // '+'
-    MINUS,   // '-'
-    ASTERIX, // '*'  // can be used for multiplication or pointers
-    DIV,     // '/'
-    REM,     // '%'
-    REF,     // '&'
+    PLUS,      // '+'
+    MINUS,     // '-'
+    ASTERIX,   // '*'  // can be used for multiplication or pointers
+    DIV,       // '/'
+    REM,       // '%'
+    REF,       // '&'
+    ASSIGNADD, // "+="
 
     // struct member access
     DOT,    // '.'
@@ -283,6 +286,12 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "throw";
   case SourceToken::Class::STATIC:
     return "static";
+  case SourceToken::Class::ASSIGNADD:
+    return "+=";
+  case SourceToken::Class::TERTIARYIF:
+    return "?";
+  case SourceToken::Class::TERTIARYELSE:
+    return ":";
   }
 }
 

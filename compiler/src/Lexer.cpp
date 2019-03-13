@@ -405,6 +405,10 @@ SourceToken Lexer::nextToken() {
     scanner.next();
     return SourceToken(TC::OR, scanner.getPosition());
   }
+  if (c == '+' && scanner.peek() == '=') {
+    scanner.next();
+    return SourceToken(TC::ASSIGNADD, scanner.getPosition());
+  }
   if (c == '+' && scanner.peek() == '+') {
     scanner.next();
     return SourceToken(TC::PREFIXINC, scanner.getPosition());
@@ -455,6 +459,10 @@ SourceToken Lexer::nextToken() {
     return SourceToken(TC::PLUS, scanner.getPosition());
   if (c == '!')
     return SourceToken(TC::NOT, scanner.getPosition());
+  if (c == '?')
+    return SourceToken(TC::TERTIARYIF, scanner.getPosition());
+  if (c == ':')
+    return SourceToken(TC::TERTIARYELSE, scanner.getPosition());
 
   // Skip Whitespace.
   if (atl::isspace(c))
