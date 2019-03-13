@@ -194,7 +194,7 @@ TEST(ParserTest, FunDecl) {
 }
 
 TEST(ParserTest, BinOp) {
-  const atl::string filepath = test_prefix + "parser/binop.c";
+  const atl::string filepath = test_prefix + "parser/binop.cpp";
   const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
   ACC::Scanner scanner(src);
   ACC::Lexer lexer(scanner);
