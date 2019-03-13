@@ -9,7 +9,7 @@
 using namespace ACC;
 
 // atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
 atl::string test_prefix = "../../test/tests/";
 
 
@@ -200,13 +200,55 @@ TEST(ParserTest, BinOp) {
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   atl::shared_ptr<Program> actual = parser.getAST();
-  ASSERT_EQ(actual->decls.size(), 1);
+  ASSERT_EQ(actual->decls.size(), 2);
   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
+      atl::shared_ptr<FunDef>(new FunDef(
+          atl::make_shared<Block>(Block({atl::make_shared<
+              Return>(Return(atl::make_shared<ParenthExpr>(
+              ParenthExpr(atl::make_shared<BinOp>(BinOp(
+                  atl::make_shared<ParenthExpr>(ParenthExpr(atl::make_shared<
+                                                            BinOp>(BinOp(
+                      atl::make_shared<ParenthExpr>(
+                          ParenthExpr(atl::make_shared<BinOp>(BinOp(
+                              atl::make_shared<CharLiteral>(CharLiteral("a")),
+                              Op::LE,
+                              atl::make_shared<ParenthExpr>(ParenthExpr(
+                                  atl::make_shared<VarExpr>(VarExpr("c")))))))),
+                      Op::AND,
+                      atl::make_shared<ParenthExpr>(
+                          ParenthExpr(atl::make_shared<BinOp>(BinOp(
+                              atl::make_shared<ParenthExpr>(ParenthExpr(
+                                  atl::make_shared<VarExpr>(VarExpr("c")))),
+                              Op::LE,
+                              atl::make_shared<CharLiteral>(
+                                  CharLiteral("z")))))))))),
+                  Op::OR,
+                  atl::make_shared<
+                      ParenthExpr>(ParenthExpr(atl::make_shared<BinOp>(BinOp(
+                      atl::make_shared<ParenthExpr>(
+                          ParenthExpr(atl::make_shared<BinOp>(BinOp(
+                              atl::make_shared<CharLiteral>(CharLiteral("A")),
+                              Op::LE,
+                              atl::make_shared<ParenthExpr>(ParenthExpr(
+                                  atl::make_shared<VarExpr>(VarExpr("c")))))))),
+                      Op::AND,
+                      atl::make_shared<ParenthExpr>(
+                          ParenthExpr(atl::make_shared<BinOp>(BinOp(
+                              atl::make_shared<ParenthExpr>(ParenthExpr(
+                                  atl::make_shared<VarExpr>(VarExpr("c")))),
+                              Op::LE,
+                              atl::make_shared<CharLiteral>(
+                                  CharLiteral("Z"))))))))))))))))})),
+          "isalpha",
+          {atl::make_shared<VarDecl>(VarDecl(
+              atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)), "c"))},
+          atl::make_shared<BaseType>(BaseType(PrimitiveType::BOOL)))),
       atl::shared_ptr<FunDef>(new FunDef(
           atl::make_shared<Block>(Block(
               {atl::make_shared<VarDef>(VarDef(
                    atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                   "y", atl::make_shared<IntLiteral>(IntLiteral("5")))),atl::make_shared<VarDecl>(VarDecl(
+                   "y", atl::make_shared<IntLiteral>(IntLiteral("5")))),
+               atl::make_shared<VarDecl>(VarDecl(
                    atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
                    "x")),
                atl::make_shared<Assign>(Assign(
@@ -214,7 +256,8 @@ TEST(ParserTest, BinOp) {
                    atl::make_shared<BinOp>(BinOp(
                        atl::make_shared<IntLiteral>(IntLiteral("1")), Op::ADD,
                        atl::make_shared<IntLiteral>(IntLiteral("2")))))),
-                       atl::make_shared<Return>(Return(atl::make_shared<VarExpr>(VarExpr("x"))))})),
+               atl::make_shared<Return>(
+                   Return(atl::make_shared<VarExpr>(VarExpr("x"))))})),
           "main", {},
           atl::make_shared<BaseType>(BaseType(PrimitiveType::INT))))};
 

@@ -130,6 +130,9 @@ bool Parser::acceptDestructor(int offset) {
 }
 bool Parser::acceptEnumTypeDecl(int offset) { return accept(TC::ENUM); }
 bool Parser::acceptFunDecl(int offset) {
+  if (accept(TC::STATIC))
+    ++offset;
+
   if (acceptStructType(offset)) {
     offset += 2;
     while (accept(TC::ASTERIX, offset))
@@ -175,6 +178,9 @@ bool Parser::acceptStructTypeDecl(int offset) {
 }
 bool Parser::acceptTypeDefDecl(int offset) { return accept(TC::TYPEDEF); }
 bool Parser::acceptVarDecl(int offset) {
+  if (accept(TC::STATIC))
+    ++offset;
+
   if (!acceptType(offset))
     return false;
 
@@ -232,8 +238,9 @@ bool Parser::acceptStructType(int offset) {
   return true;
 }
 bool Parser::acceptType(int offset) {
-  if (accept(TC::CONST))
+  if (accept(TC::CONST, offset))
     ++offset;
+
   if (accept({TC::INT, TC::CHAR, TC::VOID, TC::UINT, TC::BOOL}, offset))
     return true;
   if (accept(TC::STRUCT, offset) && accept(TC::IDENTIFIER, offset + 1))
@@ -501,6 +508,10 @@ atl::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
   return atl::make_shared<EnumTypeDecl>(EnumTypeDecl(ident, states));
 }
 atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
+  if (accept(TC::STATIC))
+    // TODO: Handle Modifier
+    expect(TC::STATIC);
+
   atl::shared_ptr<Type> funType = parseType();
   atl::string funIdent;
   if (acceptOpOverload()) {
@@ -581,6 +592,10 @@ atl::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
   return atl::make_shared<TypeDefDecl>(TypeDefDecl(aliasedType, typeAlias));
 }
 atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
+  if (accept(TC::STATIC))
+    // TODO: Handle Modifier
+    expect(TC::STATIC);
+
   atl::shared_ptr<Type> varType = parseType();
   const atl::string varIdentifier = expect(TC::IDENTIFIER).data;
   if (accept(TC::LSBR)) {
@@ -848,98 +863,104 @@ atl::shared_ptr<VarDecl> Parser::parseParam() {
 }
 
 /* -- Exprs -- */
-atl::shared_ptr<Expr> Parser::parseExpr() {
-  if (accept(TC::LPAR) && !acceptType(1)) {
-    expect(TC::LPAR);
-    atl::shared_ptr<Expr> innerExpr = parseExpr();
-    expect(TC::RPAR);
-    return atl::make_shared<ParenthExpr>(ParenthExpr(innerExpr));
-  }
-
-  return parseBoolExpr();
-}
+atl::shared_ptr<Expr> Parser::parseExpr() { return parseBoolExpr(); }
 atl::shared_ptr<Expr> Parser::parseBoolExpr() {
   atl::shared_ptr<Expr> lhs = parseEqualExpr();
-  if (accept(TC::OR)) {
-    expect(TC::OR);
-    atl::shared_ptr<Expr> rhs = parseEqualExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::OR, rhs));
-  }
-  if (accept(TC::AND)) {
-    expect(TC::AND);
-    atl::shared_ptr<Expr> rhs = parseEqualExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::AND, rhs));
+  atl::shared_ptr<Expr> rhs;
+  while (accept({TC::AND, TC::OR})) {
+    if (accept(TC::AND)) {
+      expect(TC::AND);
+      rhs = parseEqualExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::AND, rhs));
+    }
+    if (accept(TC::OR)) {
+      expect(TC::OR);
+      rhs = parseEqualExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::OR, rhs));
+    }
   }
   return lhs;
 }
 atl::shared_ptr<Expr> Parser::parseEqualExpr() {
   atl::shared_ptr<Expr> lhs = parseCompExpr();
-  if (accept(TC::NE)) {
-    expect(TC::NE);
-    atl::shared_ptr<Expr> rhs = parseCompExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::NE, rhs));
-  }
-  if (accept(TC::EQ)) {
-    expect(TC::EQ);
-    atl::shared_ptr<Expr> rhs = parseCompExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::EQ, rhs));
+  atl::shared_ptr<Expr> rhs;
+  while (accept({TC::EQ, TC::NE})) {
+    if (accept(TC::EQ)) {
+      expect(TC::EQ);
+      rhs = parseCompExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::EQ, rhs));
+    }
+    if (accept(TC::NE)) {
+      expect(TC::NE);
+      rhs = parseCompExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::NE, rhs));
+    }
   }
   return lhs;
 }
 atl::shared_ptr<Expr> Parser::parseCompExpr() {
   atl::shared_ptr<Expr> lhs = parseAddExpr();
-  if (accept(TC::LT)) {
-    expect(TC::LT);
-    atl::shared_ptr<Expr> rhs = parseAddExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::LT, rhs));
-  }
-  if (accept(TC::GT)) {
-    expect(TC::GT);
-    atl::shared_ptr<Expr> rhs = parseAddExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::GT, rhs));
-  }
-  if (accept(TC::LE)) {
-    expect(TC::LE);
-    atl::shared_ptr<Expr> rhs = parseAddExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::LE, rhs));
-  }
-  if (accept(TC::GE)) {
-    expect(TC::GE);
-    atl::shared_ptr<Expr> rhs = parseAddExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::GE, rhs));
+  atl::shared_ptr<Expr> rhs;
+  while (accept({TC::LE, TC::LT, TC::GE, TC::GT})) {
+    if (accept(TC::LE)) {
+      expect(TC::LE);
+      rhs = parseAddExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::LE, rhs));
+    }
+    if (accept(TC::LT)) {
+      expect(TC::LT);
+      rhs = parseAddExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::LT, rhs));
+    }
+    if (accept(TC::GE)) {
+      expect(TC::GE);
+      rhs = parseAddExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::GE, rhs));
+    }
+    if (accept(TC::GT)) {
+      expect(TC::GT);
+      rhs = parseAddExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::GT, rhs));
+    }
   }
   return lhs;
 }
 atl::shared_ptr<Expr> Parser::parseAddExpr() {
   atl::shared_ptr<Expr> lhs = parseMulExpr();
-  if (accept(TC::PLUS)) {
-    expect(TC::PLUS);
-    atl::shared_ptr<Expr> rhs = parseMulExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::ADD, rhs));
-  }
-  if (accept(TC::MINUS)) {
-    expect(TC::MINUS);
-    atl::shared_ptr<Expr> rhs = parseMulExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs));
+  atl::shared_ptr<Expr> rhs;
+  while (accept({TC::MINUS, TC::PLUS})) {
+    if (accept(TC::MINUS)) {
+      expect(TC::MINUS);
+      rhs = parseMulExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs));
+    }
+    if (accept(TC::PLUS)) {
+      expect(TC::PLUS);
+      rhs = parseMulExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::ADD, rhs));
+    }
   }
   return lhs;
 }
 atl::shared_ptr<Expr> Parser::parseMulExpr() {
   atl::shared_ptr<Expr> lhs = parseUnaryExpr();
-  if (accept(TC::ASTERIX)) {
-    expect(TC::ASTERIX);
-    atl::shared_ptr<Expr> rhs = parseUnaryExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::MUL, rhs));
-  }
-  if (accept(TC::DIV)) {
-    expect(TC::DIV);
-    atl::shared_ptr<Expr> rhs = parseUnaryExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::DIV, rhs));
-  }
-  if (accept(TC::REM)) {
-    expect(TC::REM);
-    atl::shared_ptr<Expr> rhs = parseUnaryExpr();
-    return atl::make_shared<BinOp>(BinOp(lhs, Op::MOD, rhs));
+  atl::shared_ptr<Expr> rhs;
+  while (accept({TC::ASTERIX, TC::DIV, TC::REM})) {
+    if (accept(TC::ASTERIX)) {
+      expect(TC::ASTERIX);
+      rhs = parseUnaryExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::MUL, rhs));
+    }
+    if (accept(TC::DIV)) {
+      expect(TC::DIV);
+      rhs = parseUnaryExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::DIV, rhs));
+    }
+    if (accept(TC::REM)) {
+      expect(TC::REM);
+      rhs = parseUnaryExpr();
+      lhs = atl::make_shared<BinOp>(BinOp(lhs, Op::MOD, rhs));
+    }
   }
   return lhs;
 }
@@ -956,7 +977,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     atl::shared_ptr<Expr> rhs = parseObjExpr();
     return atl::make_shared<ValueAt>(ValueAt(rhs));
   }
-  if (accept(TC::LPAR) && acceptType(1)) {
+  if (accept(TC::LPAR) && (acceptType(1) && !accept(TC::IDENTIFIER, 1))) {
     expect(TC::LPAR);
     atl::shared_ptr<Type> castType = parseType();
     expect(TC::RPAR);
@@ -1064,7 +1085,6 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
     }
     return output;
   }
-
   if (accept(TC::THIS)) {
     expect(TC::THIS);
     atl::shared_ptr<Expr> output = atl::make_shared<VarExpr>(VarExpr("this"));
@@ -1148,6 +1168,12 @@ atl::shared_ptr<Expr> Parser::parseLitExpr() {
   if (accept(TC::FALSE_VAL)) {
     expect(TC::FALSE_VAL);
     return atl::make_shared<IntLiteral>(IntLiteral("0"));
+  }
+  if (accept(TC::LPAR) && (!acceptType(1) || accept(TC::IDENTIFIER, 1))) {
+    expect(TC::LPAR);
+    atl::shared_ptr<Expr> innerExpr = parseExpr();
+    expect(TC::RPAR);
+    return atl::make_shared<ParenthExpr>(ParenthExpr(innerExpr));
   }
   if (acceptExpr())
     return parseExpr();

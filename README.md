@@ -68,12 +68,11 @@ Progressively changing to adopt new features of the language(s).
 
     block        -> "{" stmt* "}"
 
-    expr         -> "(" boolExpr ")"
-                  | boolExpr
+    expr         -> boolExpr
 
     boolExpr     -> equalExpr
-                  | equalExpr "||" equalExpr
-                  | equalExpr "&&" equalExpr
+                  | equalExpr "||" equalExpr ( ( "||" || "&&" ) equalExpr )*
+                  | equalExpr "&&" equalExpr ( ( "||" || "&&" ) equalExpr )*
 
     equalExpr    -> compExpr
                   | compExpr "!=" compExpr
@@ -86,13 +85,14 @@ Progressively changing to adopt new features of the language(s).
                   | addExpr ">=" addExpr
 
     addExpr      -> mulExpr
-                  | mulExpr "+" mulExpr
-                  | mulExpr "-" mulExpr
+                  | mulExpr "+" mulExpr ( ( "+" || "-" ) mulExpr )*
+                  | mulExpr "-" mulExpr ( ( "+" || "-" ) mulExpr )*
 
     mulExpr      -> unaryExpr
-                  | unaryExpr "*" unaryExpr
-                  | unaryExpr "/" unaryExpr
-                  | unaryExpr "%" unaryExpr
+                  | unaryExpr "*" unaryExpr ( ( "*" || "/" || "%" ) unaryExpr )*
+                  | unaryExpr "/" unaryExpr ( ( "_" || "/" || "%" ) unaryExpr )*
+                  | unaryExpr "%" unaryExpr ( ( "_" || "/" || "%" ) unaryExpr )*
+
 
     unaryExpr    -> "sizeof" "(" type ")"
                   | "*" objExpr
@@ -126,6 +126,7 @@ Progressively changing to adopt new features of the language(s).
                   | STRING_LITERAL
                   | "true"
                   | "false"
+                  | "(" exp ")"
                   | exp
 
 ### macOS Notes
