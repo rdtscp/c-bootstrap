@@ -68,7 +68,8 @@ Progressively changing to adopt new features of the language(s).
 
     block        -> "{" stmt* "}"
 
-    expr         -> boolExpr
+    expr         -> boolExpr ( "?" boolExpr ":" boolExpr )*
+                  | boolExpr "+=" boolExpr
 
     boolExpr     -> equalExpr
                   | equalExpr "||" equalExpr ( ( "||" || "&&" ) equalExpr )*
