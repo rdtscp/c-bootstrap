@@ -253,7 +253,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(ParenthExpr &pe) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(PointerType &pt) {
   return atl::make_shared<X86::None>();
 }
-atl::shared_ptr<X86::Operand> GenerateX86::visit(PrefixInc &pi) {
+atl::shared_ptr<X86::Operand> GenerateX86::visit(PrefixOp &po) {
   // TODO
   return atl::make_shared<X86::None>();
 }
@@ -299,6 +299,9 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(StructType &st) {
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(StructTypeDecl &std) {
+  return atl::make_shared<X86::None>();
+}
+atl::shared_ptr<X86::Operand> GenerateX86::visit(TertiaryExpr &t) {
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Throw &t) {

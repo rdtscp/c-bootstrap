@@ -210,7 +210,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(ParenthExpr &pe) {
 atl::shared_ptr<Type> TypeAnalysis::visit(PointerType &pt) {
   return pt.getptr();
 }
-atl::shared_ptr<Type> TypeAnalysis::visit(PrefixInc &pi) {
+atl::shared_ptr<Type> TypeAnalysis::visit(PrefixOp &po) {
   // TODO
   return nullptr;
 }
@@ -245,6 +245,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(StructType &st) {
 atl::shared_ptr<Type> TypeAnalysis::visit(StructTypeDecl &std) {
   return nullptr;
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(TertiaryExpr &t) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(Throw &t) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(TypeCast &tc) { return tc.type; }
 atl::shared_ptr<Type> TypeAnalysis::visit(TypeDefDecl &td) { return td.type; }

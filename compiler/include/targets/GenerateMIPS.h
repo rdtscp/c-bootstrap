@@ -95,7 +95,7 @@ private:
   MIPS::Register visit(Namespace &n) override;
   MIPS::Register visit(ParenthExpr &pe) override;
   MIPS::Register visit(PointerType &pt) override;
-  MIPS::Register visit(PrefixInc &pi) override;
+  MIPS::Register visit(PrefixOp &pi) override;
   MIPS::Register visit(Program &p) override;
   MIPS::Register visit(ReferenceType &rt) override;
   MIPS::Register visit(Return &r) override;
@@ -103,6 +103,7 @@ private:
   MIPS::Register visit(StringLiteral &sl) override;
   MIPS::Register visit(StructType &st) override;
   MIPS::Register visit(StructTypeDecl &std) override;
+  MIPS::Register visit(TertiaryExpr &t) override;
   MIPS::Register visit(Throw &t) override;
   MIPS::Register visit(TypeCast &tc) override;
   MIPS::Register visit(TypeDefDecl &td) override;

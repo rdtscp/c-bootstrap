@@ -278,7 +278,7 @@ MIPS::Register GenerateMIPS::visit(ParenthExpr &pe) {
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(PointerType &pt) { return MIPS::Register(); }
-MIPS::Register GenerateMIPS::visit(PrefixInc &p) { return MIPS::Register(); }
+MIPS::Register GenerateMIPS::visit(PrefixOp &po) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(Program &p) {
   currScope = p.globalScope;
 
@@ -313,6 +313,7 @@ MIPS::Register GenerateMIPS::visit(StructType &st) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(StructTypeDecl &std) {
   return MIPS::Register();
 }
+MIPS::Register GenerateMIPS::visit(TertiaryExpr &t) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(Throw &t) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(TypeCast &tc) {
   return tc.expr->accept(*this);

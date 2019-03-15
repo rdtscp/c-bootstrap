@@ -110,6 +110,9 @@ atl::string SourceOutput::visit(BinOp &bo) {
   case Op::SUB:
     output += "-";
     break;
+  case Op::ASSIGNADD:
+    output += "+=";
+    break;
   }
   output += bo.rhs->accept(*this);
   return output;
@@ -278,9 +281,13 @@ atl::string SourceOutput::visit(ParenthExpr &pe) {
 atl::string SourceOutput::visit(PointerType &pt) {
   return pt.pointedType->accept(*this) + "*";
 }
-atl::string SourceOutput::visit(PrefixInc &pi) {
-  atl::string output = "++";
-  output += pi.incrementVar->identifier;
+atl::string SourceOutput::visit(PrefixOp &po) {
+  atl::string output;
+  if (po.operation == PrefixOp::Op::INC)
+    output += "++";
+    if (po.operation == PrefixOp::Op::DEC)
+    output += "--";
+  output += po.variable->identifier;
   return output;
 }
 atl::string SourceOutput::visit(Program &p) {
@@ -319,6 +326,16 @@ atl::string SourceOutput::visit(StructTypeDecl &std) {
     output += std.varDecls[i]->accept(*this);
   }
   output += "\n};";
+  return output;
+}
+atl::string SourceOutput::visit(TertiaryExpr &t) {
+  atl::string output;
+  output += t.tertiaryCondition->accept(*this);
+  output += " ? ";
+  output += t.tertiaryIfBody->accept(*this);
+  output += " : ";
+  output += t.tertiaryElseBody->accept(*this);
+  output += ";";
   return output;
 }
 atl::string SourceOutput::visit(Throw &t) {

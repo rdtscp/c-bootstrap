@@ -142,7 +142,7 @@ void NameAnalysis::visit(Namespace &n) {
 }
 void NameAnalysis::visit(ParenthExpr &pe) { pe.innerExpr->accept(*this); }
 void NameAnalysis::visit(PointerType &pt) {}
-void NameAnalysis::visit(PrefixInc &pi) { pi.incrementVar->accept(*this); }
+void NameAnalysis::visit(PrefixOp &po) { po.variable->accept(*this); }
 void NameAnalysis::visit(Program &p) {
   currScope = atl::make_shared<Block>(Block({}));
   for (int idx = 0; idx < p.decls.size(); ++idx)
@@ -183,6 +183,7 @@ void NameAnalysis::visit(StructTypeDecl &std) {
     structTypeFields.insert(field->identifer);
   }
 }
+void NameAnalysis::visit(TertiaryExpr &t) {}
 void NameAnalysis::visit(Throw &t) {}
 void NameAnalysis::visit(TypeCast &tc) { tc.expr->accept(*this); }
 void NameAnalysis::visit(TypeDefDecl &td) {}

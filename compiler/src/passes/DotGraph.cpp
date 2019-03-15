@@ -131,6 +131,9 @@ atl::string DotGraph::visit(BinOp &bo) {
   case Op::SUB:
     declare(OpID, "-");
     break;
+  case Op::ASSIGNADD:
+    declare(OpID, "+=");
+    break;
   }
 
   atl::string rhsId = bo.rhs->accept(*this);
@@ -325,11 +328,16 @@ atl::string DotGraph::visit(ParenthExpr &pe) {
 atl::string DotGraph::visit(PointerType &pt) {
   return pt.pointedType->accept(*this) + "*";
 }
-atl::string DotGraph::visit(PrefixInc &pi) {
+atl::string DotGraph::visit(PrefixOp &po) {
   atl::string preficIncID =
-      atl::string("PrefixInc") + atl::to_string(++nodeCount);
-  declare(preficIncID, "\"PrefixInc\"");
-  join(preficIncID, pi.incrementVar->accept(*this));
+      atl::string("PrefixOp") + atl::to_string(++nodeCount);
+  atl::string opStr = "PrefixOp(";
+  if (po.operation == PrefixOp::Op::DEC)
+    opStr += "--)";
+    if (po.operation == PrefixOp::Op::INC)
+    opStr += "++)";
+  declare(preficIncID, opStr + ")");
+  join(preficIncID, po.variable->accept(*this));
   return preficIncID;
 }
 atl::string DotGraph::visit(Program &p) {
@@ -375,6 +383,18 @@ atl::string DotGraph::visit(StructTypeDecl &std) {
   for (int idx = 0; idx < std.varDecls.size(); ++idx)
     join(structTypeDeclID, std.varDecls[idx]->accept(*this));
   return structTypeDeclID;
+}
+atl::string DotGraph::visit(TertiaryExpr &t) {
+  const atl::string tertiaryID =
+      atl::string("TertiaryExpr") + atl::to_string(++nodeCount);
+  const atl::string conditionID = t.tertiaryCondition->accept(*this);
+  const atl::string ifBodyID = t.tertiaryIfBody->accept(*this);
+  const atl::string elseBodyID = t.tertiaryElseBody->accept(*this);
+  declare(tertiaryID, "TertiaryExpr");
+  join(tertiaryID, conditionID);
+  join(tertiaryID, ifBodyID);
+  join(tertiaryID, elseBodyID);
+  return tertiaryID;
 }
 atl::string DotGraph::visit(Throw &t) {
   atl::string throwID = atl::string("Throw") + atl::to_string(++nodeCount);

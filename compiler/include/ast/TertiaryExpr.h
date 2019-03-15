@@ -1,28 +1,31 @@
 #pragma once
 
-#ifndef ACC_PREFIXINC_H
-#define ACC_PREFIXINC_H
+#ifndef ACC_TERTIARY_H
+#define ACC_TERTIARY_H
 
 #include "Expr.h"
-#include "VarExpr.h"
 
 namespace ACC {
 
-class PrefixInc : public Expr, public atl::enable_shared_from_this<PrefixInc> {
+class TertiaryExpr : public Expr,
+                     public atl::enable_shared_from_this<TertiaryExpr> {
 
 public:
-  atl::shared_ptr<VarExpr> incrementVar;
+  atl::shared_ptr<Expr> tertiaryCondition;
+  atl::shared_ptr<Expr> tertiaryIfBody;
+  atl::shared_ptr<Expr> tertiaryElseBody;
 
-  PrefixInc(const atl::shared_ptr<VarExpr> &incrementVar);
-  virtual ~PrefixInc() {}
+  TertiaryExpr(atl::shared_ptr<Expr> tertiaryCondition,
+               atl::shared_ptr<Expr> tertiaryIfBody,
+               atl::shared_ptr<Expr> tertiaryElseBody);
 
-  atl::shared_ptr<PrefixInc> getptr();
+  atl::shared_ptr<TertiaryExpr> getptr();
 
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 
-  bool operator==(const PrefixInc &rhs) const;
-  bool operator!=(const PrefixInc &rhs) const;
+  bool operator==(const TertiaryExpr &rhs) const;
+  bool operator!=(const TertiaryExpr &rhs) const;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

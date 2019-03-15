@@ -413,6 +413,10 @@ SourceToken Lexer::nextToken() {
     scanner.next();
     return SourceToken(TC::PREFIXINC, scanner.getPosition());
   }
+  if (c == '-' && scanner.peek() == '-') {
+    scanner.next();
+    return SourceToken(TC::PREFIXDEC, scanner.getPosition());
+  }
   if (c == '-' && scanner.peek() == '>') {
     scanner.next();
     return SourceToken(TC::PTRDOT, scanner.getPosition());

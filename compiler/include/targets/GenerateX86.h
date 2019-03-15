@@ -70,7 +70,7 @@ private:
   atl::shared_ptr<X86::Operand> visit(Namespace &n) override;
   atl::shared_ptr<X86::Operand> visit(ParenthExpr &pe) override;
   atl::shared_ptr<X86::Operand> visit(PointerType &pt) override;
-  atl::shared_ptr<X86::Operand> visit(PrefixInc &pi) override;
+  atl::shared_ptr<X86::Operand> visit(PrefixOp &pi) override;
   atl::shared_ptr<X86::Operand> visit(Program &p) override;
   atl::shared_ptr<X86::Operand> visit(ReferenceType &rt) override;
   atl::shared_ptr<X86::Operand> visit(Return &r) override;
@@ -78,6 +78,7 @@ private:
   atl::shared_ptr<X86::Operand> visit(StringLiteral &sl) override;
   atl::shared_ptr<X86::Operand> visit(StructType &st) override;
   atl::shared_ptr<X86::Operand> visit(StructTypeDecl &std) override;
+  atl::shared_ptr<X86::Operand> visit(TertiaryExpr &t) override;
   atl::shared_ptr<X86::Operand> visit(Throw &t) override;
   atl::shared_ptr<X86::Operand> visit(TypeCast &tc) override;
   atl::shared_ptr<X86::Operand> visit(TypeDefDecl &td) override;

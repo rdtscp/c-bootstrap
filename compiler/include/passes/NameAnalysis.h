@@ -59,7 +59,7 @@ private:
   void visit(Namespace &n) override;
   void visit(ParenthExpr &pe) override;
   void visit(PointerType &pt) override;
-  void visit(PrefixInc &pi) override;
+  void visit(PrefixOp &pi) override;
   void visit(Program &p) override;
   void visit(ReferenceType &rt) override;
   void visit(Return &r) override;
@@ -67,6 +67,7 @@ private:
   void visit(StringLiteral &sl) override;
   void visit(StructType &st) override;
   void visit(StructTypeDecl &std) override;
+  void visit(TertiaryExpr &t) override;
   void visit(Throw &t) override;
   void visit(TypeCast &tc) override;
   void visit(TypeDefDecl &td) override;

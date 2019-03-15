@@ -43,7 +43,7 @@ add_library(AST SHARED
   src/ast/Namespace.cpp
   src/ast/ParenthExpr.cpp
   src/ast/PointerType.cpp
-  src/ast/PrefixInc.cpp
+  src/ast/PrefixOp.cpp
   src/ast/Program.cpp
   src/ast/ReferenceType.cpp
   src/ast/Return.cpp
@@ -51,6 +51,7 @@ add_library(AST SHARED
   src/ast/StringLiteral.cpp
   src/ast/StructType.cpp
   src/ast/StructTypeDecl.cpp
+  src/ast/TertiaryExpr.cpp
   src/ast/Throw.cpp
   src/ast/TypeCast.cpp
   src/ast/TypeDefDecl.cpp

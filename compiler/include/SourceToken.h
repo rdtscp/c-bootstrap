@@ -58,7 +58,8 @@ public:
     PROTECTED,  // "protected:"
     NEW,        // "new"
     FOR,        // "for"
-    PREFIXINC,  // "++{}",
+    PREFIXINC,  // "++"
+    PREFIXDEC,  // "--"
     THIS,       // "this"
     DESTRUCTOR, // "~"
     DELETE,     // "delete"
@@ -250,6 +251,8 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "for";
   case SourceToken::Class::PREFIXINC:
     return "++";
+  case SourceToken::Class::PREFIXDEC:
+    return "--";
   case SourceToken::Class::THIS:
     return "this";
   case SourceToken::Class::DESTRUCTOR:

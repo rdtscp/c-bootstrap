@@ -736,9 +736,9 @@ atl::shared_ptr<For> Parser::parseFor() {
   expect(TC::SC);
   const atl::shared_ptr<Expr> endBodyExpr = parseExpr();
   /* TODO: Check this Stmt is Valid ASTNode Type. */
-  if (endBodyExpr->astClass() != "PrefixInc")
+  if (endBodyExpr->astClass() != "PrefixOp")
     throw "TEMP: For Loops do not support end of body expressions other than "
-          "prefix increments";
+          "prefix operations";
   expect(TC::RPAR);
   const atl::shared_ptr<Stmt> body = parseStmt();
   return atl::make_shared<For>(
@@ -863,7 +863,26 @@ atl::shared_ptr<VarDecl> Parser::parseParam() {
 }
 
 /* -- Exprs -- */
-atl::shared_ptr<Expr> Parser::parseExpr() { return parseBoolExpr(); }
+atl::shared_ptr<Expr> Parser::parseExpr() {
+  atl::shared_ptr<Expr> output = parseBoolExpr();
+  while (accept({TC::TERTIARYIF, TC::ASSIGNADD})) {
+    if (accept(TC::TERTIARYIF)) {
+      const atl::shared_ptr<Expr> &tertiaryCondition = output;
+      expect(TC::TERTIARYIF);
+      const atl::shared_ptr<Expr> tertiaryIfBody = parseBoolExpr();
+      expect(TC::TERTIARYELSE);
+      const atl::shared_ptr<Expr> tertiaryElseBody = parseBoolExpr();
+      output = atl::make_shared<TertiaryExpr>(
+          TertiaryExpr(tertiaryCondition, tertiaryIfBody, tertiaryElseBody));
+    } else {
+      const atl::shared_ptr<Expr> &lhs = output;
+      expect(TC::ASSIGNADD);
+      const atl::shared_ptr<Expr> rhs = parseBoolExpr();
+      output = atl::make_shared<BinOp>(BinOp(lhs, Op::ASSIGNADD, rhs));
+    }
+  }
+  return output;
+}
 atl::shared_ptr<Expr> Parser::parseBoolExpr() {
   atl::shared_ptr<Expr> lhs = parseEqualExpr();
   atl::shared_ptr<Expr> rhs;
@@ -990,14 +1009,19 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     atl::shared_ptr<Expr> rhs = parseObjExpr();
     return atl::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs));
   }
-  if (accept(TC::PREFIXINC)) {
-    expect(TC::PREFIXINC);
+  if (accept({TC::PREFIXINC, TC::PREFIXDEC})) {
+    TC operatorToken = expect({TC::PREFIXINC, TC::PREFIXDEC}).tokenClass;
+    PrefixOp::Op operation;
+    if (operatorToken == TC::PREFIXINC)
+      operation = PrefixOp::Op::INC;
+    if (operatorToken == TC::PREFIXDEC)
+      operation = PrefixOp::Op::DEC;
     atl::shared_ptr<Expr> incrementExpr = parseObjExpr();
     if (incrementExpr->astClass() != "VarExpr")
       throw "Attempted operator++ on Expr that was not a VarExpr";
-    const atl::shared_ptr<VarExpr> incrementVar =
+    const atl::shared_ptr<VarExpr> variable =
         atl::static_pointer_cast<VarExpr>(incrementExpr);
-    return atl::make_shared<PrefixInc>(PrefixInc(incrementVar));
+    return atl::make_shared<PrefixOp>(PrefixOp(operation, variable));
   }
   if (accept(TC::NEW)) {
     /* TODO: Parse Heap Allocation. */

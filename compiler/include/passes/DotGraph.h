@@ -58,7 +58,7 @@ private:
   atl::string visit(Namespace &n) override;
   atl::string visit(ParenthExpr &pe) override;
   atl::string visit(PointerType &pt) override;
-  atl::string visit(PrefixInc &pi) override;
+  atl::string visit(PrefixOp &pi) override;
   atl::string visit(Program &p) override;
   atl::string visit(ReferenceType &rt) override;
   atl::string visit(Return &r) override;
@@ -66,6 +66,7 @@ private:
   atl::string visit(StringLiteral &sl) override;
   atl::string visit(StructType &st) override;
   atl::string visit(StructTypeDecl &std) override;
+  atl::string visit(TertiaryExpr &t) override;
   atl::string visit(Throw &t) override;
   atl::string visit(TypeCast &tc) override;
   atl::string visit(TypeDefDecl &td) override;

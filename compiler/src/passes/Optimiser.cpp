@@ -95,6 +95,8 @@ atl::shared_ptr<ASTNode> Optimiser::visit(BinOp &bo) {
     case Op::SUB:
       newVal = lhsVal - rhsVal;
       return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+    case Op::ASSIGNADD:
+      return bo.getptr();
     }
   }
   bo.lhs = atl::static_pointer_cast<Expr>(bo.lhs->accept(*this));
@@ -193,7 +195,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(ParenthExpr &pe) {
 atl::shared_ptr<ASTNode> Optimiser::visit(PointerType &pt) {
   return pt.getptr();
 }
-atl::shared_ptr<ASTNode> Optimiser::visit(PrefixInc &pi) { return pi.getptr(); }
+atl::shared_ptr<ASTNode> Optimiser::visit(PrefixOp &po) { return po.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(Program &p) {
   currScope = atl::make_shared<Block>(Block({}));
   for (int idx = 0; idx < p.decls.size(); ++idx)
@@ -220,6 +222,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(StructType &st) {
 atl::shared_ptr<ASTNode> Optimiser::visit(StructTypeDecl &std) {
   return std.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(TertiaryExpr &t) { return t.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(Throw &t) { return t.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(TypeCast &tc) {
   tc.expr = atl::static_pointer_cast<Expr>(tc.expr->accept(*this));
