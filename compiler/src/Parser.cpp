@@ -116,6 +116,8 @@ bool Parser::acceptDecl(int offset) {
 
   if (acceptEnumTypeDecl())
     return true;
+  if (acceptEnumClassTypeDecl())
+    return true;
 
   return false;
 }
@@ -128,7 +130,8 @@ bool Parser::acceptDestructor(int offset) {
 
   return true;
 }
-bool Parser::acceptEnumTypeDecl(int offset) { return accept(TC::ENUM); }
+bool Parser::acceptEnumClassTypeDecl(int offset) { return (accept(TC::ENUM, offset) && accept(TC::CLASS, offset + 1)); }
+bool Parser::acceptEnumTypeDecl(int offset) { return (accept(TC::ENUM, offset) && accept({TC::IDENTIFIER, TC::LBRA}, offset + 1)); }
 bool Parser::acceptFunDecl(int offset) {
   if (accept(TC::STATIC))
     ++offset;
@@ -446,6 +449,12 @@ atl::shared_ptr<Decl> Parser::parseDecl() {
     return etd;
   }
 
+  if (acceptEnumClassTypeDecl()) {
+    atl::shared_ptr<EnumClassTypeDecl> ectd = parseEnumClassTypeDecl();
+    expect(TC::SC);
+    return ectd;
+  }
+
   throw std::runtime_error("Parser: Expected a Struct/Variable/Function "
                            "Declaration but none was found.");
 }
@@ -458,7 +467,6 @@ atl::shared_ptr<Deletion> Parser::parseDeletion() {
   const atl::shared_ptr<VarExpr> deletionVar = parseObjExpr();
   return atl::make_shared<Deletion>(Deletion(deletionType, deletionVar));
 }
-
 atl::shared_ptr<DestructorDecl> Parser::parseDestructor() {
   expect(TC::DESTRUCTOR);
   const atl::string classIdentifier = expect(TC::IDENTIFIER).data;
@@ -477,6 +485,37 @@ atl::shared_ptr<DestructorDecl> Parser::parseDestructor() {
   }
 }
 
+atl::shared_ptr<EnumClassTypeDecl> Parser::parseEnumClassTypeDecl() {
+  expect(TC::ENUM);
+  expect(TC::CLASS);
+  atl::string ident = "";
+  if (accept(TC::IDENTIFIER))
+    ident = expect(TC::IDENTIFIER).data;
+  expect(TC::LBRA);
+
+  bool moreStates = false;
+  std::map<std::string, std::string> states;
+  do {
+    const atl::string ident = expect(TC::IDENTIFIER).data;
+    atl::string value = "";
+    if (accept(TC::ASSIGN)) {
+      expect(TC::ASSIGN);
+      if (accept(TC::MINUS)) {
+        expect(TC::MINUS);
+        value = "-";
+      }
+      value += expect(TC::INT_LITERAL).data;
+    }
+    states[std::string(ident.c_str())] = std::string(value.c_str());
+    if (accept(TC::COMMA)) {
+      expect(TC::COMMA);
+      moreStates = true;
+    } else
+      moreStates = false;
+  } while (moreStates);
+  expect(TC::RBRA);
+  return atl::make_shared<EnumClassTypeDecl>(EnumClassTypeDecl(ident, states));
+}
 atl::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
   expect(TC::ENUM);
   atl::string ident = "";
