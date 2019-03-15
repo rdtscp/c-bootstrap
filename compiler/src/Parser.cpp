@@ -130,8 +130,13 @@ bool Parser::acceptDestructor(int offset) {
 
   return true;
 }
-bool Parser::acceptEnumClassTypeDecl(int offset) { return (accept(TC::ENUM, offset) && accept(TC::CLASS, offset + 1)); }
-bool Parser::acceptEnumTypeDecl(int offset) { return (accept(TC::ENUM, offset) && accept({TC::IDENTIFIER, TC::LBRA}, offset + 1)); }
+bool Parser::acceptEnumClassTypeDecl(int offset) {
+  return (accept(TC::ENUM, offset) && accept(TC::CLASS, offset + 1));
+}
+bool Parser::acceptEnumTypeDecl(int offset) {
+  return (accept(TC::ENUM, offset) &&
+          accept({TC::IDENTIFIER, TC::LBRA}, offset + 1));
+}
 bool Parser::acceptFunDecl(int offset) {
   if (accept(TC::STATIC))
     ++offset;
