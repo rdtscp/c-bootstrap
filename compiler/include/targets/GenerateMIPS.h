@@ -83,6 +83,7 @@ private:
   MIPS::Register visit(DestructorDecl &dd) override;
   MIPS::Register visit(DestructorDef &dd) override;
   MIPS::Register visit(DoWhile &dw) override;
+  MIPS::Register visit(EnumClassTypeDecl &ectd) override;
   MIPS::Register visit(EnumTypeDecl &etd) override;
   MIPS::Register visit(For &f) override;
   MIPS::Register visit(FunCall &fc) override;

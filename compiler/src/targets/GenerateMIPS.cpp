@@ -166,6 +166,9 @@ MIPS::Register GenerateMIPS::visit(DoWhile &dw) {
   dw.body->accept(*this);
   return MIPS::Register();
 }
+MIPS::Register GenerateMIPS::visit(EnumClassTypeDecl &ectd) {
+  return MIPS::Register();
+}
 MIPS::Register GenerateMIPS::visit(EnumTypeDecl &etd) {
   return MIPS::Register();
 }

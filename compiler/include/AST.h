@@ -21,6 +21,7 @@
 #include "ast/DestructorDecl.h"
 #include "ast/DestructorDef.h"
 #include "ast/DoWhile.h"
+#include "ast/EnumClassTypeDecl.h"
 #include "ast/EnumTypeDecl.h"
 #include "ast/Expr.h"
 #include "ast/For.h"

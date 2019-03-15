@@ -31,6 +31,7 @@ add_library(AST SHARED
   src/ast/DestructorDecl.cpp
   src/ast/DestructorDef.cpp
   src/ast/DoWhile.cpp
+  src/ast/EnumClassTypeDecl.cpp
   src/ast/EnumTypeDecl.cpp
   src/ast/For.cpp
   src/ast/FunCall.cpp

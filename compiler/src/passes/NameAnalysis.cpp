@@ -78,6 +78,7 @@ void NameAnalysis::visit(DoWhile &dw) {
   dw.condition->accept(*this);
   dw.body->accept(*this);
 }
+void NameAnalysis::visit(EnumClassTypeDecl &ectd) {}
 void NameAnalysis::visit(EnumTypeDecl &etd) {}
 void NameAnalysis::visit(For &f) {
   // TODO: Scope the entire for loop.

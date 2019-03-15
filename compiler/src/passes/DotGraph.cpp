@@ -250,6 +250,7 @@ atl::string DotGraph::visit(DoWhile &dw) {
   join(whileID, dw.condition->accept(*this));
   return whileID;
 }
+atl::string DotGraph::visit(EnumClassTypeDecl &ectd) { return ""; }
 atl::string DotGraph::visit(EnumTypeDecl &etd) { return ""; }
 atl::string DotGraph::visit(For &f) {
   atl::string forID = atl::string("For") + atl::to_string(++nodeCount);

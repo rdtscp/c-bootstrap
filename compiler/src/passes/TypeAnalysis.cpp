@@ -101,6 +101,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(DoWhile &dw) {
     return error("Type Analysis: Type of While condition is not INT.");
   return nullptr;
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(EnumClassTypeDecl &ectd) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(EnumTypeDecl &etd) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(For &f) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
