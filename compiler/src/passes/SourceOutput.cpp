@@ -291,7 +291,7 @@ atl::string SourceOutput::visit(PrefixOp &po) {
   atl::string output;
   if (po.operation == PrefixOp::Op::INC)
     output += "++";
-    if (po.operation == PrefixOp::Op::DEC)
+  if (po.operation == PrefixOp::Op::DEC)
     output += "--";
   output += po.variable->identifier;
   return output;

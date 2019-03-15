@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-EnumClassTypeDecl::EnumClassTypeDecl(const atl::string &ident,
-                           const std::map<std::string, std::string> &states)
+EnumClassTypeDecl::EnumClassTypeDecl(
+    const atl::string &ident, const std::map<std::string, std::string> &states)
     : states(states) {}
 
 atl::shared_ptr<EnumClassTypeDecl> EnumClassTypeDecl::getptr() {

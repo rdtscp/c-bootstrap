@@ -335,7 +335,7 @@ atl::string DotGraph::visit(PrefixOp &po) {
   atl::string opStr = "PrefixOp(";
   if (po.operation == PrefixOp::Op::DEC)
     opStr += "--)";
-    if (po.operation == PrefixOp::Op::INC)
+  if (po.operation == PrefixOp::Op::INC)
     opStr += "++)";
   declare(preficIncID, opStr + ")");
   join(preficIncID, po.variable->accept(*this));

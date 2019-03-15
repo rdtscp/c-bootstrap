@@ -225,7 +225,9 @@ atl::shared_ptr<ASTNode> Optimiser::visit(StructType &st) {
 atl::shared_ptr<ASTNode> Optimiser::visit(StructTypeDecl &std) {
   return std.getptr();
 }
-atl::shared_ptr<ASTNode> Optimiser::visit(TertiaryExpr &t) { return t.getptr(); }
+atl::shared_ptr<ASTNode> Optimiser::visit(TertiaryExpr &t) {
+  return t.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(Throw &t) { return t.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(TypeCast &tc) {
   tc.expr = atl::static_pointer_cast<Expr>(tc.expr->accept(*this));

@@ -11,16 +11,17 @@
 
 namespace ACC {
 
-class EnumClassTypeDecl : public Decl,
-                     public Type,
-                     public atl::enable_shared_from_this<EnumClassTypeDecl> {
+class EnumClassTypeDecl
+    : public Decl,
+      public Type,
+      public atl::enable_shared_from_this<EnumClassTypeDecl> {
 
 public:
   atl::string identifer;
   std::map<std::string, std::string> states;
 
   EnumClassTypeDecl(const atl::string &ident,
-               const std::map<std::string, std::string> &states);
+                    const std::map<std::string, std::string> &states);
 
   atl::shared_ptr<EnumClassTypeDecl> getptr();
 
