@@ -217,6 +217,12 @@ atl::string DotGraph::visit(ConstructorDef &cd) {
     funParams += currParam;
   }
   funParams += ")";
+
+  for (int idx = 0; idx < cd.initialiserList.size(); ++idx) {
+
+    join(constructorID, cd.initialiserList[idx]->accept(*this));
+  }
+
   declare(constructorID, cd.classType->identifier + funParams);
   join(constructorID, cd.constructorBlock->accept(*this));
   return constructorID;

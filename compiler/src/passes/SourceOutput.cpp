@@ -177,6 +177,18 @@ atl::string SourceOutput::visit(ConstructorDef &cd) {
     output += currParam;
   }
   output += ")";
+  const int initialiserListSize = cd.initialiserList.size();
+  if (initialiserListSize > 0) {
+    output += " : ";
+    for (int idx = 0; idx < initialiserListSize; ++idx) {
+      output += cd.initialiserList[idx]->lhs->accept(*this);
+      output += "(";
+      output += cd.initialiserList[idx]->lhs->accept(*this);
+      output += ")";
+      if (idx < (initialiserListSize - 1))
+        output += ", ";
+    }
+  }
   output += cd.constructorBlock->accept(*this);
 
   return output;

@@ -390,27 +390,55 @@ atl::shared_ptr<ConstructorDecl> Parser::parseConstructor() {
   expect(TC::LPAR);
   atl::vector<atl::shared_ptr<VarDecl>> constructorParams;
 
-  bool isDef = true;
+  bool unnamedParams = false;
   if (acceptParam())
     constructorParams.push_back(parseParam());
   while (accept(TC::COMMA)) {
     expect(TC::COMMA);
     atl::shared_ptr<VarDecl> currParam = parseParam();
     if (currParam->identifer == "")
-      isDef = false;
+      unnamedParams = true;
 
     constructorParams.push_back(currParam);
   }
 
   expect(TC::RPAR);
 
-  if (acceptBlock() && !isDef) {
+  if (acceptBlock() && unnamedParams) {
     throw std::runtime_error(
         "Parser: Constructor signature did not provide names for parameters.");
   } else if (acceptBlock()) {
     atl::shared_ptr<Block> constructorBlock = parseBlock();
     atl::shared_ptr<ConstructorDef> cd(
-        new ConstructorDef(classType, constructorParams, constructorBlock));
+        new ConstructorDef(classType, constructorParams, {}, constructorBlock));
+    return cd;
+  } else if (accept(TC::COLON)) {
+    expect(TC::COLON);
+    atl::vector<atl::shared_ptr<Assign>> initialiserList;
+    {
+      const atl::shared_ptr<VarExpr> initialiserMember(
+          new VarExpr(expect(TC::IDENTIFIER).data));
+      expect(TC::LPAR);
+      const atl::shared_ptr<Expr> initialiseValue = parseExpr();
+      expect(TC::RPAR);
+      const atl::shared_ptr<Assign> intialiserStmt(
+          new Assign(initialiserMember, initialiseValue));
+      initialiserList.push_back(intialiserStmt);
+    }
+    while (accept(TC::COMMA)) {
+      expect(TC::COMMA);
+      const atl::shared_ptr<VarExpr> initialiserMember(
+          new VarExpr(expect(TC::IDENTIFIER).data));
+      expect(TC::LPAR);
+      const atl::shared_ptr<Expr> initialiseValue = parseExpr();
+      expect(TC::RPAR);
+      const atl::shared_ptr<Assign> intialiserStmt(
+          new Assign(initialiserMember, initialiseValue));
+      initialiserList.push_back(intialiserStmt);
+    }
+    atl::shared_ptr<Block> constructorBlock = parseBlock();
+    atl::shared_ptr<ConstructorDef> cd(new ConstructorDef(
+        classType, constructorParams, initialiserList, constructorBlock));
     return cd;
   } else {
     expect(TC::SC);

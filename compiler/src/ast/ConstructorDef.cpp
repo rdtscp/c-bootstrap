@@ -5,9 +5,10 @@ using namespace ACC;
 ConstructorDef::ConstructorDef(
     const atl::shared_ptr<Type> &classType,
     const atl::vector<atl::shared_ptr<VarDecl>> &constructorParams,
+    const atl::vector<atl::shared_ptr<Assign>> &initialiserList,
     const atl::shared_ptr<Block> &constructorBlock)
     : ConstructorDecl(classType, constructorParams),
-      constructorBlock(constructorBlock) {}
+      initialiserList(initialiserList), constructorBlock(constructorBlock) {}
 
 atl::shared_ptr<ConstructorDecl> ConstructorDef::getptr() {
   return ConstructorDecl::shared_from_this();

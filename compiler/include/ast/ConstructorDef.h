@@ -12,10 +12,12 @@ namespace ACC {
 class ConstructorDef : public ConstructorDecl {
 
 public:
+  atl::vector<atl::shared_ptr<Assign>> initialiserList;
   atl::shared_ptr<Block> constructorBlock;
 
   ConstructorDef(const atl::shared_ptr<Type> &classType,
                  const atl::vector<atl::shared_ptr<VarDecl>> &constructorParams,
+                 const atl::vector<atl::shared_ptr<Assign>> &initialiserList,
                  const atl::shared_ptr<Block> &constructorBlock);
 
   atl::shared_ptr<ConstructorDecl> getptr();
