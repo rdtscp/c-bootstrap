@@ -224,13 +224,13 @@ SourceToken Lexer::nextToken() {
       c = scanner.next();
       if (scanner.peek() == 'i') {
         atl::pair<bool, atl::string> lexResult = tryLexKeyword("rivate:");
-        literal += atl::string("p") + lexResult.second;
+        literal += lexResult.second;
 
         if (lexResult.first)
           return SourceToken(TC::PRIVATE, scanner.getPosition());
       } else if (scanner.peek() == 'o') {
         atl::pair<bool, atl::string> lexResult = tryLexKeyword("otected:");
-        literal += atl::string("p") + lexResult.second;
+        literal += lexResult.second;
 
         if (lexResult.first)
           return SourceToken(TC::PROTECTED, scanner.getPosition());
