@@ -222,16 +222,15 @@ SourceToken Lexer::nextToken() {
     // Check for PRIVATE/PROTECTED Tokens.
     else if (c == 'p' && scanner.peek() == 'r') {
       c = scanner.next();
-      literal += c;
       if (scanner.peek() == 'i') {
         atl::pair<bool, atl::string> lexResult = tryLexKeyword("rivate:");
-        literal = atl::string("p") + lexResult.second;
+        literal += atl::string("p") + lexResult.second;
 
         if (lexResult.first)
           return SourceToken(TC::PRIVATE, scanner.getPosition());
       } else if (scanner.peek() == 'o') {
         atl::pair<bool, atl::string> lexResult = tryLexKeyword("otected:");
-        literal = atl::string("p") + lexResult.second;
+        literal += atl::string("p") + lexResult.second;
 
         if (lexResult.first)
           return SourceToken(TC::PROTECTED, scanner.getPosition());
@@ -272,16 +271,15 @@ SourceToken Lexer::nextToken() {
     // Check for STRUCT and STATIC Token.
     else if (c == 's' && scanner.peek() == 't') {
       c = scanner.next();
-      literal += c;
       if (scanner.peek() == 'a') {
         atl::pair<bool, atl::string> lexResult = tryLexKeyword("tatic");
-        literal = lexResult.second;
+        literal += lexResult.second;
 
         if (lexResult.first)
           return SourceToken(TC::STATIC, scanner.getPosition());
       } else if (scanner.peek() == 'r') {
         atl::pair<bool, atl::string> lexResult = tryLexKeyword("truct");
-        literal = lexResult.second;
+        literal += lexResult.second;
 
         if (lexResult.first)
           return SourceToken(TC::STRUCT, scanner.getPosition());
@@ -290,16 +288,15 @@ SourceToken Lexer::nextToken() {
     // Check for THIS and THROW Token.
     else if (c == 't' && scanner.peek() == 'h') {
       c = scanner.next();
-      literal += c;
       if (scanner.peek() == 'i') {
         atl::pair<bool, atl::string> lexResult = tryLexKeyword("his");
-        literal = lexResult.second;
+        literal += lexResult.second;
 
         if (lexResult.first)
           return SourceToken(TC::THIS, scanner.getPosition());
       } else if (scanner.peek() == 'r') {
         atl::pair<bool, atl::string> lexResult = tryLexKeyword("hrow");
-        literal = lexResult.second;
+        literal += lexResult.second;
 
         if (lexResult.first)
           return SourceToken(TC::THROW, scanner.getPosition());
