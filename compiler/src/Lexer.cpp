@@ -418,6 +418,10 @@ SourceToken Lexer::nextToken() {
     scanner.next();
     return SourceToken(TC::PTRDOT, scanner.getPosition());
   }
+  if (c == ':' && scanner.peek() == ':') {
+    scanner.next();
+    return SourceToken(TC::NAMESPACEACCESS, scanner.getPosition());
+  }
 
   /* Recognise One Symbol Tokens. */
   if (c == '~')

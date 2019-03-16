@@ -90,11 +90,12 @@ public:
                   // a character starts and end with a single quote '
 
     // logical operators
-    NOT,   // "!"
-    AND,   // "&&"
-    OR,    // "||"
-    QMARK, // "?"
-    COLON, // ":"
+    NOT,             // "!"
+    AND,             // "&&"
+    OR,              // "||"
+    QMARK,           // "?"
+    COLON,           // ":"
+    NAMESPACEACCESS, // "::"
 
     // comparisons
     EQ, // "=="
@@ -295,6 +296,10 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "?";
   case SourceToken::Class::COLON:
     return ":";
+  case SourceToken::Class::NAMESPACEACCESS:
+    return "::";
+  default:
+    return "UNKNOWN TOKEN.";
   }
 }
 
