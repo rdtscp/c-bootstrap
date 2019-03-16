@@ -89,6 +89,8 @@ private:
 
   atl::shared_ptr<Program> parseProgram();
 
+  atl::shared_ptr<Identifier> parseIdentifier();
+
   /* -- Decls -- */
   atl::shared_ptr<ClassTypeDecl> parseClassTypeDecl();
   atl::shared_ptr<ConstructorDecl> parseConstructor();

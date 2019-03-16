@@ -337,6 +337,18 @@ atl::shared_ptr<Program> Parser::parseProgram() {
   return atl::make_shared<Program>(Program(decls));
 }
 
+atl::shared_ptr<Identifier> Parser::parseIdentifier() {
+  const atl::string identifierStr = expect(TC::IDENTIFIER).data;
+  atl::shared_ptr<Identifier> identifier(new Identifier(identifierStr));
+  while (accept(TC::NAMESPACEACCESS)) {
+    expect(TC::NAMESPACEACCESS);
+    const atl::string parentIdentifierStr = expect(TC::IDENTIFIER).data;
+    identifier = atl::make_shared<Identifier>(
+        Identifier(parentIdentifierStr, identifier));
+  }
+  return identifier;
+}
+
 /* -- Decls -- */
 atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
   expect(TC::CLASS);

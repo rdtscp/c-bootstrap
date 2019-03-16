@@ -37,6 +37,7 @@ add_library(AST SHARED
   src/ast/FunCall.cpp
   src/ast/FunDecl.cpp
   src/ast/FunDef.cpp
+  src/ast/Identifier.cpp
   src/ast/If.cpp
   src/ast/IntLiteral.cpp
   src/ast/MemberAccess.cpp
