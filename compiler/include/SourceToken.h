@@ -90,11 +90,11 @@ public:
                   // a character starts and end with a single quote '
 
     // logical operators
-    NOT,          // "!"
-    AND,          // "&&"
-    OR,           // "||"
-    TERTIARYIF,   // "?"
-    TERTIARYELSE, // ":"
+    NOT,   // "!"
+    AND,   // "&&"
+    OR,    // "||"
+    QMARK, // "?"
+    COLON, // ":"
 
     // comparisons
     EQ, // "=="
@@ -291,9 +291,9 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
     return "static";
   case SourceToken::Class::ASSIGNADD:
     return "+=";
-  case SourceToken::Class::TERTIARYIF:
+  case SourceToken::Class::QMARK:
     return "?";
-  case SourceToken::Class::TERTIARYELSE:
+  case SourceToken::Class::COLON:
     return ":";
   }
 }

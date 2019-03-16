@@ -909,12 +909,12 @@ atl::shared_ptr<VarDecl> Parser::parseParam() {
 /* -- Exprs -- */
 atl::shared_ptr<Expr> Parser::parseExpr() {
   atl::shared_ptr<Expr> output = parseBoolExpr();
-  while (accept({TC::TERTIARYIF, TC::ASSIGNADD})) {
-    if (accept(TC::TERTIARYIF)) {
+  while (accept({TC::QMARK, TC::ASSIGNADD})) {
+    if (accept(TC::QMARK)) {
       const atl::shared_ptr<Expr> &tertiaryCondition = output;
-      expect(TC::TERTIARYIF);
+      expect(TC::QMARK);
       const atl::shared_ptr<Expr> tertiaryIfBody = parseBoolExpr();
-      expect(TC::TERTIARYELSE);
+      expect(TC::COLON);
       const atl::shared_ptr<Expr> tertiaryElseBody = parseBoolExpr();
       output = atl::make_shared<TertiaryExpr>(
           TertiaryExpr(tertiaryCondition, tertiaryIfBody, tertiaryElseBody));

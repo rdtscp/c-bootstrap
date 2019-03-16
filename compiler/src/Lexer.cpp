@@ -464,9 +464,9 @@ SourceToken Lexer::nextToken() {
   if (c == '!')
     return SourceToken(TC::NOT, scanner.getPosition());
   if (c == '?')
-    return SourceToken(TC::TERTIARYIF, scanner.getPosition());
+    return SourceToken(TC::QMARK, scanner.getPosition());
   if (c == ':')
-    return SourceToken(TC::TERTIARYELSE, scanner.getPosition());
+    return SourceToken(TC::COLON, scanner.getPosition());
 
   // Skip Whitespace.
   if (atl::isspace(c))
