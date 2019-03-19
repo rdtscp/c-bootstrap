@@ -14,8 +14,8 @@ class ClassTypeDecl : public Decl,
                       public atl::enable_shared_from_this<ClassTypeDecl> {
 
 public:
-  const atl::shared_ptr<ClassType> classType;
-  const atl::vector<atl::shared_ptr<Decl>> classDecls;
+  atl::shared_ptr<ClassType> classType;
+  atl::vector<atl::shared_ptr<Decl>> classDecls;
 
   ClassTypeDecl(const atl::shared_ptr<ClassType> &classType,
                 const atl::vector<atl::shared_ptr<Decl>> &classDecls);
