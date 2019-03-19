@@ -16,8 +16,8 @@ public:
   atl::shared_ptr<Expr> object;
   atl::shared_ptr<FunCall> funCall;
 
-  MemberCall(const atl::shared_ptr<Expr> &object,
-             const atl::shared_ptr<FunCall> &funCall);
+  MemberCall(const atl::shared_ptr<Expr> &p_object,
+             const atl::shared_ptr<FunCall> &p_funCall);
 
   atl::shared_ptr<MemberCall> getptr();
 

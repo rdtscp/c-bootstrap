@@ -2,9 +2,9 @@
 
 using namespace ACC;
 
-MemberAccess::MemberAccess(const atl::shared_ptr<Expr> &object,
-                           const atl::shared_ptr<Identifier> &fieldIdentifier)
-    : object(object), fieldIdentifier(fieldIdentifier) {}
+MemberAccess::MemberAccess(const atl::shared_ptr<Expr> &p_object,
+                           const atl::shared_ptr<Identifier> &p_fieldIdentifier)
+    : object(p_object), fieldIdentifier(p_fieldIdentifier) {}
 
 atl::shared_ptr<MemberAccess> MemberAccess::getptr() {
   return shared_from_this();

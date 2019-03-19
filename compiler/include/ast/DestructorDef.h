@@ -14,8 +14,8 @@ class DestructorDef : public DestructorDecl {
 public:
   atl::shared_ptr<Block> destructorBlock;
 
-  DestructorDef(const atl::shared_ptr<Type> &classType,
-                const atl::shared_ptr<Block> &destructorBlock);
+  DestructorDef(const atl::shared_ptr<Type> &p_classType,
+                const atl::shared_ptr<Block> &p_destructorBlock);
 
   atl::shared_ptr<DestructorDecl> getptr();
 

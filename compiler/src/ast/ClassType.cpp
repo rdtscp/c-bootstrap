@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-ClassType::ClassType(const atl::shared_ptr<Identifier> &identifier)
-    : identifier(identifier) {}
+ClassType::ClassType(const atl::shared_ptr<Identifier> &p_identifier)
+    : identifier(p_identifier) {}
 
 atl::shared_ptr<ClassType> ClassType::getptr() { return shared_from_this(); }
 

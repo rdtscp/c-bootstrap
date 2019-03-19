@@ -56,6 +56,28 @@ void NameAnalysis::visit(ClassTypeDecl &ctd) {
 
   currScope->insertDecl(ctd.getptr());
 
+  /* Check that all methods & members in this class are unique */
+  atl::set<atl::shared_ptr<Identifier>> classMembers;
+  atl::set<atl::shared_ptr<Identifier>> classMethods;
+
+  for (int idx = 0; idx < ctd.classDecls.size(); ++idx) {
+    const atl::shared_ptr<Decl> currDecl = ctd.classDecls[idx];
+    currDecl->accept(*this);
+    if (currDecl->astClass() == "VarDecl" || currDecl->astClass() == "VarDef") {
+      if (classMembers.find(currDecl->getIdentifier()))
+        return error(atl::string("Class ") + ctd.getIdentifier()->toString() +
+                     " contained multiple members with the same identifier: " +
+                     currDecl->getIdentifier()->toString());
+      classMembers.insert(currDecl->getIdentifier());
+    } else {
+      if (classMethods.find(currDecl->getIdentifier()))
+        return error(atl::string("Class ") + ctd.getIdentifier()->toString() +
+                     " contained multiple members with the same identifier: " +
+                     currDecl->getIdentifier()->toString());
+      classMethods.insert(currDecl->getIdentifier());
+    }
+  }
+
   /* Check that the fields in this struct are unique */
   // atl::set<atl::string> structTypeFields;
   // for (int idx = 0; idx < ctd.varDecls.size(); ++idx) {

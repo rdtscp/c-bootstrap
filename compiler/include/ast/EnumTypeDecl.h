@@ -19,8 +19,8 @@ public:
   atl::shared_ptr<Identifier> identifier;
   std::map<std::string, std::string> states;
 
-  EnumTypeDecl(const atl::shared_ptr<Identifier> &identifier,
-               const std::map<std::string, std::string> &states);
+  EnumTypeDecl(const atl::shared_ptr<Identifier> &p_identifier,
+               const std::map<std::string, std::string> &p_states);
 
   atl::shared_ptr<EnumTypeDecl> getptr();
 

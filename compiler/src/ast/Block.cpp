@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-Block::Block(const atl::vector<atl::shared_ptr<Stmt>> &stmts)
-    : decls({}), stmts(stmts), outerBlock(nullptr) {}
+Block::Block(const atl::vector<atl::shared_ptr<Stmt>> &p_stmts)
+    : decls({}), stmts(p_stmts), outerBlock(nullptr) {}
 
 atl::shared_ptr<Block> Block::getptr() { return shared_from_this(); }
 

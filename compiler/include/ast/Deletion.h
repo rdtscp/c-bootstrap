@@ -16,8 +16,8 @@ public:
   DelType deletionType;
   atl::shared_ptr<VarExpr> deletionVar;
 
-  Deletion(const DelType deletionType,
-           const atl::shared_ptr<VarExpr> &deletionVar);
+  Deletion(const DelType p_deletionType,
+           const atl::shared_ptr<VarExpr> &p_deletionVar);
 
   virtual ~Deletion() {}
 

@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-SizeOf::SizeOf(const atl::shared_ptr<Type> &type) : type(type) {}
+SizeOf::SizeOf(const atl::shared_ptr<Type> &p_type) : type(p_type) {}
 
 atl::shared_ptr<SizeOf> SizeOf::getptr() { return shared_from_this(); }
 

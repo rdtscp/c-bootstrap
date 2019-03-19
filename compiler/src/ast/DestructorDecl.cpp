@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-DestructorDecl::DestructorDecl(const atl::shared_ptr<Type> &classType)
-    : classType(classType) {}
+DestructorDecl::DestructorDecl(const atl::shared_ptr<Type> &p_classType)
+    : classType(p_classType) {}
 
 atl::shared_ptr<DestructorDecl> DestructorDecl::getptr() {
   return shared_from_this();

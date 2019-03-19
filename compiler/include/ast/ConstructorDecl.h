@@ -17,8 +17,8 @@ public:
   atl::vector<atl::shared_ptr<VarDecl>> constructorParams;
 
   ConstructorDecl(
-      const atl::shared_ptr<Type> &classType,
-      const atl::vector<atl::shared_ptr<VarDecl>> &constructorParams);
+      const atl::shared_ptr<Type> &p_classType,
+      const atl::vector<atl::shared_ptr<VarDecl>> &p_constructorParams);
 
   ConstructorDecl(const ConstructorDecl &rhs) = delete;
   virtual ~ConstructorDecl() {}

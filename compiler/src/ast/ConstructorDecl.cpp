@@ -3,9 +3,9 @@
 using namespace ACC;
 
 ConstructorDecl::ConstructorDecl(
-    const atl::shared_ptr<Type> &classType,
-    const atl::vector<atl::shared_ptr<VarDecl>> &constructorParams)
-    : classType(classType), constructorParams(constructorParams) {}
+    const atl::shared_ptr<Type> &p_classType,
+    const atl::vector<atl::shared_ptr<VarDecl>> &p_constructorParams)
+    : classType(p_classType), constructorParams(p_constructorParams) {}
 
 atl::shared_ptr<ConstructorDecl> ConstructorDecl::getptr() {
   return shared_from_this();

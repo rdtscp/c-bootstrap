@@ -15,7 +15,7 @@ public:
   atl::shared_ptr<Identifier> identifier;
   atl::shared_ptr<ClassTypeDecl> typeDefinition;
 
-  ClassType(const atl::shared_ptr<Identifier> &identifier);
+  ClassType(const atl::shared_ptr<Identifier> &p_identifier);
 
   atl::shared_ptr<ClassType> getptr();
 

@@ -16,9 +16,9 @@ public:
   atl::vector<atl::shared_ptr<VarDecl>> funParams;
   atl::shared_ptr<Type> funType;
 
-  FunDecl(const atl::shared_ptr<Identifier> &funIdentifier,
-          const atl::vector<atl::shared_ptr<VarDecl>> &funParams,
-          const atl::shared_ptr<Type> &funType);
+  FunDecl(const atl::shared_ptr<Identifier> &p_funIdentifier,
+          const atl::vector<atl::shared_ptr<VarDecl>> &p_funParams,
+          const atl::shared_ptr<Type> &p_funType);
 
   FunDecl(const FunDecl &rhs) = delete;
   FunDecl &operator=(const FunDecl &rhs) = delete;

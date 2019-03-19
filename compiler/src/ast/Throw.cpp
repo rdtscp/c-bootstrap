@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-Throw::Throw(const atl::shared_ptr<StringLiteral> &exceptionText)
-    : exceptionText(exceptionText) {}
+Throw::Throw(const atl::shared_ptr<StringLiteral> &p_exceptionText)
+    : exceptionText(p_exceptionText) {}
 
 atl::shared_ptr<Throw> Throw::getptr() { return shared_from_this(); }
 

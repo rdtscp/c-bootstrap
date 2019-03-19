@@ -15,7 +15,7 @@ class DestructorDecl : public Decl,
 public:
   atl::shared_ptr<ClassType> classType;
 
-  DestructorDecl(const atl::shared_ptr<Type> &classType);
+  DestructorDecl(const atl::shared_ptr<Type> &p_classType);
 
   DestructorDecl(const DestructorDecl &rhs) = delete;
   DestructorDecl &operator=(const DestructorDecl &rhs) = delete;

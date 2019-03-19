@@ -13,7 +13,7 @@ public:
   atl::shared_ptr<Identifier> varIdentifier;
   atl::shared_ptr<VarDecl> varDecl;
 
-  VarExpr(const atl::shared_ptr<Identifier> &varIdentifier);
+  VarExpr(const atl::shared_ptr<Identifier> &p_varIdentifier);
 
   atl::shared_ptr<VarExpr> getptr();
 

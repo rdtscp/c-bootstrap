@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-PointerType::PointerType(const atl::shared_ptr<Type> &pointedType)
-    : pointedType(pointedType) {}
+PointerType::PointerType(const atl::shared_ptr<Type> &p_pointedType)
+    : pointedType(p_pointedType) {}
 
 atl::shared_ptr<PointerType> PointerType::getptr() {
   return shared_from_this();

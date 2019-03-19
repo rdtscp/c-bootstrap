@@ -3,8 +3,9 @@
 
 using namespace ACC;
 
-PrefixOp::PrefixOp(const Op operation, const atl::shared_ptr<VarExpr> &variable)
-    : operation(operation), variable(variable) {}
+PrefixOp::PrefixOp(const Op p_operation,
+                   const atl::shared_ptr<VarExpr> &p_variable)
+    : operation(p_operation), variable(p_variable) {}
 
 atl::shared_ptr<PrefixOp> PrefixOp::getptr() { return shared_from_this(); }
 

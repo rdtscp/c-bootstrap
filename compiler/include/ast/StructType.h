@@ -15,7 +15,7 @@ public:
   atl::shared_ptr<Identifier> identifier;
   atl::shared_ptr<StructTypeDecl> typeDefinition;
 
-  StructType(const atl::shared_ptr<Identifier> &identifier);
+  StructType(const atl::shared_ptr<Identifier> &p_identifier);
 
   atl::shared_ptr<StructType> getptr();
 

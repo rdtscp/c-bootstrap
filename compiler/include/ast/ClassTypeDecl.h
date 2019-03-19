@@ -17,8 +17,8 @@ public:
   atl::shared_ptr<ClassType> classType;
   atl::vector<atl::shared_ptr<Decl>> classDecls;
 
-  ClassTypeDecl(const atl::shared_ptr<ClassType> &classType,
-                const atl::vector<atl::shared_ptr<Decl>> &classDecls);
+  ClassTypeDecl(const atl::shared_ptr<ClassType> &p_classType,
+                const atl::vector<atl::shared_ptr<Decl>> &p_classDecls);
 
   atl::shared_ptr<ClassTypeDecl> getptr();
 

@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-BaseType::BaseType(PrimitiveType pType) : primitiveType(pType) {}
+BaseType::BaseType(PrimitiveType p_pType) : primitiveType(p_pType) {}
 
 atl::shared_ptr<BaseType> BaseType::getptr() { return shared_from_this(); }
 

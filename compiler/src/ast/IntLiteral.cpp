@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-IntLiteral::IntLiteral(const atl::string &literal) : Literal(literal) {}
+IntLiteral::IntLiteral(const atl::string &p_literal) : Literal(p_literal) {}
 
 atl::shared_ptr<IntLiteral> IntLiteral::getptr() { return shared_from_this(); }
 

@@ -15,7 +15,7 @@ public:
   Op operation;
   atl::shared_ptr<VarExpr> variable;
 
-  PrefixOp(const Op operation, const atl::shared_ptr<VarExpr> &variable);
+  PrefixOp(const Op p_operation, const atl::shared_ptr<VarExpr> &p_variable);
   virtual ~PrefixOp() {}
 
   atl::shared_ptr<PrefixOp> getptr();

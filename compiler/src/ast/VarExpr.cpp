@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-VarExpr::VarExpr(const atl::shared_ptr<Identifier> &varIdentifier)
-    : varIdentifier(varIdentifier) {}
+VarExpr::VarExpr(const atl::shared_ptr<Identifier> &p_varIdentifier)
+    : varIdentifier(p_varIdentifier) {}
 
 atl::shared_ptr<VarExpr> VarExpr::getptr() { return shared_from_this(); }
 

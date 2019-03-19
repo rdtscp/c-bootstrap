@@ -14,8 +14,8 @@ public:
   atl::shared_ptr<Expr> object;
   atl::shared_ptr<Identifier> fieldIdentifier;
 
-  MemberAccess(const atl::shared_ptr<Expr> &object,
-               const atl::shared_ptr<Identifier> &fieldIdentifier);
+  MemberAccess(const atl::shared_ptr<Expr> &p_object,
+               const atl::shared_ptr<Identifier> &p_fieldIdentifier);
 
   atl::shared_ptr<MemberAccess> getptr();
 

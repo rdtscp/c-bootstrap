@@ -2,10 +2,10 @@
 
 using namespace ACC;
 
-VarDef::VarDef(const atl::shared_ptr<Type> &varType,
-               const atl::shared_ptr<Identifier> &varIdentifer,
-               const atl::shared_ptr<Expr> &varValue)
-    : VarDecl(varType, varIdentifer), varValue(varValue) {}
+VarDef::VarDef(const atl::shared_ptr<Type> &p_varType,
+               const atl::shared_ptr<Identifier> &p_varIdentifer,
+               const atl::shared_ptr<Expr> &p_varValue)
+    : VarDecl(p_varType, p_varIdentifer), varValue(p_varValue) {}
 
 atl::shared_ptr<VarDecl> VarDef::getptr() {
   return VarDecl::shared_from_this();

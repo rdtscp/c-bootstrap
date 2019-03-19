@@ -18,9 +18,9 @@ public:
 
   int fpOffset = 0;
 
-  VarDef(const atl::shared_ptr<Type> &varType,
-         const atl::shared_ptr<Identifier> &varIdentifer,
-         const atl::shared_ptr<Expr> &varValue);
+  VarDef(const atl::shared_ptr<Type> &p_varType,
+         const atl::shared_ptr<Identifier> &p_varIdentifer,
+         const atl::shared_ptr<Expr> &p_varValue);
 
   atl::shared_ptr<VarDecl> getptr();
 

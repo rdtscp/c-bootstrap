@@ -23,7 +23,7 @@ public:
   atl::shared_ptr<Block> globalScope;
   std::map<std::string, Namespace> namespaces;
 
-  Program(const atl::vector<atl::shared_ptr<Decl>> &decls);
+  Program(const atl::vector<atl::shared_ptr<Decl>> &p_decls);
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

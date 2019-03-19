@@ -2,11 +2,11 @@
 
 using namespace ACC;
 
-TertiaryExpr::TertiaryExpr(const atl::shared_ptr<Expr> &tertiaryCondition,
-                           const atl::shared_ptr<Expr> &tertiaryIfBody,
-                           const atl::shared_ptr<Expr> &tertiaryElseBody)
-    : tertiaryCondition(tertiaryCondition), tertiaryIfBody(tertiaryIfBody),
-      tertiaryElseBody(tertiaryElseBody) {}
+TertiaryExpr::TertiaryExpr(const atl::shared_ptr<Expr> &p_tertiaryCondition,
+                           const atl::shared_ptr<Expr> &p_tertiaryIfBody,
+                           const atl::shared_ptr<Expr> &p_tertiaryElseBody)
+    : tertiaryCondition(p_tertiaryCondition), tertiaryIfBody(p_tertiaryIfBody),
+      tertiaryElseBody(p_tertiaryElseBody) {}
 
 atl::shared_ptr<TertiaryExpr> TertiaryExpr::getptr() {
   return shared_from_this();

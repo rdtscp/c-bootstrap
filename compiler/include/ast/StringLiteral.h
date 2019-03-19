@@ -11,7 +11,7 @@ namespace ACC {
 class StringLiteral : public Literal,
                       public atl::enable_shared_from_this<StringLiteral> {
 public:
-  StringLiteral(const atl::string &literal);
+  StringLiteral(const atl::string &p_literal);
 
   atl::shared_ptr<StringLiteral> getptr();
 

@@ -15,9 +15,9 @@ public:
   atl::shared_ptr<Expr> tertiaryIfBody;
   atl::shared_ptr<Expr> tertiaryElseBody;
 
-  TertiaryExpr(const atl::shared_ptr<Expr> &tertiaryCondition,
-               const atl::shared_ptr<Expr> &tertiaryIfBody,
-               const atl::shared_ptr<Expr> &tertiaryElseBody);
+  TertiaryExpr(const atl::shared_ptr<Expr> &p_tertiaryCondition,
+               const atl::shared_ptr<Expr> &p_tertiaryIfBody,
+               const atl::shared_ptr<Expr> &p_tertiaryElseBody);
 
   atl::shared_ptr<TertiaryExpr> getptr();
 

@@ -23,8 +23,8 @@ public:
 
   int fpOffset = 0;
 
-  VarDecl(const atl::shared_ptr<Type> &type,
-          const atl::shared_ptr<Identifier> &identifer);
+  VarDecl(const atl::shared_ptr<Type> &p_type,
+          const atl::shared_ptr<Identifier> &p_identifer);
 
   virtual ~VarDecl() {}
 

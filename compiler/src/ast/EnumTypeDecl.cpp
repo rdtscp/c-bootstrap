@@ -2,9 +2,9 @@
 
 using namespace ACC;
 
-EnumTypeDecl::EnumTypeDecl(const atl::shared_ptr<Identifier> &identifier,
-                           const std::map<std::string, std::string> &states)
-    : identifier(identifier), states(states) {}
+EnumTypeDecl::EnumTypeDecl(const atl::shared_ptr<Identifier> &p_identifier,
+                           const std::map<std::string, std::string> &p_states)
+    : identifier(p_identifier), states(p_states) {}
 
 atl::shared_ptr<EnumTypeDecl> EnumTypeDecl::getptr() {
   return shared_from_this();

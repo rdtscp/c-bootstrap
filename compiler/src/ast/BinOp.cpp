@@ -2,9 +2,9 @@
 
 using namespace ACC;
 
-BinOp::BinOp(const atl::shared_ptr<Expr> &lhs, const Op operation,
-             const atl::shared_ptr<Expr> &rhs)
-    : lhs(lhs), operation(operation), rhs(rhs) {}
+BinOp::BinOp(const atl::shared_ptr<Expr> &p_lhs, const Op p_operation,
+             const atl::shared_ptr<Expr> &p_rhs)
+    : lhs(p_lhs), operation(p_operation), rhs(p_rhs) {}
 
 atl::shared_ptr<BinOp> BinOp::getptr() { return shared_from_this(); }
 

@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-AddressOf::AddressOf(const atl::shared_ptr<Expr> &addressOfExpr)
-    : addressOfExpr(addressOfExpr) {}
+AddressOf::AddressOf(const atl::shared_ptr<Expr> &p_addressOfExpr)
+    : addressOfExpr(p_addressOfExpr) {}
 
 atl::shared_ptr<AddressOf> AddressOf::getptr() { return shared_from_this(); }
 

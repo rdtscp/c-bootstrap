@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-ParenthExpr::ParenthExpr(const atl::shared_ptr<Expr> &innerExpr)
-    : innerExpr(innerExpr) {}
+ParenthExpr::ParenthExpr(const atl::shared_ptr<Expr> &p_innerExpr)
+    : innerExpr(p_innerExpr) {}
 
 atl::shared_ptr<ParenthExpr> ParenthExpr::getptr() {
   return shared_from_this();

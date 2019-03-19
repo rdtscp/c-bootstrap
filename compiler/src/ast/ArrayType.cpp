@@ -3,9 +3,9 @@
 
 using namespace ACC;
 
-ArrayType::ArrayType(const atl::shared_ptr<Type> &type,
-                     const atl::shared_ptr<Expr> &size)
-    : type(type), size(size) {}
+ArrayType::ArrayType(const atl::shared_ptr<Type> &p_type,
+                     const atl::shared_ptr<Expr> &p_size)
+    : type(p_type), size(p_size) {}
 
 atl::shared_ptr<ArrayType> ArrayType::getptr() { return shared_from_this(); }
 

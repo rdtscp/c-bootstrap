@@ -2,9 +2,9 @@
 
 using namespace ACC;
 
-VarDecl::VarDecl(const atl::shared_ptr<Type> &type,
-                 const atl::shared_ptr<Identifier> &identifer)
-    : identifer(identifer), type(type) {}
+VarDecl::VarDecl(const atl::shared_ptr<Type> &p_type,
+                 const atl::shared_ptr<Identifier> &p_identifer)
+    : identifer(p_identifer), type(p_type) {}
 
 atl::shared_ptr<VarDecl> VarDecl::getptr() { return shared_from_this(); }
 

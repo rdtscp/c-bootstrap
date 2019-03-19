@@ -12,7 +12,7 @@ class AddressOf : public Expr, public atl::enable_shared_from_this<AddressOf> {
 public:
   atl::shared_ptr<Expr> addressOfExpr;
 
-  AddressOf(const atl::shared_ptr<Expr> &addressOfExpr);
+  AddressOf(const atl::shared_ptr<Expr> &p_addressOfExpr);
 
   atl::shared_ptr<AddressOf> getptr();
 

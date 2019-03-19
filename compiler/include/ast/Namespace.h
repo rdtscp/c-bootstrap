@@ -14,8 +14,8 @@ public:
   atl::shared_ptr<Identifier> identifier;
   atl::vector<atl::shared_ptr<Decl>> namespaceDecls;
 
-  Namespace(const atl::shared_ptr<Identifier> &identifier,
-            const atl::vector<atl::shared_ptr<Decl>> &namespaceDecls);
+  Namespace(const atl::shared_ptr<Identifier> &p_identifier,
+            const atl::vector<atl::shared_ptr<Decl>> &p_namespaceDecls);
 
   atl::shared_ptr<Namespace> getptr();
 

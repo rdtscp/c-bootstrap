@@ -15,10 +15,11 @@ public:
   atl::vector<atl::shared_ptr<Assign>> initialiserList;
   atl::shared_ptr<Block> constructorBlock;
 
-  ConstructorDef(const atl::shared_ptr<Type> &classType,
-                 const atl::vector<atl::shared_ptr<VarDecl>> &constructorParams,
-                 const atl::vector<atl::shared_ptr<Assign>> &initialiserList,
-                 const atl::shared_ptr<Block> &constructorBlock);
+  ConstructorDef(
+      const atl::shared_ptr<Type> &p_classType,
+      const atl::vector<atl::shared_ptr<VarDecl>> &p_constructorParams,
+      const atl::vector<atl::shared_ptr<Assign>> &p_initialiserList,
+      const atl::shared_ptr<Block> &p_constructorBlock);
 
   atl::shared_ptr<ConstructorDecl> getptr();
 

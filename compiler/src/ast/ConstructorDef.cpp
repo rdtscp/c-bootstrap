@@ -3,12 +3,13 @@
 using namespace ACC;
 
 ConstructorDef::ConstructorDef(
-    const atl::shared_ptr<Type> &classType,
-    const atl::vector<atl::shared_ptr<VarDecl>> &constructorParams,
-    const atl::vector<atl::shared_ptr<Assign>> &initialiserList,
-    const atl::shared_ptr<Block> &constructorBlock)
-    : ConstructorDecl(classType, constructorParams),
-      initialiserList(initialiserList), constructorBlock(constructorBlock) {}
+    const atl::shared_ptr<Type> &p_classType,
+    const atl::vector<atl::shared_ptr<VarDecl>> &p_constructorParams,
+    const atl::vector<atl::shared_ptr<Assign>> &p_initialiserList,
+    const atl::shared_ptr<Block> &p_constructorBlock)
+    : ConstructorDecl(p_classType, p_constructorParams),
+      initialiserList(p_initialiserList), constructorBlock(p_constructorBlock) {
+}
 
 atl::shared_ptr<ConstructorDecl> ConstructorDef::getptr() {
   return ConstructorDecl::shared_from_this();

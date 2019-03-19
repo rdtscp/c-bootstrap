@@ -2,10 +2,11 @@
 
 using namespace ACC;
 
-FunDecl::FunDecl(const atl::shared_ptr<Identifier> &funIdentifier,
-                 const atl::vector<atl::shared_ptr<VarDecl>> &funParams,
-                 const atl::shared_ptr<Type> &funType)
-    : funIdentifier(funIdentifier), funParams(funParams), funType(funType) {}
+FunDecl::FunDecl(const atl::shared_ptr<Identifier> &p_funIdentifier,
+                 const atl::vector<atl::shared_ptr<VarDecl>> &p_funParams,
+                 const atl::shared_ptr<Type> &p_funType)
+    : funIdentifier(p_funIdentifier), funParams(p_funParams),
+      funType(p_funType) {}
 
 atl::shared_ptr<FunDecl> FunDecl::getptr() { return shared_from_this(); }
 

@@ -13,7 +13,7 @@ class BaseType : public Type, public atl::enable_shared_from_this<BaseType> {
 public:
   PrimitiveType primitiveType;
 
-  BaseType(const PrimitiveType pType);
+  BaseType(const PrimitiveType p_pType);
 
   atl::shared_ptr<BaseType> getptr();
 

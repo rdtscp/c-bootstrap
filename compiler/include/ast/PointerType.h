@@ -14,7 +14,7 @@ class PointerType : public Type,
 public:
   atl::shared_ptr<Type> pointedType;
 
-  PointerType(const atl::shared_ptr<Type> &pointedType);
+  PointerType(const atl::shared_ptr<Type> &p_pointedType);
 
   atl::shared_ptr<PointerType> getptr();
 

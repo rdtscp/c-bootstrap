@@ -15,10 +15,10 @@ public:
   atl::shared_ptr<Expr> endBodyExpr;
   atl::shared_ptr<Stmt> body;
 
-  For(const atl::shared_ptr<VarDecl> &initialVarDecl,
-      const atl::shared_ptr<Expr> &condition,
-      const atl::shared_ptr<Expr> &endBodyExpr,
-      const atl::shared_ptr<Stmt> &body);
+  For(const atl::shared_ptr<VarDecl> &p_initialVarDecl,
+      const atl::shared_ptr<Expr> &p_condition,
+      const atl::shared_ptr<Expr> &p_endBodyExpr,
+      const atl::shared_ptr<Stmt> &p_body);
 
   atl::shared_ptr<For> getptr();
 

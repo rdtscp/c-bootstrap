@@ -2,9 +2,9 @@
 
 using namespace ACC;
 
-FunCall::FunCall(const atl::shared_ptr<Identifier> &funIdentifier,
-                 const atl::vector<atl::shared_ptr<Expr>> &funArgs)
-    : funIdentifier(funIdentifier), funArgs(funArgs) {}
+FunCall::FunCall(const atl::shared_ptr<Identifier> &p_funIdentifier,
+                 const atl::vector<atl::shared_ptr<Expr>> &p_funArgs)
+    : funIdentifier(p_funIdentifier), funArgs(p_funArgs) {}
 
 atl::shared_ptr<FunCall> FunCall::getptr() { return shared_from_this(); }
 

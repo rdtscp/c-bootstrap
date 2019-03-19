@@ -14,8 +14,8 @@ public:
   atl::shared_ptr<Stmt> body;
   atl::shared_ptr<Expr> condition;
 
-  DoWhile(const atl::shared_ptr<Stmt> &body,
-          const atl::shared_ptr<Expr> &condition);
+  DoWhile(const atl::shared_ptr<Stmt> &p_body,
+          const atl::shared_ptr<Expr> &p_condition);
 
   atl::shared_ptr<DoWhile> getptr();
 

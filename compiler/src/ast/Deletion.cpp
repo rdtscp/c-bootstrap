@@ -2,9 +2,9 @@
 
 using namespace ACC;
 
-Deletion::Deletion(const DelType deletionType,
-                   const atl::shared_ptr<VarExpr> &deletionVar)
-    : deletionType(deletionType), deletionVar(deletionVar) {}
+Deletion::Deletion(const DelType p_deletionType,
+                   const atl::shared_ptr<VarExpr> &p_deletionVar)
+    : deletionType(p_deletionType), deletionVar(p_deletionVar) {}
 
 void Deletion::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 

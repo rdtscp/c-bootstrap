@@ -14,7 +14,7 @@ public:
   atl::shared_ptr<Expr> returnExpr;
 
   Return();
-  Return(const atl::shared_ptr<Expr> &returnExpr);
+  Return(const atl::shared_ptr<Expr> &p_returnExpr);
 
   atl::shared_ptr<Return> getptr();
 

@@ -18,7 +18,7 @@ public:
   atl::vector<atl::shared_ptr<Stmt>> stmts;
   atl::shared_ptr<Block> outerBlock;
 
-  Block(const atl::vector<atl::shared_ptr<Stmt>> &stmts);
+  Block(const atl::vector<atl::shared_ptr<Stmt>> &p_stmts);
 
   atl::shared_ptr<Block> getptr();
 

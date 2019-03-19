@@ -2,9 +2,9 @@
 
 using namespace ACC;
 
-ArrayAccess::ArrayAccess(const atl::shared_ptr<Expr> &array,
-                         const atl::shared_ptr<Expr> &index)
-    : array(array), index(index) {}
+ArrayAccess::ArrayAccess(const atl::shared_ptr<Expr> &p_array,
+                         const atl::shared_ptr<Expr> &p_index)
+    : array(p_array), index(p_index) {}
 
 atl::shared_ptr<ArrayAccess> ArrayAccess::getptr() {
   return shared_from_this();

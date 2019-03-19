@@ -2,12 +2,12 @@
 
 using namespace ACC;
 
-For::For(const atl::shared_ptr<VarDecl> &initialVarDecl,
-         const atl::shared_ptr<Expr> &condition,
-         const atl::shared_ptr<Expr> &endBodyExpr,
-         const atl::shared_ptr<Stmt> &body)
-    : initialVarDecl(initialVarDecl), condition(condition),
-      endBodyExpr(endBodyExpr), body(body) {}
+For::For(const atl::shared_ptr<VarDecl> &p_initialVarDecl,
+         const atl::shared_ptr<Expr> &p_condition,
+         const atl::shared_ptr<Expr> &p_endBodyExpr,
+         const atl::shared_ptr<Stmt> &p_body)
+    : initialVarDecl(p_initialVarDecl), condition(p_condition),
+      endBodyExpr(p_endBodyExpr), body(p_body) {}
 
 atl::shared_ptr<For> For::getptr() { return shared_from_this(); }
 

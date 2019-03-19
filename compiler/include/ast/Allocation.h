@@ -15,8 +15,8 @@ public:
   atl::shared_ptr<Type> varType;
   atl::shared_ptr<FunCall> varConstructorCall;
 
-  Allocation(const atl::shared_ptr<Type> &varType);
-  Allocation(const atl::shared_ptr<FunCall> &varConstructorCall);
+  Allocation(const atl::shared_ptr<Type> &p_varType);
+  Allocation(const atl::shared_ptr<FunCall> &p_varConstructorCall);
 
   virtual ~Allocation() {}
 

@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-ValueAt::ValueAt(const atl::shared_ptr<Expr> &derefExpr)
-    : derefExpr(derefExpr) {}
+ValueAt::ValueAt(const atl::shared_ptr<Expr> &p_derefExpr)
+    : derefExpr(p_derefExpr) {}
 
 atl::shared_ptr<ValueAt> ValueAt::getptr() { return shared_from_this(); }
 

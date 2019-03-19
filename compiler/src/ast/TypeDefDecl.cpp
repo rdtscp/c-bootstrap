@@ -2,9 +2,9 @@
 
 using namespace ACC;
 
-TypeDefDecl::TypeDefDecl(const atl::shared_ptr<Type> &type,
-                         const atl::shared_ptr<Identifier> &identifier)
-    : type(type), identifier(identifier) {}
+TypeDefDecl::TypeDefDecl(const atl::shared_ptr<Type> &p_type,
+                         const atl::shared_ptr<Identifier> &p_identifier)
+    : type(p_type), identifier(p_identifier) {}
 
 atl::shared_ptr<TypeDefDecl> TypeDefDecl::getptr() {
   return shared_from_this();

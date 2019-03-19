@@ -14,12 +14,12 @@ public:
   atl::shared_ptr<Stmt> ifBody;
   atl::shared_ptr<Stmt> elseBody;
 
-  If(const atl::shared_ptr<Expr> &ifCondition,
-     const atl::shared_ptr<Stmt> &ifBody);
+  If(const atl::shared_ptr<Expr> &p_ifCondition,
+     const atl::shared_ptr<Stmt> &p_ifBody);
 
-  If(const atl::shared_ptr<Expr> &ifCondition,
-     const atl::shared_ptr<Stmt> &ifBody,
-     const atl::shared_ptr<Stmt> &elseBody);
+  If(const atl::shared_ptr<Expr> &p_ifCondition,
+     const atl::shared_ptr<Stmt> &p_ifBody,
+     const atl::shared_ptr<Stmt> &p_elseBody);
 
   atl::shared_ptr<If> getptr();
 

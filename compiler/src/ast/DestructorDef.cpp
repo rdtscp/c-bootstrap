@@ -2,9 +2,9 @@
 
 using namespace ACC;
 
-DestructorDef::DestructorDef(const atl::shared_ptr<Type> &classType,
-                             const atl::shared_ptr<Block> &destructorBlock)
-    : DestructorDecl(classType), destructorBlock(destructorBlock) {}
+DestructorDef::DestructorDef(const atl::shared_ptr<Type> &p_classType,
+                             const atl::shared_ptr<Block> &p_destructorBlock)
+    : DestructorDecl(p_classType), destructorBlock(p_destructorBlock) {}
 
 atl::shared_ptr<DestructorDecl> DestructorDef::getptr() {
   return DestructorDecl::shared_from_this();

@@ -14,7 +14,7 @@ class ReferenceType : public Type,
 public:
   atl::shared_ptr<Type> referencedType;
 
-  ReferenceType(const atl::shared_ptr<Type> &referencedType);
+  ReferenceType(const atl::shared_ptr<Type> &p_referencedType);
 
   atl::shared_ptr<ReferenceType> getptr();
 

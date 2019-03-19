@@ -18,10 +18,10 @@ public:
 
   Identifier();
 
-  Identifier(const atl::string &value);
+  Identifier(const atl::string &p_value);
 
-  Identifier(const atl::string &value,
-             const atl::shared_ptr<Identifier> &parentIdentifier);
+  Identifier(const atl::string &p_value,
+             const atl::shared_ptr<Identifier> &p_parentIdentifier);
 
   atl::string toString() const;
 

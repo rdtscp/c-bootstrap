@@ -15,8 +15,8 @@ public:
   Op operation;
   atl::shared_ptr<Expr> rhs;
 
-  BinOp(const atl::shared_ptr<Expr> &lhs, const Op operation,
-        const atl::shared_ptr<Expr> &rhs);
+  BinOp(const atl::shared_ptr<Expr> &p_lhs, const Op p_operation,
+        const atl::shared_ptr<Expr> &p_rhs);
 
   atl::shared_ptr<BinOp> getptr();
 

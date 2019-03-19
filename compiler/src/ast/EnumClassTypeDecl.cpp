@@ -3,9 +3,9 @@
 using namespace ACC;
 
 EnumClassTypeDecl::EnumClassTypeDecl(
-    const atl::shared_ptr<Identifier> &identifier,
-    const std::map<std::string, std::string> &states)
-    : identifier(identifier), states(states) {}
+    const atl::shared_ptr<Identifier> &p_identifier,
+    const std::map<std::string, std::string> &p_states)
+    : identifier(p_identifier), states(p_states) {}
 
 atl::shared_ptr<EnumClassTypeDecl> EnumClassTypeDecl::getptr() {
   return shared_from_this();

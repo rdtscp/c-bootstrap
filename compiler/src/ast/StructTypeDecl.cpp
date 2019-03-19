@@ -3,9 +3,9 @@
 using namespace ACC;
 
 StructTypeDecl::StructTypeDecl(
-    const atl::shared_ptr<StructType> &structType,
-    const atl::vector<atl::shared_ptr<VarDecl>> &varDecls)
-    : structType(structType), varDecls(varDecls) {}
+    const atl::shared_ptr<StructType> &p_structType,
+    const atl::vector<atl::shared_ptr<VarDecl>> &p_varDecls)
+    : structType(p_structType), varDecls(p_varDecls) {}
 
 atl::shared_ptr<StructTypeDecl> StructTypeDecl::getptr() {
   return shared_from_this();

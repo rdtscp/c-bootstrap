@@ -18,8 +18,8 @@ public:
   int allocSize;
   int compactSize;
 
-  StructTypeDecl(const atl::shared_ptr<StructType> &structType,
-                 const atl::vector<atl::shared_ptr<VarDecl>> &varDecls);
+  StructTypeDecl(const atl::shared_ptr<StructType> &p_structType,
+                 const atl::vector<atl::shared_ptr<VarDecl>> &p_varDecls);
 
   atl::shared_ptr<StructTypeDecl> getptr();
 

@@ -16,8 +16,8 @@ public:
   atl::shared_ptr<Type> type;
   atl::shared_ptr<Identifier> identifier;
 
-  TypeDefDecl(const atl::shared_ptr<Type> &type,
-              const atl::shared_ptr<Identifier> &identifier);
+  TypeDefDecl(const atl::shared_ptr<Type> &p_type,
+              const atl::shared_ptr<Identifier> &p_identifier);
 
   atl::shared_ptr<TypeDefDecl> getptr();
 

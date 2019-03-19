@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-StructType::StructType(const atl::shared_ptr<Identifier> &identifier)
-    : identifier(identifier) {}
+StructType::StructType(const atl::shared_ptr<Identifier> &p_identifier)
+    : identifier(p_identifier) {}
 
 atl::shared_ptr<StructType> StructType::getptr() { return shared_from_this(); }
 

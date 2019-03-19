@@ -14,7 +14,7 @@ public:
   Visibility visibility;
 
   Decl() : visibility(Visibility::NONE) {}
-  Decl(const Visibility &visibility) : visibility(visibility) {}
+  Decl(const Visibility &p_visibility) : visibility(p_visibility) {}
   virtual ~Decl() {}
   virtual bool operator==(Decl &rhs) const = 0;
   virtual bool operator!=(Decl &rhs) const = 0;

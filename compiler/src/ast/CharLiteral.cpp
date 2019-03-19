@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-CharLiteral::CharLiteral(const atl::string &literal) : Literal(literal) {}
+CharLiteral::CharLiteral(const atl::string &p_literal) : Literal(p_literal) {}
 
 atl::shared_ptr<CharLiteral> CharLiteral::getptr() {
   return shared_from_this();

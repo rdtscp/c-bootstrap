@@ -2,11 +2,11 @@
 
 using namespace ACC;
 
-Allocation::Allocation(const atl::shared_ptr<Type> &varType)
-    : varType(varType), varConstructorCall(nullptr) {}
+Allocation::Allocation(const atl::shared_ptr<Type> &p_varType)
+    : varType(p_varType), varConstructorCall(nullptr) {}
 
-Allocation::Allocation(const atl::shared_ptr<FunCall> &varConstructorCall)
-    : varType(nullptr), varConstructorCall(varConstructorCall) {}
+Allocation::Allocation(const atl::shared_ptr<FunCall> &p_varConstructorCall)
+    : varType(nullptr), varConstructorCall(p_varConstructorCall) {}
 
 atl::shared_ptr<Allocation> Allocation::getptr() { return shared_from_this(); }
 
