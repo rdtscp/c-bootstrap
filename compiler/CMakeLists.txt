@@ -22,6 +22,7 @@ add_library(AST SHARED
   src/ast/BaseType.cpp
   src/ast/BinOp.cpp
   src/ast/Block.cpp
+  src/ast/BoolLiteral.cpp
   src/ast/CharLiteral.cpp
   src/ast/ClassType.cpp
   src/ast/ClassTypeDecl.cpp

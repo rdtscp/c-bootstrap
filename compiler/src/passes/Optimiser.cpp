@@ -113,6 +113,9 @@ atl::shared_ptr<ASTNode> Optimiser::visit(Block &b) {
   currScope = b.outerBlock;
   return b.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(BoolLiteral &bl) {
+  return bl.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(CharLiteral &cl) {
   return cl.getptr();
 }

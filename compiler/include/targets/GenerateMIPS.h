@@ -74,6 +74,7 @@ private:
   MIPS::Register visit(BaseType &bt) override;
   MIPS::Register visit(BinOp &bo) override;
   MIPS::Register visit(Block &b) override;
+  MIPS::Register visit(BoolLiteral &bl) override;
   MIPS::Register visit(CharLiteral &cl) override;
   MIPS::Register visit(ClassType &ct) override;
   MIPS::Register visit(ClassTypeDecl &ctd) override;

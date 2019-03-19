@@ -1302,11 +1302,11 @@ atl::shared_ptr<Expr> Parser::parseLitExpr() {
   }
   if (accept(TC::TRUE_VAL)) {
     expect(TC::TRUE_VAL);
-    return atl::make_shared<IntLiteral>(IntLiteral("1"));
+    return atl::make_shared<BoolLiteral>(BoolLiteral("true"));
   }
   if (accept(TC::FALSE_VAL)) {
     expect(TC::FALSE_VAL);
-    return atl::make_shared<IntLiteral>(IntLiteral("0"));
+    return atl::make_shared<BoolLiteral>(BoolLiteral("false"));
   }
   if (accept(TC::LPAR) && (!acceptType(1) || accept(TC::IDENTIFIER, 1))) {
     expect(TC::LPAR);

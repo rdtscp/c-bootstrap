@@ -38,6 +38,7 @@ private:
   void visit(BaseType &bt) override;
   void visit(BinOp &bo) override;
   void visit(Block &b) override;
+  void visit(BoolLiteral &bl) override;
   void visit(CharLiteral &cl) override;
   void visit(ClassType &ct) override;
   void visit(ClassTypeDecl &ctd) override;

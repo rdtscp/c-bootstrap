@@ -11,6 +11,7 @@
 #include "ast/BaseType.h"
 #include "ast/BinOp.h"
 #include "ast/Block.h"
+#include "ast/BoolLiteral.h"
 #include "ast/CharLiteral.h"
 #include "ast/ClassType.h"
 #include "ast/ClassTypeDecl.h"

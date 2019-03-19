@@ -64,6 +64,9 @@ atl::shared_ptr<Type> TypeAnalysis::visit(Block &b) {
   currScope = b.outerBlock;
   return nullptr;
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(BoolLiteral &bl) {
+  return atl::make_shared<BaseType>(BaseType(PrimitiveType::BOOL));
+}
 atl::shared_ptr<Type> TypeAnalysis::visit(CharLiteral &cl) {
   return atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR));
 }

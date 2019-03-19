@@ -38,6 +38,7 @@ private:
   atl::shared_ptr<ASTNode> visit(BaseType &bt) override;
   atl::shared_ptr<ASTNode> visit(BinOp &bo) override;
   atl::shared_ptr<ASTNode> visit(Block &b) override;
+  atl::shared_ptr<ASTNode> visit(BoolLiteral &bl) override;
   atl::shared_ptr<ASTNode> visit(CharLiteral &cl) override;
   atl::shared_ptr<ASTNode> visit(ClassType &ct) override;
   atl::shared_ptr<ASTNode> visit(ClassTypeDecl &ctd) override;

@@ -125,6 +125,11 @@ atl::string SourceOutput::visit(Block &b) {
   output += "\n}";
   return output;
 }
+
+atl::string SourceOutput::visit(BoolLiteral &bl) {
+  atl::string output = "'";
+  return output + bl.getLiteral() + "'";
+}
 atl::string SourceOutput::visit(CharLiteral &cl) {
   atl::string output = "'";
   return output + cl.getLiteral() + "'";

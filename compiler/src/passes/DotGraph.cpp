@@ -156,6 +156,11 @@ atl::string DotGraph::visit(Block &b) {
 
   return blockID;
 }
+atl::string DotGraph::visit(BoolLiteral &bl) {
+  atl::string boolID = atl::string("BoolLiteral") + atl::to_string(++nodeCount);
+  declare(boolID, atl::string("'") + bl.getLiteral() + "'");
+  return boolID;
+}
 atl::string DotGraph::visit(CharLiteral &cl) {
   atl::string charID = atl::string("CharLiteral") + atl::to_string(++nodeCount);
   declare(charID, atl::string("'") + cl.getLiteral() + "'");

@@ -44,6 +44,7 @@ void NameAnalysis::visit(Block &b) {
     b.stmts[idx]->accept(*this);
   currScope = b.outerBlock;
 }
+void NameAnalysis::visit(BoolLiteral &bl) {}
 void NameAnalysis::visit(CharLiteral &cl) {}
 void NameAnalysis::visit(ClassType &ct) {}
 void NameAnalysis::visit(ClassTypeDecl &ctd) {

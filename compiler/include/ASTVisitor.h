@@ -13,6 +13,7 @@ class Assign;
 class BaseType;
 class BinOp;
 class Block;
+class BoolLiteral;
 class CharLiteral;
 class ClassType;
 class ClassTypeDecl;
@@ -66,6 +67,7 @@ public:
   virtual T visit(BaseType &bt) = 0;
   virtual T visit(BinOp &bo) = 0;
   virtual T visit(Block &b) = 0;
+  virtual T visit(BoolLiteral &bl) = 0;
   virtual T visit(CharLiteral &cl) = 0;
   virtual T visit(ClassType &ct) = 0;
   virtual T visit(ClassTypeDecl &ctd) = 0;

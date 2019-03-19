@@ -49,6 +49,7 @@ private:
   atl::shared_ptr<X86::Operand> visit(BaseType &bt) override;
   atl::shared_ptr<X86::Operand> visit(BinOp &bo) override;
   atl::shared_ptr<X86::Operand> visit(Block &b) override;
+  atl::shared_ptr<X86::Operand> visit(BoolLiteral &bl) override;
   atl::shared_ptr<X86::Operand> visit(CharLiteral &cl) override;
   atl::shared_ptr<X86::Operand> visit(ClassType &ct) override;
   atl::shared_ptr<X86::Operand> visit(ClassTypeDecl &ctd) override;

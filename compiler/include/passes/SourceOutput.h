@@ -37,6 +37,7 @@ private:
   atl::string visit(BaseType &bt) override;
   atl::string visit(BinOp &bo) override;
   atl::string visit(Block &b) override;
+  atl::string visit(BoolLiteral &bl) override;
   atl::string visit(CharLiteral &cl) override;
   atl::string visit(ClassType &ct) override;
   atl::string visit(ClassTypeDecl &ctd) override;

@@ -143,6 +143,7 @@ MIPS::Register GenerateMIPS::visit(Block &b) {
   currScope = b.outerBlock;
   return MIPS::Register();
 }
+MIPS::Register GenerateMIPS::visit(BoolLiteral &bl) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(CharLiteral &cl) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(ClassType &ct) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(ClassTypeDecl &ctd) {

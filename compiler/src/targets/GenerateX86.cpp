@@ -92,6 +92,9 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
   currScope = b.outerBlock;
   return atl::make_shared<X86::None>();
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(BoolLiteral &bl) {
+  return atl::make_shared<X86::None>();
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(CharLiteral &cl) {
   return atl::make_shared<X86::None>();
 }
