@@ -2,19 +2,19 @@
 
 using namespace ACC;
 
-Identifier::Identifier() : identifier(), parentIdentifier(nullptr) {}
+Identifier::Identifier() : value(), parentIdentifier(nullptr) {}
 
-Identifier::Identifier(const atl::string &identifier)
-    : identifier(identifier), parentIdentifier(nullptr) {}
+Identifier::Identifier(const atl::string &p_value)
+    : value(p_value), parentIdentifier(nullptr) {}
 
-Identifier::Identifier(const atl::string &identifier,
-                       const atl::shared_ptr<Identifier> &parentIdentifier)
-    : identifier(identifier), parentIdentifier(parentIdentifier) {}
+Identifier::Identifier(const atl::string &p_value,
+                       const atl::shared_ptr<Identifier> &p_parentIdentifier)
+    : value(p_value), parentIdentifier(p_parentIdentifier) {}
 
-atl::string Identifier::toString() const { return identifier; }
+atl::string Identifier::toString() const { return value; }
 
 bool Identifier::operator==(const Identifier &rhs) const {
-  if (identifier != rhs.identifier)
+  if (value != rhs.value)
     return false;
 
   return true;

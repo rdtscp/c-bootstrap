@@ -12,15 +12,15 @@ class Identifier {
   class Decl;
 
 public:
-  atl::string identifier;
+  atl::string value;
   atl::shared_ptr<Identifier> parentIdentifier;
   atl::shared_ptr<Decl> identifierDecl;
 
   Identifier();
 
-  Identifier(const atl::string &identifier);
+  Identifier(const atl::string &value);
 
-  Identifier(const atl::string &identifier,
+  Identifier(const atl::string &value,
              const atl::shared_ptr<Identifier> &parentIdentifier);
 
   atl::string toString() const;
