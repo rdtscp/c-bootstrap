@@ -11,10 +11,11 @@ namespace ACC {
 class ArrayType : public Type, public atl::enable_shared_from_this<ArrayType> {
 
 public:
-  atl::shared_ptr<Type> arrayType;
-  atl::shared_ptr<Expr> arraySize;
+  atl::shared_ptr<Type> type;
+  atl::shared_ptr<Expr> size;
 
-  ArrayType(atl::shared_ptr<Type> arrayType, atl::shared_ptr<Expr> arraySize);
+  ArrayType(const atl::shared_ptr<Type> &type,
+            const atl::shared_ptr<Expr> &size);
 
   atl::shared_ptr<ArrayType> getptr();
 

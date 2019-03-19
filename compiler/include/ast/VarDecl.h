@@ -4,6 +4,7 @@
 #define ACC_VARDECL_H
 
 #include "Decl.h"
+
 #include "Stmt.h"
 #include "Type.h"
 
@@ -17,12 +18,14 @@ class VarDecl : public Decl,
 
 public:
   atl::shared_ptr<Type> type;
-  atl::string identifer;
+  atl::shared_ptr<Identifier> identifer;
   atl::shared_ptr<FunDecl> parentFunc;
 
   int fpOffset = 0;
 
-  VarDecl(atl::shared_ptr<Type> type, const atl::string &identifer);
+  VarDecl(const atl::shared_ptr<Type> &type,
+          const atl::shared_ptr<Identifier> &identifer);
+
   virtual ~VarDecl() {}
 
   atl::shared_ptr<VarDecl> getptr();
@@ -35,7 +38,7 @@ public:
 
   int getBytes() const;
 
-  atl::string getIdentifier() const override;
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

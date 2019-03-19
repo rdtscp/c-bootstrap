@@ -108,9 +108,8 @@ atl::shared_ptr<ASTNode> Optimiser::visit(Block &b) {
     b.setOuterBlock(currScope);
     currScope = b.getptr();
   }
-  for (int idx = 0; idx < b.blockStmts.size(); ++idx)
-    b.blockStmts[idx] =
-        atl::static_pointer_cast<Stmt>(b.blockStmts[idx]->accept(*this));
+  for (int idx = 0; idx < b.stmts.size(); ++idx)
+    b.stmts[idx] = atl::static_pointer_cast<Stmt>(b.stmts[idx]->accept(*this));
   currScope = b.outerBlock;
   return b.getptr();
 }

@@ -14,7 +14,8 @@ public:
   atl::shared_ptr<Type> type;
   atl::shared_ptr<Expr> expr;
 
-  TypeCast(atl::shared_ptr<Type> type, atl::shared_ptr<Expr> expr);
+  TypeCast(const atl::shared_ptr<Type> &type,
+           const atl::shared_ptr<Expr> &expr);
 
   atl::shared_ptr<TypeCast> getptr();
 

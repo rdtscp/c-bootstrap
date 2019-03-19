@@ -2,7 +2,8 @@
 
 using namespace ACC;
 
-While::While(atl::shared_ptr<Stmt> body, atl::shared_ptr<Expr> condition)
+While::While(const atl::shared_ptr<Stmt> &body,
+             const atl::shared_ptr<Expr> &condition)
     : body(body), condition(condition) {}
 
 atl::shared_ptr<While> While::getptr() { return shared_from_this(); }

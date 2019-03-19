@@ -2,9 +2,9 @@
 
 using namespace ACC;
 
-FunCall::FunCall(const atl::string &funName,
-                 atl::vector<atl::shared_ptr<Expr>> funArgs)
-    : funName(funName), funArgs(funArgs) {}
+FunCall::FunCall(const atl::shared_ptr<Identifier> &funIdentifier,
+                 const atl::vector<atl::shared_ptr<Expr>> &funArgs)
+    : funIdentifier(funIdentifier), funArgs(funArgs) {}
 
 atl::shared_ptr<FunCall> FunCall::getptr() { return shared_from_this(); }
 
@@ -17,7 +17,7 @@ bool FunCall::operator==(Expr &rhs) const {
 bool FunCall::operator!=(Expr &rhs) const { return !(*this == rhs); }
 
 bool FunCall::operator==(const FunCall &rhs) const {
-  if (funName != rhs.funName)
+  if (*funIdentifier != *rhs.funIdentifier)
     return false;
 
   if (funArgs.size() != rhs.funArgs.size())

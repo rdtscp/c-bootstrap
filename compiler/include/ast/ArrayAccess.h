@@ -16,7 +16,8 @@ public:
   atl::shared_ptr<Expr> array;
   atl::shared_ptr<Expr> index;
 
-  ArrayAccess(atl::shared_ptr<Expr> array, atl::shared_ptr<Expr> index);
+  ArrayAccess(const atl::shared_ptr<Expr> &array,
+              const atl::shared_ptr<Expr> &index);
 
   atl::shared_ptr<ArrayAccess> getptr();
 

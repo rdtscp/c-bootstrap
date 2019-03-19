@@ -78,12 +78,13 @@ private:
   bool acceptThrow(int offset = 0);
   bool acceptWhile(int offset = 0);
 
-  bool acceptParam(int offset = 0);
-
   bool acceptExpr(int offset = 0);
   bool acceptObjExpr(int offset = 0);
   bool acceptObjExprOp(int offset = 0);
   bool acceptLitExpr(int offset = 0);
+
+  bool acceptOperatorOverload(int offset = 0);
+  bool acceptParam(int offset = 0);
 
   /* ---- Parsing ---- */
 
@@ -120,8 +121,6 @@ private:
   atl::shared_ptr<Throw> parseThrow();
   atl::shared_ptr<While> parseWhile();
 
-  atl::shared_ptr<VarDecl> parseParam();
-
   /* -- Exprs -- */
   atl::shared_ptr<Expr> parseExpr();
   atl::shared_ptr<Expr> parseBoolExpr();
@@ -134,6 +133,9 @@ private:
   atl::shared_ptr<Expr> parseObjExprOp();
   atl::shared_ptr<FunCall> parseFunCall();
   atl::shared_ptr<Expr> parseLitExpr();
+
+  atl::string parseOperatorOverload();
+  atl::shared_ptr<VarDecl> parseParam();
 
   /* ---- Helpers ---- */
 

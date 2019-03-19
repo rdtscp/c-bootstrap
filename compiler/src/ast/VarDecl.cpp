@@ -2,7 +2,8 @@
 
 using namespace ACC;
 
-VarDecl::VarDecl(atl::shared_ptr<Type> type, const atl::string &identifer)
+VarDecl::VarDecl(const atl::shared_ptr<Type> &type,
+                 const atl::shared_ptr<Identifier> &identifer)
     : identifer(identifer), type(type) {}
 
 atl::shared_ptr<VarDecl> VarDecl::getptr() { return shared_from_this(); }
@@ -19,7 +20,7 @@ bool VarDecl::operator==(const VarDecl &rhs) const {
   if (*type != *rhs.type)
     return false;
 
-  if (identifer != rhs.identifer)
+  if (*identifer != *rhs.identifer)
     return false;
 
   return true;
@@ -28,7 +29,7 @@ bool VarDecl::operator!=(const VarDecl &rhs) const { return !(*this == rhs); }
 
 int VarDecl::getBytes() const { return type->getBytes(); }
 
-atl::string VarDecl::getIdentifier() const { return identifer; }
+atl::shared_ptr<Identifier> VarDecl::getIdentifier() const { return identifer; }
 
 void VarDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 

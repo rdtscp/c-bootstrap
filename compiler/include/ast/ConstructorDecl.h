@@ -32,7 +32,7 @@ public:
   bool operator==(const ConstructorDecl &rhs) const;
   bool operator!=(const ConstructorDecl &rhs) const;
 
-  atl::string getIdentifier() const override;
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

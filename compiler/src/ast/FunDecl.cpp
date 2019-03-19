@@ -2,10 +2,10 @@
 
 using namespace ACC;
 
-FunDecl::FunDecl(const atl::string &funName,
-                 atl::vector<atl::shared_ptr<VarDecl>> funParams,
-                 atl::shared_ptr<Type> funType)
-    : funName(funName), funParams(funParams), funType(funType) {}
+FunDecl::FunDecl(const atl::shared_ptr<Identifier> &funIdentifier,
+                 const atl::vector<atl::shared_ptr<VarDecl>> &funParams,
+                 const atl::shared_ptr<Type> &funType)
+    : funIdentifier(funIdentifier), funParams(funParams), funType(funType) {}
 
 atl::shared_ptr<FunDecl> FunDecl::getptr() { return shared_from_this(); }
 
@@ -21,7 +21,7 @@ bool FunDecl::operator==(const FunDecl &rhs) const {
   if (*funType != *rhs.funType)
     return false;
 
-  if (funName != rhs.funName)
+  if (*funIdentifier != *rhs.funIdentifier)
     return false;
 
   if (funParams.size() != rhs.funParams.size())
@@ -36,7 +36,9 @@ bool FunDecl::operator==(const FunDecl &rhs) const {
 
 bool FunDecl::operator!=(const FunDecl &rhs) const { return !(*this == rhs); }
 
-atl::string FunDecl::getIdentifier() const { return funName; }
+atl::shared_ptr<Identifier> FunDecl::getIdentifier() const {
+  return funIdentifier;
+}
 
 void FunDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 

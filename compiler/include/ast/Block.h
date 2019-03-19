@@ -14,20 +14,21 @@ namespace ACC {
 class Block : public Stmt, public atl::enable_shared_from_this<Block> {
 
 public:
-  std::map<std::string, atl::shared_ptr<Decl>> blockDecls;
-  atl::vector<atl::shared_ptr<Stmt>> blockStmts;
+  std::map<std::string, atl::shared_ptr<Decl>> decls;
+  atl::vector<atl::shared_ptr<Stmt>> stmts;
   atl::shared_ptr<Block> outerBlock;
 
-  Block(const atl::vector<atl::shared_ptr<Stmt>> &newBlockStmts);
+  Block(const atl::vector<atl::shared_ptr<Stmt>> &stmts);
 
   atl::shared_ptr<Block> getptr();
 
   bool operator==(const Block &rhs) const;
   bool operator!=(const Block &rhs) const;
 
-  atl::shared_ptr<Decl> find(const atl::string &identifier);
+  atl::shared_ptr<Decl> find(const atl::shared_ptr<Identifier> &identifier);
 
-  atl::shared_ptr<Decl> findLocal(const atl::string &identifier);
+  atl::shared_ptr<Decl>
+  findLocal(const atl::shared_ptr<Identifier> &identifier);
 
   void insertDecl(const atl::shared_ptr<Decl> &decl);
 

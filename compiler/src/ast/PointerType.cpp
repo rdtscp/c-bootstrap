@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-PointerType::PointerType(atl::shared_ptr<Type> pointedType)
+PointerType::PointerType(const atl::shared_ptr<Type> &pointedType)
     : pointedType(pointedType) {}
 
 atl::shared_ptr<PointerType> PointerType::getptr() {

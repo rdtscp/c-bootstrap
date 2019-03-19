@@ -4,6 +4,7 @@
 #define ACC_CLASSTYPE_H
 
 #include "ClassTypeDecl.h"
+
 #include "Type.h"
 
 namespace ACC {
@@ -11,10 +12,10 @@ namespace ACC {
 class ClassType : public Type, public atl::enable_shared_from_this<ClassType> {
 
 public:
-  atl::string identifier;
+  atl::shared_ptr<Identifier> identifier;
   atl::shared_ptr<ClassTypeDecl> typeDefinition;
 
-  ClassType(const atl::string &identifier);
+  ClassType(const atl::shared_ptr<Identifier> &identifier);
 
   atl::shared_ptr<ClassType> getptr();
 

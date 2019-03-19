@@ -12,7 +12,7 @@ class ValueAt : public Expr, public atl::enable_shared_from_this<ValueAt> {
 public:
   atl::shared_ptr<Expr> derefExpr;
 
-  ValueAt(atl::shared_ptr<Expr> derefExpr);
+  ValueAt(const atl::shared_ptr<Expr> &derefExpr);
 
   atl::shared_ptr<ValueAt> getptr();
 

@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-Namespace::Namespace(const atl::string &identifier,
+Namespace::Namespace(const atl::shared_ptr<Identifier> &identifier,
                      const atl::vector<atl::shared_ptr<Decl>> &namespaceDecls)
     : identifier(identifier), namespaceDecls(namespaceDecls) {}
 
@@ -18,7 +18,9 @@ bool Namespace::operator==(Decl &rhs) const {
 
 bool Namespace::operator!=(Decl &rhs) const { return !(*this == rhs); }
 
-atl::string Namespace::getIdentifier() const { return identifier; }
+atl::shared_ptr<Identifier> Namespace::getIdentifier() const {
+  return identifier;
+}
 
 atl::string Namespace::accept(ASTVisitor<atl::string> &v) {
   return v.visit(*this);

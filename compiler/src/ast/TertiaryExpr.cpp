@@ -2,9 +2,9 @@
 
 using namespace ACC;
 
-TertiaryExpr::TertiaryExpr(atl::shared_ptr<Expr> tertiaryCondition,
-                           atl::shared_ptr<Expr> tertiaryIfBody,
-                           atl::shared_ptr<Expr> tertiaryElseBody)
+TertiaryExpr::TertiaryExpr(const atl::shared_ptr<Expr> &tertiaryCondition,
+                           const atl::shared_ptr<Expr> &tertiaryIfBody,
+                           const atl::shared_ptr<Expr> &tertiaryElseBody)
     : tertiaryCondition(tertiaryCondition), tertiaryIfBody(tertiaryIfBody),
       tertiaryElseBody(tertiaryElseBody) {}
 

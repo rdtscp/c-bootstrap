@@ -3,7 +3,7 @@
 using namespace ACC;
 
 ClassTypeDecl::ClassTypeDecl(
-    atl::shared_ptr<ClassType> classType,
+    const atl::shared_ptr<ClassType> &classType,
     const atl::vector<atl::shared_ptr<Decl>> &classDecls)
     : classType(classType), classDecls(classDecls) {}
 
@@ -37,8 +37,8 @@ bool ClassTypeDecl::operator!=(const ClassTypeDecl &rhs) const {
   return !(*this == rhs);
 }
 
-atl::string ClassTypeDecl::getIdentifier() const {
-  return atl::string("class ") + classType->identifier;
+atl::shared_ptr<Identifier> ClassTypeDecl::getIdentifier() const {
+  return classType->identifier;
 }
 
 void ClassTypeDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }

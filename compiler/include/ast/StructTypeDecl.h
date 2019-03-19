@@ -18,7 +18,7 @@ public:
   int allocSize;
   int compactSize;
 
-  StructTypeDecl(atl::shared_ptr<StructType> structType,
+  StructTypeDecl(const atl::shared_ptr<StructType> &structType,
                  const atl::vector<atl::shared_ptr<VarDecl>> &varDecls);
 
   atl::shared_ptr<StructTypeDecl> getptr();
@@ -29,7 +29,7 @@ public:
   bool operator==(const StructTypeDecl &rhs) const;
   bool operator!=(const StructTypeDecl &rhs) const;
 
-  atl::string getIdentifier() const override;
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

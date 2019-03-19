@@ -38,7 +38,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(ArrayAccess &aa) {
                              "was not of type int. Was of type: ") +
                  arrayIndex->astClass());
 
-  return atl::static_pointer_cast<ArrayType>(arrayExprType)->arrayType;
+  return atl::static_pointer_cast<ArrayType>(arrayExprType)->type;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(ArrayType &at) { return at.getptr(); }
 atl::shared_ptr<Type> TypeAnalysis::visit(Assign &as) {
@@ -59,8 +59,8 @@ atl::shared_ptr<Type> TypeAnalysis::visit(Block &b) {
     b.setOuterBlock(currScope);
     currScope = b.getptr();
   }
-  for (int idx = 0; idx < b.blockStmts.size(); ++idx)
-    b.blockStmts[idx]->accept(*this);
+  for (int idx = 0; idx < b.stmts.size(); ++idx)
+    b.stmts[idx]->accept(*this);
   currScope = b.outerBlock;
   return nullptr;
 }
@@ -68,8 +68,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(CharLiteral &cl) {
   return atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR));
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(ClassType &ct) {
-  atl::shared_ptr<Decl> findDecl =
-      currScope->find(atl::string("class ") + ct.identifier);
+  atl::shared_ptr<Decl> findDecl = currScope->find(ct.identifier);
   if (findDecl->astClass() != "ClassTypeDecl")
     return error("Attempted to use a ClassType that was not declared.");
 
@@ -107,30 +106,32 @@ atl::shared_ptr<Type> TypeAnalysis::visit(EnumClassTypeDecl &ectd) {
 atl::shared_ptr<Type> TypeAnalysis::visit(EnumTypeDecl &etd) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(For &f) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
-  atl::shared_ptr<Decl> identDecl = currScope->find(fc.funName);
+  atl::shared_ptr<Decl> identDecl = currScope->find(fc.funIdentifier);
   if (identDecl == nullptr)
     return error(
         atl::string("Type Analysis: Attempted to call undeclared function: ") +
-        fc.funName);
+        fc.funIdentifier->toString());
 
   if (identDecl->astClass() != "FunDecl" && identDecl->astClass() != "FunDef")
     return error(
         atl::string("Type Analysis: Attempted to call undeclared function: ") +
-        fc.funName);
+        fc.funIdentifier->toString());
 
   atl::shared_ptr<FunDecl> funDecl =
       atl::static_pointer_cast<FunDecl>(identDecl);
 
   if (funDecl->funParams.size() != fc.funArgs.size())
     return error(atl::string("Type Analysis: Attempted to call function: ") +
-                 fc.funName + " with incorrect number of arguments");
+                 fc.funIdentifier->toString() +
+                 " with incorrect number of arguments");
 
   for (int i = 0; i < fc.funArgs.size(); ++i) {
     atl::shared_ptr<Type> argType = fc.funArgs[i]->accept(*this);
     atl::shared_ptr<Type> paramType = funDecl->funParams[i]->type;
     if (*argType != *paramType)
       return error(atl::string("Type Analysis: Attempted to call function: ") +
-                   fc.funName + " with arguments of incorrect type.");
+                   fc.funIdentifier->toString() +
+                   " with arguments of incorrect type.");
   }
   return funDecl->funType;
 }
@@ -195,7 +196,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(MemberAccess &ma) {
       atl::static_pointer_cast<StructTypeDecl>(identDecl);
 
   for (int idx = 0; idx < structTypeDecl->varDecls.size(); ++idx)
-    if (structTypeDecl->varDecls[idx]->identifer == ma.field)
+    if (*structTypeDecl->varDecls[idx]->identifer == *ma.fieldIdentifier)
       return structTypeDecl->varDecls[idx]->type;
 
   return error("Type Analysis: Attempted to access field on a struct that "
@@ -237,8 +238,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(SizeOf &so) {
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(StringLiteral &sl) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(StructType &st) {
-  atl::shared_ptr<Decl> findDecl =
-      currScope->find(atl::string("struct ") + st.identifier);
+  atl::shared_ptr<Decl> findDecl = currScope->find(st.identifier);
   if (findDecl->astClass() != "StructTypeDecl")
     return error("Attempted to use a StructType that was not declared.");
 
@@ -267,14 +267,14 @@ atl::shared_ptr<Type> TypeAnalysis::visit(VarDecl &vd) {
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(VarDef &vd) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(VarExpr &ve) {
-  atl::shared_ptr<Decl> identDecl = currScope->find(ve.identifier);
+  atl::shared_ptr<Decl> identDecl = currScope->find(ve.varIdentifier);
 
   if (identDecl->astClass() != "VarDecl" && identDecl->astClass() != "VarDef")
     return error(atl::string("Attempted to reference ") +
                  identDecl->astClass() + " as a variable.");
   atl::shared_ptr<VarDecl> veDecl =
       atl::static_pointer_cast<VarDecl>(identDecl);
-  ve.variableDecl = veDecl;
+  ve.varDecl = veDecl;
   return veDecl->type;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(While &w) {

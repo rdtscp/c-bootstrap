@@ -18,7 +18,7 @@ public:
   virtual ~Decl() {}
   virtual bool operator==(Decl &rhs) const = 0;
   virtual bool operator!=(Decl &rhs) const = 0;
-  virtual atl::string getIdentifier() const = 0;
+  virtual atl::shared_ptr<Identifier> getIdentifier() const = 0;
 };
 
 }; // namespace ACC

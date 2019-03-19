@@ -2,11 +2,13 @@
 
 using namespace ACC;
 
-If::If(atl::shared_ptr<Expr> ifCondition, atl::shared_ptr<Stmt> ifBody)
+If::If(const atl::shared_ptr<Expr> &ifCondition,
+       const atl::shared_ptr<Stmt> &ifBody)
     : ifBody(ifBody), ifCondition(ifCondition), elseBody(nullptr) {}
 
-If::If(atl::shared_ptr<Expr> ifCondition, atl::shared_ptr<Stmt> ifBody,
-       atl::shared_ptr<Stmt> elseBody)
+If::If(const atl::shared_ptr<Expr> &ifCondition,
+       const atl::shared_ptr<Stmt> &ifBody,
+       const atl::shared_ptr<Stmt> &elseBody)
     : ifBody(ifBody), ifCondition(ifCondition), elseBody(elseBody) {}
 
 atl::shared_ptr<If> If::getptr() { return shared_from_this(); }

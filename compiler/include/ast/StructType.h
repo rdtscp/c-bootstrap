@@ -12,10 +12,10 @@ class StructType : public Type,
                    public atl::enable_shared_from_this<StructType> {
 
 public:
-  atl::string identifier;
+  atl::shared_ptr<Identifier> identifier;
   atl::shared_ptr<StructTypeDecl> typeDefinition;
 
-  StructType(const atl::string &identifier);
+  StructType(const atl::shared_ptr<Identifier> &identifier);
 
   atl::shared_ptr<StructType> getptr();
 

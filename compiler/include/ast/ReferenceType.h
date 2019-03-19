@@ -9,12 +9,12 @@
 namespace ACC {
 
 class ReferenceType : public Type,
-                    public atl::enable_shared_from_this<ReferenceType> {
+                      public atl::enable_shared_from_this<ReferenceType> {
 
 public:
   atl::shared_ptr<Type> referencedType;
 
-  ReferenceType(atl::shared_ptr<Type> referencedType);
+  ReferenceType(const atl::shared_ptr<Type> &referencedType);
 
   atl::shared_ptr<ReferenceType> getptr();
 

@@ -12,16 +12,17 @@ namespace ACC {
 class FunDecl : public Decl, public atl::enable_shared_from_this<FunDecl> {
 
 public:
-  atl::string funName;
+  atl::shared_ptr<Identifier> funIdentifier;
   atl::vector<atl::shared_ptr<VarDecl>> funParams;
   atl::shared_ptr<Type> funType;
 
-  FunDecl(const atl::string &funName,
-          atl::vector<atl::shared_ptr<VarDecl>> funParams,
-          atl::shared_ptr<Type> funType);
+  FunDecl(const atl::shared_ptr<Identifier> &funIdentifier,
+          const atl::vector<atl::shared_ptr<VarDecl>> &funParams,
+          const atl::shared_ptr<Type> &funType);
+
   FunDecl(const FunDecl &rhs) = delete;
-  virtual ~FunDecl() {}
   FunDecl &operator=(const FunDecl &rhs) = delete;
+  virtual ~FunDecl() {}
 
   atl::shared_ptr<FunDecl> getptr();
 
@@ -31,7 +32,7 @@ public:
   bool operator==(const FunDecl &rhs) const;
   bool operator!=(const FunDecl &rhs) const;
 
-  atl::string getIdentifier() const override;
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

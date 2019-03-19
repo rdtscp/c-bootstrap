@@ -3,7 +3,7 @@
 using namespace ACC;
 
 StructTypeDecl::StructTypeDecl(
-    atl::shared_ptr<StructType> structType,
+    const atl::shared_ptr<StructType> &structType,
     const atl::vector<atl::shared_ptr<VarDecl>> &varDecls)
     : structType(structType), varDecls(varDecls) {}
 
@@ -37,8 +37,8 @@ bool StructTypeDecl::operator!=(const StructTypeDecl &rhs) const {
   return !(*this == rhs);
 }
 
-atl::string StructTypeDecl::getIdentifier() const {
-  return atl::string("struct ") + structType->identifier;
+atl::shared_ptr<Identifier> StructTypeDecl::getIdentifier() const {
+  return structType->identifier;
 }
 
 void StructTypeDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }

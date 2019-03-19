@@ -2,8 +2,9 @@
 
 using namespace ACC;
 
-MemberAccess::MemberAccess(atl::shared_ptr<Expr> object, const atl::string &field)
-    : object(object), field(field) {}
+MemberAccess::MemberAccess(const atl::shared_ptr<Expr> &object,
+                           const atl::shared_ptr<Identifier> &fieldIdentifier)
+    : object(object), fieldIdentifier(fieldIdentifier) {}
 
 atl::shared_ptr<MemberAccess> MemberAccess::getptr() {
   return shared_from_this();
@@ -21,7 +22,7 @@ bool MemberAccess::operator==(const MemberAccess &rhs) const {
   if (*object != *rhs.object)
     return false;
 
-  if (field != rhs.field)
+  if (*fieldIdentifier != *rhs.fieldIdentifier)
     return false;
 
   return true;

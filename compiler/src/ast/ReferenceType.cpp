@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-ReferenceType::ReferenceType(atl::shared_ptr<Type> referencedType)
+ReferenceType::ReferenceType(const atl::shared_ptr<Type> &referencedType)
     : referencedType(referencedType) {}
 
 atl::shared_ptr<ReferenceType> ReferenceType::getptr() {

@@ -12,9 +12,10 @@ class MemberAccess : public Expr,
 
 public:
   atl::shared_ptr<Expr> object;
-  atl::string field;
+  atl::shared_ptr<Identifier> fieldIdentifier;
 
-  MemberAccess(atl::shared_ptr<Expr> object, const atl::string &field);
+  MemberAccess(const atl::shared_ptr<Expr> &object,
+               const atl::shared_ptr<Identifier> &fieldIdentifier);
 
   atl::shared_ptr<MemberAccess> getptr();
 

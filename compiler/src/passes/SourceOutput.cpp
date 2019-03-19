@@ -26,10 +26,10 @@ atl::string SourceOutput::visit(AddressOf &ao) {
 }
 atl::string SourceOutput::visit(Allocation &a) {
   atl::string output = "new ";
-  if (a.variableType)
-    output += a.variableType->accept(*this);
+  if (a.varType)
+    output += a.varType->accept(*this);
   else
-    output += a.variableConstructorCall->accept(*this);
+    output += a.varConstructorCall->accept(*this);
 
   return output;
 }
@@ -38,9 +38,9 @@ atl::string SourceOutput::visit(ArrayAccess &aa) {
   return output;
 }
 atl::string SourceOutput::visit(ArrayType &at) {
-  atl::string output = at.arrayType->accept(*this);
+  atl::string output = at.type->accept(*this);
   output += "[";
-  output += at.arraySize;
+  output += at.size;
   output += "]";
   return output;
 }
@@ -119,8 +119,8 @@ atl::string SourceOutput::visit(BinOp &bo) {
 }
 atl::string SourceOutput::visit(Block &b) {
   atl::string output = "{\n";
-  for (int idx = 0; idx < b.blockStmts.size(); ++idx) {
-    output += b.blockStmts[idx]->accept(*this);
+  for (int idx = 0; idx < b.stmts.size(); ++idx) {
+    output += b.stmts[idx]->accept(*this);
   }
   output += "\n}";
   return output;
@@ -129,9 +129,11 @@ atl::string SourceOutput::visit(CharLiteral &cl) {
   atl::string output = "'";
   return output + cl.getLiteral() + "'";
 }
-atl::string SourceOutput::visit(ClassType &ct) { return ct.identifier; }
+atl::string SourceOutput::visit(ClassType &ct) {
+  return ct.identifier->toString();
+}
 atl::string SourceOutput::visit(ClassTypeDecl &ctd) {
-  atl::string output = ctd.getIdentifier() + " {";
+  atl::string output = ctd.getIdentifier()->toString() + atl::string(" {");
   for (int i = 0; i < ctd.classDecls.size(); ++i) {
     output += "\n";
     switch (ctd.classDecls[i]->visibility) {
@@ -224,14 +226,14 @@ atl::string SourceOutput::visit(DoWhile &dw) {
 }
 atl::string SourceOutput::visit(EnumClassTypeDecl &ectd) {
   atl::string output = "enum class ";
-  output += ectd.getIdentifier() + " {";
+  output += ectd.getIdentifier()->toString() + " {";
   output += "};";
   return output;
 }
 atl::string SourceOutput::visit(EnumTypeDecl &etd) { return ""; }
 atl::string SourceOutput::visit(For &f) { return ""; }
 atl::string SourceOutput::visit(FunCall &fc) {
-  atl::string output = fc.funName + "(";
+  atl::string output = fc.funIdentifier->toString() + "(";
   for (int i = 0; i < fc.funArgs.size(); ++i) {
     atl::string currParam = fc.funArgs[i]->accept(*this);
     if (i != (fc.funArgs.size() - 1))
@@ -243,7 +245,7 @@ atl::string SourceOutput::visit(FunCall &fc) {
 }
 atl::string SourceOutput::visit(FunDecl &fd) {
   atl::string output = fd.funType->accept(*this) + " ";
-  output += fd.getIdentifier() + "(";
+  output += fd.getIdentifier()->toString() + "(";
   for (int i = 0; i < fd.funParams.size(); ++i) {
     atl::string currParam = fd.funParams[i]->type->accept(*this) + " " +
                             fd.funParams[i]->getIdentifier();
@@ -257,7 +259,7 @@ atl::string SourceOutput::visit(FunDecl &fd) {
 }
 atl::string SourceOutput::visit(FunDef &fd) {
   atl::string output = fd.funType->accept(*this) + " ";
-  output += fd.getIdentifier() + "(";
+  output += fd.getIdentifier()->toString() + "(";
   for (int i = 0; i < fd.funParams.size(); ++i) {
     atl::string currParam = fd.funParams[i]->type->accept(*this) + " " +
                             fd.funParams[i]->getIdentifier();
@@ -305,7 +307,7 @@ atl::string SourceOutput::visit(PrefixOp &po) {
     output += "++";
   if (po.operation == PrefixOp::Op::DEC)
     output += "--";
-  output += po.variable->identifier;
+  output += po.variable->accept(*this);
   return output;
 }
 atl::string SourceOutput::visit(Program &p) {
@@ -338,7 +340,7 @@ atl::string SourceOutput::visit(StructType &st) {
   return atl::string("struct ") + st.identifier;
 }
 atl::string SourceOutput::visit(StructTypeDecl &std) {
-  atl::string output = std.getIdentifier() + " {";
+  atl::string output = std.getIdentifier()->toString() + " {";
   for (int i = 0; i < std.varDecls.size(); ++i) {
     output += "\n";
     output += std.varDecls[i]->accept(*this);
@@ -377,18 +379,20 @@ atl::string SourceOutput::visit(ValueAt &va) {
 }
 atl::string SourceOutput::visit(VarDecl &vd) {
   atl::string output = vd.type->accept(*this) + " ";
-  output += vd.getIdentifier();
+  output += vd.getIdentifier()->toString();
   output += ";";
   return output;
 }
 atl::string SourceOutput::visit(VarDef &vd) {
   atl::string output = vd.type->accept(*this) + " ";
-  output += vd.getIdentifier() + " = ";
-  output += vd.value->accept(*this);
+  output += vd.getIdentifier()->toString() + " = ";
+  output += vd.varValue->accept(*this);
   output += ";";
   return output;
 }
-atl::string SourceOutput::visit(VarExpr &ve) { return ve.identifier; }
+atl::string SourceOutput::visit(VarExpr &ve) {
+  return ve.varIdentifier->toString();
+}
 atl::string SourceOutput::visit(While &w) {
   atl::string output = "while (";
   output += w.condition->accept(*this);

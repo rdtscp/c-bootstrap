@@ -14,7 +14,7 @@ public:
   atl::shared_ptr<Expr> lhs;
   atl::shared_ptr<Expr> rhs;
 
-  Assign(atl::shared_ptr<Expr> lhs, atl::shared_ptr<Expr> rhs);
+  Assign(const atl::shared_ptr<Expr> &lhs, const atl::shared_ptr<Expr> &rhs);
 
   atl::shared_ptr<Assign> getptr();
 

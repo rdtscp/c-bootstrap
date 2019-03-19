@@ -10,10 +10,10 @@ namespace ACC {
 class VarExpr : public Expr, public atl::enable_shared_from_this<VarExpr> {
 
 public:
-  atl::string identifier;
-  atl::shared_ptr<VarDecl> variableDecl;
+  atl::shared_ptr<Identifier> varIdentifier;
+  atl::shared_ptr<VarDecl> varDecl;
 
-  VarExpr(const atl::string &identifier);
+  VarExpr(const atl::shared_ptr<Identifier> &varIdentifier);
 
   atl::shared_ptr<VarExpr> getptr();
 

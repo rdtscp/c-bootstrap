@@ -2,7 +2,7 @@
 
 using namespace ACC;
 
-StructType::StructType(const atl::string &identifier)
+StructType::StructType(const atl::shared_ptr<Identifier> &identifier)
     : identifier(identifier) {}
 
 atl::shared_ptr<StructType> StructType::getptr() { return shared_from_this(); }
@@ -30,7 +30,7 @@ bool StructType::operator==(Type &rhs) const {
 bool StructType::operator!=(Type &rhs) const { return !(*this == rhs); }
 
 bool StructType::operator==(const StructType &rhs) const {
-  return identifier == rhs.identifier;
+  return *identifier == *rhs.identifier;
 }
 
 bool StructType::operator!=(const StructType &rhs) const {

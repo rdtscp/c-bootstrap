@@ -8,6 +8,7 @@
 
 #include "ASTVisitor.h"
 #include "Position.h"
+#include "ast/Identifier.h"
 #include "targets/MIPS.h"
 #include "targets/X86.h"
 

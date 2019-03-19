@@ -11,10 +11,10 @@ namespace ACC {
 class Namespace : public Decl, public atl::enable_shared_from_this<Namespace> {
 
 public:
-  atl::string identifier;
+  atl::shared_ptr<Identifier> identifier;
   atl::vector<atl::shared_ptr<Decl>> namespaceDecls;
 
-  Namespace(const atl::string &identifier,
+  Namespace(const atl::shared_ptr<Identifier> &identifier,
             const atl::vector<atl::shared_ptr<Decl>> &namespaceDecls);
 
   atl::shared_ptr<Namespace> getptr();
@@ -22,7 +22,7 @@ public:
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
 
-  atl::string getIdentifier() const override;
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

@@ -10,11 +10,11 @@ namespace ACC {
 class FunCall : public Expr, public atl::enable_shared_from_this<FunCall> {
 
 public:
-  atl::string funName;
+  atl::shared_ptr<Identifier> funIdentifier;
   atl::vector<atl::shared_ptr<Expr>> funArgs;
 
-  FunCall(const atl::string &funName,
-          atl::vector<atl::shared_ptr<Expr>> funArgs);
+  FunCall(const atl::shared_ptr<Identifier> &funIdentifier,
+          const atl::vector<atl::shared_ptr<Expr>> &funArgs);
 
   atl::shared_ptr<FunCall> getptr();
 

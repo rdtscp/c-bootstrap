@@ -16,10 +16,10 @@ class EnumTypeDecl : public Decl,
                      public atl::enable_shared_from_this<EnumTypeDecl> {
 
 public:
-  atl::string identifer;
+  atl::shared_ptr<Identifier> identifier;
   std::map<std::string, std::string> states;
 
-  EnumTypeDecl(const atl::string &ident,
+  EnumTypeDecl(const atl::shared_ptr<Identifier> &identifier,
                const std::map<std::string, std::string> &states);
 
   atl::shared_ptr<EnumTypeDecl> getptr();
@@ -27,7 +27,7 @@ public:
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
 
-  atl::string getIdentifier() const override;
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   int getBytes() const override;
   bool operator==(Type &rhs) const override;

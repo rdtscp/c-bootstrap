@@ -12,11 +12,12 @@ class Allocation : public Expr,
                    public atl::enable_shared_from_this<Allocation> {
 
 public:
-  atl::shared_ptr<Type> variableType;
-  atl::shared_ptr<FunCall> variableConstructorCall;
+  atl::shared_ptr<Type> varType;
+  atl::shared_ptr<FunCall> varConstructorCall;
 
-  Allocation(const atl::shared_ptr<Type> &variableType);
-  Allocation(const atl::shared_ptr<FunCall> &variableConstructorCall);
+  Allocation(const atl::shared_ptr<Type> &varType);
+  Allocation(const atl::shared_ptr<FunCall> &varConstructorCall);
+
   virtual ~Allocation() {}
 
   atl::shared_ptr<Allocation> getptr();

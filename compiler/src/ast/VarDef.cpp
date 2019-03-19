@@ -2,9 +2,10 @@
 
 using namespace ACC;
 
-VarDef::VarDef(const atl::shared_ptr<Type> &type, const atl::string &identifer,
-               const atl::shared_ptr<Expr> &value)
-    : VarDecl(type, identifer), value(value) {}
+VarDef::VarDef(const atl::shared_ptr<Type> &varType,
+               const atl::shared_ptr<Identifier> &varIdentifer,
+               const atl::shared_ptr<Expr> &varValue)
+    : VarDecl(varType, varIdentifer), varValue(varValue) {}
 
 atl::shared_ptr<VarDecl> VarDef::getptr() {
   return VarDecl::shared_from_this();
@@ -22,7 +23,7 @@ bool VarDef::operator==(const VarDef &rhs) const {
   if (*type != *rhs.type)
     return false;
 
-  if (identifer != rhs.identifer)
+  if (*identifer != *rhs.identifer)
     return false;
 
   return true;
@@ -32,7 +33,7 @@ bool VarDef::operator!=(const VarDef &rhs) const { return !(*this == rhs); }
 
 int VarDef::getBytes() const { return type->getBytes(); }
 
-atl::string VarDef::getIdentifier() const { return identifer; }
+atl::shared_ptr<Identifier> VarDef::getIdentifier() const { return identifer; }
 
 void VarDef::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 

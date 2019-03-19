@@ -40,8 +40,8 @@ void NameAnalysis::visit(Block &b) {
     b.setOuterBlock(currScope);
     currScope = b.getptr();
   }
-  for (int idx = 0; idx < b.blockStmts.size(); ++idx)
-    b.blockStmts[idx]->accept(*this);
+  for (int idx = 0; idx < b.stmts.size(); ++idx)
+    b.stmts[idx]->accept(*this);
   currScope = b.outerBlock;
 }
 void NameAnalysis::visit(CharLiteral &cl) {}
@@ -88,9 +88,9 @@ void NameAnalysis::visit(For &f) {
   f.body->accept(*this);
 }
 void NameAnalysis::visit(FunCall &fc) {
-  if (currScope->find(fc.funName) == nullptr)
+  if (currScope->find(fc.funIdentifier) == nullptr)
     return error(atl::string("Attempted to call undeclared function: ") +
-                 fc.funName);
+                 fc.funIdentifier->toString());
   for (int idx = 0; idx < fc.funArgs.size(); ++idx)
     fc.funArgs[idx]->accept(*this);
 }
@@ -174,7 +174,7 @@ void NameAnalysis::visit(StructTypeDecl &std) {
   currScope->insertDecl(std.getptr());
 
   /* Check that the fields in this struct are unique */
-  atl::set<atl::string> structTypeFields;
+  atl::set<atl::shared_ptr<Identifier>> structTypeFields;
   for (int idx = 0; idx < std.varDecls.size(); ++idx) {
     const atl::shared_ptr<VarDecl> field = std.varDecls[idx];
     if (structTypeFields.find(field->getIdentifier()))
@@ -208,9 +208,9 @@ void NameAnalysis::visit(VarDef &vd) {
   currScope->insertDecl(vd.getptr());
 }
 void NameAnalysis::visit(VarExpr &ve) {
-  if (currScope->find(ve.identifier) == nullptr)
+  if (currScope->find(ve.varIdentifier) == nullptr)
     return error(atl::string("Attempted to reference undeclared variable: ") +
-                 ve.identifier);
+                 ve.varIdentifier->toString());
 }
 void NameAnalysis::visit(While &w) {
   w.condition->accept(*this);

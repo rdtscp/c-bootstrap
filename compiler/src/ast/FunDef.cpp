@@ -2,10 +2,11 @@
 
 using namespace ACC;
 
-FunDef::FunDef(atl::shared_ptr<Block> funBlock, const atl::string &funName,
-               atl::vector<atl::shared_ptr<VarDecl>> funParams,
-               atl::shared_ptr<Type> funType)
-    : FunDecl(funName, funParams, funType), funBlock(funBlock) {}
+FunDef::FunDef(const atl::shared_ptr<Identifier> &funIdentifier,
+               const atl::vector<atl::shared_ptr<VarDecl>> &funParams,
+               const atl::shared_ptr<Type> &funType,
+               const atl::shared_ptr<Block> &funBlock)
+    : FunDecl(funIdentifier, funParams, funType), funBlock(funBlock) {}
 
 atl::shared_ptr<FunDecl> FunDef::getptr() {
   return FunDecl::shared_from_this();
@@ -23,7 +24,7 @@ bool FunDef::operator==(const FunDef &rhs) const {
   if (*funType != *rhs.funType)
     return false;
 
-  if (funName != rhs.funName)
+  if (*funIdentifier != *rhs.funIdentifier)
     return false;
 
   if (funParams.size() != rhs.funParams.size())
@@ -42,7 +43,9 @@ bool FunDef::operator==(const FunDef &rhs) const {
 
 bool FunDef::operator!=(const FunDef &rhs) const { return !(*this == rhs); }
 
-atl::string FunDef::getIdentifier() const { return funName; }
+atl::shared_ptr<Identifier> FunDef::getIdentifier() const {
+  return funIdentifier;
+}
 
 void FunDef::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 

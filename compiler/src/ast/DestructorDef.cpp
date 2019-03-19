@@ -33,7 +33,7 @@ bool DestructorDef::operator!=(const DestructorDef &rhs) const {
   return !(*this == rhs);
 }
 
-atl::string DestructorDef::getIdentifier() const {
+atl::shared_ptr<Identifier> DestructorDef::getIdentifier() const {
   return classType->identifier;
 }
 

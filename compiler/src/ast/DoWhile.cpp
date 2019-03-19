@@ -2,7 +2,8 @@
 
 using namespace ACC;
 
-DoWhile::DoWhile(atl::shared_ptr<Stmt> body, atl::shared_ptr<Expr> condition)
+DoWhile::DoWhile(const atl::shared_ptr<Stmt> &body,
+                 const atl::shared_ptr<Expr> &condition)
     : body(body), condition(condition) {}
 
 atl::shared_ptr<DoWhile> DoWhile::getptr() { return shared_from_this(); }

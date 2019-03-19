@@ -44,7 +44,7 @@ bool ConstructorDef::operator!=(const ConstructorDef &rhs) const {
   return !(*this == rhs);
 }
 
-atl::string ConstructorDef::getIdentifier() const {
+atl::shared_ptr<Identifier> ConstructorDef::getIdentifier() const {
   return classType->identifier;
 }
 

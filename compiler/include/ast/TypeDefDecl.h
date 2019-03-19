@@ -14,15 +14,16 @@ class TypeDefDecl : public Decl,
 
 public:
   atl::shared_ptr<Type> type;
-  atl::string identifier;
+  atl::shared_ptr<Identifier> identifier;
 
-  TypeDefDecl(atl::shared_ptr<Type> type, const atl::string &identifier);
+  TypeDefDecl(const atl::shared_ptr<Type> &type,
+              const atl::shared_ptr<Identifier> &identifier);
 
   atl::shared_ptr<TypeDefDecl> getptr();
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
-  atl::string getIdentifier() const override;
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

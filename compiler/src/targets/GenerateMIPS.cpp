@@ -128,11 +128,11 @@ MIPS::Register GenerateMIPS::visit(BinOp &bo) {
 }
 MIPS::Register GenerateMIPS::visit(Block &b) {
   currScope = b.getptr();
-  for (int idx = 0; idx < b.blockStmts.size(); ++idx)
-    b.blockStmts[idx]->accept(*this);
+  for (int idx = 0; idx < b.stmts.size(); ++idx)
+    b.stmts[idx]->accept(*this);
 
   /* Clean up the stack. */
-  for (const auto &ident_decl : b.blockDecls) {
+  for (const auto &ident_decl : b.decls) {
     atl::shared_ptr<Decl> currDecl = ident_decl.second;
     if (currDecl->astClass() == "VarDecl") {
       /* ---- Deconstruct VarDecl ---- */
@@ -176,7 +176,7 @@ MIPS::Register GenerateMIPS::visit(For &f) { return MIPS::Register(); }
 MIPS::Register GenerateMIPS::visit(FunCall &fc) {
   for (int idx = 0; idx < fc.funArgs.size(); ++idx)
     fc.funArgs[idx]->accept(*this);
-  MIPS.JAL(fc.funName + "FunDecl");
+  MIPS.JAL(fc.funIdentifier->toString() + "FunDecl");
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(FunDecl &fd) {
@@ -223,7 +223,7 @@ MIPS::Register GenerateMIPS::visit(FunDef &fd) {
   atl::vector<MIPS::Register> saveRegs = MIPS::saveRegs;
   currScope = fd.funBlock;
 
-  MIPS.BLOCK(fd.getIdentifier() + "FunDecl");
+  MIPS.BLOCK(fd.getIdentifier()->toString() + "FunDecl");
 
   /* ---- Save Caller's $fp ---- */
   stackPush(MIPS::fp);
@@ -289,7 +289,7 @@ MIPS::Register GenerateMIPS::visit(Program &p) {
 
   MIPS.write(".data");
   for (int idx = 0; idx < p.globalVars.size(); ++idx) {
-    MIPS.alloc(p.globalVars[idx]->getIdentifier(),
+    MIPS.alloc(p.globalVars[idx]->getIdentifier()->toString(),
                p.globalVars[idx]->getBytes());
   }
 
@@ -344,7 +344,7 @@ MIPS::Register GenerateMIPS::visit(VarDef &vd) {
 }
 MIPS::Register GenerateMIPS::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
-  int fpOffset = ve.variableDecl->fpOffset;
+  const int fpOffset = ve.varDecl->fpOffset;
   MIPS::Register valReg = getTempRegister();
   MIPS.LW(valReg, MIPS::fp, fpOffset);
   return valReg;

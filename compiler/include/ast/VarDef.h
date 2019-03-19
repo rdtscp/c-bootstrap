@@ -14,12 +14,13 @@ namespace ACC {
 class VarDef : public VarDecl {
 
 public:
-  const atl::shared_ptr<Expr> value;
+  atl::shared_ptr<Expr> varValue;
 
   int fpOffset = 0;
 
-  VarDef(const atl::shared_ptr<Type> &type, const atl::string &identifer,
-         const atl::shared_ptr<Expr> &value);
+  VarDef(const atl::shared_ptr<Type> &varType,
+         const atl::shared_ptr<Identifier> &varIdentifer,
+         const atl::shared_ptr<Expr> &varValue);
 
   atl::shared_ptr<VarDecl> getptr();
 
@@ -31,7 +32,7 @@ public:
 
   int getBytes() const;
 
-  atl::string getIdentifier() const override;
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

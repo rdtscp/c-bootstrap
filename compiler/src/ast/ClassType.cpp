@@ -2,7 +2,8 @@
 
 using namespace ACC;
 
-ClassType::ClassType(const atl::string &identifier) : identifier(identifier) {}
+ClassType::ClassType(const atl::shared_ptr<Identifier> &identifier)
+    : identifier(identifier) {}
 
 atl::shared_ptr<ClassType> ClassType::getptr() { return shared_from_this(); }
 
@@ -39,7 +40,7 @@ bool ClassType::operator==(Type &rhs) const {
 bool ClassType::operator!=(Type &rhs) const { return !(*this == rhs); }
 
 bool ClassType::operator==(const ClassType &rhs) const {
-  return identifier == rhs.identifier;
+  return *identifier == *rhs.identifier;
 }
 
 bool ClassType::operator!=(const ClassType &rhs) const {

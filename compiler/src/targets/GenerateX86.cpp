@@ -21,7 +21,8 @@ void GenerateX86::printErrors() const {
 void GenerateX86::run() { visit(*progAST); }
 
 void GenerateX86::alloc(const VarDecl &vd) {
-  x86.write(vd.getIdentifier() + ": db " + atl::to_string(vd.getBytes()));
+  x86.write(vd.getIdentifier()->toString() + ": db " +
+            atl::to_string(vd.getBytes()));
 }
 
 /* ---- Visit AST ---- */
@@ -85,8 +86,8 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
   currScope = b.getptr();
-  for (int idx = 0; idx < b.blockStmts.size(); ++idx)
-    b.blockStmts[idx]->accept(*this);
+  for (int idx = 0; idx < b.stmts.size(); ++idx)
+    b.stmts[idx]->accept(*this);
 
   currScope = b.outerBlock;
   return atl::make_shared<X86::None>();
@@ -134,7 +135,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(FunCall &fc) {
     atl::shared_ptr<X86::Operand> argReg = fc.funArgs[idx]->accept(*this);
     // x86.push(argReg);
   }
-  x86.call(fc.funName);
+  x86.call(fc.funIdentifier->toString());
   return X86::eax;
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(FunDecl &fd) {
@@ -172,7 +173,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(FunDecl &fd) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(FunDef &fd) {
   currScope = fd.funBlock;
 
-  x86.block(fd.getIdentifier() + "FunDecl");
+  x86.block(fd.getIdentifier()->toString() + "FunDecl");
 
   /* ---- Callee Prologue ---- */
   x86.push(X86::ebp);
@@ -348,10 +349,10 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(VarDef &vd) {
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
-  int fpOffset = ve.variableDecl->fpOffset;
+  const int fpOffset = ve.varDecl->fpOffset;
   if (fpOffset == 0)
     return atl::make_shared<X86::GlobalVariable>(X86::GlobalVariable(
-        ve.variableDecl->getIdentifier(), ve.variableDecl->getBytes()));
+        ve.varDecl->getIdentifier()->toString(), ve.varDecl->getBytes()));
 
   if (fpOffset > 0)
     return atl::make_shared<X86::Register>(X86::Register(

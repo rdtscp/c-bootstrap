@@ -2,7 +2,8 @@
 
 using namespace ACC;
 
-TypeCast::TypeCast(atl::shared_ptr<Type> type, atl::shared_ptr<Expr> expr)
+TypeCast::TypeCast(const atl::shared_ptr<Type> &type,
+                   const atl::shared_ptr<Expr> &expr)
     : type(type), expr(expr) {}
 
 atl::shared_ptr<TypeCast> TypeCast::getptr() { return shared_from_this(); }

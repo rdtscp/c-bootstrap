@@ -2,7 +2,8 @@
 
 using namespace ACC;
 
-VarExpr::VarExpr(const atl::string &identifier) : identifier(identifier) {}
+VarExpr::VarExpr(const atl::shared_ptr<Identifier> &varIdentifier)
+    : varIdentifier(varIdentifier) {}
 
 atl::shared_ptr<VarExpr> VarExpr::getptr() { return shared_from_this(); }
 
@@ -15,7 +16,7 @@ bool VarExpr::operator==(Expr &rhs) const {
 bool VarExpr::operator!=(Expr &rhs) const { return !(*this == rhs); }
 
 bool VarExpr::operator==(const VarExpr &rhs) const {
-  if (identifier != rhs.identifier)
+  if (*varIdentifier != *rhs.varIdentifier)
     return false;
 
   return true;

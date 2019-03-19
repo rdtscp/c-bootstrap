@@ -3,8 +3,9 @@
 using namespace ACC;
 
 EnumClassTypeDecl::EnumClassTypeDecl(
-    const atl::string &ident, const std::map<std::string, std::string> &states)
-    : states(states) {}
+    const atl::shared_ptr<Identifier> &identifier,
+    const std::map<std::string, std::string> &states)
+    : identifier(identifier), states(states) {}
 
 atl::shared_ptr<EnumClassTypeDecl> EnumClassTypeDecl::getptr() {
   return shared_from_this();
@@ -18,7 +19,9 @@ bool EnumClassTypeDecl::operator==(Decl &rhs) const {
 
 bool EnumClassTypeDecl::operator!=(Decl &rhs) const { return !(*this == rhs); }
 
-atl::string EnumClassTypeDecl::getIdentifier() const { return identifer; }
+atl::shared_ptr<Identifier> EnumClassTypeDecl::getIdentifier() const {
+  return identifier;
+}
 
 bool EnumClassTypeDecl::operator==(Type &rhs) const {
   if (rhs.astClass() == astClass())

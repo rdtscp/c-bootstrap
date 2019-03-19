@@ -16,9 +16,10 @@ class FunDef : public FunDecl {
 public:
   atl::shared_ptr<Block> funBlock;
 
-  FunDef(atl::shared_ptr<Block> funBlock, const atl::string &funName,
-         atl::vector<atl::shared_ptr<VarDecl>> funParams,
-         atl::shared_ptr<Type> funType);
+  FunDef(const atl::shared_ptr<Identifier> &funIdentifier,
+         const atl::vector<atl::shared_ptr<VarDecl>> &funParams,
+         const atl::shared_ptr<Type> &funType,
+         const atl::shared_ptr<Block> &funBlock);
 
   atl::shared_ptr<FunDecl> getptr();
 
@@ -28,7 +29,7 @@ public:
   bool operator==(const FunDef &rhs) const;
   bool operator!=(const FunDef &rhs) const;
 
-  atl::string getIdentifier() const override;
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

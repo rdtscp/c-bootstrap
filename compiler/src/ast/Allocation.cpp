@@ -2,11 +2,11 @@
 
 using namespace ACC;
 
-Allocation::Allocation(const atl::shared_ptr<Type> &variableType)
-    : variableType(variableType), variableConstructorCall(nullptr) {}
+Allocation::Allocation(const atl::shared_ptr<Type> &varType)
+    : varType(varType), varConstructorCall(nullptr) {}
 
-Allocation::Allocation(const atl::shared_ptr<FunCall> &variableConstructorCall)
-    : variableType(nullptr), variableConstructorCall(variableConstructorCall) {}
+Allocation::Allocation(const atl::shared_ptr<FunCall> &varConstructorCall)
+    : varType(nullptr), varConstructorCall(varConstructorCall) {}
 
 atl::shared_ptr<Allocation> Allocation::getptr() { return shared_from_this(); }
 
@@ -19,10 +19,10 @@ bool Allocation::operator==(Expr &rhs) const {
 bool Allocation::operator!=(Expr &rhs) const { return !(*this == rhs); }
 
 bool Allocation::operator==(const Allocation &rhs) const {
-  if (*variableType != *rhs.variableType)
+  if (*varType != *rhs.varType)
     return false;
 
-  if (variableConstructorCall != rhs.variableConstructorCall)
+  if (varConstructorCall != rhs.varConstructorCall)
     return false;
 
   return true;

@@ -8,10 +8,9 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-atl::string test_prefix = "../../test/tests/";
-
+atl::string test_prefix =
+"/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+// atl::string test_prefix = "../../test/tests/";
 
 TEST(ParserTest, AllTokens) {
   const atl::string filepath = test_prefix + "lexer/alltokens.c";
@@ -74,13 +73,15 @@ TEST(ParserTest, StructDecl) {
 
   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
       atl::make_shared<StructTypeDecl>(StructTypeDecl(
-          atl::make_shared<StructType>(StructType("FooStruct")),
+          atl::make_shared<StructType>(StructType(
+              atl::make_shared<Identifier>(Identifier("FooStruct")))),
           {atl::make_shared<VarDecl>(
               VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                      "fooInt"))})),
+                      atl::make_shared<Identifier>(Identifier("fooInt"))))})),
       atl::make_shared<VarDecl>(
-          VarDecl(atl::make_shared<StructType>(StructType("FooStruct")),
-                  "myFooStruct"))};
+          VarDecl(atl::make_shared<StructType>(StructType(
+                      atl::make_shared<Identifier>(Identifier("FooStruct")))),
+                  atl::make_shared<Identifier>(Identifier("myFooStruct"))))};
 
   const int actualSize = actual->decls.size();
   const int expectSize = expectedDecls.size();
@@ -100,63 +101,69 @@ TEST(ParserTest, VarDecls) {
 
   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
       atl::make_shared<StructTypeDecl>(StructTypeDecl(
-          atl::make_shared<StructType>(StructType("FooStruct")),
+          atl::make_shared<StructType>(StructType(
+              atl::make_shared<Identifier>(Identifier("FooStruct")))),
           {atl::make_shared<VarDecl>(
               VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                      "fooInt"))})),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)), "myInt")),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)), "myChar")),
+                      atl::make_shared<Identifier>(Identifier("fooInt"))))})),
+      atl::make_shared<VarDecl>(
+          VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+                  atl::make_shared<Identifier>(Identifier("myInt")))),
+      atl::make_shared<VarDecl>(
+          VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
+                  atl::make_shared<Identifier>(Identifier("myChar")))),
       atl::make_shared<VarDecl>(VarDecl(
           atl::make_shared<PointerType>(PointerType(
               atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)))),
-          "myIntPtr")),
+          atl::make_shared<Identifier>(Identifier("myIntPtr")))),
       atl::make_shared<VarDecl>(VarDecl(
           atl::make_shared<PointerType>(PointerType(
               atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))),
-          "myCharPtr")),
+          atl::make_shared<Identifier>(Identifier("myCharPtr")))),
       atl::make_shared<VarDecl>(VarDecl(
           atl::make_shared<PointerType>(PointerType(
               atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID)))),
-          "myVoidPtr")),
+          atl::make_shared<Identifier>(Identifier("myVoidPtr")))),
       atl::make_shared<VarDecl>(VarDecl(
           atl::make_shared<PointerType>(
               PointerType(atl::make_shared<PointerType>(PointerType(
                   atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)))))),
-          "myIntPtrPtr")),
+          atl::make_shared<Identifier>(Identifier("myIntPtrPtr")))),
       atl::make_shared<VarDecl>(VarDecl(
           atl::make_shared<PointerType>(
               PointerType(atl::make_shared<PointerType>(PointerType(
                   atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))))),
-          "myCharPtrPtr")),
+          atl::make_shared<Identifier>(Identifier("myCharPtrPtr")))),
       atl::make_shared<VarDecl>(VarDecl(
           atl::make_shared<PointerType>(
               PointerType(atl::make_shared<PointerType>(PointerType(
                   atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID)))))),
-          "myVoidPtrPtr")),
+          atl::make_shared<Identifier>(Identifier("myVoidPtrPtr")))),
       atl::make_shared<VarDecl>(
           VarDecl(atl::make_shared<ArrayType>(ArrayType(
                       atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
                       atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
-                  "myIntArr")),
+                  atl::make_shared<Identifier>(Identifier("myIntArr")))),
       atl::make_shared<VarDecl>(
           VarDecl(atl::make_shared<ArrayType>(ArrayType(
                       atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
                       atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
-                  "myCharArr")),
+                  atl::make_shared<Identifier>(Identifier("myCharArr")))),
       atl::make_shared<VarDecl>(
-          VarDecl(atl::make_shared<StructType>(StructType("FooStruct")),
-                  "myFooStruct")),
-      atl::make_shared<VarDecl>(
-          VarDecl(atl::make_shared<PointerType>(PointerType(
-                      atl::make_shared<StructType>(StructType("FooStruct")))),
-                  "myFooStructPtr")),
-      atl::make_shared<VarDecl>(
-          VarDecl(atl::make_shared<ArrayType>(ArrayType(
-                      atl::make_shared<StructType>(StructType("FooStruct")),
-                      atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
-                  "myFooStructArr"))};
+          VarDecl(atl::make_shared<StructType>(StructType(
+                      atl::make_shared<Identifier>(Identifier("FooStruct")))),
+                  atl::make_shared<Identifier>(Identifier("myFooStruct")))),
+      atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<PointerType>(
+              PointerType(atl::make_shared<StructType>(StructType(
+                  atl::make_shared<Identifier>(Identifier("FooStruct")))))),
+          atl::make_shared<Identifier>(Identifier("myFooStructPtr")))),
+      atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<ArrayType>(ArrayType(
+              atl::make_shared<StructType>(StructType(
+                  atl::make_shared<Identifier>(Identifier("FooStruct")))),
+              atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
+          atl::make_shared<Identifier>(Identifier("myFooStructArr"))))};
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
@@ -175,17 +182,18 @@ TEST(ParserTest, FunDecl) {
   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
       atl::make_shared<VarDecl>(
           VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                  "myGlobalInt")),
+                  atl::make_shared<Identifier>(Identifier("myGlobalInt")))),
       atl::shared_ptr<FunDef>(new FunDef(
-          atl::make_shared<Block>(Block({})), "main",
+          atl::make_shared<Identifier>(Identifier("main")),
           {atl::make_shared<VarDecl>(
                VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                       "argc")),
+                       atl::make_shared<Identifier>(Identifier("argc")))),
            atl::make_shared<VarDecl>(VarDecl(
                atl::make_shared<PointerType>(PointerType(
                    atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))),
-               "argv"))},
-          atl::make_shared<BaseType>(BaseType(PrimitiveType::INT))))};
+               atl::make_shared<Identifier>(Identifier("argv"))))},
+          atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+          atl::make_shared<Block>(Block({}))))};
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
@@ -203,6 +211,11 @@ TEST(ParserTest, BinOp) {
   ASSERT_EQ(actual->decls.size(), 2);
   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
       atl::shared_ptr<FunDef>(new FunDef(
+          atl::make_shared<Identifier>(Identifier("isalpha")),
+          {atl::make_shared<VarDecl>(
+              VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
+                      atl::make_shared<Identifier>(Identifier("c"))))},
+          atl::make_shared<BaseType>(BaseType(PrimitiveType::BOOL)),
           atl::make_shared<Block>(Block({atl::make_shared<
               Return>(Return(atl::make_shared<ParenthExpr>(
               ParenthExpr(atl::make_shared<BinOp>(BinOp(
@@ -212,13 +225,17 @@ TEST(ParserTest, BinOp) {
                           ParenthExpr(atl::make_shared<BinOp>(BinOp(
                               atl::make_shared<CharLiteral>(CharLiteral("a")),
                               Op::LE,
-                              atl::make_shared<ParenthExpr>(ParenthExpr(
-                                  atl::make_shared<VarExpr>(VarExpr("c")))))))),
+                              atl::make_shared<ParenthExpr>(
+                                  ParenthExpr(atl::make_shared<VarExpr>(
+                                      VarExpr(atl::make_shared<Identifier>(
+                                          Identifier("c")))))))))),
                       Op::AND,
                       atl::make_shared<ParenthExpr>(
                           ParenthExpr(atl::make_shared<BinOp>(BinOp(
-                              atl::make_shared<ParenthExpr>(ParenthExpr(
-                                  atl::make_shared<VarExpr>(VarExpr("c")))),
+                              atl::make_shared<ParenthExpr>(
+                                  ParenthExpr(atl::make_shared<VarExpr>(
+                                      VarExpr(atl::make_shared<Identifier>(
+                                          Identifier("c")))))),
                               Op::LE,
                               atl::make_shared<CharLiteral>(
                                   CharLiteral("z")))))))))),
@@ -229,37 +246,40 @@ TEST(ParserTest, BinOp) {
                           ParenthExpr(atl::make_shared<BinOp>(BinOp(
                               atl::make_shared<CharLiteral>(CharLiteral("A")),
                               Op::LE,
-                              atl::make_shared<ParenthExpr>(ParenthExpr(
-                                  atl::make_shared<VarExpr>(VarExpr("c")))))))),
+                              atl::make_shared<ParenthExpr>(
+                                  ParenthExpr(atl::make_shared<VarExpr>(
+                                      VarExpr(atl::make_shared<Identifier>(
+                                          Identifier("c")))))))))),
                       Op::AND,
                       atl::make_shared<ParenthExpr>(
                           ParenthExpr(atl::make_shared<BinOp>(BinOp(
-                              atl::make_shared<ParenthExpr>(ParenthExpr(
-                                  atl::make_shared<VarExpr>(VarExpr("c")))),
+                              atl::make_shared<ParenthExpr>(
+                                  ParenthExpr(atl::make_shared<VarExpr>(
+                                      VarExpr(atl::make_shared<Identifier>(
+                                          Identifier("c")))))),
                               Op::LE,
                               atl::make_shared<CharLiteral>(
-                                  CharLiteral("Z"))))))))))))))))})),
-          "isalpha",
-          {atl::make_shared<VarDecl>(VarDecl(
-              atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)), "c"))},
-          atl::make_shared<BaseType>(BaseType(PrimitiveType::BOOL)))),
+                                  CharLiteral("Z"))))))))))))))))})))),
       atl::shared_ptr<FunDef>(new FunDef(
+          atl::make_shared<Identifier>(Identifier("main")), {},
+          atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
           atl::make_shared<Block>(Block(
               {atl::make_shared<VarDef>(VarDef(
                    atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                   "y", atl::make_shared<IntLiteral>(IntLiteral("5")))),
+                   atl::make_shared<Identifier>(Identifier("y")),
+                   atl::make_shared<IntLiteral>(IntLiteral("5")))),
                atl::make_shared<VarDecl>(VarDecl(
                    atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                   "x")),
+                   atl::make_shared<Identifier>(Identifier("x")))),
                atl::make_shared<Assign>(Assign(
-                   atl::make_shared<VarExpr>(VarExpr("x")),
+                   atl::make_shared<VarExpr>(
+                       VarExpr(atl::make_shared<Identifier>(Identifier("x")))),
                    atl::make_shared<BinOp>(BinOp(
                        atl::make_shared<IntLiteral>(IntLiteral("1")), Op::ADD,
                        atl::make_shared<IntLiteral>(IntLiteral("2")))))),
                atl::make_shared<Return>(
-                   Return(atl::make_shared<VarExpr>(VarExpr("x"))))})),
-          "main", {},
-          atl::make_shared<BaseType>(BaseType(PrimitiveType::INT))))};
+                   Return(atl::make_shared<VarExpr>(VarExpr(
+                       atl::make_shared<Identifier>(Identifier("x"))))))}))))};
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 

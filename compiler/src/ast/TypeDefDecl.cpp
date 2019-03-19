@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-TypeDefDecl::TypeDefDecl(atl::shared_ptr<Type> type,
-                         const atl::string &identifier)
+TypeDefDecl::TypeDefDecl(const atl::shared_ptr<Type> &type,
+                         const atl::shared_ptr<Identifier> &identifier)
     : type(type), identifier(identifier) {}
 
 atl::shared_ptr<TypeDefDecl> TypeDefDecl::getptr() {
@@ -18,7 +18,9 @@ bool TypeDefDecl::operator==(Decl &rhs) const {
 
 bool TypeDefDecl::operator!=(Decl &rhs) const { return !(*this == rhs); }
 
-atl::string TypeDefDecl::getIdentifier() const { return identifier; }
+atl::shared_ptr<Identifier> TypeDefDecl::getIdentifier() const {
+  return identifier;
+}
 
 void TypeDefDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 

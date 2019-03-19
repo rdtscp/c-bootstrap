@@ -13,7 +13,7 @@ class ParenthExpr : public Expr,
 public:
   atl::shared_ptr<Expr> innerExpr;
 
-  ParenthExpr(atl::shared_ptr<Expr> innerExpr);
+  ParenthExpr(const atl::shared_ptr<Expr> &innerExpr);
 
   atl::shared_ptr<ParenthExpr> getptr();
 

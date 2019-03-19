@@ -2,7 +2,8 @@
 
 using namespace ACC;
 
-AddressOf::AddressOf(atl::shared_ptr<Expr> addressOfExpr) : addressOfExpr(addressOfExpr) {}
+AddressOf::AddressOf(const atl::shared_ptr<Expr> &addressOfExpr)
+    : addressOfExpr(addressOfExpr) {}
 
 atl::shared_ptr<AddressOf> AddressOf::getptr() { return shared_from_this(); }
 
@@ -21,7 +22,9 @@ bool AddressOf::operator==(const AddressOf &rhs) const {
   return true;
 }
 
-bool AddressOf::operator!=(const AddressOf &rhs) const { return !(*this == rhs); }
+bool AddressOf::operator!=(const AddressOf &rhs) const {
+  return !(*this == rhs);
+}
 
 void AddressOf::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 

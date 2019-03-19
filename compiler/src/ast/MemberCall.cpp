@@ -2,8 +2,8 @@
 
 using namespace ACC;
 
-MemberCall::MemberCall(atl::shared_ptr<Expr> object,
-                       const atl::shared_ptr<FunCall> funCall)
+MemberCall::MemberCall(const atl::shared_ptr<Expr> &object,
+                       const atl::shared_ptr<FunCall> &funCall)
     : object(object), funCall(funCall) {}
 
 atl::shared_ptr<MemberCall> MemberCall::getptr() { return shared_from_this(); }

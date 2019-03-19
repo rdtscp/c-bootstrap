@@ -2,7 +2,8 @@
 
 using namespace ACC;
 
-Assign::Assign(atl::shared_ptr<Expr> lhs, atl::shared_ptr<Expr> rhs)
+Assign::Assign(const atl::shared_ptr<Expr> &lhs,
+               const atl::shared_ptr<Expr> &rhs)
     : lhs(lhs), rhs(rhs) {}
 
 atl::shared_ptr<Assign> Assign::getptr() { return shared_from_this(); }

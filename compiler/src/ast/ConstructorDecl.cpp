@@ -37,7 +37,7 @@ bool ConstructorDecl::operator!=(const ConstructorDecl &rhs) const {
   return !(*this == rhs);
 }
 
-atl::string ConstructorDecl::getIdentifier() const {
+atl::shared_ptr<Identifier> ConstructorDecl::getIdentifier() const {
   return classType->identifier;
 }
 

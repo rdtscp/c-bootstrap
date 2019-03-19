@@ -17,7 +17,7 @@ public:
   const atl::shared_ptr<ClassType> classType;
   const atl::vector<atl::shared_ptr<Decl>> classDecls;
 
-  ClassTypeDecl(atl::shared_ptr<ClassType> classType,
+  ClassTypeDecl(const atl::shared_ptr<ClassType> &classType,
                 const atl::vector<atl::shared_ptr<Decl>> &classDecls);
 
   atl::shared_ptr<ClassTypeDecl> getptr();
@@ -28,7 +28,7 @@ public:
   bool operator==(const ClassTypeDecl &rhs) const;
   bool operator!=(const ClassTypeDecl &rhs) const;
 
-  atl::string getIdentifier() const override;
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

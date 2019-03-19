@@ -4,7 +4,8 @@ using namespace ACC;
 
 Return::Return() : returnExpr(nullptr) {}
 
-Return::Return(atl::shared_ptr<Expr> returnExpr) : returnExpr(returnExpr) {}
+Return::Return(const atl::shared_ptr<Expr> &returnExpr)
+    : returnExpr(returnExpr) {}
 
 atl::shared_ptr<Return> Return::getptr() { return shared_from_this(); }
 

@@ -15,9 +15,9 @@ class MemberCall : public Expr,
 public:
   atl::shared_ptr<Expr> object;
   atl::shared_ptr<FunCall> funCall;
-  atl::string field;
 
-  MemberCall(atl::shared_ptr<Expr> object, atl::shared_ptr<FunCall> funCall);
+  MemberCall(const atl::shared_ptr<Expr> &object,
+             const atl::shared_ptr<FunCall> &funCall);
 
   atl::shared_ptr<MemberCall> getptr();
 

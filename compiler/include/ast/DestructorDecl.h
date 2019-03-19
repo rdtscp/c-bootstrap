@@ -18,8 +18,8 @@ public:
   DestructorDecl(const atl::shared_ptr<Type> &classType);
 
   DestructorDecl(const DestructorDecl &rhs) = delete;
-  virtual ~DestructorDecl() {}
   DestructorDecl &operator=(const DestructorDecl &rhs) = delete;
+  virtual ~DestructorDecl() {}
 
   atl::shared_ptr<DestructorDecl> getptr();
 
@@ -29,7 +29,7 @@ public:
   bool operator==(const DestructorDecl &rhs) const;
   bool operator!=(const DestructorDecl &rhs) const;
 
-  atl::string getIdentifier() const override;
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

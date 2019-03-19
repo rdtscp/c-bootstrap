@@ -2,12 +2,13 @@
 
 using namespace ACC;
 
-Block::Block(const atl::vector<atl::shared_ptr<Stmt>> &newBlockStmts)
-    : blockStmts(newBlockStmts), outerBlock(nullptr) {}
+Block::Block(const atl::vector<atl::shared_ptr<Stmt>> &stmts)
+    : decls({}), stmts(stmts), outerBlock(nullptr) {}
 
 atl::shared_ptr<Block> Block::getptr() { return shared_from_this(); }
 
-atl::shared_ptr<Decl> Block::find(const atl::string &identifier) {
+atl::shared_ptr<Decl>
+Block::find(const atl::shared_ptr<Identifier> &identifier) {
   atl::shared_ptr<Decl> local = findLocal(identifier);
   if (local == nullptr && outerBlock != nullptr)
     return outerBlock->find(identifier);
@@ -15,12 +16,12 @@ atl::shared_ptr<Decl> Block::find(const atl::string &identifier) {
   return local;
 }
 bool Block::operator==(const Block &rhs) const {
-  if (blockStmts.size() != rhs.blockStmts.size())
+  if (stmts.size() != rhs.stmts.size())
     return false;
 
-  for (int i = 0; i < blockStmts.size(); ++i)
+  for (int i = 0; i < stmts.size(); ++i)
     /* @TODO Implement comparitors for Stmts. */
-    if (blockStmts[i]->astClass() != rhs.blockStmts[i]->astClass())
+    if (stmts[i]->astClass() != rhs.stmts[i]->astClass())
       return false;
 
   return true;
@@ -28,16 +29,17 @@ bool Block::operator==(const Block &rhs) const {
 
 bool Block::operator!=(const Block &rhs) const { return !(*this == rhs); }
 
-atl::shared_ptr<Decl> Block::findLocal(const atl::string &identifier) {
-  std::string ident = identifier.c_str();
-  if (blockDecls.find(ident) != blockDecls.end())
-    return blockDecls.find(ident)->second;
+atl::shared_ptr<Decl>
+Block::findLocal(const atl::shared_ptr<Identifier> &identifier) {
+  std::string ident = identifier->toString().c_str();
+  if (decls.find(ident) != decls.end())
+    return decls.find(ident)->second;
 
   return nullptr;
 }
 
 void Block::insertDecl(const atl::shared_ptr<Decl> &decl) {
-  blockDecls[decl->getIdentifier().c_str()] = decl;
+  decls[decl->getIdentifier()->toString().c_str()] = decl;
 }
 
 void Block::setOuterBlock(const atl::shared_ptr<Block> &newOuterBlock) {

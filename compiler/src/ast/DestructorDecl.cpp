@@ -28,7 +28,7 @@ bool DestructorDecl::operator!=(const DestructorDecl &rhs) const {
   return !(*this == rhs);
 }
 
-atl::string DestructorDecl::getIdentifier() const {
+atl::shared_ptr<Identifier> DestructorDecl::getIdentifier() const {
   return classType->identifier;
 }
 

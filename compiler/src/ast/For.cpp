@@ -2,9 +2,10 @@
 
 using namespace ACC;
 
-For::For(atl::shared_ptr<VarDecl> initialVarDecl,
-         atl::shared_ptr<Expr> condition, atl::shared_ptr<Expr> endBodyExpr,
-         atl::shared_ptr<Stmt> body)
+For::For(const atl::shared_ptr<VarDecl> &initialVarDecl,
+         const atl::shared_ptr<Expr> &condition,
+         const atl::shared_ptr<Expr> &endBodyExpr,
+         const atl::shared_ptr<Stmt> &body)
     : initialVarDecl(initialVarDecl), condition(condition),
       endBodyExpr(endBodyExpr), body(body) {}
 

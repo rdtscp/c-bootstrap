@@ -4,9 +4,9 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-atl::string test_prefix = "../../test/tests/";
+atl::string test_prefix =
+    "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+// atl::string test_prefix = "../../test/tests/";
 
 TEST(ASTTest, BaseTypeComparisons) {
 
@@ -79,9 +79,9 @@ TEST(ASTTest, PointerTypeComparisons) {
 }
 
 TEST(ASTTest, StructTypeComparisons) {
-  StructType structType(atl::string("struct1"));
-  StructType structType2(atl::string("struct2"));
-  StructType structType3(atl::string("struct2"));
+  StructType structType(atl::make_shared<Identifier>(Identifier("struct1")));
+  StructType structType2(atl::make_shared<Identifier>(Identifier("struct2")));
+  StructType structType3(atl::make_shared<Identifier>(Identifier("struct2")));
 
   ASSERT_FALSE(structType == structType2);
 
@@ -90,11 +90,11 @@ TEST(ASTTest, StructTypeComparisons) {
 
 TEST(ASTTest, VarDeclComparisons) {
   VarDecl vd1(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-              atl::string("myInt"));
+              atl::make_shared<Identifier>(Identifier("myInt")));
   VarDecl vd2(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-              atl::string("myChar"));
+              atl::make_shared<Identifier>(Identifier("myChar")));
   VarDecl vd3(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-              atl::string("myChar"));
+              atl::make_shared<Identifier>(Identifier("myChar")));
 
   ASSERT_FALSE(vd1 == vd2);
   ASSERT_TRUE(vd2 == vd3);
