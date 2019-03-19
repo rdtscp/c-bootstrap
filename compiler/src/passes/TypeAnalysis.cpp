@@ -93,11 +93,11 @@ atl::shared_ptr<Type> TypeAnalysis::visit(DoWhile &dw) {
   dw.body->accept(*this);
   atl::shared_ptr<Type> conditionType = dw.condition->accept(*this);
   if (conditionType->astClass() != "BaseType")
-    return error("Type Analysis: Type of While condition is invalid.");
+    return error("Type Analysis: Type of DoWhile condition is invalid.");
   atl::shared_ptr<BaseType> conditionBaseType =
       atl::static_pointer_cast<BaseType>(conditionType);
   if (conditionBaseType->primitiveType != PrimitiveType::INT)
-    return error("Type Analysis: Type of While condition is not INT.");
+    return error("Type Analysis: Type of DoWhile condition is not INT.");
   return nullptr;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(EnumClassTypeDecl &ectd) {
@@ -159,13 +159,13 @@ atl::shared_ptr<Type> TypeAnalysis::visit(If &i) {
   atl::shared_ptr<Type> condType = i.ifCondition->accept(*this);
 
   if (condType->astClass() != "BaseType")
-    return error("Type Analysis: Type of While condition is invalid.");
+    return error("Type Analysis: Type of If condition is invalid.");
 
   atl::shared_ptr<BaseType> condBaseType =
       atl::static_pointer_cast<BaseType>(condType);
 
   if (condBaseType->primitiveType != PrimitiveType::INT)
-    return error("Type Analysis: Type of While condition is not INT.");
+    return error("Type Analysis: Type of If condition is not INT.");
 
   i.ifBody->accept(*this);
 
