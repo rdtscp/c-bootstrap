@@ -28,6 +28,6 @@ private:
   atl::pair<bool, atl::string> tryLexKeyword(const atl::string &keyword);
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

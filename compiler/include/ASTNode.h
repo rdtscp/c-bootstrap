@@ -32,6 +32,6 @@ public:
   virtual atl::string astClass() const = 0;
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

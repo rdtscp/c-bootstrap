@@ -29,6 +29,6 @@ public:
   bool operator!=(const Identifier &rhs) const;
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

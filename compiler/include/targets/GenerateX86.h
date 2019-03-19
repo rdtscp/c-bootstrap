@@ -92,6 +92,6 @@ private:
   /* ---- Helpers ---- */
   atl::shared_ptr<X86::Operand> genIntValue(int value);
 };
-}; // namespace ACC
+} // namespace ACC
 
 #endif

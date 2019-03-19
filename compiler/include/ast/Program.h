@@ -35,6 +35,6 @@ public:
   accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) override;
   atl::string astClass() const override;
 };
-}; // namespace ACC
+} // namespace ACC
 
 #endif

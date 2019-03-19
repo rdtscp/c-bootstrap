@@ -21,6 +21,6 @@ public:
   virtual atl::shared_ptr<Identifier> getIdentifier() const = 0;
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

@@ -99,8 +99,8 @@ static atl::shared_ptr<Register> edi(new Register(32, "edi"));
 static atl::shared_ptr<Register> esp(new Register(32, "esp"));
 static atl::shared_ptr<Register> ebp(new Register(32, "ebp"));
 
-}; // namespace X86
+} // namespace X86
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

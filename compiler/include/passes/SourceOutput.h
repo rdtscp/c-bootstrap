@@ -78,6 +78,6 @@ private:
   atl::string visit(While &w) override;
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

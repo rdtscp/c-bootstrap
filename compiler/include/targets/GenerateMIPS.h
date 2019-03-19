@@ -114,6 +114,6 @@ private:
   MIPS::Register visit(VarExpr &ve) override;
   MIPS::Register visit(While &w) override;
 };
-}; // namespace ACC
+} // namespace ACC
 
 #endif

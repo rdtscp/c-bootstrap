@@ -79,6 +79,6 @@ private:
   atl::shared_ptr<Type> visit(While &w) override;
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

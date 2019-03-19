@@ -303,6 +303,6 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
   }
 }
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

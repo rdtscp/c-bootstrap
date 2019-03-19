@@ -20,6 +20,6 @@ public:
   virtual atl::string getLiteral() const = 0;
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

@@ -35,6 +35,6 @@ public:
   atl::string astClass() const override;
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

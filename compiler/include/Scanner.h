@@ -42,6 +42,6 @@ private:
   void updateCurrFile();
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

@@ -39,6 +39,6 @@ public:
   atl::string opToStr(const Op op) const;
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

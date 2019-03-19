@@ -16,6 +16,6 @@ public:
   const atl::string &value;
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

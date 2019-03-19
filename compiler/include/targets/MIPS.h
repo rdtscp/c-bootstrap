@@ -70,8 +70,8 @@ const static Register sp(29, "sp");
 const static Register fp(30, "fp");
 const static Register ra(31, "ra");
 
-}; // namespace MIPS
+} // namespace MIPS
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

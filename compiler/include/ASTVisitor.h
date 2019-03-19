@@ -107,6 +107,6 @@ public:
   virtual T visit(While &w) = 0;
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

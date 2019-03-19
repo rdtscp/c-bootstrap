@@ -18,6 +18,6 @@ public:
   virtual bool operator!=(Type &rhs) const = 0;
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

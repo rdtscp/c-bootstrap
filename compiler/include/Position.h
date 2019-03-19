@@ -24,6 +24,6 @@ public:
   }
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

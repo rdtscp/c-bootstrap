@@ -22,6 +22,6 @@ enum class Op {
   ASSIGNADD
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

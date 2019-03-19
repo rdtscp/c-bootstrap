@@ -9,6 +9,6 @@ namespace ACC {
 
 class Stmt : public ASTNode {};
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif

@@ -143,6 +143,6 @@ private:
   atl::shared_ptr<BaseType> tokenToType(const SourceToken::Class &tc);
 };
 
-}; // namespace ACC
+} // namespace ACC
 
 #endif
