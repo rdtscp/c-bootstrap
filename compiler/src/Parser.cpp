@@ -207,10 +207,9 @@ bool Parser::acceptVarDecl(int offset) {
     if (!accept(TC::IDENTIFIER, offset))
       return false;
 
-  } else if (accept({TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UINT, TC::BOOL,
-                     TC::IDENTIFIER},
-                    offset)) {
-
+  } else if (accept(
+                 {TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UINT, TC::BOOL},
+                 offset)) {
     ++offset;
     if (accept(TC::ASTERIX, offset) && !accept(TC::REF, offset) &&
         !accept(TC::AND, offset))
@@ -226,8 +225,28 @@ bool Parser::acceptVarDecl(int offset) {
 
     if (!accept(TC::IDENTIFIER, offset))
       return false;
-  } else
+  } else if (accept(TC::IDENTIFIER, offset)) {
+    ++offset;
+    while (accept(TC::NAMESPACEACCESS, offset) &&
+           accept(TC::IDENTIFIER, offset + 1))
+      offset = offset + 2;
+    if (accept(TC::ASTERIX, offset) && !accept(TC::REF, offset) &&
+        !accept(TC::AND, offset))
+      while (accept(TC::ASTERIX, offset))
+        ++offset;
+
+    else if (accept(TC::REF, offset)) {
+      ++offset;
+    } else if (accept(TC::AND, offset)) {
+      ++offset;
+      ++offset;
+    }
+
+    if (!accept(TC::IDENTIFIER, offset))
+      return false;
+  } else {
     return false;
+  }
 
   return true;
 }
@@ -358,8 +377,8 @@ atl::shared_ptr<Identifier> Parser::parseIdentifier() {
             atl::make_shared<Identifier>(Identifier(parseOperatorOverload()));
         break;
       }
-      identifier =
-          atl::make_shared<Identifier>(Identifier(expect(TC::IDENTIFIER).data));
+      identifier = atl::make_shared<Identifier>(
+          Identifier(expect(TC::IDENTIFIER).data, identifier));
     }
   }
   return identifier;
