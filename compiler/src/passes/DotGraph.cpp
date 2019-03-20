@@ -512,7 +512,13 @@ atl::string DotGraph::visit(TypeCast &tc) {
   join(typecastID, tc.expr->accept(*this));
   return typecastID;
 }
-atl::string DotGraph::visit(TypeDefDecl &td) { return "undef"; }
+atl::string DotGraph::visit(TypeDefDecl &td) {
+  const atl::string typeDefDeclID =
+      atl::string("TypeDefDecl") + atl::to_string(++nodeCount);
+  declare(typeDefDeclID, atl::string("typedef (") + td.type->accept(*this) +
+                             ") => (" + td.identifier->toString() + ")");
+  return typeDefDeclID;
+}
 atl::string DotGraph::visit(ValueAt &va) {
   const atl::string derefID =
       atl::string("Deref") + atl::to_string(++nodeCount);
