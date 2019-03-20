@@ -11,7 +11,13 @@ Identifier::Identifier(const atl::string &p_value,
                        const atl::shared_ptr<Identifier> &p_parentIdentifier)
     : value(p_value), parentIdentifier(p_parentIdentifier) {}
 
-atl::string Identifier::toString() const { return value; }
+atl::string Identifier::toString() const {
+  atl::string output = value;
+  if (parentIdentifier) {
+    output = parentIdentifier->toString() + "::" + output;
+  }
+  return output;
+}
 
 bool Identifier::operator==(const Identifier &rhs) const {
   if (value != rhs.value)
