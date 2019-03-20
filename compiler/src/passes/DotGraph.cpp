@@ -69,20 +69,31 @@ atl::string DotGraph::visit(Assign &as) {
   return assignID;
 }
 atl::string DotGraph::visit(BaseType &bt) {
+  atl::string output;
   switch (bt.primitiveType) {
   case PrimitiveType::CHAR:
-    return "char";
+    output = "char";
+    break;
   case PrimitiveType::INT:
-    return "int";
+    output = "int";
+    break;
   case PrimitiveType::SHORT:
-    return "short";
+    output = "short";
+    break;
   case PrimitiveType::VOID:
-    return "void";
+    output = "void";
+    break;
   case PrimitiveType::UINT:
-    return "unsigned int";
+    output = "unsigned int";
+    break;
   case PrimitiveType::BOOL:
-    return "bool";
+    output = "bool";
+    break;
   }
+  if (bt.typeModifiers.find(Type::Modifiers::CONST)) {
+    output += " const ";
+  }
+  return output;
 }
 atl::string DotGraph::visit(BinOp &bo) {
   atl::string binOpID = atl::string("BinOp") + atl::to_string(++nodeCount);
@@ -170,7 +181,11 @@ atl::string DotGraph::visit(ClassType &ct) {
   atl::string classTypeID =
       atl::string("ClassType") + atl::to_string(++nodeCount);
   // declare(classTypeID, ct.identifier);
-  return ct.identifier->toString();
+  atl::string output = ct.identifier->toString();
+  if (ct.typeModifiers.find(Type::Modifiers::CONST)) {
+    output += " const";
+  }
+  return output;
 }
 atl::string DotGraph::visit(ClassTypeDecl &ctd) {
   const atl::string classID =
@@ -363,7 +378,11 @@ atl::string DotGraph::visit(Program &p) {
   return "Node0";
 }
 atl::string DotGraph::visit(ReferenceType &rt) {
-  return rt.referencedType->accept(*this) + " &";
+  atl::string output = rt.referencedType->accept(*this) + " &";
+  if (rt.typeModifiers.find(Type::Modifiers::CONST)) {
+    output += " const ";
+  }
+  return output;
 }
 atl::string DotGraph::visit(Return &r) {
   atl::string returnID = atl::string("Return") + atl::to_string(++nodeCount);
@@ -426,18 +445,16 @@ atl::string DotGraph::visit(TypeCast &tc) {
 atl::string DotGraph::visit(TypeDefDecl &td) { return ""; }
 atl::string DotGraph::visit(ValueAt &va) {
   atl::string derefID = atl::string("Deref") + atl::to_string(++nodeCount);
-  declare(derefID, "\"Deref\"");
+  declare(derefID, "Deref");
   join(derefID, va.derefExpr->accept(*this));
   return derefID;
 }
 atl::string DotGraph::visit(VarDecl &vd) {
-  atl::string varDeclID = atl::string("VarDecl") + atl::to_string(++nodeCount);
-  declare(varDeclID, vd.type->accept(*this) + " " + vd.identifer + ";");
-  // if (vd.type->astClass() == "ClassType") {
-  //   atl::shared_ptr<ClassType> classType =
-  //       atl::static_pointer_cast<ClassType>(vd.type);
-  //   join(varDeclID, classTypeDeclIDs[classType->identifier.c_str()]);
-  // }
+  const atl::string varDeclID =
+      atl::string("VarDecl") + atl::to_string(++nodeCount);
+  atl::string outputStr =
+      vd.type->accept(*this) + " " + vd.identifer->toString() + ";";
+  declare(varDeclID, outputStr);
   return varDeclID;
 }
 atl::string DotGraph::visit(VarDef &vd) {
