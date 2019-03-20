@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_CLASSTYPE_H
-#define ACC_CLASSTYPE_H
-
 #include "ClassTypeDecl.h"
 
 #include "Type.h"
@@ -39,5 +36,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

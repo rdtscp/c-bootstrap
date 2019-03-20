@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_VARDEF_H
-#define ACC_VARDEF_H
+
+
 
 #include "Decl.h"
 #include "Expr.h"
@@ -47,4 +47,3 @@ public:
 
 } // namespace ACC
 
-#endif

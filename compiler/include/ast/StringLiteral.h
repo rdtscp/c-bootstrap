@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_STRINGLITERAL_H
-#define ACC_STRINGLITERAL_H
-
 #include "Expr.h"
 #include "Literal.h"
 
@@ -38,5 +35,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

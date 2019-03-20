@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_ASTNODE_H
-#define ACC_ASTNODE_H
-
 #include "atl/include/shared_ptr.h"
 #include "atl/include/string.h"
 
@@ -33,5 +30,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

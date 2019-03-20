@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_MEMBERACCESS_H
-#define ACC_MEMBERACCESS_H
-
 #include "Expr.h"
 
 namespace ACC {
@@ -37,5 +34,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

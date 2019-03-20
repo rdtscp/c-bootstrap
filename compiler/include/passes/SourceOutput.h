@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_SOURCEOUTPUT_H
-#define ACC_SOURCEOUTPUT_H
-
 #include "atl/include/string.h"
 
 #include "../AST.h"
@@ -80,5 +77,3 @@ private:
 };
 
 } // namespace ACC
-
-#endif

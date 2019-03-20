@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_VALUEAT_H
-#define ACC_VALUEAT_H
+
+
 
 #include "Expr.h"
 
@@ -35,4 +35,3 @@ public:
 
 } // namespace ACC
 
-#endif

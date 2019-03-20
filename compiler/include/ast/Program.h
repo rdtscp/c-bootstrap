@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_PROGRAM_H
-#define ACC_PROGRAM_H
+
+
 
 #include <map>
 
@@ -37,4 +37,3 @@ public:
 };
 } // namespace ACC
 
-#endif

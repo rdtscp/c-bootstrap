@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_ARRAYTYPE_H
-#define ACC_ARRAYTYPE_H
-
 #include "Expr.h"
 #include "Type.h"
 
@@ -39,5 +36,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

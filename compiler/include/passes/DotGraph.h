@@ -1,7 +1,6 @@
 #pragma once
 
-#ifndef ACC_DOTGRAPH_H
-#define ACC_DOTGRAPH_H
+
 
 #include "atl/include/string.h"
 
@@ -80,5 +79,3 @@ private:
 };
 
 } // namespace ACC
-
-#endif

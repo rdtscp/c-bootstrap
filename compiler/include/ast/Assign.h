@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_ASSIGN_H
-#define ACC_ASSIGN_H
-
 #include "Expr.h"
 #include "Stmt.h"
 
@@ -31,5 +28,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

@@ -1,9 +1,6 @@
 
 #pragma once
 
-#ifndef ACC_CONSTRUCTORDEF_H
-#define ACC_CONSTRUCTORDEF_H
-
 #include "Block.h"
 #include "ConstructorDecl.h"
 
@@ -43,5 +40,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

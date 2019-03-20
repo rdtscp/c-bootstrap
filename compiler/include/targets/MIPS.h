@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_MIPS_H
-#define ACC_MIPS_H
-
 #include "atl/include/string.h"
 #include "atl/include/vector.h"
 #include <fstream>
@@ -73,5 +70,3 @@ const static Register ra(31, "ra");
 } // namespace MIPS
 
 } // namespace ACC
-
-#endif

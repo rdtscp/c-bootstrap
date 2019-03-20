@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_OP_H
-#define ACC_OP_H
-
 namespace ACC {
 
 enum class Op {
@@ -23,5 +20,3 @@ enum class Op {
 };
 
 } // namespace ACC
-
-#endif

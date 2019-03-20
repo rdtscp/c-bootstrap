@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_ENUMCLASSTYPEDECL_H
-#define ACC_ENUMCLASSTYPEDECL_H
+
+
 
 #include <map>
 
@@ -52,4 +52,3 @@ public:
 
 } // namespace ACC
 
-#endif

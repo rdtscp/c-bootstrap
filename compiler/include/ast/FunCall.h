@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_FUNCALL_H
-#define ACC_FUNCALL_H
+
+
 
 #include "Expr.h"
 
@@ -37,4 +37,3 @@ public:
 
 } // namespace ACC
 
-#endif

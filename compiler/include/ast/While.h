@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_WHILE_H
-#define ACC_WHILE_H
+
+
 
 #include "Expr.h"
 #include "Stmt.h"
@@ -32,4 +32,3 @@ public:
 
 } // namespace ACC
 
-#endif

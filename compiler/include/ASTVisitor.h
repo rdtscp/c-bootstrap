@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_ASTVISITOR_H
-#define ACC_ASTVISITOR_H
-
 namespace ACC {
 
 class AddressOf;
@@ -110,5 +107,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

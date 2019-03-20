@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_FUNDECL_H
-#define ACC_FUNDECL_H
+
+
 
 #include "Decl.h"
 #include "Type.h"
@@ -47,4 +47,3 @@ public:
 
 } // namespace ACC
 
-#endif

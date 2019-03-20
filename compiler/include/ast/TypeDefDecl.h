@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_TYPEDEF_H
-#define ACC_TYPEDEF_H
+
+
 
 #include "Decl.h"
 #include "Type.h"
@@ -38,4 +38,3 @@ public:
 
 } // namespace ACC
 
-#endif

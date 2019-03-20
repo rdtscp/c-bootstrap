@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_SOURCEHANDLER_H
-#define ACC_SOURCEHANDLER_H
-
 #include "atl/include/string.h"
 
 namespace ACC {
@@ -17,5 +14,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

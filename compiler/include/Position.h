@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_POSITION_H
-#define ACC_POSITION_H
-
 #include "atl/include/string.h"
 
 namespace ACC {
@@ -25,5 +22,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_AST_H
-#define ACC_AST_H
-
 #include "ast/AddressOf.h"
 #include "ast/Allocation.h"
 #include "ast/ArrayAccess.h"
@@ -58,5 +55,3 @@
 #include "ast/VarDef.h"
 #include "ast/VarExpr.h"
 #include "ast/While.h"
-
-#endif

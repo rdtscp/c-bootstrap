@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_PARSER_H
-#define ACC_PARSER_H
-
 #include "AST.h"
 #include "Lexer.h"
 #include "SourceToken.h"
@@ -144,5 +141,3 @@ private:
 };
 
 } // namespace ACC
-
-#endif

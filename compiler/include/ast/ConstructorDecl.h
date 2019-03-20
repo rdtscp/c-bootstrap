@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_CONSTRUCTORDECL_H
-#define ACC_CONSTRUCTORDECL_H
-
 #include "ClassType.h"
 // #include "Decl.h "
 #include "VarDecl.h"
@@ -46,5 +43,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_ENUMTYPEDECL_H
-#define ACC_ENUMTYPEDECL_H
+
+
 
 #include <map>
 
@@ -51,4 +51,3 @@ public:
 
 } // namespace ACC
 
-#endif

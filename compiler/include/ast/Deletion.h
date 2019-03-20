@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_DELETION_H
-#define ACC_DELETION_H
-
 #include "Stmt.h"
 #include "VarExpr.h"
 
@@ -38,5 +35,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

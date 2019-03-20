@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_ARRAYACCESS_H
-#define ACC_ARRAYACCESS_H
-
 #include "atl/include/string.h"
 
 #include "Expr.h"
@@ -39,5 +36,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

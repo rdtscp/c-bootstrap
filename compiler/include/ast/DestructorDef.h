@@ -1,9 +1,6 @@
 
 #pragma once
 
-#ifndef ACC_DESTRUCTORDEF_H
-#define ACC_DESTRUCTORDEF_H
-
 #include "Block.h"
 #include "DestructorDecl.h"
 
@@ -39,5 +36,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_DESTRUCTORDECL_H
-#define ACC_DESTRUCTORDECL_H
-
 #include "ClassType.h"
 // #include "Decl.h "
 #include "VarDecl.h"
@@ -43,5 +40,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

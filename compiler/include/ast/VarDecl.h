@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_VARDECL_H
-#define ACC_VARDECL_H
+
+
 
 #include "Decl.h"
 
@@ -53,4 +53,3 @@ public:
 
 } // namespace ACC
 
-#endif

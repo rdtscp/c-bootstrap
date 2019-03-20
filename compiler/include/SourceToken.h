@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_TOKEN_H
-#define ACC_TOKEN_H
-
 #include "atl/include/string.h"
 
 #include "Position.h"
@@ -304,5 +301,3 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
 }
 
 } // namespace ACC
-
-#endif

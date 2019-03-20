@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_TYPE_H
-#define ACC_TYPE_H
-
 #include "../ASTNode.h"
 #include "atl/include/set.h"
 
@@ -19,5 +16,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

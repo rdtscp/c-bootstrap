@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_PRIMITIVETYPE_H
-#define ACC_PRIMITIVETYPE_H
+
+
 
 #include "Type.h"
 
@@ -11,4 +11,3 @@ enum class PrimitiveType { INT, CHAR, VOID, SHORT, UINT, BOOL };
 
 } // namespace ACC
 
-#endif

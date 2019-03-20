@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_TYPECAST_H
-#define ACC_TYPECAST_H
+
+
 
 #include "Expr.h"
 #include "Type.h"
@@ -38,4 +38,3 @@ public:
 
 } // namespace ACC
 
-#endif

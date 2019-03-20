@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_NAMEANALYSIS_H
-#define ACC_NAMEANALYSIS_H
-
 #include "../AST.h"
 #include "../ASTVisitor.h"
 
@@ -81,5 +78,3 @@ private:
 };
 
 } // namespace ACC
-
-#endif

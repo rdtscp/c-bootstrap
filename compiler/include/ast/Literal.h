@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_LITERAL_H
-#define ACC_LITERAL_H
+
+
 
 #include "Expr.h"
 
@@ -22,4 +22,3 @@ public:
 
 } // namespace ACC
 
-#endif

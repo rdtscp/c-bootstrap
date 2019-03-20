@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_STRUCTTYPEDECL_H
-#define ACC_STRUCTTYPEDECL_H
+
+
 
 #include "Decl.h"
 #include "StructType.h"
@@ -44,4 +44,3 @@ public:
 
 } // namespace ACC
 
-#endif

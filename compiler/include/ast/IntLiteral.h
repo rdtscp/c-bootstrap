@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_INTLITERAL_H
-#define ACC_INTLITERAL_H
+
+
 
 #include "Expr.h"
 #include "Literal.h"
@@ -39,4 +39,3 @@ public:
 
 } // namespace ACC
 
-#endif

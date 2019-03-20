@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef ACC_MEMBERCALL_H
-#define ACC_MEMBERCALL_H
+
+
 
 #include "Expr.h"
 #include "FunCall.h"
@@ -40,4 +40,3 @@ public:
 
 } // namespace ACC
 
-#endif

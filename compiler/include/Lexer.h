@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_TOKENISER_H
-#define ACC_TOKENISER_H
-
 #include "atl/include/pair.h"
 #include "atl/include/string.h"
 
@@ -29,5 +26,3 @@ private:
 };
 
 } // namespace ACC
-
-#endif

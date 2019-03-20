@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_DOWHILE_H
-#define ACC_DOWHILE_H
-
 #include "Expr.h"
 #include "Stmt.h"
 
@@ -31,5 +28,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

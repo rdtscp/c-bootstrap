@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_POINTERTYPE_H
-#define ACC_POINTERTYPE_H
-
 #include "PrimitiveType.h"
 #include "Type.h"
 
@@ -41,5 +38,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

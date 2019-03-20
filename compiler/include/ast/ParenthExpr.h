@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_PARENTHEXPR_H
-#define ACC_PARENTHEXPR_H
-
 #include "Expr.h"
 
 namespace ACC {
@@ -35,5 +32,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

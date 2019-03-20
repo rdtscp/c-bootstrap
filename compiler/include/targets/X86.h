@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_X86_H
-#define ACC_X86_H
-
 #include "atl/include/shared_ptr.h"
 #include "atl/include/string.h"
 #include <fstream>
@@ -102,5 +99,3 @@ static atl::shared_ptr<Register> ebp(new Register(32, "ebp"));
 } // namespace X86
 
 } // namespace ACC
-
-#endif

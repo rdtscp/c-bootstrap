@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_DECL_H
-#define ACC_DECL_H
-
 #include "../ASTNode.h"
 
 namespace ACC {
@@ -22,5 +19,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

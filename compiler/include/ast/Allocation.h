@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_ALLOCATION_H
-#define ACC_ALLOCATION_H
-
 #include "Expr.h"
 #include "Type.h"
 
@@ -40,5 +37,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

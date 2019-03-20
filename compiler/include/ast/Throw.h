@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_THROW_H
-#define ACC_THROW_H
+
+
 
 #include "Stmt.h"
 #include "StringLiteral.h"
@@ -30,4 +30,3 @@ public:
 
 } // namespace ACC
 
-#endif

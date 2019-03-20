@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_GENERATEMIPS_H
-#define ACC_GENERATEMIPS_H
-
 #include "atl/include/string.h"
 #include <algorithm>
 #include <stack>
@@ -116,5 +113,3 @@ private:
   MIPS::Register visit(While &w) override;
 };
 } // namespace ACC
-
-#endif

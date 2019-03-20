@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_BINOP_H
-#define ACC_BINOP_H
-
 #include "Expr.h"
 #include "Op.h"
 
@@ -40,5 +37,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

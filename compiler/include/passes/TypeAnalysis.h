@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_TYPEANALYSIS_H
-#define ACC_TYPEANALYSIS_H
-
 #include "../AST.h"
 #include "../ASTVisitor.h"
 
@@ -81,5 +78,3 @@ private:
 };
 
 } // namespace ACC
-
-#endif

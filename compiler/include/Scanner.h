@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_SCANNER_H
-#define ACC_SCANNER_H
-
 #include <string>
 
 #include "Position.h"
@@ -43,5 +40,3 @@ private:
 };
 
 } // namespace ACC
-
-#endif

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_PREFIXOP_H
-#define ACC_PREFIXOP_H
+
+
 
 #include "Expr.h"
 #include "VarExpr.h"
@@ -39,4 +39,3 @@ public:
 
 } // namespace ACC
 
-#endif

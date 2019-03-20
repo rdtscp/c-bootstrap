@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_IF_H
-#define ACC_IF_H
+
+
 
 #include "Expr.h"
 
@@ -36,4 +36,3 @@ public:
 
 } // namespace ACC
 
-#endif

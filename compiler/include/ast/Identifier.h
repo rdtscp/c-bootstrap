@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_IDENTIFIER_H
-#define ACC_IDENTIFIER_H
+
+
 
 #include "atl/include/shared_ptr.h"
 #include "atl/include/string.h"
@@ -31,4 +31,3 @@ public:
 
 } // namespace ACC
 
-#endif

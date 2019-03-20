@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_NAMESPACE_H
-#define ACC_NAMESPACE_H
+
+
 
 #include "../ASTNode.h"
 #include "Block.h"
@@ -36,4 +36,3 @@ public:
 };
 } // namespace ACC
 
-#endif

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_RETURN_H
-#define ACC_RETURN_H
+
+
 
 #include "Expr.h"
 #include "Stmt.h"
@@ -31,4 +31,3 @@ public:
 
 } // namespace ACC
 
-#endif

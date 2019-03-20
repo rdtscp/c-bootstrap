@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ACC_SIZEOF_H
-#define ACC_SIZEOF_H
-
 #include "Expr.h"
 #include "Type.h"
 
@@ -35,5 +32,3 @@ public:
 };
 
 } // namespace ACC
-
-#endif

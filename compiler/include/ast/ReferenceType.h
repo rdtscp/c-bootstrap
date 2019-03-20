@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef ACC_REFERENCETYPE_H
-#define ACC_REFERENCETYPE_H
+
+
 
 #include "PrimitiveType.h"
 #include "Type.h"
@@ -42,4 +42,3 @@ public:
 
 } // namespace ACC
 
-#endif
