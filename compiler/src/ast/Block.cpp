@@ -31,15 +31,16 @@ bool Block::operator!=(const Block &rhs) const { return !(*this == rhs); }
 
 atl::shared_ptr<Decl>
 Block::findLocal(const atl::shared_ptr<Identifier> &identifier) {
-  std::string ident = identifier->toString().c_str();
-  if (decls.find(ident) != decls.end())
-    return decls.find(ident)->second;
+  // Reverse iterate decls.
+  for (int idx = decls.size() - 1; idx >= 0; --idx)
+    if (*identifier == *decls[idx]->getIdentifier())
+      return decls[idx];
 
   return nullptr;
 }
 
 void Block::insertDecl(const atl::shared_ptr<Decl> &decl) {
-  decls[decl->getIdentifier()->toString().c_str()] = decl;
+  decls.push_back(decl);
 }
 
 void Block::setOuterBlock(const atl::shared_ptr<Block> &newOuterBlock) {

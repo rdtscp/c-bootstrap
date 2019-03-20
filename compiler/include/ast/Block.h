@@ -1,7 +1,6 @@
 #pragma once
 
 #include "atl/include/vector.h"
-#include <map>
 
 #include "Decl.h"
 #include "Stmt.h"
@@ -11,7 +10,7 @@ namespace ACC {
 class Block : public Stmt, public atl::enable_shared_from_this<Block> {
 
 public:
-  std::map<std::string, atl::shared_ptr<Decl>> decls;
+  atl::vector<atl::shared_ptr<Decl>> decls;
   atl::vector<atl::shared_ptr<Stmt>> stmts;
   atl::shared_ptr<Block> outerBlock;
 

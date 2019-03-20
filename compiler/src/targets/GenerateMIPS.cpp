@@ -132,8 +132,8 @@ MIPS::Register GenerateMIPS::visit(Block &b) {
     b.stmts[idx]->accept(*this);
 
   /* Clean up the stack. */
-  for (const auto &ident_decl : b.decls) {
-    atl::shared_ptr<Decl> currDecl = ident_decl.second;
+  for (int idx = 0; idx < b.decls.size(); ++idx) {
+    atl::shared_ptr<Decl> currDecl = b.decls[idx];
     if (currDecl->astClass() == "VarDecl") {
       /* ---- Deconstruct VarDecl ---- */
       MIPS.ADDI(MIPS::sp, MIPS::sp, 4);
