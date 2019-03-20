@@ -1,3 +1,1 @@
-int mane(int argc, char *argv) {
-  return 1;
-}
+int mane(int argc, char *argv) { return 1; }

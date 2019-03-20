@@ -3,4 +3,3 @@ struct FooStruct {
 };
 
 struct FooStruct myFooStruct;
-
