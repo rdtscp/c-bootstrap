@@ -8,9 +8,9 @@
 
 using namespace ACC;
 
-atl::string test_prefix =
-    "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-// atl::string test_prefix = "../../test/tests/";
+// atl::string test_prefix =
+    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+atl::string test_prefix = "../../test/tests/";
 
 TEST(ParserTest, AllTokens) {
   const atl::string filepath = test_prefix + "lexer/alltokens.c";
