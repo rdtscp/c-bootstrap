@@ -23,6 +23,13 @@ bool Identifier::operator==(const Identifier &rhs) const {
   if (value != rhs.value)
     return false;
 
+  if (parentIdentifier && rhs.parentIdentifier)
+    if (*parentIdentifier != *rhs.parentIdentifier)
+      return false;
+
+  if (parentIdentifier || rhs.parentIdentifier)
+    return false;
+
   return true;
 }
 
