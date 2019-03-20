@@ -40,7 +40,8 @@
       "args": [
         "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main_.cpp",
         "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/class.s",
-        "x86"
+        "x86",
+        "--print"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
