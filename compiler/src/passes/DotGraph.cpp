@@ -215,8 +215,9 @@ atl::string DotGraph::visit(ConstructorDef &cd) {
       atl::string("ConstructorDef") + atl::to_string(++nodeCount);
   atl::string funParams = "(";
   for (int i = 0; i < cd.constructorParams.size(); ++i) {
-    atl::string currParam = cd.constructorParams[i]->type->accept(*this) + " " +
-                            cd.constructorParams[i]->getIdentifier();
+    atl::string currParam =
+        cd.constructorParams[i]->type->accept(*this) + " " +
+        cd.constructorParams[i]->getIdentifier()->toString();
     if (i != (cd.constructorParams.size() - 1))
       currParam += ", ";
     funParams += currParam;
@@ -288,7 +289,7 @@ atl::string DotGraph::visit(FunDef &fd) {
   atl::string funParams = "(";
   for (int i = 0; i < fd.funParams.size(); ++i) {
     atl::string currParam = fd.funParams[i]->type->accept(*this) + " " +
-                            fd.funParams[i]->getIdentifier();
+                            fd.funParams[i]->getIdentifier()->toString();
     if (i != (fd.funParams.size() - 1))
       currParam += ", ";
     funParams += currParam;
