@@ -316,8 +316,12 @@ atl::string DotGraph::visit(EnumClassTypeDecl &ectd) {
 atl::string DotGraph::visit(EnumTypeDecl &etd) {
   const atl::string enumTypeDeclID =
       atl::string("enumTypeDeclID") + atl::to_string(++nodeCount);
-  declare(enumTypeDeclID,
-          atl::string("enum ") + etd.getIdentifier()->toString());
+  if (etd.getIdentifier())
+    declare(enumTypeDeclID,
+            atl::string("enum ") + etd.getIdentifier()->toString());
+  else
+    declare(enumTypeDeclID, "enum ");
+
   return enumTypeDeclID;
 }
 atl::string DotGraph::visit(For &f) {
@@ -429,9 +433,9 @@ atl::string DotGraph::visit(PrefixOp &po) {
       atl::string("PrefixOp") + atl::to_string(++nodeCount);
   atl::string opStr = "PrefixOp(";
   if (po.operation == PrefixOp::Op::DEC)
-    opStr += "--)";
+    opStr += "--";
   if (po.operation == PrefixOp::Op::INC)
-    opStr += "++)";
+    opStr += "++";
   declare(preficIncID, opStr + ")");
   join(preficIncID, po.variable->accept(*this));
   return preficIncID;
