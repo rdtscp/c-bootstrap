@@ -18,7 +18,7 @@ void DotGraph::put(const atl::string &str) { printf("%s\n", str.c_str()); }
 
 /* ---- Visit AST ---- */
 
-atl::string DotGraph::visit(AddressOf &ao) { return ""; }
+atl::string DotGraph::visit(AddressOf &ao) { return "undef"; }
 atl::string DotGraph::visit(Allocation &a) {
   const atl::string allocationID =
       atl::string("Allocation") + atl::to_string(++nodeCount);
@@ -221,12 +221,21 @@ atl::string DotGraph::visit(ClassTypeDecl &ctd) {
 atl::string DotGraph::visit(ConstructorDecl &cd) {
   atl::string constructorID =
       atl::string("ConstructorDecl") + atl::to_string(++nodeCount);
-  // declare(funcID, fd.funName);
-  // join(funcID, fd.funBlock->accept(*this));
+  atl::string funParams = "(";
+  for (int i = 0; i < cd.constructorParams.size(); ++i) {
+    atl::string currParam =
+        cd.constructorParams[i]->type->accept(*this) + " " +
+        cd.constructorParams[i]->getIdentifier()->toString();
+    if (i != (cd.constructorParams.size() - 1))
+      currParam += ", ";
+    funParams += currParam;
+  }
+  funParams += ");";
+  declare(constructorID, cd.classType->identifier->toString() + funParams);
   return constructorID;
 }
 atl::string DotGraph::visit(ConstructorDef &cd) {
-  atl::string constructorID =
+  const atl::string constructorID =
       atl::string("ConstructorDef") + atl::to_string(++nodeCount);
   atl::string funParams = "(";
   for (int i = 0; i < cd.constructorParams.size(); ++i) {
@@ -238,13 +247,16 @@ atl::string DotGraph::visit(ConstructorDef &cd) {
     funParams += currParam;
   }
   funParams += ")";
-
-  for (int idx = 0; idx < cd.initialiserList.size(); ++idx) {
-
-    join(constructorID, cd.initialiserList[idx]->accept(*this));
-  }
-
   declare(constructorID, cd.classType->identifier->toString() + funParams);
+
+  atl::string initialiserListID =
+      atl::string("ConstructorDef_IL") + atl::to_string(++nodeCount);
+  declare(initialiserListID, ":");
+  for (int idx = 0; idx < cd.initialiserList.size(); ++idx) {
+    join(initialiserListID, cd.initialiserList[idx]->accept(*this));
+  }
+  join(constructorID, initialiserListID);
+
   join(constructorID, cd.constructorBlock->accept(*this));
   return constructorID;
 }
@@ -277,8 +289,8 @@ atl::string DotGraph::visit(DoWhile &dw) {
   join(whileID, dw.condition->accept(*this));
   return whileID;
 }
-atl::string DotGraph::visit(EnumClassTypeDecl &ectd) { return ""; }
-atl::string DotGraph::visit(EnumTypeDecl &etd) { return ""; }
+atl::string DotGraph::visit(EnumClassTypeDecl &ectd) { return "undef"; }
+atl::string DotGraph::visit(EnumTypeDecl &etd) { return "undef"; }
 atl::string DotGraph::visit(For &f) {
   atl::string forID = atl::string("For") + atl::to_string(++nodeCount);
 
@@ -350,7 +362,7 @@ atl::string DotGraph::visit(MemberAccess &ma) {
 
   return memberAccessID;
 }
-atl::string DotGraph::visit(MemberCall &mc) { return ""; }
+atl::string DotGraph::visit(MemberCall &mc) { return "undef"; }
 atl::string DotGraph::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);
 }
@@ -442,7 +454,7 @@ atl::string DotGraph::visit(TypeCast &tc) {
   join(typecastID, tc.expr->accept(*this));
   return typecastID;
 }
-atl::string DotGraph::visit(TypeDefDecl &td) { return ""; }
+atl::string DotGraph::visit(TypeDefDecl &td) { return "undef"; }
 atl::string DotGraph::visit(ValueAt &va) {
   atl::string derefID = atl::string("Deref") + atl::to_string(++nodeCount);
   declare(derefID, "Deref");
