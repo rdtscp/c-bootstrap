@@ -599,7 +599,7 @@ atl::shared_ptr<EnumClassTypeDecl> Parser::parseEnumClassTypeDecl() {
 }
 atl::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
   expect(TC::ENUM);
-  atl::shared_ptr<Identifier> enumIdentifier;
+  atl::shared_ptr<Identifier> enumIdentifier(new Identifier(""));
   if (accept(TC::IDENTIFIER))
     enumIdentifier = parseIdentifier();
   expect(TC::LBRA);
