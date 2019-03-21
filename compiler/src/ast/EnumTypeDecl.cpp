@@ -32,6 +32,13 @@ bool EnumTypeDecl::operator!=(Type &rhs) const { return !(*this == rhs); }
 
 int EnumTypeDecl::getBytes() const { return 4; }
 
+atl::string EnumTypeDecl::getSignature() const {
+  if (identifier)
+    return atl::string("enum ") + identifier->toString();
+  return "enum";  
+}
+
+
 bool EnumTypeDecl::operator==(const EnumTypeDecl &rhs) const {
   return states == rhs.states;
 }

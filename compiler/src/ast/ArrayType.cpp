@@ -37,6 +37,9 @@ int ArrayType::getBytes() const {
          elementSize;
 }
 
+atl::string ArrayType::getSignature() const { return type->getSignature() + "[]"; }
+
+
 void ArrayType::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 atl::string ArrayType::accept(ASTVisitor<atl::string> &v) {

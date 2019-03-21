@@ -26,6 +26,7 @@ public:
   bool operator!=(const ReferenceType &rhs) const;
 
   int getBytes() const override;
+  atl::string getSignature() const override;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

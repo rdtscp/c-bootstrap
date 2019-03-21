@@ -9,7 +9,6 @@
 namespace ACC {
 
 class TypeDefDecl : public Decl,
-                    // public Type,
                     public atl::enable_shared_from_this<TypeDefDecl> {
 
 public:
