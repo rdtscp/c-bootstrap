@@ -2,10 +2,11 @@
 
 using namespace ACC;
 
-FunDecl::FunDecl(const atl::shared_ptr<Identifier> &p_funIdentifier,
+FunDecl::FunDecl(const atl::set<FunModifiers> &p_funModifiers,
+                 const atl::shared_ptr<Identifier> &p_funIdentifier,
                  const atl::vector<atl::shared_ptr<VarDecl>> &p_funParams,
                  const atl::shared_ptr<Type> &p_funType)
-    : funIdentifier(p_funIdentifier), funParams(p_funParams),
+    : funModifiers(p_funModifiers), funIdentifier(p_funIdentifier), funParams(p_funParams),
       funType(p_funType) {}
 
 atl::shared_ptr<FunDecl> FunDecl::getptr() { return shared_from_this(); }
@@ -19,6 +20,9 @@ bool FunDecl::operator==(Decl &rhs) const {
 bool FunDecl::operator!=(Decl &rhs) const { return !(*this == rhs); }
 
 bool FunDecl::operator==(const FunDecl &rhs) const {
+  if (funModifiers != rhs.funModifiers)
+    return false;
+    
   if (*funType != *rhs.funType)
     return false;
 
@@ -40,6 +44,16 @@ bool FunDecl::operator!=(const FunDecl &rhs) const { return !(*this == rhs); }
 atl::shared_ptr<Identifier> FunDecl::getIdentifier() const {
   return funIdentifier;
 }
+atl::string FunDecl::getSignature() const {
+  atl::string signatureStr = funIdentifier->toString() + "(";
+  for (int idx = 0; idx < funParams.size(); ++idx) {
+    signatureStr += funParams[idx]->type->getSignature();
+    if (idx < (funParams.size() - 1))
+      signatureStr += ", ";
+  }
+  return signatureStr + ")";
+}
+
 
 void FunDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 

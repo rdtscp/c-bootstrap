@@ -629,9 +629,11 @@ atl::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
   return atl::make_shared<EnumTypeDecl>(EnumTypeDecl(enumIdentifier, states));
 }
 atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
-  if (accept(TC::STATIC))
-    // TODO: Handle Modifier
+  atl::set<FunDecl::FunModifiers> funModifiers;
+  if (accept(TC::STATIC)) {
     expect(TC::STATIC);
+    funModifiers.insert(FunDecl::FunModifiers::STATIC);
+  }
 
   atl::shared_ptr<Type> funType = parseType();
   atl::shared_ptr<Identifier> funIdentifier;
@@ -658,8 +660,10 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
 
   expect(TC::RPAR);
 
-  if (accept(TC::CONST))
+  if (accept(TC::CONST)) {
     expect(TC::CONST);
+    funModifiers.insert(FunDecl::FunModifiers::CONST);
+  }
   // TODO: Modifiers for FunDecls
 
   if (acceptBlock() && !isDef) {
@@ -668,13 +672,13 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
   } else if (acceptBlock()) {
     atl::shared_ptr<Block> funBlock = parseBlock();
     atl::shared_ptr<FunDef> fd(
-        new FunDef(funIdentifier, funParams, funType, funBlock));
+        new FunDef(funModifiers, funIdentifier, funParams, funType, funBlock));
     return fd;
     // return atl::make_shared<FunDef>(
     //     FunDef(funBlock, funIdent, funParams, funType));
   } else {
     expect(TC::SC);
-    atl::shared_ptr<FunDecl> fd(new FunDecl(funIdentifier, funParams, funType));
+    atl::shared_ptr<FunDecl> fd(new FunDecl(funModifiers, funIdentifier, funParams, funType));
     return fd;
     // return atl::make_shared<FunDecl>(FunDecl(funIdent, funParams,
     // funType));

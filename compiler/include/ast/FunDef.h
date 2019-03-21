@@ -16,7 +16,8 @@ class FunDef : public FunDecl {
 public:
   atl::shared_ptr<Block> funBlock;
 
-  FunDef(const atl::shared_ptr<Identifier> &p_funIdentifier,
+  FunDef(const atl::set<FunModifiers> &p_funModifiers,
+         const atl::shared_ptr<Identifier> &p_funIdentifier,
          const atl::vector<atl::shared_ptr<VarDecl>> &p_funParams,
          const atl::shared_ptr<Type> &p_funType,
          const atl::shared_ptr<Block> &p_funBlock);

@@ -2,11 +2,12 @@
 
 using namespace ACC;
 
-FunDef::FunDef(const atl::shared_ptr<Identifier> &p_funIdentifier,
+FunDef::FunDef(const atl::set<FunModifiers> &p_funModifiers,
+               const atl::shared_ptr<Identifier> &p_funIdentifier,
                const atl::vector<atl::shared_ptr<VarDecl>> &p_funParams,
                const atl::shared_ptr<Type> &p_funType,
                const atl::shared_ptr<Block> &p_funBlock)
-    : FunDecl(p_funIdentifier, p_funParams, p_funType), funBlock(p_funBlock) {}
+    : FunDecl(p_funModifiers, p_funIdentifier, p_funParams, p_funType), funBlock(p_funBlock) {}
 
 atl::shared_ptr<FunDecl> FunDef::getptr() {
   return FunDecl::shared_from_this();
@@ -21,6 +22,9 @@ bool FunDef::operator==(Decl &rhs) const {
 bool FunDef::operator!=(Decl &rhs) const { return !(*this == rhs); }
 
 bool FunDef::operator==(const FunDef &rhs) const {
+  if (funModifiers != rhs.funModifiers)
+    return false;
+
   if (*funType != *rhs.funType)
     return false;
 

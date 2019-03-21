@@ -1,7 +1,6 @@
 #pragma once
 
-
-
+#include "atl/include/set.h"
 
 #include "Decl.h"
 #include "Type.h"
@@ -12,11 +11,19 @@ namespace ACC {
 class FunDecl : public Decl, public atl::enable_shared_from_this<FunDecl> {
 
 public:
+  enum class FunModifiers {
+    CONST,
+    OVERRIDE,
+    STATIC,
+    VIRTUAL
+  };
+  atl::set<FunModifiers> funModifiers;
   atl::shared_ptr<Identifier> funIdentifier;
   atl::vector<atl::shared_ptr<VarDecl>> funParams;
   atl::shared_ptr<Type> funType;
 
-  FunDecl(const atl::shared_ptr<Identifier> &p_funIdentifier,
+  FunDecl(const atl::set<FunModifiers> &p_funModifiers,
+          const atl::shared_ptr<Identifier> &p_funIdentifier,
           const atl::vector<atl::shared_ptr<VarDecl>> &p_funParams,
           const atl::shared_ptr<Type> &p_funType);
 
@@ -33,6 +40,7 @@ public:
   bool operator!=(const FunDecl &rhs) const;
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
+  atl::string getSignature() const;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;
