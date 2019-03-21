@@ -184,6 +184,7 @@ TEST(ParserTest, FunDecl) {
           VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
                   atl::make_shared<Identifier>(Identifier("myGlobalInt")))),
       atl::shared_ptr<FunDef>(new FunDef(
+          atl::set<FunDecl::FunModifiers>(),
           atl::make_shared<Identifier>(Identifier("main")),
           {atl::make_shared<VarDecl>(
                VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
@@ -209,8 +210,11 @@ TEST(ParserTest, BinOp) {
   ACC::Parser parser(lexer);
   atl::shared_ptr<Program> actual = parser.getAST();
   ASSERT_EQ(actual->decls.size(), 2);
+  atl::set<FunDecl::FunModifiers> isalphaModifiers;
+  isalphaModifiers.insert(FunDecl::FunModifiers::STATIC);
   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
       atl::shared_ptr<FunDef>(new FunDef(
+          isalphaModifiers,
           atl::make_shared<Identifier>(Identifier("isalpha")),
           {atl::make_shared<VarDecl>(
               VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
@@ -261,6 +265,7 @@ TEST(ParserTest, BinOp) {
                               atl::make_shared<CharLiteral>(
                                   CharLiteral("Z"))))))))))))))))})))),
       atl::shared_ptr<FunDef>(new FunDef(
+          atl::set<FunDecl::FunModifiers>(),
           atl::make_shared<Identifier>(Identifier("main")), {},
           atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
           atl::make_shared<Block>(Block(
