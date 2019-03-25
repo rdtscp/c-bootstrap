@@ -55,48 +55,44 @@ Writer::Writer(const atl::string &filename) {
 void Writer::add(const atl::shared_ptr<X86::Operand> &op1,
                  const atl::shared_ptr<X86::Operand> &op2,
                  const atl::string &comment) {
-  atl::string output = atl::string("add ") + op1->toString() + ", " +
-                       op2->toString() + "\t; eax = " + op1->toString() +
-                       " + " + op2->toString();
+  atl::string output = "add " + op1->toString() + ", " + op2->toString() +
+                       "\t; eax = " + op1->toString() + " + " + op2->toString();
   if (comment != "")
-    output += atl::string("\t; ") + comment;
+    output += "\t; " + comment;
   write(output);
 }
 
 void Writer::block(atl::string blockName, const atl::string &comment) {
-  write(atl::string("\n") + blockName + ":");
+  write("\n" + blockName + ":");
 }
 
 void Writer::call(const atl::string &ident, const atl::string &comment) {
-  write(atl::string("call ") + ident + "FunDecl");
+  write("call " + ident + "FunDecl");
 }
 
 void Writer::cmp(const atl::shared_ptr<X86::Operand> &op, const int value,
                  const atl::string &comment) {
-  write(atl::string("cmp ") + op->toString() + ", " + atl::to_string(value));
+  write("cmp " + op->toString() + ", " + atl::to_string(value));
 }
 
-void Writer::comment(const atl::string &comment) {
-  write(atl::string(";") + comment);
-}
+void Writer::comment(const atl::string &comment) { write(";" + comment); }
 
 void Writer::imul(const atl::shared_ptr<X86::Operand> &op1,
                   const atl::shared_ptr<X86::Operand> &op2,
                   const atl::string &comment) {
-  atl::string output = atl::string("imul ") + op1->toString() + ", " +
-                       op2->toString() + "\t; eax = " + op1->toString() +
-                       " * " + op2->toString();
+  atl::string output = "imul " + op1->toString() + ", " + op2->toString() +
+                       "\t; eax = " + op1->toString() + " * " + op2->toString();
   if (comment != "")
-    output += atl::string("\t; ") + comment;
+    output += "\t; " + comment;
   write(output);
 }
 
 void Writer::jeq(const atl::string &label, const atl::string &comment) {
-  write(atl::string("jeq ") + label);
+  write("jeq " + label);
 }
 
 void Writer::jmp(const atl::string &label, const atl::string &comment) {
-  write(atl::string("jmp ") + label);
+  write("jmp " + label);
 }
 
 void Writer::mov(const atl::shared_ptr<X86::Operand> &dst,
@@ -108,29 +104,29 @@ void Writer::mov(const atl::shared_ptr<X86::Operand> &dst,
   atl::string dstStr = dst->toString();
   atl::string srcStr = src->toString();
   if (dst->opType() == "GlobalVariable")
-    dstStr = atl::string("[") + dstStr + atl::string("]");
+    dstStr = "[" + dstStr + "]";
   if (src->opType() == "GlobalVariable")
-    srcStr = atl::string("[") + srcStr + "]";
+    srcStr = "[" + srcStr + "]";
 
-  atl::string output = atl::string("mov ") + dstStr + ", " + srcStr;
+  atl::string output = "mov " + dstStr + ", " + srcStr;
   if (comment != "")
-    output += atl::string("\t; ") + comment;
+    output += "\t; " + comment;
   write(output);
 }
 
 void Writer::pop(const atl::shared_ptr<X86::Operand> &op,
                  const atl::string &comment) {
-  atl::string output = atl::string("pop dword ") + op->toString();
+  atl::string output = "pop dword " + op->toString();
   if (comment != "")
-    output += atl::string("\t; ") + comment;
+    output += "\t; " + comment;
   write(output);
 }
 
 void Writer::push(const atl::shared_ptr<X86::Operand> &op,
                   const atl::string &comment) {
-  atl::string output = atl::string("push dword ") + op->toString();
+  atl::string output = "push dword " + op->toString();
   if (comment != "")
-    output += atl::string("\t; ") + comment;
+    output += "\t; " + comment;
   write(output);
 }
 
@@ -140,8 +136,8 @@ void Writer::ret(const atl::string &comment) {
 
 void Writer::sub(const atl::shared_ptr<X86::Operand> &op, const int value,
                  const atl::string &comment) {
-  write(atl::string("sub ") + op->toString() + ", " + atl::to_string(value) +
-        "\t; " + comment);
+  write("sub " + op->toString() + ", " + atl::to_string(value) + "\t; " +
+        comment);
 }
 
 void Writer::write(const atl::string &str) {

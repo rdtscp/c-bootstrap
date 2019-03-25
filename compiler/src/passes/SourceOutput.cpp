@@ -138,7 +138,7 @@ atl::string SourceOutput::visit(ClassType &ct) {
   return ct.identifier->toString();
 }
 atl::string SourceOutput::visit(ClassTypeDecl &ctd) {
-  atl::string output = ctd.getIdentifier()->toString() + atl::string(" {");
+  atl::string output = ctd.getIdentifier()->toString() + " {";
   for (int i = 0; i < ctd.classDecls.size(); ++i) {
     output += "\n";
     switch (ctd.classDecls[i]->visibility) {
@@ -342,7 +342,7 @@ atl::string SourceOutput::visit(SizeOf &so) {
 }
 atl::string SourceOutput::visit(StringLiteral &sl) { return sl.getLiteral(); }
 atl::string SourceOutput::visit(StructType &st) {
-  return atl::string("struct ") + st.identifier;
+  return "struct " + st.identifier;
 }
 atl::string SourceOutput::visit(StructTypeDecl &std) {
   atl::string output = std.getIdentifier()->toString() + " {";

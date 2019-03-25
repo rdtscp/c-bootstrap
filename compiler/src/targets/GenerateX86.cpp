@@ -55,8 +55,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
   if (lhsOperand->opType() != "GlobalVariable")
     x86.push(lhsOperand, "Store LHS to Stack");
   else
-    x86.comment(atl::string("LHS is a GlobalVariable: ") +
-                lhsOperand->toString());
+    x86.comment("LHS is a GlobalVariable: " + lhsOperand->toString());
 
   /* Evaluate RHS and Store in EAX */
   atl::shared_ptr<X86::Operand> rhsOperand = bo.rhs->accept(*this);
@@ -65,8 +64,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
     x86.pop(X86::ecx, "Restore LHS from Stack");
   else
     x86.mov(X86::ecx, rhsOperand,
-            atl::string("Restore LHS from GlobalVariable: ") +
-                rhsOperand->toString());
+            "Restore LHS from GlobalVariable: " + rhsOperand->toString());
 
   /* Perform BinOp */
   switch (bo.operation) {
@@ -208,11 +206,10 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(FunDef &fd) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(If &i) {
   /* Calculate Names for Blocks */
   const atl::string trueBlockName =
-      atl::string("ifTrueBlock") + atl::to_string(blockCount++);
+      "ifTrueBlock" + atl::to_string(blockCount++);
   const atl::string falseBlockName =
-      atl::string("ifFalseBlock") + atl::to_string(blockCount++);
-  const atl::string endBlockName =
-      atl::string("ifEndBlock") + atl::to_string(blockCount++);
+      "ifFalseBlock" + atl::to_string(blockCount++);
+  const atl::string endBlockName = "ifEndBlock" + atl::to_string(blockCount++);
 
   /* Calculate the result of the if condition. */
   atl::shared_ptr<X86::Operand> condResReg = i.ifCondition->accept(*this);
@@ -329,8 +326,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(VarDecl &vd) {
   currFpOffset -= bytesRequired;
   vd.fpOffset = currFpOffset;
 
-  const atl::string comment = atl::string("Allocated ") +
-                              atl::to_string(bytesRequired) +
+  const atl::string comment = "Allocated " + atl::to_string(bytesRequired) +
                               "B for VarDecl: " + vd.getIdentifier() +
                               " @ [ebp" + atl::to_string(currFpOffset) + "]";
 
@@ -342,8 +338,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(VarDef &vd) {
   currFpOffset -= bytesRequired;
   vd.fpOffset = currFpOffset;
 
-  const atl::string comment = atl::string("Allocated ") +
-                              atl::to_string(bytesRequired) +
+  const atl::string comment = "Allocated " + atl::to_string(bytesRequired) +
                               "B for VarDef: " + vd.getIdentifier() +
                               " @ [ebp" + atl::to_string(currFpOffset) + "]";
 
@@ -358,11 +353,11 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(VarExpr &ve) {
         ve.varDecl->getIdentifier()->toString(), ve.varDecl->getBytes()));
 
   if (fpOffset > 0)
-    return atl::make_shared<X86::Register>(X86::Register(
-        0, atl::string("[ebp+") + atl::to_string(fpOffset) + "]"));
+    return atl::make_shared<X86::Register>(
+        X86::Register(0, "[ebp+" + atl::to_string(fpOffset) + "]"));
   else
     return atl::make_shared<X86::Register>(
-        X86::Register(0, atl::string("[ebp") + atl::to_string(fpOffset) + "]"));
+        X86::Register(0, "[ebp" + atl::to_string(fpOffset) + "]"));
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(While &w) {
   w.condition->accept(*this);

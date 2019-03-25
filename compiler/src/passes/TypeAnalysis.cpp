@@ -29,13 +29,12 @@ atl::shared_ptr<Type> TypeAnalysis::visit(ArrayAccess &aa) {
   atl::shared_ptr<Type> arrayExprType = aa.array->accept(*this);
   atl::shared_ptr<Type> arrayIndex = aa.index->accept(*this);
   if (arrayExprType->astClass() != "ArrayType")
-    return error(atl::string("Type Error: Attempted to index an expression "
-                             "which was not an array. Was of type: ") +
+    return error("Type Error: Attempted to index an expression which was not "
+                 "an array. Was of type: " +
                  arrayExprType->astClass());
   if (arrayIndex->astClass() != "BaseType")
-    return error(atl::string("Type Error: Attempted to index an array using "
-                             "an expression which "
-                             "was not of type int. Was of type: ") +
+    return error("Type Error: Attempted to index an array using an expression "
+                 "which was not of type int. Was of type: " +
                  arrayIndex->astClass());
 
   return atl::static_pointer_cast<ArrayType>(arrayExprType)->type;
@@ -113,20 +112,18 @@ atl::shared_ptr<Type> TypeAnalysis::visit(For &f) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
   atl::shared_ptr<Decl> identDecl = currScope->find(fc.funIdentifier);
   if (identDecl == nullptr)
-    return error(
-        atl::string("Type Analysis: Attempted to call undeclared function: ") +
-        fc.funIdentifier->toString());
+    return error("Type Analysis: Attempted to call undeclared function: " +
+                 fc.funIdentifier->toString());
 
   if (identDecl->astClass() != "FunDecl" && identDecl->astClass() != "FunDef")
-    return error(
-        atl::string("Type Analysis: Attempted to call undeclared function: ") +
-        fc.funIdentifier->toString());
+    return error("Type Analysis: Attempted to call undeclared function: " +
+                 fc.funIdentifier->toString());
 
   atl::shared_ptr<FunDecl> funDecl =
       atl::static_pointer_cast<FunDecl>(identDecl);
 
   if (funDecl->funParams.size() != fc.funArgs.size())
-    return error(atl::string("Type Analysis: Attempted to call function: ") +
+    return error("Type Analysis: Attempted to call function: " +
                  fc.funIdentifier->toString() +
                  " with incorrect number of arguments");
 
@@ -134,7 +131,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
     atl::shared_ptr<Type> argType = fc.funArgs[i]->accept(*this);
     atl::shared_ptr<Type> paramType = funDecl->funParams[i]->type;
     if (*argType != *paramType)
-      return error(atl::string("Type Analysis: Attempted to call function: ") +
+      return error("Type Analysis: Attempted to call function: " +
                    fc.funIdentifier->toString() +
                    " with arguments of incorrect type.");
   }
@@ -261,10 +258,9 @@ atl::shared_ptr<Type> TypeAnalysis::visit(TypeDefDecl &td) { return td.type; }
 atl::shared_ptr<Type> TypeAnalysis::visit(ValueAt &va) {
   atl::shared_ptr<Type> exprType = va.derefExpr->accept(*this);
   if (exprType->astClass() != "PointerType")
-    return error(
-        atl::string("Attempted to dereference variable that wasn't a pointer. "
-                    "Was of type: ") +
-        exprType->astClass());
+    return error("Attempted to dereference variable that wasn't a pointer. Was "
+                 "of type: " +
+                 exprType->astClass());
   return atl::static_pointer_cast<PointerType>(exprType)->pointedType;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(VarDecl &vd) {
@@ -276,8 +272,8 @@ atl::shared_ptr<Type> TypeAnalysis::visit(VarExpr &ve) {
   atl::shared_ptr<Decl> identDecl = currScope->find(ve.varIdentifier);
 
   if (identDecl->astClass() != "VarDecl" && identDecl->astClass() != "VarDef")
-    return error(atl::string("Attempted to reference ") +
-                 identDecl->astClass() + " as a variable.");
+    return error("Attempted to reference " + identDecl->astClass() +
+                 " as a variable.");
   atl::shared_ptr<VarDecl> veDecl =
       atl::static_pointer_cast<VarDecl>(identDecl);
   ve.varDecl = veDecl;
