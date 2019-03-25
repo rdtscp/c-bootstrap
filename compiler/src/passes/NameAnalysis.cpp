@@ -169,7 +169,7 @@ void NameAnalysis::visit(StructTypeDecl &std) {
   for (int idx = 0; idx < std.varDecls.size(); ++idx) {
     const atl::shared_ptr<VarDecl> field = std.varDecls[idx];
     if (structTypeFields.find(field->getIdentifier()))
-      return error("Struct " + std.getIdentifier() +
+      return error("Struct " + std.getIdentifier()->toString() +
                    " contained multiple fields with the same identifier: " +
                    field->getIdentifier()->toString());
     structTypeFields.insert(field->identifer);
