@@ -119,10 +119,9 @@ void NameAnalysis::visit(FunDecl &fd) {
 }
 void NameAnalysis::visit(FunDef &fd) {
   if (currScope->findLocal(fd.getIdentifier()))
-    return error(
-        atl::string("Attempted to define a Function with an identifier that is "
-                    "already in use: ") +
-        fd.getIdentifier()->toString());
+    return error("Attempted to define a Function with an identifier that is "
+                 "already in use: " +
+                 fd.getIdentifier()->toString());
   currScope->insertDecl(fd.getptr());
 
   fd.funBlock->outerScope = currScope;
@@ -195,11 +194,9 @@ void NameAnalysis::visit(TypeDefDecl &td) {}
 void NameAnalysis::visit(ValueAt &va) { va.derefExpr->accept(*this); }
 void NameAnalysis::visit(VarDecl &vd) {
   if (currScope->findLocal(vd.getIdentifier()))
-    return error(
-        atl::string(
-            "Attempted to declare a Variable with an identifier that is "
-            "already in use: ") +
-        vd.getIdentifier()->toString());
+    return error("Attempted to declare a Variable with an identifier that is "
+                 "already in use: " +
+                 vd.getIdentifier()->toString());
   currScope->insertDecl(vd.getptr());
 }
 void NameAnalysis::visit(VarDef &vd) {

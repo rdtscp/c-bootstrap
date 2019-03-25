@@ -318,7 +318,7 @@ atl::string DotGraph::visit(For &f) {
 }
 atl::string DotGraph::visit(FunCall &fc) {
   const atl::string funCallID = "FunCall" + atl::to_string(++nodeCount);
-  declare(funCallID, atl::string(fc.funIdentifier->toString().c_str()) + "()");
+  declare(funCallID, fc.funIdentifier->toString() + "()");
 
   for (int idx = 0; idx < fc.funArgs.size(); ++idx)
     join(funCallID, fc.funArgs[idx]->accept(*this));
