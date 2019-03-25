@@ -1,8 +1,5 @@
 #pragma once
 
-
-
-
 #include "atl/include/shared_ptr.h"
 #include "atl/include/string.h"
 
@@ -30,4 +27,3 @@ public:
 };
 
 } // namespace ACC
-
