@@ -22,7 +22,7 @@ public:
 private:
   atl::shared_ptr<Program> progAST;
 
-  atl::shared_ptr<Block> currScope;
+  atl::shared_ptr<Scope> currScope;
 
   /* ---- Visit AST ---- */
 
