@@ -1,14 +1,14 @@
 #pragma once
 
-
-
-
 #include "../ASTNode.h"
 #include "Block.h"
+#include "Scope.h"
 
 namespace ACC {
 
-class Namespace : public Decl, public atl::enable_shared_from_this<Namespace> {
+class Namespace : public Decl,
+                  public Scope,
+                  public atl::enable_shared_from_this<Namespace> {
 
 public:
   atl::shared_ptr<Identifier> identifier;
@@ -35,4 +35,3 @@ public:
   atl::string astClass() const override;
 };
 } // namespace ACC
-
