@@ -49,10 +49,9 @@ void NameAnalysis::visit(CharLiteral &cl) {}
 void NameAnalysis::visit(ClassType &ct) {}
 void NameAnalysis::visit(ClassTypeDecl &ctd) {
   if (currScope->findLocal(ctd.getIdentifier()))
-    return error(
-        atl::string("Attempted to declare a Class with an identifier that is "
-                    "already in use: ") +
-        ctd.getIdentifier()->toString());
+    return error("Attempted to declare a Class with an identifier that is "
+                 "already in use: " +
+                 ctd.getIdentifier()->toString());
 
   currScope->insertDecl(ctd.getptr());
 }
@@ -79,7 +78,7 @@ void NameAnalysis::visit(For &f) {
 }
 void NameAnalysis::visit(FunCall &fc) {
   if (currScope->find(fc.funIdentifier) == nullptr)
-    return error(atl::string("Attempted to call undeclared function: ") +
+    return error("Attempted to call undeclared function: " +
                  fc.funIdentifier->toString());
   for (int idx = 0; idx < fc.funArgs.size(); ++idx)
     fc.funArgs[idx]->accept(*this);
@@ -128,8 +127,11 @@ void NameAnalysis::visit(MemberAccess &ma) { ma.object->accept(*this); }
 void NameAnalysis::visit(MemberCall &mc) {}
 
 void NameAnalysis::visit(Namespace &n) {
+  n.outerScope = currScope;
+  currScope = n.getptr();
   for (int i = 0; i < n.namespaceDecls.size(); ++i)
     n.namespaceDecls[i]->accept(*this);
+  currScope = n.outerScope;
 }
 void NameAnalysis::visit(ParenthExpr &pe) { pe.innerExpr->accept(*this); }
 void NameAnalysis::visit(PointerType &pt) {}
@@ -156,10 +158,9 @@ void NameAnalysis::visit(StringLiteral &sl) {}
 void NameAnalysis::visit(StructType &st) {}
 void NameAnalysis::visit(StructTypeDecl &std) {
   if (currScope->findLocal(std.getIdentifier()))
-    return error(
-        atl::string("Attempted to declare a Struct with an identifier that is "
-                    "already in use: ") +
-        std.getIdentifier()->toString());
+    return error("Attempted to declare a Struct with an identifier that is "
+                 "already in use: " +
+                 std.getIdentifier()->toString());
 
   currScope->insertDecl(std.getptr());
 
@@ -168,7 +169,7 @@ void NameAnalysis::visit(StructTypeDecl &std) {
   for (int idx = 0; idx < std.varDecls.size(); ++idx) {
     const atl::shared_ptr<VarDecl> field = std.varDecls[idx];
     if (structTypeFields.find(field->getIdentifier()))
-      return error(atl::string("Struct ") + std.getIdentifier() +
+      return error("Struct " + std.getIdentifier() +
                    " contained multiple fields with the same identifier: " +
                    field->getIdentifier()->toString());
     structTypeFields.insert(field->identifer);
@@ -190,15 +191,14 @@ void NameAnalysis::visit(VarDecl &vd) {
 }
 void NameAnalysis::visit(VarDef &vd) {
   if (currScope->findLocal(vd.getIdentifier()))
-    return error(
-        atl::string("Attempted to define a Variable with an identifier that is "
-                    "already in use: ") +
-        vd.getIdentifier()->toString());
+    return error("Attempted to define a Variable with an identifier that is "
+                 "already in use: " +
+                 vd.getIdentifier()->toString());
   currScope->insertDecl(vd.getptr());
 }
 void NameAnalysis::visit(VarExpr &ve) {
   if (currScope->find(ve.varIdentifier) == nullptr)
-    return error(atl::string("Attempted to reference undeclared variable: ") +
+    return error("Attempted to reference undeclared variable: " +
                  ve.varIdentifier->toString());
 }
 void NameAnalysis::visit(While &w) {
