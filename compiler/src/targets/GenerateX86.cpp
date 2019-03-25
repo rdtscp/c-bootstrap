@@ -89,7 +89,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
   for (int idx = 0; idx < b.stmts.size(); ++idx)
     b.stmts[idx]->accept(*this);
 
-  currScope = b.outerBlock;
+  currScope = b.outerScope;
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(BoolLiteral &bl) {
@@ -202,7 +202,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(FunDef &fd) {
   x86.write("");
 
   currFpOffset = 0;
-  currScope = fd.funBlock->outerBlock;
+  currScope = fd.funBlock->outerScope;
   return atl::make_shared<X86::None>(X86::None());
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(If &i) {

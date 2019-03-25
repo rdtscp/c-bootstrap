@@ -140,7 +140,7 @@ MIPS::Register GenerateMIPS::visit(Block &b) {
       MIPS.SW(MIPS::zero, MIPS::sp);
     }
   }
-  currScope = b.outerBlock;
+  currScope = b.outerScope;
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(BoolLiteral &bl) { return MIPS::Register(); }
@@ -257,7 +257,7 @@ MIPS::Register GenerateMIPS::visit(FunDef &fd) {
   /* ---- Return to $ra ---- */
   MIPS.write("JR $ra");
 
-  currScope = fd.funBlock->outerBlock;
+  currScope = fd.funBlock->outerScope;
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(If &i) {
@@ -328,7 +328,8 @@ MIPS::Register GenerateMIPS::visit(ValueAt &va) {
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(VarDecl &vd) {
-  MIPS.comment(atl::string("Allocating for VarDecl: ") + vd.getIdentifier()->toString());
+  MIPS.comment(atl::string("Allocating for VarDecl: ") +
+               vd.getIdentifier()->toString());
   int bytesRequired = vd.getBytes();
   MIPS.ADDI(MIPS::sp, MIPS::sp, -bytesRequired);
   currFpOffset -= bytesRequired;
@@ -336,7 +337,8 @@ MIPS::Register GenerateMIPS::visit(VarDecl &vd) {
   return MIPS::Register();
 }
 MIPS::Register GenerateMIPS::visit(VarDef &vd) {
-  MIPS.comment(atl::string("Allocating for VarDef: ") + vd.getIdentifier()->toString());
+  MIPS.comment(atl::string("Allocating for VarDef: ") +
+               vd.getIdentifier()->toString());
   int bytesRequired = vd.getBytes();
   MIPS.ADDI(MIPS::sp, MIPS::sp, -bytesRequired);
   currFpOffset -= bytesRequired;

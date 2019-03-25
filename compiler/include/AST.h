@@ -40,6 +40,7 @@
 #include "ast/Program.h"
 #include "ast/ReferenceType.h"
 #include "ast/Return.h"
+#include "ast/Scope.h"
 #include "ast/SizeOf.h"
 #include "ast/Stmt.h"
 #include "ast/StringLiteral.h"

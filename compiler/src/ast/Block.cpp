@@ -3,18 +3,10 @@
 using namespace ACC;
 
 Block::Block(const atl::vector<atl::shared_ptr<Stmt>> &p_stmts)
-    : decls({}), stmts(p_stmts), outerBlock(nullptr) {}
+    : stmts(p_stmts) {}
 
 atl::shared_ptr<Block> Block::getptr() { return shared_from_this(); }
 
-atl::shared_ptr<Decl>
-Block::find(const atl::shared_ptr<Identifier> &identifier) {
-  atl::shared_ptr<Decl> local = findLocal(identifier);
-  if (local == nullptr && outerBlock != nullptr)
-    return outerBlock->find(identifier);
-
-  return local;
-}
 bool Block::operator==(const Block &rhs) const {
   if (stmts.size() != rhs.stmts.size())
     return false;
@@ -28,24 +20,6 @@ bool Block::operator==(const Block &rhs) const {
 }
 
 bool Block::operator!=(const Block &rhs) const { return !(*this == rhs); }
-
-atl::shared_ptr<Decl>
-Block::findLocal(const atl::shared_ptr<Identifier> &identifier) {
-  // Reverse iterate decls.
-  for (int idx = decls.size() - 1; idx >= 0; --idx)
-    if (*identifier == *decls[idx]->getIdentifier())
-      return decls[idx];
-
-  return nullptr;
-}
-
-void Block::insertDecl(const atl::shared_ptr<Decl> &decl) {
-  decls.push_back(decl);
-}
-
-void Block::setOuterBlock(const atl::shared_ptr<Block> &newOuterBlock) {
-  outerBlock = newOuterBlock;
-}
 
 void Block::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 

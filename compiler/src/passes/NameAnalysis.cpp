@@ -36,13 +36,13 @@ void NameAnalysis::visit(BinOp &bo) {
   bo.rhs->accept(*this);
 }
 void NameAnalysis::visit(Block &b) {
-  if (b.outerBlock == nullptr) {
-    b.setOuterBlock(currScope);
+  if (b.outerScope == nullptr) {
+    b.outerScope = currScope;
     currScope = b.getptr();
   }
   for (int idx = 0; idx < b.stmts.size(); ++idx)
     b.stmts[idx]->accept(*this);
-  currScope = b.outerBlock;
+  currScope = b.outerScope;
 }
 void NameAnalysis::visit(BoolLiteral &bl) {}
 void NameAnalysis::visit(CharLiteral &cl) {}
@@ -52,42 +52,9 @@ void NameAnalysis::visit(ClassTypeDecl &ctd) {
     return error(
         atl::string("Attempted to declare a Class with an identifier that is "
                     "already in use: ") +
-        ctd.getIdentifier());
+        ctd.getIdentifier()->toString());
 
   currScope->insertDecl(ctd.getptr());
-
-  /* Check that all methods & members in this class are unique */
-  atl::set<atl::shared_ptr<Identifier>> classMembers;
-  atl::set<atl::shared_ptr<Identifier>> classMethods;
-
-  for (int idx = 0; idx < ctd.classDecls.size(); ++idx) {
-    const atl::shared_ptr<Decl> currDecl = ctd.classDecls[idx];
-    currDecl->accept(*this);
-    if (currDecl->astClass() == "VarDecl" || currDecl->astClass() == "VarDef") {
-      if (classMembers.find(currDecl->getIdentifier()))
-        return error(atl::string("Class ") + ctd.getIdentifier()->toString() +
-                     " contained multiple members with the same identifier: " +
-                     currDecl->getIdentifier()->toString());
-      classMembers.insert(currDecl->getIdentifier());
-    } else {
-      if (classMethods.find(currDecl->getIdentifier()))
-        return error(atl::string("Class ") + ctd.getIdentifier()->toString() +
-                     " contained multiple members with the same identifier: " +
-                     currDecl->getIdentifier()->toString());
-      classMethods.insert(currDecl->getIdentifier());
-    }
-  }
-
-  /* Check that the fields in this struct are unique */
-  // atl::set<atl::string> structTypeFields;
-  // for (int idx = 0; idx < ctd.varDecls.size(); ++idx) {
-  //   const atl::shared_ptr<VarDecl> field = std.varDecls[idx];
-  //   if (structTypeFields.find(field->getIdentifier()))
-  //     return error(atl::string("Struct ") + std.getIdentifier() +
-  //                  " contained multiple fields with the same identifier: " +
-  //                  field->getIdentifier());
-  //   structTypeFields.insert(field->identifer);
-  // }
 }
 void NameAnalysis::visit(ConstructorDecl &cd) {}
 void NameAnalysis::visit(ConstructorDef &cd) {}
@@ -142,13 +109,13 @@ void NameAnalysis::visit(FunDef &fd) {
         fd.getIdentifier());
   currScope->insertDecl(fd.getptr());
 
-  fd.funBlock->setOuterBlock(currScope);
+  fd.funBlock->outerScope = currScope;
   currScope = fd.funBlock;
 
   for (int idx = 0; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
   fd.funBlock->accept(*this);
-  currScope = fd.funBlock->outerBlock;
+  currScope = fd.funBlock->outerScope;
 }
 void NameAnalysis::visit(If &i) {
   i.ifCondition->accept(*this);
@@ -192,7 +159,7 @@ void NameAnalysis::visit(StructTypeDecl &std) {
     return error(
         atl::string("Attempted to declare a Struct with an identifier that is "
                     "already in use: ") +
-        std.getIdentifier());
+        std.getIdentifier()->toString());
 
   currScope->insertDecl(std.getptr());
 
@@ -203,7 +170,7 @@ void NameAnalysis::visit(StructTypeDecl &std) {
     if (structTypeFields.find(field->getIdentifier()))
       return error(atl::string("Struct ") + std.getIdentifier() +
                    " contained multiple fields with the same identifier: " +
-                   field->getIdentifier());
+                   field->getIdentifier()->toString());
     structTypeFields.insert(field->identifer);
   }
 }
@@ -218,16 +185,15 @@ void NameAnalysis::visit(VarDecl &vd) {
         atl::string(
             "Attempted to declare a Variable with an identifier that is "
             "already in use: ") +
-        vd.getIdentifier());
+        vd.getIdentifier()->toString());
   currScope->insertDecl(vd.getptr());
 }
 void NameAnalysis::visit(VarDef &vd) {
   if (currScope->findLocal(vd.getIdentifier()))
     return error(
-        atl::string(
-            "Attempted to declare a Variable with an identifier that is "
-            "already in use: ") +
-        vd.getIdentifier());
+        atl::string("Attempted to define a Variable with an identifier that is "
+                    "already in use: ") +
+        vd.getIdentifier()->toString());
   currScope->insertDecl(vd.getptr());
 }
 void NameAnalysis::visit(VarExpr &ve) {

@@ -104,13 +104,13 @@ atl::shared_ptr<ASTNode> Optimiser::visit(BinOp &bo) {
   return bo.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(Block &b) {
-  if (b.outerBlock == nullptr) {
-    b.setOuterBlock(currScope);
+  if (b.outerScope == nullptr) {
+    b.outerScope = currScope;
     currScope = b.getptr();
   }
   for (int idx = 0; idx < b.stmts.size(); ++idx)
     b.stmts[idx] = atl::static_pointer_cast<Stmt>(b.stmts[idx]->accept(*this));
-  currScope = b.outerBlock;
+  currScope = b.outerScope;
   return b.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(BoolLiteral &bl) {
@@ -161,13 +161,13 @@ atl::shared_ptr<ASTNode> Optimiser::visit(FunDecl &fd) {
   return fd.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(FunDef &fd) {
-  fd.funBlock->setOuterBlock(currScope);
+  fd.funBlock->outerScope = currScope;
   currScope = fd.funBlock;
 
   // for (auto &param : fd.funParams)
   // param = atl::static_pointer_cast<VarDecl>(param->accept(*this));
   fd.funBlock = atl::static_pointer_cast<Block>(fd.funBlock->accept(*this));
-  currScope = fd.funBlock->outerBlock;
+  currScope = fd.funBlock->outerScope;
   return fd.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(If &i) {

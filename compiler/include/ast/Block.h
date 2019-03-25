@@ -3,16 +3,17 @@
 #include "atl/include/vector.h"
 
 #include "Decl.h"
+#include "Scope.h"
 #include "Stmt.h"
 
 namespace ACC {
 
-class Block : public Stmt, public atl::enable_shared_from_this<Block> {
+class Block : public Scope,
+              public Stmt,
+              public atl::enable_shared_from_this<Block> {
 
 public:
-  atl::vector<atl::shared_ptr<Decl>> decls;
   atl::vector<atl::shared_ptr<Stmt>> stmts;
-  atl::shared_ptr<Block> outerBlock;
 
   Block(const atl::vector<atl::shared_ptr<Stmt>> &p_stmts);
 
@@ -20,15 +21,6 @@ public:
 
   bool operator==(const Block &rhs) const;
   bool operator!=(const Block &rhs) const;
-
-  atl::shared_ptr<Decl> find(const atl::shared_ptr<Identifier> &identifier);
-
-  atl::shared_ptr<Decl>
-  findLocal(const atl::shared_ptr<Identifier> &identifier);
-
-  void insertDecl(const atl::shared_ptr<Decl> &decl);
-
-  void setOuterBlock(const atl::shared_ptr<Block> &newOuterBlock);
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;

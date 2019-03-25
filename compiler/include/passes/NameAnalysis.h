@@ -20,7 +20,6 @@ public:
   void run();
 
 private:
-  int nodeCount = 0;
   atl::shared_ptr<Program> progAST;
 
   atl::shared_ptr<Block> currScope;

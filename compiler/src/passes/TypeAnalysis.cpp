@@ -55,13 +55,13 @@ atl::shared_ptr<Type> TypeAnalysis::visit(BinOp &bo) {
   return atl::make_shared<BaseType>(BaseType(PrimitiveType::INT));
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(Block &b) {
-  if (b.outerBlock == nullptr) {
-    b.setOuterBlock(currScope);
+  if (b.outerScope == nullptr) {
+    b.outerScope = currScope;
     currScope = b.getptr();
   }
   for (int idx = 0; idx < b.stmts.size(); ++idx)
     b.stmts[idx]->accept(*this);
-  currScope = b.outerBlock;
+  currScope = b.outerScope;
   return nullptr;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(BoolLiteral &bl) {
@@ -151,13 +151,13 @@ atl::shared_ptr<Type> TypeAnalysis::visit(FunDecl &fd) {
   return fd.funType;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(FunDef &fd) {
-  fd.funBlock->setOuterBlock(currScope);
+  fd.funBlock->outerScope = currScope;
   currScope = fd.funBlock;
 
   for (int idx = 0; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
   fd.funBlock->accept(*this);
-  currScope = fd.funBlock->outerBlock;
+  currScope = fd.funBlock->outerScope;
   return fd.funType;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(If &i) {
