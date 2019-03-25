@@ -52,8 +52,26 @@ void NameAnalysis::visit(ClassTypeDecl &ctd) {
     return error("Attempted to declare a Class with an identifier that is "
                  "already in use: " +
                  ctd.getIdentifier()->toString());
-
   currScope->insertDecl(ctd.getptr());
+  ctd.outerScope = currScope;
+  currScope = ctd.getptr();
+  /* Visit ClassTypeDecl */
+  atl::vector<atl::shared_ptr<Decl>> classMethods;
+  for (int idx = 0; idx < ctd.classDecls.size(); ++idx) {
+    const atl::shared_ptr<Decl> currDecl = ctd.classDecls[idx];
+    if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef" &&
+        currDecl->astClass() != "ConstructorDecl" &&
+        currDecl->astClass() != "ConstructorDef" &&
+        currDecl->astClass() != "DestructorDecl" &&
+        currDecl->astClass() != "DestructorDef") {
+      currDecl->accept(*this);
+    } else {
+      classMethods.push_back(currDecl);
+    }
+  }
+  for (int idx = 0; idx < classMethods.size(); ++idx)
+    classMethods[idx]->accept(*this);
+  currScope = ctd.outerScope;
 }
 void NameAnalysis::visit(ConstructorDecl &cd) {}
 void NameAnalysis::visit(ConstructorDef &cd) {}
@@ -102,10 +120,9 @@ void NameAnalysis::visit(FunDecl &fd) {
 void NameAnalysis::visit(FunDef &fd) {
   if (currScope->findLocal(fd.getIdentifier()))
     return error(
-        atl::string(
-            "Attempted to declare a Function with an identifier that is "
-            "already in use: ") +
-        fd.getIdentifier());
+        atl::string("Attempted to define a Function with an identifier that is "
+                    "already in use: ") +
+        fd.getIdentifier()->toString());
   currScope->insertDecl(fd.getptr());
 
   fd.funBlock->outerScope = currScope;
@@ -140,10 +157,6 @@ void NameAnalysis::visit(Program &p) {
   currScope = atl::make_shared<Block>(Block({}));
   for (int idx = 0; idx < p.decls.size(); ++idx)
     p.decls[idx]->accept(*this);
-  // /* Check for main() function */
-  // atl::shared_ptr<Decl> mainDecl = currScope->find("main");
-  // if (mainDecl == nullptr || mainDecl->astClass() != "FunDef")
-  //   error("Program did not contain a main() Function.");
   p.globalScope = currScope;
 }
 void NameAnalysis::visit(ReferenceType &rt) {
