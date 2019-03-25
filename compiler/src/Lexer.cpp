@@ -213,7 +213,7 @@ SourceToken Lexer::nextToken() {
           scanner.next();
           return SourceToken(TC::OPNE, scanner.getPosition(), "operator!=");
         } else {
-          atl::string error = atl::string("Could not Lex operator overload: ") +
+          atl::string error = "Could not Lex operator overload: " +
                               scanner.getPosition().toString();
           throw std::runtime_error(error.c_str());
         }
