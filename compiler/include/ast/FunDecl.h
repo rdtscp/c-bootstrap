@@ -11,12 +11,7 @@ namespace ACC {
 class FunDecl : public Decl, public atl::enable_shared_from_this<FunDecl> {
 
 public:
-  enum class FunModifiers {
-    CONST,
-    OVERRIDE,
-    STATIC,
-    VIRTUAL
-  };
+  enum class FunModifiers { CONST, OVERRIDE, STATIC, VIRTUAL };
   atl::set<FunModifiers> funModifiers;
   atl::shared_ptr<Identifier> funIdentifier;
   atl::vector<atl::shared_ptr<VarDecl>> funParams;
@@ -54,4 +49,3 @@ public:
 };
 
 } // namespace ACC
-
