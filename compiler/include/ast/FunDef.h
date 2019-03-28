@@ -1,8 +1,5 @@
 #pragma once
 
-
-
-
 #include "Block.h"
 #include "Decl.h"
 #include "FunDecl.h"
@@ -44,4 +41,3 @@ public:
 };
 
 } // namespace ACC
-
