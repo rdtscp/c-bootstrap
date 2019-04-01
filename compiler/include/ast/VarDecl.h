@@ -1,8 +1,5 @@
 #pragma once
 
-
-
-
 #include "Decl.h"
 
 #include "Stmt.h"
@@ -52,4 +49,3 @@ public:
 };
 
 } // namespace ACC
-
