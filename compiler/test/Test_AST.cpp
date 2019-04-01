@@ -4,12 +4,7 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-atl::string test_prefix = "../../test/tests/";
-
 TEST(ASTTest, BaseTypeComparisons) {
-
   BaseType charType(PrimitiveType::CHAR);
   BaseType intType(PrimitiveType::INT);
   BaseType voidType(PrimitiveType::VOID);
@@ -90,14 +85,31 @@ TEST(ASTTest, StructTypeComparisons) {
 
 TEST(ASTTest, VarDeclComparisons) {
   VarDecl vd1(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-              atl::make_shared<Identifier>(Identifier("myInt")));
+              atl::make_shared<Identifier>(Identifier("var1")));
   VarDecl vd2(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-              atl::make_shared<Identifier>(Identifier("myChar")));
+              atl::make_shared<Identifier>(Identifier("var2")));
   VarDecl vd3(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-              atl::make_shared<Identifier>(Identifier("myChar")));
+              atl::make_shared<Identifier>(Identifier("var3")));
 
   ASSERT_FALSE(vd1 == vd2);
   ASSERT_TRUE(vd2 == vd3);
+}
+
+TEST(ASTTest, FunDeclFunDefComparisons) {
+  const atl::set<FunDecl::FunModifiers> funModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> params;
+
+  const atl::shared_ptr<FunDecl> funDeclA(new FunDecl(
+      funModifiers, atl::make_shared<Identifier>(Identifier("functionA")), {},
+      atl::make_shared<BaseType>(BaseType(PrimitiveType::INT))));
+
+  const atl::shared_ptr<FunDef> funDefA(new FunDef(
+      funModifiers, atl::make_shared<Identifier>(Identifier("functionA")), {},
+      atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+      atl::make_shared<Block>(Block({}))));
+
+  ASSERT_TRUE(*funDefA == *funDeclA);
+  ASSERT_TRUE(*funDeclA == *funDefA);
 }
 
 // The fixture for testing class Project1. From google test primer.
