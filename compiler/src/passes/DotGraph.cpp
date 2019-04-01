@@ -453,7 +453,7 @@ atl::string DotGraph::visit(StringLiteral &sl) {
   return strID;
 }
 atl::string DotGraph::visit(StructType &st) {
-  return "struct " + st.identifier;
+  return "struct " + st.identifier->toString();
 }
 atl::string DotGraph::visit(StructTypeDecl &std) {
   const atl::string structTypeDeclID =
