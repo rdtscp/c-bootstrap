@@ -11,7 +11,6 @@ public:
   enum class Modifiers { CONST };
   atl::set<Modifiers> typeModifiers;
   virtual ~Type() {}
-  virtual atl::string getSignature() const = 0;
   virtual int getBytes() const = 0;
   virtual bool operator==(Type &rhs) const = 0;
   virtual bool operator!=(Type &rhs) const = 0;

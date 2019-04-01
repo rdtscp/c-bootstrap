@@ -24,6 +24,9 @@ public:
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
 
+  bool operator==(const FunDecl &rhs) const;
+  bool operator!=(const FunDecl &rhs) const;
+
   bool operator==(const FunDef &rhs) const;
   bool operator!=(const FunDef &rhs) const;
 
