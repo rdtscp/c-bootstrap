@@ -25,6 +25,7 @@ bool VarDecl::operator==(const VarDecl &rhs) const {
 
   return true;
 }
+
 bool VarDecl::operator!=(const VarDecl &rhs) const { return !(*this == rhs); }
 
 int VarDecl::getBytes() const { return type->getBytes(); }

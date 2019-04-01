@@ -1,8 +1,5 @@
 #pragma once
 
-
-
-
 #include <map>
 
 #include "Decl.h"
@@ -31,7 +28,6 @@ public:
   atl::shared_ptr<Identifier> getIdentifier() const override;
 
   int getBytes() const override;
-  atl::string getSignature() const override;
 
   bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;
@@ -53,4 +49,3 @@ public:
 };
 
 } // namespace ACC
-
