@@ -8,8 +8,8 @@
 
 namespace ACC {
 
-class Block : public Scope,
-              public Stmt,
+class Block : public Stmt,
+              public Scope,
               public atl::enable_shared_from_this<Block> {
 
 public:
