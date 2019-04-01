@@ -50,6 +50,7 @@ add_library(AST SHARED
   src/ast/Program.cpp
   src/ast/ReferenceType.cpp
   src/ast/Return.cpp
+  src/ast/Scope.cpp
   src/ast/SizeOf.cpp
   src/ast/StringLiteral.cpp
   src/ast/StructType.cpp
