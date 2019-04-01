@@ -342,7 +342,7 @@ atl::string SourceOutput::visit(SizeOf &so) {
 }
 atl::string SourceOutput::visit(StringLiteral &sl) { return sl.getLiteral(); }
 atl::string SourceOutput::visit(StructType &st) {
-  return "struct " + st.identifier;
+  return "struct " + st.identifier->toString();
 }
 atl::string SourceOutput::visit(StructTypeDecl &std) {
   atl::string output = std.getIdentifier()->toString() + " {";
