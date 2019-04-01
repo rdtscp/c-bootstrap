@@ -6,12 +6,10 @@
 namespace ACC {
 
 class Identifier {
-  class Decl;
 
 public:
   atl::string value;
   atl::shared_ptr<Identifier> parentIdentifier;
-  atl::shared_ptr<Decl> identifierDecl;
 
   Identifier();
 
