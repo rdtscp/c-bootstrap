@@ -54,12 +54,12 @@ atl::shared_ptr<Type> TypeAnalysis::visit(BinOp &bo) {
   return atl::make_shared<BaseType>(BaseType(PrimitiveType::INT));
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(Block &b) {
-  if (b.outerScope == nullptr) {
-    b.outerScope = currScope;
-    currScope = b.getptr();
-  }
+  b.outerScope = currScope;
+  currScope = b.getptr();
+
   for (int idx = 0; idx < b.stmts.size(); ++idx)
     b.stmts[idx]->accept(*this);
+
   currScope = b.outerScope;
   return nullptr;
 }
@@ -70,11 +70,11 @@ atl::shared_ptr<Type> TypeAnalysis::visit(CharLiteral &cl) {
   return atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR));
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(ClassType &ct) {
-  atl::shared_ptr<Decl> findDecl = currScope->find(ct.identifier);
-  if (findDecl->astClass() != "ClassTypeDecl")
-    return error("Attempted to use a ClassType that was not declared.");
+  // atl::shared_ptr<Decl> findDecl = currScope->find(ct.getptr());
+  // if (findDecl->astClass() != "ClassTypeDecl")
+  //   return error("Attempted to use a ClassType that was not declared.");
 
-  ct.typeDefinition = atl::static_pointer_cast<ClassTypeDecl>(findDecl);
+  // ct.typeDefinition = atl::static_pointer_cast<ClassTypeDecl>(findDecl);
   return ct.getptr();
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(ClassTypeDecl &ctd) {
@@ -110,51 +110,17 @@ atl::shared_ptr<Type> TypeAnalysis::visit(EnumClassTypeDecl &ectd) {
 atl::shared_ptr<Type> TypeAnalysis::visit(EnumTypeDecl &etd) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(For &f) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
-  atl::shared_ptr<Decl> identDecl = currScope->find(fc.funIdentifier);
-  if (identDecl == nullptr)
-    return error("Type Analysis: Attempted to call undeclared function: " +
-                 fc.funIdentifier->toString());
-
-  if (identDecl->astClass() != "FunDecl" && identDecl->astClass() != "FunDef")
-    return error("Type Analysis: Attempted to call undeclared function: " +
-                 fc.funIdentifier->toString());
-
-  atl::shared_ptr<FunDecl> funDecl =
-      atl::static_pointer_cast<FunDecl>(identDecl);
-
-  if (funDecl->funParams.size() != fc.funArgs.size())
-    return error("Type Analysis: Attempted to call function: " +
-                 fc.funIdentifier->toString() +
-                 " with incorrect number of arguments");
-
-  for (int i = 0; i < fc.funArgs.size(); ++i) {
-    atl::shared_ptr<Type> argType = fc.funArgs[i]->accept(*this);
-    atl::shared_ptr<Type> paramType = funDecl->funParams[i]->type;
-    if (*argType != *paramType)
-      return error("Type Analysis: Attempted to call function: " +
-                   fc.funIdentifier->toString() +
-                   " with arguments of incorrect type.");
-  }
-  return funDecl->funType;
+  return atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID));
 }
-atl::shared_ptr<Type> TypeAnalysis::visit(FunDecl &fd) {
-  // fd.funBlock->setOuterBlock(currScope);
-  // currScope = fd.funBlock;
-
-  // for (const auto &param : fd.funParams)
-  //   param->accept(*this);
-  // fd.funBlock->accept(*this);
-  // currScope = fd.funBlock->outerBlock;
-  return fd.funType;
-}
+atl::shared_ptr<Type> TypeAnalysis::visit(FunDecl &fd) { return fd.funType; }
 atl::shared_ptr<Type> TypeAnalysis::visit(FunDef &fd) {
-  fd.funBlock->outerScope = currScope;
-  currScope = fd.funBlock;
+  fd.outerScope = currScope;
+  currScope = fd.outerScope;
 
   for (int idx = 0; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
   fd.funBlock->accept(*this);
-  currScope = fd.funBlock->outerScope;
+  currScope = fd.outerScope;
   return fd.funType;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(If &i) {
@@ -187,23 +153,24 @@ atl::shared_ptr<Type> TypeAnalysis::visit(MemberAccess &ma) {
 
   atl::shared_ptr<StructType> structType =
       atl::static_pointer_cast<StructType>(objType);
-  atl::shared_ptr<Decl> identDecl = currScope->find(structType->identifier);
-  if (identDecl == nullptr)
-    return error("Type Analysis: Attempted to access field on expression "
-                 "that does not have a type definition.");
-  if (identDecl->astClass() != "StructTypeDecl")
-    return error("Type Analysis: Attempted to access field on expression that "
-                 "does not have a StructTypeDecl");
+  // atl::shared_ptr<Decl> identDecl = currScope->find(structType->identifier);
+  // if (identDecl == nullptr)
+  //   return error("Type Analysis: Attempted to access field on expression "
+  //                "that does not have a type definition.");
+  // if (identDecl->astClass() != "StructTypeDecl")
+  //   return error("Type Analysis: Attempted to access field on expression that
+  //   "
+  //                "does not have a StructTypeDecl");
 
-  atl::shared_ptr<StructTypeDecl> structTypeDecl =
-      atl::static_pointer_cast<StructTypeDecl>(identDecl);
+  // atl::shared_ptr<StructTypeDecl> structTypeDecl =
+  //     atl::static_pointer_cast<StructTypeDecl>(identDecl);
 
-  for (int idx = 0; idx < structTypeDecl->varDecls.size(); ++idx)
-    if (*structTypeDecl->varDecls[idx]->identifer == *ma.fieldIdentifier)
-      return structTypeDecl->varDecls[idx]->type;
-
-  return error("Type Analysis: Attempted to access field on a struct that "
-               "does not exist.");
+  // for (int idx = 0; idx < structTypeDecl->varDecls.size(); ++idx)
+  //   if (*structTypeDecl->varDecls[idx]->identifer == *ma.fieldIdentifier)
+  //     return structTypeDecl->varDecls[idx]->type;
+  return nullptr;
+  // return error("Type Analysis: Attempted to access field on a struct that "
+  //              "does not exist.");
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(MemberCall &mc) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(Namespace &n) {
@@ -241,11 +208,11 @@ atl::shared_ptr<Type> TypeAnalysis::visit(SizeOf &so) {
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(StringLiteral &sl) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(StructType &st) {
-  atl::shared_ptr<Decl> findDecl = currScope->find(st.identifier);
-  if (findDecl->astClass() != "StructTypeDecl")
-    return error("Attempted to use a StructType that was not declared.");
+  // atl::shared_ptr<Decl> findDecl = currScope->find(st.identifier);
+  // if (findDecl->astClass() != "StructTypeDecl")
+  // return error("Attempted to use a StructType that was not declared.");
 
-  st.typeDefinition = atl::static_pointer_cast<StructTypeDecl>(findDecl);
+  // st.typeDefinition = atl::static_pointer_cast<StructTypeDecl>(findDecl);
   return st.getptr();
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(StructTypeDecl &std) {
@@ -269,15 +236,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(VarDecl &vd) {
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(VarDef &vd) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(VarExpr &ve) {
-  atl::shared_ptr<Decl> identDecl = currScope->find(ve.varIdentifier);
-
-  if (identDecl->astClass() != "VarDecl" && identDecl->astClass() != "VarDef")
-    return error("Attempted to reference " + identDecl->astClass() +
-                 " as a variable.");
-  atl::shared_ptr<VarDecl> veDecl =
-      atl::static_pointer_cast<VarDecl>(identDecl);
-  ve.varDecl = veDecl;
-  return veDecl->type;
+  return ve.varDecl->type->accept(*this);
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(While &w) {
   atl::shared_ptr<Type> conditionType = w.condition->accept(*this);

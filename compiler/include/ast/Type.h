@@ -4,6 +4,8 @@
 #include "atl/include/set.h"
 #include "atl/include/string.h"
 
+#include "Identifier.h"
+
 namespace ACC {
 
 class Type : public ASTNode {

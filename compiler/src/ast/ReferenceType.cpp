@@ -27,8 +27,6 @@ bool ReferenceType::operator!=(const ReferenceType &rhs) const {
 
 int ReferenceType::getBytes() const { return 4; }
 
-atl::string ReferenceType::getSignature() const { return referencedType->getSignature() + "&"; }
-
 void ReferenceType::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 atl::string ReferenceType::accept(ASTVisitor<atl::string> &v) {

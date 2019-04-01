@@ -31,8 +31,7 @@ Scope::resolveFunCall(const atl::string funSignature) const {
         decls[idx]->astClass() == "FunDef") {
       const atl::shared_ptr<FunDecl> currFunDecl =
           atl::static_pointer_cast<FunDecl>(decls[idx]);
-      if (currFunDecl->getSignature() == funSignature)
-        return currFunDecl;
+      // TODO: Compare
     }
   }
   if (outerScope != nullptr)

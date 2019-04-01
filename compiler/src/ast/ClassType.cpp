@@ -31,9 +31,6 @@ int ClassType::getBytes() const {
   return aggregateBytes;
 }
 
-atl::string ClassType::getSignature() const { return identifier->toString(); }
-
-
 bool ClassType::operator==(Type &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<ClassType *>(&rhs);

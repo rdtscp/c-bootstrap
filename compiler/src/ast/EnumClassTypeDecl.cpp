@@ -33,10 +33,6 @@ bool EnumClassTypeDecl::operator!=(Type &rhs) const { return !(*this == rhs); }
 
 int EnumClassTypeDecl::getBytes() const { return 4; }
 
-atl::string EnumClassTypeDecl::getSignature() const {
-  return "enum class " + identifier->toString();
-}
-
 bool EnumClassTypeDecl::operator==(const EnumClassTypeDecl &rhs) const {
   return states == rhs.states;
 }

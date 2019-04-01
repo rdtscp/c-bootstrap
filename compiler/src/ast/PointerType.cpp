@@ -27,8 +27,6 @@ bool PointerType::operator!=(const PointerType &rhs) const {
 
 int PointerType::getBytes() const { return 4; }
 
-atl::string PointerType::getSignature() const { return pointedType->getSignature() + "*"; }
-
 void PointerType::accept(ASTVisitor<void> &v) { return v.visit(*this); }
 
 atl::string PointerType::accept(ASTVisitor<atl::string> &v) {

@@ -21,10 +21,6 @@ int StructType::getBytes() const {
   return aggregateBytes;
 }
 
-atl::string StructType::getSignature() const {
-  return "struct " + identifier->toString();
-}
-
 bool StructType::operator==(Type &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<StructType *>(&rhs);

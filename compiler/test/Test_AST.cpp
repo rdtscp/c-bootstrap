@@ -89,7 +89,7 @@ TEST(ASTTest, VarDeclComparisons) {
   VarDecl vd2(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
               atl::make_shared<Identifier>(Identifier("var2")));
   VarDecl vd3(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-              atl::make_shared<Identifier>(Identifier("var3")));
+              atl::make_shared<Identifier>(Identifier("var2")));
 
   ASSERT_FALSE(vd1 == vd2);
   ASSERT_TRUE(vd2 == vd3);
