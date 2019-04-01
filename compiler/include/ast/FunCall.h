@@ -12,6 +12,7 @@ class FunCall : public Expr, public atl::enable_shared_from_this<FunCall> {
 public:
   atl::shared_ptr<Identifier> funIdentifier;
   atl::vector<atl::shared_ptr<Expr>> funArgs;
+  atl::shared_ptr<FunDecl> funDecl;
 
   FunCall(const atl::shared_ptr<Identifier> &p_funIdentifier,
           const atl::vector<atl::shared_ptr<Expr>> &p_funArgs);

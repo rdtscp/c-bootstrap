@@ -1,12 +1,13 @@
 #pragma once
 
 #include "ClassType.h"
-// #include "Decl.h "
+#include "Scope.h"
 #include "VarDecl.h"
 
 namespace ACC {
 
 class ConstructorDecl : public Decl,
+                        public Scope,
                         public atl::enable_shared_from_this<ConstructorDecl> {
 
 public:

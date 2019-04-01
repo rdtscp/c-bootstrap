@@ -1,15 +1,14 @@
 #pragma once
 
-
-
-
 #include "Decl.h"
+#include "Scope.h"
 #include "StructType.h"
 #include "VarDecl.h"
 
 namespace ACC {
 
 class StructTypeDecl : public Decl,
+                       public Scope,
                        public atl::enable_shared_from_this<StructTypeDecl> {
 
 public:
@@ -43,4 +42,3 @@ public:
 };
 
 } // namespace ACC
-

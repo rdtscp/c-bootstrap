@@ -1,10 +1,13 @@
 #pragma once
 
 #include "Expr.h"
+#include "Scope.h"
 
 namespace ACC {
 
-class For : public Stmt, public atl::enable_shared_from_this<For> {
+class For : public Stmt,
+            public Scope,
+            public atl::enable_shared_from_this<For> {
 
 public:
   atl::shared_ptr<VarDecl> initialVarDecl;

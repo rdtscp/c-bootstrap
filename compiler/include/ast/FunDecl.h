@@ -3,12 +3,15 @@
 #include "atl/include/set.h"
 
 #include "Decl.h"
+#include "Scope.h"
 #include "Type.h"
 #include "VarDecl.h"
 
 namespace ACC {
 
-class FunDecl : public Decl, public atl::enable_shared_from_this<FunDecl> {
+class FunDecl : public Decl,
+                public Scope,
+                public atl::enable_shared_from_this<FunDecl> {
 
 public:
   enum class FunModifiers { CONST, OVERRIDE, STATIC, VIRTUAL };
@@ -35,7 +38,6 @@ public:
   bool operator!=(const FunDecl &rhs) const;
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
-  atl::string getSignature() const;
 
   void accept(ASTVisitor<void> &v) override;
   atl::string accept(ASTVisitor<atl::string> &v) override;
