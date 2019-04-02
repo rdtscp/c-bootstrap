@@ -1,8 +1,5 @@
 #pragma once
 
-
-
-
 #include "../ASTNode.h"
 
 namespace ACC {
@@ -10,4 +7,3 @@ namespace ACC {
 class Stmt : public ASTNode {};
 
 } // namespace ACC
-
