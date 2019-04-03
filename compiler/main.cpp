@@ -7,26 +7,22 @@
 #include "include/passes/Optimiser.h"
 #include "include/passes/SourceOutput.h"
 #include "include/passes/TypeAnalysis.h"
-#include "include/targets/GenerateMIPS.h"
 #include "include/targets/GenerateX86.h"
 
 int main(int argc, char const *argv[]) {
   if (argc < 4) {
-    printf("Usage: acc <input> <output> { x86 | mips } [ --print |  --opt ]\n");
+    printf("Usage: acc <input> <output> { x86 } [ --print |  --opt ]\n");
     return 1;
   }
   const atl::string inFilename(argv[1]);
   const atl::string outFilename(argv[2]);
   const atl::string target(argv[3]);
 
-  bool outputMIPS = false;
   bool outputX86 = false;
-  if (target == "mips")
-    outputMIPS = true;
-  else if (target == "x86")
+  if (target == "x86")
     outputX86 = true;
   else {
-    printf("Invalid Target Arch, Must be either 'mips' or 'x86'\n");
+    printf("Invalid Target Arch, Must be 'x86'\n");
     return 1;
   }
 
@@ -74,11 +70,6 @@ int main(int argc, char const *argv[]) {
   if (outputGraph) {
     ACC::DotGraph dotGraph(progAST);
     dotGraph.print();
-  }
-
-  if (outputMIPS) {
-    ACC::GenerateMIPS mipsGenerator(progAST, outFilename);
-    mipsGenerator.run();
   }
 
   if (outputX86) {

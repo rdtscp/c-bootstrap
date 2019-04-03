@@ -1,4 +1,4 @@
-#include "../../include/ast/StructTypeDecl.h"
+#include "ast/StructTypeDecl.h"
 
 using namespace ACC;
 
@@ -7,8 +7,8 @@ StructTypeDecl::StructTypeDecl(
     const atl::vector<atl::shared_ptr<VarDecl>> &p_varDecls)
     : structType(p_structType), varDecls(p_varDecls) {}
 
-atl::shared_ptr<StructTypeDecl> StructTypeDecl::getptr() {
-  return shared_from_this();
+atl::shared_ptr<Identifier> StructTypeDecl::getIdentifier() const {
+  return structType->identifier;
 }
 
 bool StructTypeDecl::operator==(Decl &rhs) const {
@@ -36,34 +36,3 @@ bool StructTypeDecl::operator==(const StructTypeDecl &rhs) const {
 bool StructTypeDecl::operator!=(const StructTypeDecl &rhs) const {
   return !(*this == rhs);
 }
-
-atl::shared_ptr<Identifier> StructTypeDecl::getIdentifier() const {
-  return structType->identifier;
-}
-
-void StructTypeDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
-
-atl::string StructTypeDecl::accept(ASTVisitor<atl::string> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<Type>
-StructTypeDecl::accept(ASTVisitor<atl::shared_ptr<Type>> &v) {
-  return v.visit(*this);
-}
-
-MIPS::Register StructTypeDecl::accept(ASTVisitor<MIPS::Register> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<X86::Operand>
-StructTypeDecl::accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<ASTNode>
-StructTypeDecl::accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) {
-  return v.visit(*this);
-}
-
-atl::string StructTypeDecl::astClass() const { return "StructTypeDecl"; }

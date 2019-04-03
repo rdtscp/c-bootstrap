@@ -1,9 +1,9 @@
-#include "../../include/ast/ClassTypeDecl.h"
+#include "ast/ClassTypeDecl.h"
 
-#include "../../include/ast/FunDecl.h"
-#include "../../include/ast/FunDef.h"
-#include "../../include/ast/PointerType.h"
-#include "../../include/ast/VarDecl.h"
+#include "ast/FunDecl.h"
+#include "ast/FunDef.h"
+#include "ast/PointerType.h"
+#include "ast/VarDecl.h"
 
 using namespace ACC;
 
@@ -68,8 +68,8 @@ ClassTypeDecl::ClassTypeDecl(
   }
 }
 
-atl::shared_ptr<ClassTypeDecl> ClassTypeDecl::getptr() {
-  return shared_from_this();
+atl::shared_ptr<Identifier> ClassTypeDecl::getIdentifier() const {
+  return classType->identifier;
 }
 
 bool ClassTypeDecl::operator==(Decl &rhs) const {
@@ -97,34 +97,3 @@ bool ClassTypeDecl::operator==(const ClassTypeDecl &rhs) const {
 bool ClassTypeDecl::operator!=(const ClassTypeDecl &rhs) const {
   return !(*this == rhs);
 }
-
-atl::shared_ptr<Identifier> ClassTypeDecl::getIdentifier() const {
-  return classType->identifier;
-}
-
-void ClassTypeDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
-
-atl::string ClassTypeDecl::accept(ASTVisitor<atl::string> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<Type>
-ClassTypeDecl::accept(ASTVisitor<atl::shared_ptr<Type>> &v) {
-  return v.visit(*this);
-}
-
-MIPS::Register ClassTypeDecl::accept(ASTVisitor<MIPS::Register> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<X86::Operand>
-ClassTypeDecl::accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<ASTNode>
-ClassTypeDecl::accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) {
-  return v.visit(*this);
-}
-
-atl::string ClassTypeDecl::astClass() const { return "ClassTypeDecl"; }

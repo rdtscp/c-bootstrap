@@ -2,11 +2,11 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/Parser.h"
-#include "../include/passes/DotGraph.h"
-#include "../include/passes/NameAnalysis.h"
-#include "../include/passes/Optimiser.h"
-#include "../include/passes/TypeAnalysis.h"
+#include "Parser.h"
+#include "passes/DotGraph.h"
+#include "passes/NameAnalysis.h"
+#include "passes/Optimiser.h"
+#include "passes/TypeAnalysis.h"
 
 using namespace ACC;
 

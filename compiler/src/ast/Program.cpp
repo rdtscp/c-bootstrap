@@ -1,4 +1,4 @@
-#include "../../include/ast/Program.h"
+#include "ast/Program.h"
 
 using namespace ACC;
 
@@ -14,29 +14,3 @@ Program::Program(const atl::vector<atl::shared_ptr<Decl>> &p_decls)
     }
   }
 }
-
-void Program::accept(ASTVisitor<void> &v) { return v.visit(*this); }
-
-atl::string Program::accept(ASTVisitor<atl::string> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<Type> Program::accept(ASTVisitor<atl::shared_ptr<Type>> &v) {
-  return v.visit(*this);
-}
-
-MIPS::Register Program::accept(ASTVisitor<MIPS::Register> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<X86::Operand>
-Program::accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<ASTNode>
-Program::accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) {
-  return v.visit(*this);
-}
-
-atl::string Program::astClass() const { return "Program"; }

@@ -1,8 +1,5 @@
 #pragma once
 
-
-
-
 #include "Stmt.h"
 
 namespace ACC {
@@ -15,4 +12,3 @@ public:
 };
 
 } // namespace ACC
-

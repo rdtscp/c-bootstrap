@@ -18,8 +18,6 @@ public:
       const atl::vector<atl::shared_ptr<Assign>> &p_initialiserList,
       const atl::shared_ptr<Block> &p_constructorBlock);
 
-  atl::shared_ptr<ConstructorDecl> getptr();
-
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
 
@@ -28,15 +26,13 @@ public:
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
 
-  void accept(ASTVisitor<void> &v) override;
-  atl::string accept(ASTVisitor<atl::string> &v) override;
-  atl::shared_ptr<Type> accept(ASTVisitor<atl::shared_ptr<Type>> &v) override;
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
-  atl::shared_ptr<X86::Operand>
-  accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) override;
-  atl::shared_ptr<ASTNode>
-  accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) override;
-  atl::string astClass() const override;
+  atl::shared_ptr<ConstructorDecl> getptr() {
+    return ConstructorDecl::shared_from_this();
+  }
+
+  atl::string astClass() const override { return "ConstructorDef"; }
+
+  VISITOR_ACCEPTORS
 };
 
 } // namespace ACC

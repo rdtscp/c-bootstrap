@@ -3,9 +3,9 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/Lexer.h"
-#include "../include/Scanner.h"
-#include "../include/SourceToken.h"
+#include "Lexer.h"
+#include "Scanner.h"
+#include "SourceToken.h"
 
 using namespace ACC;
 

@@ -1,4 +1,4 @@
-#include "../../include/passes/DotGraph.h"
+#include "passes/DotGraph.h"
 
 using namespace ACC;
 
@@ -501,7 +501,7 @@ atl::string DotGraph::visit(ValueAt &va) {
 atl::string DotGraph::visit(VarDecl &vd) {
   const atl::string varDeclID = "VarDecl" + atl::to_string(++nodeCount);
   const atl::string outputStr =
-      vd.type->accept(*this) + " " + vd.identifer->toString() + ";";
+      vd.type->accept(*this) + " " + vd.identifier->toString() + ";";
   declare(varDeclID, outputStr);
   return varDeclID;
 }
@@ -509,7 +509,7 @@ atl::string DotGraph::visit(VarDef &vd) {
   const atl::string varDefID = "VarDef" + atl::to_string(++nodeCount);
   const atl::string valueID = vd.varValue->accept(*this);
   declare(varDefID,
-          vd.type->accept(*this) + " " + vd.identifer->toString() + " = ");
+          vd.type->accept(*this) + " " + vd.identifier->toString() + " = ");
   join(varDefID, valueID);
   return varDefID;
 }

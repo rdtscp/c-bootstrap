@@ -19,7 +19,7 @@ public:
   ClassTypeDecl(const atl::shared_ptr<ClassType> &p_classType,
                 const atl::vector<atl::shared_ptr<Decl>> &p_classDecls);
 
-  atl::shared_ptr<ClassTypeDecl> getptr();
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
@@ -27,17 +27,11 @@ public:
   bool operator==(const ClassTypeDecl &rhs) const;
   bool operator!=(const ClassTypeDecl &rhs) const;
 
-  atl::shared_ptr<Identifier> getIdentifier() const override;
+  atl::shared_ptr<ClassTypeDecl> getptr() { return shared_from_this(); }
 
-  void accept(ASTVisitor<void> &v) override;
-  atl::string accept(ASTVisitor<atl::string> &v) override;
-  atl::shared_ptr<Type> accept(ASTVisitor<atl::shared_ptr<Type>> &v) override;
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
-  atl::shared_ptr<X86::Operand>
-  accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) override;
-  atl::shared_ptr<ASTNode>
-  accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) override;
-  atl::string astClass() const override;
+  atl::string astClass() const override { return "ClassTypeDecl"; }
+
+  VISITOR_ACCEPTORS
 };
 
 } // namespace ACC

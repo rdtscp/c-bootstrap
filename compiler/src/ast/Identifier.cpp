@@ -1,8 +1,8 @@
-#include "../../include/ast/Identifier.h"
+#include "ast/Identifier.h"
 
 using namespace ACC;
 
-Identifier::Identifier() : value(), parentIdentifier(nullptr) {}
+Identifier::Identifier() : value(""), parentIdentifier(nullptr) {}
 
 Identifier::Identifier(const atl::string &p_value)
     : value(p_value), parentIdentifier(nullptr) {}

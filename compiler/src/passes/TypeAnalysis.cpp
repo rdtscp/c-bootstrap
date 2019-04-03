@@ -1,4 +1,4 @@
-#include "../../include/passes/TypeAnalysis.h"
+#include "passes/TypeAnalysis.h"
 
 using namespace ACC;
 TypeAnalysis::TypeAnalysis(atl::shared_ptr<Program> progAST)
@@ -166,7 +166,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(MemberAccess &ma) {
   //     atl::static_pointer_cast<StructTypeDecl>(identDecl);
 
   // for (int idx = 0; idx < structTypeDecl->varDecls.size(); ++idx)
-  //   if (*structTypeDecl->varDecls[idx]->identifer == *ma.fieldIdentifier)
+  //   if (*structTypeDecl->varDecls[idx]->identifier == *ma.fieldIdentifier)
   //     return structTypeDecl->varDecls[idx]->type;
   return nullptr;
   // return error("Type Analysis: Attempted to access field on a struct that "

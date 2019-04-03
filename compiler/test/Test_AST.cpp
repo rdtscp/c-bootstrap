@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "../include/AST.h"
+#include "AST.h"
 
 using namespace ACC;
 

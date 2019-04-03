@@ -1,5 +1,9 @@
 #pragma once
 
+#include "atl/include/shared_ptr.h"
+#include "atl/include/string.h"
+#include "atl/include/vector.h"
+
 #include "AST.h"
 #include "Lexer.h"
 #include "SourceToken.h"

@@ -1,12 +1,16 @@
-#include "../../include/ast/VarDecl.h"
+#include "ast/VarDecl.h"
 
 using namespace ACC;
 
 VarDecl::VarDecl(const atl::shared_ptr<Type> &p_type,
-                 const atl::shared_ptr<Identifier> &p_identifer)
-    : identifer(p_identifer), type(p_type) {}
+                 const atl::shared_ptr<Identifier> &p_identifier)
+    : identifier(p_identifier), type(p_type) {}
 
-atl::shared_ptr<VarDecl> VarDecl::getptr() { return shared_from_this(); }
+int VarDecl::getBytes() const { return type->getBytes(); }
+
+atl::shared_ptr<Identifier> VarDecl::getIdentifier() const {
+  return identifier;
+}
 
 bool VarDecl::operator==(Decl &rhs) const {
   if (rhs.astClass() == astClass())
@@ -20,40 +24,10 @@ bool VarDecl::operator==(const VarDecl &rhs) const {
   if (*type != *rhs.type)
     return false;
 
-  if (*identifer != *rhs.identifer)
+  if (*identifier != *rhs.identifier)
     return false;
 
   return true;
 }
 
 bool VarDecl::operator!=(const VarDecl &rhs) const { return !(*this == rhs); }
-
-int VarDecl::getBytes() const { return type->getBytes(); }
-
-atl::shared_ptr<Identifier> VarDecl::getIdentifier() const { return identifer; }
-
-void VarDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
-
-atl::string VarDecl::accept(ASTVisitor<atl::string> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<Type> VarDecl::accept(ASTVisitor<atl::shared_ptr<Type>> &v) {
-  return v.visit(*this);
-}
-
-MIPS::Register VarDecl::accept(ASTVisitor<MIPS::Register> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<X86::Operand>
-VarDecl::accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<ASTNode>
-VarDecl::accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) {
-  return v.visit(*this);
-}
-
-atl::string VarDecl::astClass() const { return "VarDecl"; }

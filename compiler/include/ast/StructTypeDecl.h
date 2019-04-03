@@ -20,7 +20,7 @@ public:
   StructTypeDecl(const atl::shared_ptr<StructType> &p_structType,
                  const atl::vector<atl::shared_ptr<VarDecl>> &p_varDecls);
 
-  atl::shared_ptr<StructTypeDecl> getptr();
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
@@ -28,17 +28,11 @@ public:
   bool operator==(const StructTypeDecl &rhs) const;
   bool operator!=(const StructTypeDecl &rhs) const;
 
-  atl::shared_ptr<Identifier> getIdentifier() const override;
+  atl::shared_ptr<StructTypeDecl> getptr() { return shared_from_this(); }
 
-  void accept(ASTVisitor<void> &v) override;
-  atl::string accept(ASTVisitor<atl::string> &v) override;
-  atl::shared_ptr<Type> accept(ASTVisitor<atl::shared_ptr<Type>> &v) override;
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
-  atl::shared_ptr<X86::Operand>
-  accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) override;
-  atl::shared_ptr<ASTNode>
-  accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) override;
-  atl::string astClass() const override;
+  atl::string astClass() const override { return "StructTypeDecl"; }
+
+  VISITOR_ACCEPTORS
 };
 
 } // namespace ACC

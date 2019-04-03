@@ -1,11 +1,9 @@
-#include "../../include/ast/ClassType.h"
+#include "ast/ClassType.h"
 
 using namespace ACC;
 
 ClassType::ClassType(const atl::shared_ptr<Identifier> &p_identifier)
     : identifier(p_identifier) {}
-
-atl::shared_ptr<ClassType> ClassType::getptr() { return shared_from_this(); }
 
 int ClassType::getBytes() const {
   int aggregateBytes = 0;
@@ -46,29 +44,3 @@ bool ClassType::operator==(const ClassType &rhs) const {
 bool ClassType::operator!=(const ClassType &rhs) const {
   return !(*this == rhs);
 }
-
-void ClassType::accept(ASTVisitor<void> &v) { return v.visit(*this); }
-
-atl::string ClassType::accept(ASTVisitor<atl::string> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<Type> ClassType::accept(ASTVisitor<atl::shared_ptr<Type>> &v) {
-  return v.visit(*this);
-}
-
-MIPS::Register ClassType::accept(ASTVisitor<MIPS::Register> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<X86::Operand>
-ClassType::accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<ASTNode>
-ClassType::accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) {
-  return v.visit(*this);
-}
-
-atl::string ClassType::astClass() const { return "ClassType"; }

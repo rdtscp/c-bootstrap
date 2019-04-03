@@ -1,4 +1,4 @@
-#include "../../include/passes/NameAnalysis.h"
+#include "passes/NameAnalysis.h"
 
 #include "atl/include/set.h"
 

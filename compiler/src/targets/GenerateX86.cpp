@@ -1,5 +1,4 @@
-
-#include "../../include/targets/GenerateX86.h"
+#include "targets/GenerateX86.h"
 
 using namespace ACC;
 

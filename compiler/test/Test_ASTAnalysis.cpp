@@ -2,18 +2,18 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/Lexer.h"
-#include "../include/Parser.h"
-#include "../include/Scanner.h"
-#include "../include/passes/DotGraph.h"
-#include "../include/passes/NameAnalysis.h"
-#include "../include/passes/TypeAnalysis.h"
+#include "Lexer.h"
+#include "Parser.h"
+#include "Scanner.h"
+#include "passes/DotGraph.h"
+#include "passes/NameAnalysis.h"
+#include "passes/TypeAnalysis.h"
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-atl::string test_prefix = "../../test/tests/";
+atl::string test_prefix =
+    "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+// atl::string test_prefix = "../../test/tests/";
 
 TEST(ASTAnalysisTest, DotGraph) {
   const atl::string filepath = test_prefix + "parser/fundecls.c";
@@ -144,12 +144,14 @@ TEST(ASTAnalysisTest, DotGraphClass) {
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
+  // ASSERT_EQ(0, nameAnalysis.errorCount);
 
-  TypeAnalysis typeAnalysis(progAST);
-  typeAnalysis.run();
+  // TypeAnalysis typeAnalysis(progAST);
+  // typeAnalysis.run();
+  // ASSERT_EQ(0, typeAnalysis.errorCount);
 
-  DotGraph dotGraph(progAST);
-  dotGraph.print();
+  // DotGraph dotGraph(progAST);
+  // dotGraph.print();
 }
 
 // The fixture for testing class Project1. From google test primer.

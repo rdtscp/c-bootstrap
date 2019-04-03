@@ -1,8 +1,5 @@
 #pragma once
 
-
-
-
 #include "Expr.h"
 
 namespace ACC {
@@ -17,8 +14,7 @@ public:
   virtual bool operator!=(Expr &rhs) const = 0;
   virtual bool operator==(Literal &rhs) const = 0;
   virtual bool operator!=(Literal &rhs) const = 0;
-  virtual atl::string getLiteral() const = 0;
+  virtual atl::string getLiteral() const { return value; };
 };
 
 } // namespace ACC
-

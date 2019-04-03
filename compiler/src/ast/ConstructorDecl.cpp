@@ -1,4 +1,4 @@
-#include "../../include/ast/ConstructorDecl.h"
+#include "ast/ConstructorDecl.h"
 
 using namespace ACC;
 
@@ -7,8 +7,8 @@ ConstructorDecl::ConstructorDecl(
     const atl::vector<atl::shared_ptr<VarDecl>> &p_constructorParams)
     : classType(p_classType), constructorParams(p_constructorParams) {}
 
-atl::shared_ptr<ConstructorDecl> ConstructorDecl::getptr() {
-  return shared_from_this();
+atl::shared_ptr<Identifier> ConstructorDecl::getIdentifier() const {
+  return classType->identifier;
 }
 
 bool ConstructorDecl::operator==(Decl &rhs) const {
@@ -36,34 +36,3 @@ bool ConstructorDecl::operator==(const ConstructorDecl &rhs) const {
 bool ConstructorDecl::operator!=(const ConstructorDecl &rhs) const {
   return !(*this == rhs);
 }
-
-atl::shared_ptr<Identifier> ConstructorDecl::getIdentifier() const {
-  return classType->identifier;
-}
-
-void ConstructorDecl::accept(ASTVisitor<void> &v) { return v.visit(*this); }
-
-atl::string ConstructorDecl::accept(ASTVisitor<atl::string> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<Type>
-ConstructorDecl::accept(ASTVisitor<atl::shared_ptr<Type>> &v) {
-  return v.visit(*this);
-}
-
-MIPS::Register ConstructorDecl::accept(ASTVisitor<MIPS::Register> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<X86::Operand>
-ConstructorDecl::accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<ASTNode>
-ConstructorDecl::accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) {
-  return v.visit(*this);
-}
-
-atl::string ConstructorDecl::astClass() const { return "ConstructorDecl"; }

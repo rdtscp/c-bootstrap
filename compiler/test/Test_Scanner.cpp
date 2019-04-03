@@ -2,8 +2,8 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/Scanner.h"
-#include "../include/SourceToken.h"
+#include "Scanner.h"
+#include "SourceToken.h"
 
 using namespace ACC;
 

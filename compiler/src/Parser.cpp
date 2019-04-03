@@ -2,7 +2,7 @@
 #include <cassert>
 #include <stdexcept>
 
-#include "../include/Parser.h"
+#include "Parser.h"
 
 using namespace ACC;
 using TC = SourceToken::Class;
@@ -444,7 +444,7 @@ atl::shared_ptr<ConstructorDecl> Parser::parseConstructor() {
   while (accept(TC::COMMA)) {
     expect(TC::COMMA);
     atl::shared_ptr<VarDecl> currParam = parseParam();
-    if (!currParam->identifer || currParam->identifer->toString() == "")
+    if (!currParam->identifier || currParam->identifier->toString() == "")
       unnamedParams = true;
 
     constructorParams.push_back(currParam);
@@ -652,7 +652,7 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
   while (accept(TC::COMMA)) {
     expect(TC::COMMA);
     atl::shared_ptr<VarDecl> currParam = parseParam();
-    if (!currParam->identifer || currParam->identifer->toString() == "")
+    if (!currParam->identifier || currParam->identifier->toString() == "")
       isDef = false;
 
     funParams.push_back(currParam);
@@ -678,7 +678,8 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
     //     FunDef(funBlock, funIdent, funParams, funType));
   } else {
     expect(TC::SC);
-    atl::shared_ptr<FunDecl> fd(new FunDecl(funModifiers, funIdentifier, funParams, funType));
+    atl::shared_ptr<FunDecl> fd(
+        new FunDecl(funModifiers, funIdentifier, funParams, funType));
     return fd;
     // return atl::make_shared<FunDecl>(FunDecl(funIdent, funParams,
     // funType));

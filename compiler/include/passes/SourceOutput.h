@@ -2,8 +2,8 @@
 
 #include "atl/include/string.h"
 
-#include "../AST.h"
-#include "../ASTVisitor.h"
+#include "AST.h"
+#include "ASTVisitor.h"
 
 namespace ACC {
 

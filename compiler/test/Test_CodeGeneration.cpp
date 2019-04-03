@@ -2,15 +2,14 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/passes/DotGraph.h"
-#include "../include/passes/NameAnalysis.h"
-#include "../include/passes/TypeAnalysis.h"
+#include "passes/DotGraph.h"
+#include "passes/NameAnalysis.h"
+#include "passes/TypeAnalysis.h"
 
-#include "../include/Lexer.h"
-#include "../include/Parser.h"
-#include "../include/Scanner.h"
-#include "../include/targets/GenerateMIPS.h"
-#include "../include/targets/GenerateX86.h"
+#include "Lexer.h"
+#include "Parser.h"
+#include "Scanner.h"
+#include "targets/GenerateX86.h"
 
 using namespace ACC;
 
@@ -34,7 +33,7 @@ TEST(CodeGenerationTest, X86_fundeclsc) {
   typeAnalysis.run();
   ASSERT_EQ(0, typeAnalysis.errorCount);
 
-  GenerateX86 x86Generator(progAST, "./fibonacci_mips.s");
+  GenerateX86 x86Generator(progAST, "./fibonacci_x86.s");
   x86Generator.run();
 }
 

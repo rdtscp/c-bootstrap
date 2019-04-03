@@ -15,23 +15,17 @@ public:
   MemberAccess(const atl::shared_ptr<Expr> &p_object,
                const atl::shared_ptr<Identifier> &p_fieldIdentifier);
 
-  atl::shared_ptr<MemberAccess> getptr();
-
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 
   bool operator==(const MemberAccess &rhs) const;
   bool operator!=(const MemberAccess &rhs) const;
 
-  void accept(ASTVisitor<void> &v) override;
-  atl::string accept(ASTVisitor<atl::string> &v) override;
-  atl::shared_ptr<Type> accept(ASTVisitor<atl::shared_ptr<Type>> &v) override;
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
-  atl::shared_ptr<X86::Operand>
-  accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) override;
-  atl::shared_ptr<ASTNode>
-  accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) override;
-  atl::string astClass() const override;
+  atl::shared_ptr<MemberAccess> getptr() { return shared_from_this(); }
+
+  atl::string astClass() const override { return "MemberAccess"; }
+
+  VISITOR_ACCEPTORS
 };
 
 } // namespace ACC

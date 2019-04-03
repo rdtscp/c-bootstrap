@@ -1,8 +1,5 @@
 #pragma once
 
-
-
-
 #include "Expr.h"
 
 namespace ACC {
@@ -14,24 +11,17 @@ public:
 
   ValueAt(const atl::shared_ptr<Expr> &p_derefExpr);
 
-  atl::shared_ptr<ValueAt> getptr();
-
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 
   bool operator==(const ValueAt &rhs) const;
   bool operator!=(const ValueAt &rhs) const;
 
-  void accept(ASTVisitor<void> &v) override;
-  atl::string accept(ASTVisitor<atl::string> &v) override;
-  atl::shared_ptr<Type> accept(ASTVisitor<atl::shared_ptr<Type>> &v) override;
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
-  atl::shared_ptr<X86::Operand>
-  accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) override;
-  atl::shared_ptr<ASTNode>
-  accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) override;
-  atl::string astClass() const override;
+  atl::shared_ptr<ValueAt> getptr() { return shared_from_this(); }
+
+  atl::string astClass() const override { return "ValueAt"; }
+
+  VISITOR_ACCEPTORS
 };
 
 } // namespace ACC
-

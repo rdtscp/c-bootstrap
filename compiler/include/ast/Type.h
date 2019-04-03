@@ -1,10 +1,7 @@
 #pragma once
 
-#include "../ASTNode.h"
-#include "atl/include/set.h"
-#include "atl/include/string.h"
-
-#include "Identifier.h"
+#include "ASTNode.h"
+#include "ast/Identifier.h"
 
 namespace ACC {
 

@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include "../include/Lexer.h"
+#include "Lexer.h"
 
 using namespace ACC;
 

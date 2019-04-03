@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../AST.h"
-#include "../ASTVisitor.h"
+#include "AST.h"
+#include "ASTVisitor.h"
 
 namespace ACC {
 

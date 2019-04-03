@@ -1,5 +1,5 @@
-#include "../../include/ast/Scope.h"
-#include "../../include/ast/FunDecl.h"
+#include "ast/Scope.h"
+#include "ast/FunDecl.h"
 
 using namespace ACC;
 

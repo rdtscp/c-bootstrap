@@ -2,9 +2,9 @@
 
 #include "gtest/gtest.h"
 
-#include "../include/Parser.h"
-#include "../include/SourceHandler.h"
-#include "../include/SourceToken.h"
+#include "Parser.h"
+#include "SourceHandler.h"
+#include "SourceToken.h"
 
 using namespace ACC;
 

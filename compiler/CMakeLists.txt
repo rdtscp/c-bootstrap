@@ -12,6 +12,7 @@ ExternalProject_Add(atl
   INSTALL_COMMAND ""
 )
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/atl/src/")
+include_directories("${CMAKE_SOURCE_DIR}/include/")
 
 add_library(AST SHARED
   src/ast/AddressOf.cpp
@@ -66,10 +67,8 @@ add_library(AST SHARED
   src/ast/While.cpp
 )
 add_library(DotGraph SHARED src/passes/DotGraph.cpp)
-add_library(GenerateMIPS SHARED src/targets/GenerateMIPS.cpp)
 add_library(GenerateX86 SHARED src/targets/GenerateX86.cpp)
 add_library(Lexer SHARED src/Lexer.cpp)
-add_library(MIPS SHARED src/targets/MIPS.cpp)
 add_library(NameAnalysis SHARED src/passes/NameAnalysis.cpp)
 add_library(Optimiser SHARED src/passes/Optimiser.cpp)
 add_library(Parser SHARED src/Parser.cpp)
@@ -79,10 +78,8 @@ add_library(Scanner SHARED src/Scanner.cpp)
 add_library(X86 SHARED src/targets/X86.cpp)
 
 add_dependencies(AST atl)
-add_dependencies(GenerateMIPS atl)
 add_dependencies(GenerateX86 atl)
 add_dependencies(Lexer atl)
-add_dependencies(MIPS atl)
 add_dependencies(NameAnalysis atl)
 add_dependencies(Optimiser atl)
 add_dependencies(Parser atl)
@@ -90,9 +87,8 @@ add_dependencies(TypeAnalysis atl)
 add_dependencies(Scanner atl)
 add_dependencies(X86 atl)
 
-target_link_libraries(AST MIPS X86)
+target_link_libraries(AST X86)
 target_link_libraries(DotGraph AST)
-target_link_libraries(GenerateMIPS AST MIPS)
 target_link_libraries(GenerateX86  AST X86)
 target_link_libraries(Lexer Scanner)
 target_link_libraries(NameAnalysis AST)
@@ -104,10 +100,8 @@ target_link_libraries(TypeAnalysis AST)
 install(
   TARGETS AST
           DotGraph
-          GenerateMIPS
           GenerateX86
           Lexer
-          MIPS
           NameAnalysis
           Optimiser
           Parser
@@ -170,4 +164,4 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 add_executable(acc main.cpp)
 add_dependencies(acc atl)
-target_link_libraries(acc AST DotGraph GenerateMIPS GenerateX86 NameAnalysis Optimiser Parser SourceOutput TypeAnalysis)
+target_link_libraries(acc AST DotGraph GenerateX86 NameAnalysis Optimiser Parser SourceOutput TypeAnalysis)

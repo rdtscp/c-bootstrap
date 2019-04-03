@@ -1,4 +1,4 @@
-#include "../../include/ast/FunDef.h"
+#include "ast/FunDef.h"
 
 using namespace ACC;
 
@@ -10,8 +10,8 @@ FunDef::FunDef(const atl::set<FunModifiers> &p_funModifiers,
     : FunDecl(p_funModifiers, p_funIdentifier, p_funParams, p_funType),
       funBlock(p_funBlock) {}
 
-atl::shared_ptr<FunDecl> FunDef::getptr() {
-  return FunDecl::shared_from_this();
+atl::shared_ptr<Identifier> FunDef::getIdentifier() const {
+  return funIdentifier;
 }
 
 bool FunDef::operator==(Decl &rhs) const {
@@ -69,33 +69,3 @@ bool FunDef::operator==(const FunDef &rhs) const {
 }
 
 bool FunDef::operator!=(const FunDef &rhs) const { return !(*this == rhs); }
-
-atl::shared_ptr<Identifier> FunDef::getIdentifier() const {
-  return funIdentifier;
-}
-
-void FunDef::accept(ASTVisitor<void> &v) { return v.visit(*this); }
-
-atl::string FunDef::accept(ASTVisitor<atl::string> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<Type> FunDef::accept(ASTVisitor<atl::shared_ptr<Type>> &v) {
-  return v.visit(*this);
-}
-
-MIPS::Register FunDef::accept(ASTVisitor<MIPS::Register> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<X86::Operand>
-FunDef::accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) {
-  return v.visit(*this);
-}
-
-atl::shared_ptr<ASTNode>
-FunDef::accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) {
-  return v.visit(*this);
-}
-
-atl::string FunDef::astClass() const { return "FunDef"; }

@@ -1,8 +1,5 @@
 #pragma once
 
-#include "atl/include/shared_ptr.h"
-#include "atl/include/vector.h"
-
 #include "Decl.h"
 
 namespace ACC {

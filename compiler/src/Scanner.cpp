@@ -3,7 +3,7 @@
 #include <fstream>
 #include <stdexcept>
 
-#include "../include/Scanner.h"
+#include "Scanner.h"
 
 using namespace ACC;
 

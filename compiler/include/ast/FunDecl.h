@@ -1,7 +1,5 @@
 #pragma once
 
-#include "atl/include/set.h"
-
 #include "Decl.h"
 #include "Scope.h"
 #include "Type.h"
@@ -25,11 +23,7 @@ public:
           const atl::vector<atl::shared_ptr<VarDecl>> &p_funParams,
           const atl::shared_ptr<Type> &p_funType);
 
-  FunDecl(const FunDecl &rhs) = delete;
-  FunDecl &operator=(const FunDecl &rhs) = delete;
-  virtual ~FunDecl() {}
-
-  atl::shared_ptr<FunDecl> getptr();
+  atl::shared_ptr<Identifier> getIdentifier() const override;
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
@@ -37,17 +31,11 @@ public:
   bool operator==(const FunDecl &rhs) const;
   bool operator!=(const FunDecl &rhs) const;
 
-  atl::shared_ptr<Identifier> getIdentifier() const override;
+  atl::shared_ptr<FunDecl> getptr() { return shared_from_this(); }
 
-  void accept(ASTVisitor<void> &v) override;
-  atl::string accept(ASTVisitor<atl::string> &v) override;
-  atl::shared_ptr<Type> accept(ASTVisitor<atl::shared_ptr<Type>> &v) override;
-  MIPS::Register accept(ASTVisitor<MIPS::Register> &v) override;
-  atl::shared_ptr<X86::Operand>
-  accept(ASTVisitor<atl::shared_ptr<X86::Operand>> &v) override;
-  atl::shared_ptr<ASTNode>
-  accept(ASTVisitor<atl::shared_ptr<ASTNode>> &v) override;
-  atl::string astClass() const override;
+  atl::string astClass() const override { return "FunDecl"; }
+
+  VISITOR_ACCEPTORS
 };
 
 } // namespace ACC
