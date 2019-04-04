@@ -140,9 +140,6 @@ atl::shared_ptr<ASTNode> Optimiser::visit(DoWhile &dw) { return dw.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(EnumClassTypeDecl &ectd) {
   return atl::static_pointer_cast<Decl>(ectd.getptr());
 }
-atl::shared_ptr<ASTNode> Optimiser::visit(EnumTypeDecl &etd) {
-  return atl::static_pointer_cast<Decl>(etd.getptr());
-}
 atl::shared_ptr<ASTNode> Optimiser::visit(For &f) { return f.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(FunCall &fc) {
   for (int idx = 0; idx < fc.funArgs.size(); ++idx)

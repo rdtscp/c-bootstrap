@@ -124,9 +124,6 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(DoWhile &dw) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(EnumClassTypeDecl &ectd) {
   return atl::make_shared<X86::None>();
 }
-atl::shared_ptr<X86::Operand> GenerateX86::visit(EnumTypeDecl &etd) {
-  return atl::make_shared<X86::None>();
-}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(For &f) {
   return atl::make_shared<X86::None>();
 }

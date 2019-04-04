@@ -57,7 +57,6 @@ private:
   atl::shared_ptr<X86::Operand> visit(DestructorDef &dd) override;
   atl::shared_ptr<X86::Operand> visit(DoWhile &dw) override;
   atl::shared_ptr<X86::Operand> visit(EnumClassTypeDecl &ectd) override;
-  atl::shared_ptr<X86::Operand> visit(EnumTypeDecl &etd) override;
   atl::shared_ptr<X86::Operand> visit(For &f) override;
   atl::shared_ptr<X86::Operand> visit(FunCall &fc) override;
   atl::shared_ptr<X86::Operand> visit(FunDecl &fd) override;

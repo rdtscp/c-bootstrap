@@ -114,8 +114,6 @@ bool Parser::acceptDecl(int offset) {
   if (acceptTypeDefDecl())
     return true;
 
-  if (acceptEnumTypeDecl())
-    return true;
   if (acceptEnumClassTypeDecl())
     return true;
 
@@ -132,10 +130,6 @@ bool Parser::acceptDestructor(int offset) {
 }
 bool Parser::acceptEnumClassTypeDecl(int offset) {
   return (accept(TC::ENUM, offset) && accept(TC::CLASS, offset + 1));
-}
-bool Parser::acceptEnumTypeDecl(int offset) {
-  return (accept(TC::ENUM, offset) &&
-          accept({TC::IDENTIFIER, TC::LBRA}, offset + 1));
 }
 bool Parser::acceptFunDecl(int offset) {
   if (accept(TC::STATIC))
@@ -524,12 +518,6 @@ atl::shared_ptr<Decl> Parser::parseDecl() {
     return tdd;
   }
 
-  if (acceptEnumTypeDecl()) {
-    atl::shared_ptr<EnumTypeDecl> etd = parseEnumTypeDecl();
-    expect(TC::SC);
-    return etd;
-  }
-
   if (acceptEnumClassTypeDecl()) {
     atl::shared_ptr<EnumClassTypeDecl> ectd = parseEnumClassTypeDecl();
     expect(TC::SC);
@@ -596,37 +584,6 @@ atl::shared_ptr<EnumClassTypeDecl> Parser::parseEnumClassTypeDecl() {
   expect(TC::RBRA);
   return atl::make_shared<EnumClassTypeDecl>(
       EnumClassTypeDecl(enumIdentifier, states));
-}
-atl::shared_ptr<EnumTypeDecl> Parser::parseEnumTypeDecl() {
-  expect(TC::ENUM);
-  atl::shared_ptr<Identifier> enumIdentifier(new Identifier(""));
-  if (accept(TC::IDENTIFIER))
-    enumIdentifier = parseIdentifier();
-  expect(TC::LBRA);
-
-  bool moreStates = false;
-  std::map<std::string, std::string> states;
-  do {
-    const atl::string stateIdentifier = expect(TC::IDENTIFIER).data;
-    atl::string stateValue = "";
-    if (accept(TC::ASSIGN)) {
-      expect(TC::ASSIGN);
-      if (accept(TC::MINUS)) {
-        expect(TC::MINUS);
-        stateValue = "-";
-      }
-      stateValue += expect(TC::INT_LITERAL).data;
-    }
-    states[std::string(stateIdentifier.c_str())] =
-        std::string(stateValue.c_str());
-    if (accept(TC::COMMA)) {
-      expect(TC::COMMA);
-      moreStates = true;
-    } else
-      moreStates = false;
-  } while (moreStates);
-  expect(TC::RBRA);
-  return atl::make_shared<EnumTypeDecl>(EnumTypeDecl(enumIdentifier, states));
 }
 atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
   atl::set<FunDecl::FunModifiers> funModifiers;
@@ -707,9 +664,6 @@ atl::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
   if (acceptStructTypeDecl()) {
     atl::shared_ptr<StructTypeDecl> std = parseStructTypeDecl();
     aliasedType = std->structType;
-  } else if (acceptEnumTypeDecl()) {
-    atl::shared_ptr<EnumTypeDecl> etd = parseEnumTypeDecl();
-    aliasedType = etd;
   } else {
     aliasedType = parseType();
   }

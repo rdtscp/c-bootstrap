@@ -21,7 +21,6 @@ class DestructorDecl;
 class DestructorDef;
 class DoWhile;
 class EnumClassTypeDecl;
-class EnumTypeDecl;
 class For;
 class FunCall;
 class FunDecl;
@@ -75,7 +74,6 @@ public:
   virtual T visit(DestructorDef &dd) = 0;
   virtual T visit(DoWhile &dw) = 0;
   virtual T visit(EnumClassTypeDecl &ectd) = 0;
-  virtual T visit(EnumTypeDecl &etd) = 0;
   virtual T visit(For &f) = 0;
   virtual T visit(FunCall &fc) = 0;
   virtual T visit(FunDecl &fd) = 0;

@@ -46,7 +46,6 @@ private:
   atl::shared_ptr<Type> visit(DestructorDef &dd) override;
   atl::shared_ptr<Type> visit(DoWhile &dw) override;
   atl::shared_ptr<Type> visit(EnumClassTypeDecl &ectd) override;
-  atl::shared_ptr<Type> visit(EnumTypeDecl &etd) override;
   atl::shared_ptr<Type> visit(For &f) override;
   atl::shared_ptr<Type> visit(FunCall &fc) override;
   atl::shared_ptr<Type> visit(FunDecl &fd) override;

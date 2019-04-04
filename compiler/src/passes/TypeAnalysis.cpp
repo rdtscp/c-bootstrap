@@ -107,7 +107,6 @@ atl::shared_ptr<Type> TypeAnalysis::visit(DoWhile &dw) {
 atl::shared_ptr<Type> TypeAnalysis::visit(EnumClassTypeDecl &ectd) {
   return nullptr;
 }
-atl::shared_ptr<Type> TypeAnalysis::visit(EnumTypeDecl &etd) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(For &f) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
   return atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID));

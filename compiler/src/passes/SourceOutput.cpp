@@ -235,7 +235,6 @@ atl::string SourceOutput::visit(EnumClassTypeDecl &ectd) {
   output += "};";
   return output;
 }
-atl::string SourceOutput::visit(EnumTypeDecl &etd) { return ""; }
 atl::string SourceOutput::visit(For &f) { return ""; }
 atl::string SourceOutput::visit(FunCall &fc) {
   atl::string output = fc.funIdentifier->toString() + "(";
