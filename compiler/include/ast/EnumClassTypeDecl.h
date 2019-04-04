@@ -10,7 +10,6 @@ namespace ACC {
 
 class EnumClassTypeDecl
     : public Decl,
-      public Type,
       public atl::enable_shared_from_this<EnumClassTypeDecl> {
 
 public:
@@ -20,15 +19,11 @@ public:
   EnumClassTypeDecl(const atl::shared_ptr<Identifier> &p_identifier,
                     const std::map<std::string, std::string> &p_states);
 
-  int getBytes() const override;
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
-
-  bool operator==(Type &rhs) const override;
-  bool operator!=(Type &rhs) const override;
 
   bool operator==(const EnumClassTypeDecl &rhs) const;
   bool operator!=(const EnumClassTypeDecl &rhs) const;
