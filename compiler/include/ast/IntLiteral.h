@@ -12,7 +12,7 @@ public:
 
 
   atl::string getLiteral() const override {
-    if (value.find('x') != atl::string::npos) {
+    if (value.find('x') != -1) {
       unsigned int intValue =
           std::stoul(std::string(value.c_str()), nullptr, 16);
       return atl::to_string(intValue);
