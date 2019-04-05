@@ -31,7 +31,7 @@ public:
 
   atl::shared_ptr<VarDecl> getptr() { return VarDecl::shared_from_this(); }
 
-  atl::string astClass() const override { return "Allocation"; }
+  atl::string astClass() const override { return "VarDef"; }
 
   VISITOR_ACCEPTORS
 };
