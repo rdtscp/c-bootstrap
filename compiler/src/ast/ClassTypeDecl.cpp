@@ -11,6 +11,7 @@ ClassTypeDecl::ClassTypeDecl(
     const atl::shared_ptr<ClassType> &p_classType,
     const atl::vector<atl::shared_ptr<Decl>> &p_classDecls)
     : classType(p_classType), classDecls(p_classDecls) {
+  /* Add `this` parameter to all FunDecls. */
   for (int declIdx = 0; declIdx < classDecls.size(); ++declIdx) {
     const atl::shared_ptr<Decl> currDecl = classDecls[declIdx];
     if (currDecl->astClass() == "FunDecl") {
@@ -65,6 +66,7 @@ ClassTypeDecl::ClassTypeDecl(
       // Save to this ClassTypeDecl.
       classDecls[declIdx] = newFunDef;
     }
+    insertDecl(currDecl);
   }
 }
 
