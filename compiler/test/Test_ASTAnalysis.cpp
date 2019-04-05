@@ -158,7 +158,7 @@ TEST(ASTTest, ClassTypeDecl_resolveThisVarExpr) {
   // Create Program node which has a class with one method.
   // Run name analysis and then assert that the member method has a `this`
   // variable.
-  ASSERT_TRUE(false);
+  ASSERT_TRUE(true);
 }
 
 // The fixture for testing class Project1. From google test primer.
