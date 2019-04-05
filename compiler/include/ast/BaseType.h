@@ -12,13 +12,15 @@ public:
 
   BaseType(const PrimitiveType p_pType);
 
+  int getBytes() const override;
+
+  atl::string getSignature() const;
+
   bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;
 
   bool operator==(const BaseType &rhs) const;
   bool operator!=(const BaseType &rhs) const;
-
-  int getBytes() const override;
 
   atl::shared_ptr<BaseType> getptr() { return shared_from_this(); }
 
