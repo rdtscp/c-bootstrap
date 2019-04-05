@@ -9,7 +9,7 @@ void Scope::insertDecl(const atl::shared_ptr<Decl> &decl) {
   decls.push_back(decl);
 }
 
-atl::shared_ptr<Decl>
+atl::shared_ptr<VarDecl>
 Scope::resolveVarExpr(const atl::shared_ptr<Identifier> identifier) const {
   for (int idx = decls.size() - 1; idx >= 0; --idx) {
     if (decls[idx]->astClass() == "VarDecl" ||
@@ -24,14 +24,15 @@ Scope::resolveVarExpr(const atl::shared_ptr<Identifier> identifier) const {
   return nullptr;
 }
 
-atl::shared_ptr<Decl>
+atl::shared_ptr<FunDecl>
 Scope::resolveFunCall(const atl::string funSignature) const {
   for (int idx = decls.size() - 1; idx >= 0; --idx) {
     if (decls[idx]->astClass() == "FunDecl" ||
         decls[idx]->astClass() == "FunDef") {
       const atl::shared_ptr<FunDecl> currFunDecl =
           atl::static_pointer_cast<FunDecl>(decls[idx]);
-      // TODO: Compare
+      if (currFunDecl->getSignature() == funSignature)
+        return currFunDecl;
     }
   }
   if (outerScope != nullptr)
