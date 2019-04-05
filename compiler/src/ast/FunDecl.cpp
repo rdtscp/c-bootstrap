@@ -13,6 +13,24 @@ atl::shared_ptr<Identifier> FunDecl::getIdentifier() const {
   return funIdentifier;
 }
 
+atl::string FunDecl::getSignature() const {
+  atl::string output = getIdentifier()->toString();
+
+  output += "(";
+
+  for (int idx = 0; idx < funParams.size(); ++idx) {
+    output += funParams[idx]->type->getSignature();
+    if (idx != funParams.size() - 1) {
+      output += ", ";
+    }
+  }
+
+  output += ")";
+
+  return output;
+}
+
+
 bool FunDecl::operator==(Decl &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<FunDecl *>(&rhs);
@@ -35,7 +53,7 @@ bool FunDecl::operator==(const FunDecl &rhs) const {
     return false;
 
   for (int i = 0; i < funParams.size(); ++i)
-    if (*funParams[i] != *rhs.funParams[i])
+    if (*funParams[i]->type != *rhs.funParams[i]->type)
       return false;
 
   return true;

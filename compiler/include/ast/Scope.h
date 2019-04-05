@@ -14,9 +14,9 @@ public:
 
   void insertDecl(const atl::shared_ptr<Decl> &decl);
 
-  atl::shared_ptr<Decl>
+  atl::shared_ptr<VarDecl>
   resolveVarExpr(const atl::shared_ptr<Identifier> identifier) const;
-  atl::shared_ptr<Decl> resolveFunCall(const atl::string funSignature) const;
+  atl::shared_ptr<FunDecl> resolveFunCall(const atl::string funSignature) const;
 
   atl::shared_ptr<Decl>
   duplicateDeclaration(const atl::shared_ptr<Decl> &decl) const;
