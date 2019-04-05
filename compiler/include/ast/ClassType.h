@@ -16,6 +16,8 @@ public:
 
   int getBytes() const override;
 
+  atl::string getSignature() const;
+
   bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;
 

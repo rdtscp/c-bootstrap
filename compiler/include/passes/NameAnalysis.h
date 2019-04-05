@@ -47,7 +47,6 @@ private:
   void visit(DestructorDef &dd) override;
   void visit(DoWhile &dw) override;
   void visit(EnumClassTypeDecl &ectd) override;
-  void visit(EnumTypeDecl &etd) override;
   void visit(For &f) override;
   void visit(FunCall &fc) override;
   void visit(FunDecl &fd) override;

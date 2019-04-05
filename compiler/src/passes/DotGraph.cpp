@@ -297,16 +297,6 @@ atl::string DotGraph::visit(EnumClassTypeDecl &ectd) {
           "enum class " + ectd.getIdentifier()->toString());
   return enumClassTypeDeclID;
 }
-atl::string DotGraph::visit(EnumTypeDecl &etd) {
-  const atl::string enumTypeDeclID =
-      "enumTypeDeclID" + atl::to_string(++nodeCount);
-  if (etd.getIdentifier())
-    declare(enumTypeDeclID, "enum " + etd.getIdentifier()->toString());
-  else
-    declare(enumTypeDeclID, "enum ");
-
-  return enumTypeDeclID;
-}
 atl::string DotGraph::visit(For &f) {
   const atl::string forID = "For" + atl::to_string(++nodeCount);
   declare(forID, "for(;;)");

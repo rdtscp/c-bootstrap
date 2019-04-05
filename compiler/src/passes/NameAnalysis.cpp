@@ -100,9 +100,6 @@ void NameAnalysis::visit(DoWhile &dw) {
 void NameAnalysis::visit(EnumClassTypeDecl &ectd) {
   // TODO:
 }
-void NameAnalysis::visit(EnumTypeDecl &etd) {
-  // TODO:
-}
 void NameAnalysis::visit(For &f) {
   f.outerScope = currScope;
   currScope = f.getptr();

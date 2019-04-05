@@ -95,21 +95,260 @@ TEST(ASTTest, VarDeclComparisons) {
   ASSERT_TRUE(vd2 == vd3);
 }
 
+TEST(ASTTest, ClassTypeComparison) {
+  const atl::shared_ptr<Identifier> classOneIdent(new Identifier("ClassOne"));
+  const ClassType classOne(classOneIdent);
+  ASSERT_EQ(classOne, classOne);
+
+  const atl::shared_ptr<Identifier> classTwoIdent(new Identifier("ClassTwo"));
+  const ClassType classTwo(classTwoIdent);
+  ASSERT_NE(classOne, classTwo);
+}
+
+TEST(ASTTest, ClassTypeDeclComparisons) {
+  const atl::shared_ptr<Identifier> classOneIdent(new Identifier("ClassOne"));
+  const atl::shared_ptr<ClassType> classOneType(new ClassType(classOneIdent));
+
+  const ClassTypeDecl classOne(classOneType, {});
+
+  ASSERT_EQ(classOne, ClassTypeDecl(classOne));
+
+  const atl::shared_ptr<Identifier> classTwoIdent(new Identifier("ClassTwo"));
+  const atl::shared_ptr<ClassType> classTwoType(new ClassType(classTwoIdent));
+
+  const ClassTypeDecl classTwo(classTwoType, {});
+
+  ASSERT_NE(classOne, classTwo);
+}
+
+TEST(ASTTest, FunDeclComparisons) {
+  const atl::set<FunDecl::FunModifiers> funDeclOneModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> funDeclOneParams = {
+      atl::shared_ptr<VarDecl>(new VarDecl(
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+          atl::shared_ptr<Identifier>(new Identifier("paramOne"))))};
+  const atl::shared_ptr<Identifier> funDeclOneIdent(new Identifier("myFunc"));
+  const atl::shared_ptr<BaseType> funDeclOneType(
+      new BaseType(PrimitiveType::VOID));
+  const FunDecl funDeclOne(funDeclOneModifiers, funDeclOneIdent,
+                           funDeclOneParams, funDeclOneType);
+
+  const atl::set<FunDecl::FunModifiers> funDeclTwoModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> funDeclTwoParams = {
+      atl::shared_ptr<VarDecl>(new VarDecl(
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+          atl::shared_ptr<Identifier>(new Identifier("differentName"))))};
+  const atl::shared_ptr<Identifier> funDeclTwoIdent(new Identifier("myFunc"));
+  const atl::shared_ptr<BaseType> funDeclTwoType(
+      new BaseType(PrimitiveType::VOID));
+  const FunDecl funDeclTwo(funDeclTwoModifiers, funDeclTwoIdent,
+                           funDeclTwoParams, funDeclTwoType);
+
+  ASSERT_EQ(funDeclOne, funDeclTwo);
+
+  const atl::set<FunDecl::FunModifiers> funDeclThreeModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> funDeclThreeParams{
+      atl::shared_ptr<VarDecl>(new VarDecl(
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+          atl::shared_ptr<Identifier>(new Identifier("differentType"))))};
+  const atl::shared_ptr<Identifier> funDeclThreeIdent(new Identifier("myFunc"));
+  const atl::shared_ptr<BaseType> funDeclThreeType(
+      new BaseType(PrimitiveType::VOID));
+  const FunDecl funDeclThree(funDeclThreeModifiers, funDeclThreeIdent,
+                             funDeclThreeParams, funDeclThreeType);
+
+  ASSERT_NE(funDeclTwo, funDeclThree);
+}
+
+TEST(ASTTest, FunDefComparisons) {
+  const atl::set<FunDecl::FunModifiers> funDefOneModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> funDefOneParams = {
+      atl::shared_ptr<VarDecl>(new VarDecl(
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+          atl::shared_ptr<Identifier>(new Identifier("paramOne"))))};
+  const atl::shared_ptr<Identifier> funDefOneIdent(new Identifier("myFunc"));
+  const atl::shared_ptr<BaseType> funDefOneType(
+      new BaseType(PrimitiveType::VOID));
+  const atl::shared_ptr<Block> funDefOneBlock(new Block({}));
+  const FunDef funDefOne(funDefOneModifiers, funDefOneIdent, funDefOneParams,
+                         funDefOneType, funDefOneBlock);
+
+  const atl::set<FunDecl::FunModifiers> funDefTwoModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> funDefTwoParams = {
+      atl::shared_ptr<VarDecl>(new VarDecl(
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+          atl::shared_ptr<Identifier>(new Identifier("differentName"))))};
+  const atl::shared_ptr<Identifier> funDefTwoIdent(new Identifier("myFunc"));
+  const atl::shared_ptr<BaseType> funDefTwoType(
+      new BaseType(PrimitiveType::VOID));
+  const atl::shared_ptr<Block> funDefTwoBlock(new Block({}));
+
+  const FunDef funDefTwo(funDefTwoModifiers, funDefTwoIdent, funDefTwoParams,
+                         funDefTwoType, funDefTwoBlock);
+
+  ASSERT_EQ(funDefOne, funDefTwo);
+
+  const atl::set<FunDecl::FunModifiers> funDefThreeModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> funDefThreeParams{
+      atl::shared_ptr<VarDecl>(new VarDecl(
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+          atl::shared_ptr<Identifier>(new Identifier("differentType"))))};
+  const atl::shared_ptr<Identifier> funDefThreeIdent(new Identifier("myFunc"));
+  const atl::shared_ptr<BaseType> funDefThreeType(
+      new BaseType(PrimitiveType::VOID));
+  const atl::shared_ptr<Block> funDefThreeBlock(new Block({}));
+
+  const FunDef funDefThree(funDefThreeModifiers, funDefThreeIdent,
+                           funDefThreeParams, funDefThreeType,
+                           funDefThreeBlock);
+
+  ASSERT_NE(funDefTwo, funDefThree);
+}
+
 TEST(ASTTest, FunDeclFunDefComparisons) {
-  const atl::set<FunDecl::FunModifiers> funModifiers;
-  const atl::vector<atl::shared_ptr<VarDecl>> params;
+  const atl::set<FunDecl::FunModifiers> funDeclOneModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> funDeclOneParams = {
+      atl::shared_ptr<VarDecl>(new VarDecl(
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+          atl::shared_ptr<Identifier>(new Identifier("paramOne"))))};
+  const atl::shared_ptr<Identifier> funDeclOneIdent(new Identifier("myFunc"));
+  const atl::shared_ptr<BaseType> funDeclOneType(
+      new BaseType(PrimitiveType::VOID));
+  const FunDecl funDeclOne(funDeclOneModifiers, funDeclOneIdent,
+                           funDeclOneParams, funDeclOneType);
 
-  const atl::shared_ptr<FunDecl> funDeclA(new FunDecl(
-      funModifiers, atl::make_shared<Identifier>(Identifier("functionA")), {},
-      atl::make_shared<BaseType>(BaseType(PrimitiveType::INT))));
+  const atl::set<FunDecl::FunModifiers> funDeclTwoModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> funDeclTwoParams = {
+      atl::shared_ptr<VarDecl>(new VarDecl(
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+          atl::shared_ptr<Identifier>(new Identifier("differentName"))))};
+  const atl::shared_ptr<Identifier> funDeclTwoIdent(new Identifier("myFunc"));
+  const atl::shared_ptr<BaseType> funDeclTwoType(
+      new BaseType(PrimitiveType::VOID));
+  const FunDecl funDeclTwo(funDeclTwoModifiers, funDeclTwoIdent,
+                           funDeclTwoParams, funDeclTwoType);
 
-  const atl::shared_ptr<FunDef> funDefA(new FunDef(
-      funModifiers, atl::make_shared<Identifier>(Identifier("functionA")), {},
-      atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-      atl::make_shared<Block>(Block({}))));
+  ASSERT_EQ(funDeclOne, funDeclTwo);
 
-  ASSERT_TRUE(*funDefA == *funDeclA);
-  ASSERT_TRUE(*funDeclA == *funDefA);
+  const atl::set<FunDecl::FunModifiers> funDeclThreeModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> funDeclThreeParams{
+      atl::shared_ptr<VarDecl>(new VarDecl(
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+          atl::shared_ptr<Identifier>(new Identifier("differentType"))))};
+  const atl::shared_ptr<Identifier> funDeclThreeIdent(new Identifier("myFunc"));
+  const atl::shared_ptr<BaseType> funDeclThreeType(
+      new BaseType(PrimitiveType::VOID));
+  const FunDecl funDeclThree(funDeclThreeModifiers, funDeclThreeIdent,
+                             funDeclThreeParams, funDeclThreeType);
+
+  ASSERT_NE(funDeclTwo, funDeclThree);
+
+  const atl::set<FunDecl::FunModifiers> funDefOneModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> funDefOneParams = {
+      atl::shared_ptr<VarDecl>(new VarDecl(
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+          atl::shared_ptr<Identifier>(new Identifier("paramOne"))))};
+  const atl::shared_ptr<Identifier> funDefOneIdent(new Identifier("myFunc"));
+  const atl::shared_ptr<BaseType> funDefOneType(
+      new BaseType(PrimitiveType::VOID));
+  const atl::shared_ptr<Block> funDefOneBlock(new Block({}));
+  const FunDef funDefOne(funDefOneModifiers, funDefOneIdent, funDefOneParams,
+                         funDefOneType, funDefOneBlock);
+
+  const atl::set<FunDecl::FunModifiers> funDefTwoModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> funDefTwoParams = {
+      atl::shared_ptr<VarDecl>(new VarDecl(
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+          atl::shared_ptr<Identifier>(new Identifier("differentName"))))};
+  const atl::shared_ptr<Identifier> funDefTwoIdent(new Identifier("myFunc"));
+  const atl::shared_ptr<BaseType> funDefTwoType(
+      new BaseType(PrimitiveType::VOID));
+  const atl::shared_ptr<Block> funDefTwoBlock(new Block({}));
+
+  const FunDef funDefTwo(funDefTwoModifiers, funDefTwoIdent, funDefTwoParams,
+                         funDefTwoType, funDefTwoBlock);
+
+  ASSERT_EQ(funDefOne, funDefTwo);
+
+  const atl::set<FunDecl::FunModifiers> funDefThreeModifiers;
+  const atl::vector<atl::shared_ptr<VarDecl>> funDefThreeParams{
+      atl::shared_ptr<VarDecl>(new VarDecl(
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+          atl::shared_ptr<Identifier>(new Identifier("differentType"))))};
+  const atl::shared_ptr<Identifier> funDefThreeIdent(new Identifier("myFunc"));
+  const atl::shared_ptr<BaseType> funDefThreeType(
+      new BaseType(PrimitiveType::VOID));
+  const atl::shared_ptr<Block> funDefThreeBlock(new Block({}));
+
+  const FunDef funDefThree(funDefThreeModifiers, funDefThreeIdent,
+                           funDefThreeParams, funDefThreeType,
+                           funDefThreeBlock);
+
+  ASSERT_NE(funDefTwo, funDefThree);
+
+  ASSERT_EQ(funDeclOne, funDefOne);
+  ASSERT_NE(funDeclOne, funDefThree);
+}
+
+TEST(ASTTest, Scope_resolveVarExpr_currScope) {
+  atl::shared_ptr<Scope> outerScope(new Scope());
+  atl::shared_ptr<Scope> currScope(new Scope());
+  currScope->outerScope = outerScope;
+
+  /* Store a variable in the current scope. */
+  const atl::shared_ptr<BaseType> varDeclType(new BaseType(PrimitiveType::INT));
+  const atl::shared_ptr<Identifier> varDeclIdent(new Identifier("var1"));
+  const atl::shared_ptr<VarDecl> varDecl(new VarDecl(varDeclType, varDeclIdent));
+  currScope->insertDecl(varDecl);
+
+  /* Resolve it */
+  const atl::shared_ptr<Identifier> searchIdent(new Identifier("var1"));
+  atl::shared_ptr<VarDecl> resolvedVarDecl = currScope->resolveVarExpr(searchIdent);
+  ASSERT_EQ(*varDecl, *resolvedVarDecl);
+}
+
+TEST(ASTTest, Scope_resolveVarExpr_outerScope) {
+  atl::shared_ptr<Scope> outerScope(new Scope());
+  atl::shared_ptr<Scope> currScope(new Scope());
+  currScope->outerScope = outerScope;
+
+  /* Store a variable in the current scope. */
+  const atl::shared_ptr<BaseType> varDeclType(new BaseType(PrimitiveType::INT));
+  const atl::shared_ptr<Identifier> varDeclIdent(new Identifier("var1"));
+  const atl::shared_ptr<VarDecl> varDecl(new VarDecl(varDeclType, varDeclIdent));
+  outerScope->insertDecl(varDecl);
+
+  /* Resolve it */
+  const atl::shared_ptr<Identifier> searchIdent(new Identifier("var1"));
+  atl::shared_ptr<VarDecl> resolvedVarDecl = currScope->resolveVarExpr(searchIdent);
+  ASSERT_EQ(*varDecl, *resolvedVarDecl);
+}
+
+TEST(ASTTest, Scope_resolveFunCall_innerScope) {
+  atl::shared_ptr<Scope> outerScope(new Scope());
+  atl::shared_ptr<Scope> currScope(new Scope());
+  currScope->outerScope = outerScope;
+
+  /* Store a function in the current scope. */
+  const atl::shared_ptr<FunDecl> funDeclOne(new FunDecl(
+      atl::set<FunDecl::FunModifiers>(),
+      atl::make_shared<Identifier>(Identifier("myFunc")),
+      {
+          atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
+          atl::make_shared<Identifier>(Identifier("paramOne"))))
+      },
+      atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID))
+  ));
+
+
+
+  currScope->insertDecl(funDeclOne);
+
+  /* Resolve it */
+  const atl::string funSignature = "myFunc(char)";
+  atl::shared_ptr<FunDecl> resolvedFunDecl = currScope->resolveFunCall(funSignature);
+  ASSERT_EQ(*funDeclOne, *resolvedFunDecl);
 }
 
 // The fixture for testing class Project1. From google test primer.

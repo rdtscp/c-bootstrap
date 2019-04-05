@@ -19,6 +19,10 @@ int ArrayType::getBytes() const {
          elementSize;
 }
 
+atl::string ArrayType::getSignature() const {
+  return type->getSignature() + "[]";
+}
+
 bool ArrayType::operator==(Type &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<ArrayType *>(&rhs);

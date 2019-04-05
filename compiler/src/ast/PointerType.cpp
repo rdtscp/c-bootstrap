@@ -7,6 +7,10 @@ PointerType::PointerType(const atl::shared_ptr<Type> &p_pointedType)
 
 int PointerType::getBytes() const { return 4; }
 
+atl::string PointerType::getSignature() const {
+  return pointedType->getSignature() +  "*";
+}
+
 bool PointerType::operator==(Type &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<PointerType *>(&rhs);
