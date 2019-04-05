@@ -298,12 +298,14 @@ TEST(ASTTest, Scope_resolveVarExpr_currScope) {
   /* Store a variable in the current scope. */
   const atl::shared_ptr<BaseType> varDeclType(new BaseType(PrimitiveType::INT));
   const atl::shared_ptr<Identifier> varDeclIdent(new Identifier("var1"));
-  const atl::shared_ptr<VarDecl> varDecl(new VarDecl(varDeclType, varDeclIdent));
+  const atl::shared_ptr<VarDecl> varDecl(
+      new VarDecl(varDeclType, varDeclIdent));
   currScope->insertDecl(varDecl);
 
   /* Resolve it */
   const atl::shared_ptr<Identifier> searchIdent(new Identifier("var1"));
-  atl::shared_ptr<VarDecl> resolvedVarDecl = currScope->resolveVarExpr(searchIdent);
+  atl::shared_ptr<VarDecl> resolvedVarDecl =
+      currScope->resolveVarExpr(searchIdent);
   ASSERT_EQ(*varDecl, *resolvedVarDecl);
 }
 
@@ -315,12 +317,14 @@ TEST(ASTTest, Scope_resolveVarExpr_outerScope) {
   /* Store a variable in the current scope. */
   const atl::shared_ptr<BaseType> varDeclType(new BaseType(PrimitiveType::INT));
   const atl::shared_ptr<Identifier> varDeclIdent(new Identifier("var1"));
-  const atl::shared_ptr<VarDecl> varDecl(new VarDecl(varDeclType, varDeclIdent));
+  const atl::shared_ptr<VarDecl> varDecl(
+      new VarDecl(varDeclType, varDeclIdent));
   outerScope->insertDecl(varDecl);
 
   /* Resolve it */
   const atl::shared_ptr<Identifier> searchIdent(new Identifier("var1"));
-  atl::shared_ptr<VarDecl> resolvedVarDecl = currScope->resolveVarExpr(searchIdent);
+  atl::shared_ptr<VarDecl> resolvedVarDecl =
+      currScope->resolveVarExpr(searchIdent);
   ASSERT_EQ(*varDecl, *resolvedVarDecl);
 }
 
@@ -330,25 +334,37 @@ TEST(ASTTest, Scope_resolveFunCall_innerScope) {
   currScope->outerScope = outerScope;
 
   /* Store a function in the current scope. */
-  const atl::shared_ptr<FunDecl> funDeclOne(new FunDecl(
-      atl::set<FunDecl::FunModifiers>(),
-      atl::make_shared<Identifier>(Identifier("myFunc")),
-      {
-          atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-          atl::make_shared<Identifier>(Identifier("paramOne"))))
-      },
-      atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID))
-  ));
-
-
+  const atl::shared_ptr<FunDecl> funDeclOne(
+      new FunDecl(atl::set<FunDecl::FunModifiers>(),
+                  atl::make_shared<Identifier>(Identifier("myFunc")),
+                  {atl::make_shared<VarDecl>(VarDecl(
+                      atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
+                      atl::make_shared<Identifier>(Identifier("paramOne"))))},
+                  atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID))));
 
   currScope->insertDecl(funDeclOne);
 
   /* Resolve it */
   const atl::string funSignature = "myFunc(char)";
-  atl::shared_ptr<FunDecl> resolvedFunDecl = currScope->resolveFunCall(funSignature);
+  atl::shared_ptr<FunDecl> resolvedFunDecl =
+      currScope->resolveFunCall(funSignature);
   ASSERT_EQ(*funDeclOne, *resolvedFunDecl);
+}
+
+TEST(ASTTest, ClassTypeDecl_resolveVarExpr) {
+  /* Store a class with a member variable in the current scope. */
+  const atl::shared_ptr<ClassTypeDecl> classTypeDecl(new ClassTypeDecl(
+      atl::make_shared<ClassType>(
+          ClassType(atl::make_shared<Identifier>(Identifier("MyClass")))),
+      {atl::make_shared<VarDecl>(
+          VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+                  atl::make_shared<Identifier>(Identifier("memberVar"))))}));
+
+  /* Resolve it */
+  const atl::shared_ptr<Identifier> searchIdent(new Identifier("memberVar"));
+  atl::shared_ptr<VarDecl> resolvedVarDecl =
+      classTypeDecl->resolveVarExpr(searchIdent);
+  ASSERT_EQ(resolvedVarDecl.get(), classTypeDecl->classDecls[0].get());
 }
 
 // The fixture for testing class Project1. From google test primer.
