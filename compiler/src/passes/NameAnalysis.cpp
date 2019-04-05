@@ -51,7 +51,6 @@ void NameAnalysis::visit(BoolLiteral &bl) {}
 void NameAnalysis::visit(CharLiteral &cl) {}
 void NameAnalysis::visit(ClassType &ct) {}
 void NameAnalysis::visit(ClassTypeDecl &ctd) {
-  // TODO: Check that a ClassTypeDecl doesn't already exist with this name.
   if (currScope->duplicateDeclaration(ctd.getptr()))
     return error("Attempted to declare a Class with an identifier that is "
                  "already in use: " +
@@ -87,7 +86,6 @@ void NameAnalysis::visit(ConstructorDef &cd) {
 
   currScope = cd.outerScope;
 }
-
 void NameAnalysis::visit(Deletion &d) { d.deletionVar->accept(*this); }
 void NameAnalysis::visit(DestructorDecl &dd) {}
 void NameAnalysis::visit(DestructorDef &dd) {
