@@ -8,7 +8,7 @@
 
 namespace ACC {
 
-class Scanner final {
+class Scanner {
 
 public:
   Scanner(const SourceHandler &src);
