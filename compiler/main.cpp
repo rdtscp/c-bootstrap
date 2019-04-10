@@ -77,7 +77,7 @@ int main(int argc, char const *argv[]) {
     x86Generator.run();
   }
 
-  printf("\n\n");
+  printf("\n\n\n");
   ACC::SourceOutput sourceOutput(progAST);
   sourceOutput.print();
 
