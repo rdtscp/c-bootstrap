@@ -212,14 +212,14 @@ void NameAnalysis::visit(TypeDefDecl &tdd) {
 }
 void NameAnalysis::visit(ValueAt &va) { va.derefExpr->accept(*this); }
 void NameAnalysis::visit(VarDecl &vd) {
-  if (currScope->duplicateDeclarationLocal(vd.getptr()))
+  if (!inClassTypeDecl && currScope->duplicateDeclarationLocal(vd.getptr()))
     return error("Attempted to declare a Variable with an identifier that is "
                  "already in use: " +
                  vd.getIdentifier()->toString());
   currScope->insertDecl(vd.getptr());
 }
 void NameAnalysis::visit(VarDef &vd) {
-  if (currScope->duplicateDeclarationLocal(vd.getptr()))
+  if (!inClassTypeDecl && currScope->duplicateDeclarationLocal(vd.getptr()))
     return error("Attempted to define a Variable with an identifier that is "
                  "already in use: " +
                  vd.getIdentifier()->toString());
