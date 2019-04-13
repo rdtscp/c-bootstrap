@@ -35,7 +35,6 @@ before_install:
 script:
   - CXX=/usr/bin/clang++-5.0
   - cd ${TRAVIS_BUILD_DIR}
-  - cd compiler
   - mkdir build
   - cd ./build
   - cmake -DCMAKE_BUILD_TYPE=Debug ..

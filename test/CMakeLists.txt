@@ -19,6 +19,10 @@ add_executable(runParserUnitTests Test_Parser.cpp  main.cpp)
 target_link_libraries(runParserUnitTests libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis)
 add_test(ParserUnitTests runParserUnitTests)
 
+add_executable(runPreprocessorUnitTests Test_Preprocessor.cpp  main.cpp)
+target_link_libraries(runPreprocessorUnitTests libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser Preprocessor TypeAnalysis)
+add_test(PreprocessorUnitTests runPreprocessorUnitTests)
+
 add_executable(runASTAnalysisUnitTests Test_ASTAnalysis.cpp  main.cpp)
 target_link_libraries(runASTAnalysisUnitTests libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis)
 add_test(ASTAnalysisUnitTests runASTAnalysisUnitTests)

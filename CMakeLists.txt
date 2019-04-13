@@ -71,6 +71,7 @@ add_library(Lexer SHARED src/Lexer.cpp)
 add_library(NameAnalysis SHARED src/passes/NameAnalysis.cpp)
 add_library(Optimiser SHARED src/passes/Optimiser.cpp)
 add_library(Parser SHARED src/Parser.cpp)
+add_library(Preprocessor SHARED src/Preprocessor.cpp)
 add_library(SourceOutput SHARED src/passes/SourceOutput.cpp)
 add_library(TypeAnalysis SHARED src/passes/TypeAnalysis.cpp)
 add_library(Scanner SHARED src/Scanner.cpp)
@@ -82,6 +83,7 @@ add_dependencies(Lexer atl)
 add_dependencies(NameAnalysis atl)
 add_dependencies(Optimiser atl)
 add_dependencies(Parser atl)
+add_dependencies(Preprocessor atl)
 add_dependencies(TypeAnalysis atl)
 add_dependencies(Scanner atl)
 add_dependencies(X86 atl)
@@ -93,6 +95,7 @@ target_link_libraries(Lexer Scanner)
 target_link_libraries(NameAnalysis AST)
 target_link_libraries(Optimiser AST)
 target_link_libraries(Parser AST Lexer)
+target_link_libraries(Preprocessor Scanner)
 target_link_libraries(SourceOutput AST)
 target_link_libraries(TypeAnalysis AST)
 
@@ -104,6 +107,7 @@ install(
           NameAnalysis
           Optimiser
           Parser
+          Preprocessor
           Scanner
           SourceOutput
           TypeAnalysis
@@ -163,4 +167,4 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 add_executable(acc main.cpp)
 add_dependencies(acc atl)
-target_link_libraries(acc AST DotGraph GenerateX86 NameAnalysis Optimiser Parser SourceOutput TypeAnalysis)
+target_link_libraries(acc AST DotGraph GenerateX86 NameAnalysis Optimiser Parser Preprocessor Scanner SourceOutput TypeAnalysis)

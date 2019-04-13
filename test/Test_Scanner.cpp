@@ -103,6 +103,15 @@ TEST(ScannerTest, PeekingPastEOF) {
   ASSERT_EQ(scanner.peek(), '\0');
 }
 
+TEST(ScannerTest, ScanningPreprocessorDirectives) {
+  const atl::string filepath = test_prefix + "scanner/ppdirectives.cpp";
+  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
+  ACC::Scanner scanner(src);
+
+  while (scanner.next() != '\0') {
+  }
+}
+
 // The fixture for testing class Project1. From google test primer.
 class Test_Scanner : public ::testing::Test {
 protected:

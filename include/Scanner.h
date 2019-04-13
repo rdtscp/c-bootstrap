@@ -8,7 +8,7 @@
 
 namespace ACC {
 
-class Scanner final {
+class Scanner {
 
 public:
   Scanner(const SourceHandler &src);
@@ -17,7 +17,7 @@ public:
 
   Scanner operator=(const Scanner &rhs) = delete;
 
-  char next();
+  virtual char next();
 
   char peek();
 
@@ -29,7 +29,7 @@ public:
 
   Position getPosition() const;
 
-private:
+protected:
   atl::string::const_iterator currChar;
   int column;
   int line;
