@@ -7,16 +7,14 @@
 -   Bootstrapping a simple C based compiler written in C++.
 -   The compiler will intially be used to build simple C programs, and then extend the grammar enough so that it is able to compile itself.
 
-
 ## Pre-Processor Grammar
-```
-#define
-#else
-#endif
-#ifdef
-#ifndef
-#include
-```
+
+    #define
+    #else
+    #endif
+    #ifdef
+    #ifndef
+    #include
 
 ## Mini-C/C++ Grammar
 
