@@ -12,11 +12,11 @@ using namespace ACC;
 atl::string test_prefix = "../../test/tests/";
 
 TEST(PreprocessorTest, TestConstruction) {
-  ACC::Preprocessor preprocessor(SourceHandler(SourceHandler::Type::RAW, ""),
+  ACC::Preprocessor preprocessor(SourceHandler(SourceHandler::Type::RAW, "foo"),
                                  {});
   const SourceHandler pp_src = preprocessor.getSource();
   ASSERT_EQ(pp_src.type, SourceHandler::Type::RAW);
-  ASSERT_EQ(pp_src.value, "");
+  ASSERT_EQ(pp_src.value, "foo");
 }
 
 // The fixture for testing class Project1. From google test primer.
