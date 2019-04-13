@@ -30,6 +30,11 @@ Preprocessor::Preprocessor(const SourceHandler &src,
 }
 
 SourceHandler Preprocessor::getSource() {
-  char c = fileScanners.top()->next();
-  return SourceHandler(SourceHandler::Type::RAW, " ");
+  atl::string output;
+  char c;
+  do {
+    c = fileScanners.top()->next();
+    output += c;
+  } while (c != '\0');
+  return SourceHandler(SourceHandler::Type::RAW, output);
 }
