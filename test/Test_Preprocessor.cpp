@@ -12,12 +12,11 @@ using namespace ACC;
 atl::string test_prefix = "../../test/tests/";
 
 TEST(PreprocessorTest, TestConstruction) {
-  const atl::string filepath = test_prefix + "scanner/scanner.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Preprocessor preprocessor(src);
+  ACC::Preprocessor preprocessor(SourceHandler(SourceHandler::Type::RAW, " "),
+                                 {});
   const SourceHandler pp_src = preprocessor.getSource();
-  ASSERT_EQ(src.type, pp_src.type);
-  ASSERT_EQ(src.value, pp_src.value);
+  ASSERT_EQ(pp_src.type, SourceHandler::Type::RAW);
+  ASSERT_EQ(pp_src.value, " ");
 }
 
 // The fixture for testing class Project1. From google test primer.
