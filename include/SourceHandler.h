@@ -10,7 +10,7 @@ public:
   SourceHandler(const Type type, const atl::string &value)
       : type(type), value(value) {}
   const Type type;
-  const atl::string &value;
+  const atl::string value;
 };
 
 } // namespace ACC
