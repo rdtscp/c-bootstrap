@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Expr.h"
+#include "FunDecl.h"
 #include "Identifier.h"
 
 namespace ACC {

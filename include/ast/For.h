@@ -2,6 +2,7 @@
 
 #include "Expr.h"
 #include "Scope.h"
+#include "VarDecl.h"
 
 namespace ACC {
 
