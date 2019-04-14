@@ -2,7 +2,6 @@
 
 #include "ClassType.h"
 #include "Decl.h"
-#include "FunDecl.h"
 #include "Scope.h"
 #include "VarDecl.h"
 
