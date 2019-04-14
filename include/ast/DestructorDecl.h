@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ClassType.h"
-// #include "Decl.h "
+#include "Decl.h"
+#include "Type.h"
 #include "VarDecl.h"
 
 namespace ACC {

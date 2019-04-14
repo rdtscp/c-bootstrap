@@ -3,6 +3,7 @@
 #include "Decl.h"
 #include "Scope.h"
 #include "Stmt.h"
+#include "Type.h"
 
 namespace ACC {
 

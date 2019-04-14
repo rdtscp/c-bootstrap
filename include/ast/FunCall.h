@@ -3,6 +3,7 @@
 #include "Expr.h"
 #include "FunDecl.h"
 #include "Identifier.h"
+#include "Type.h"
 
 namespace ACC {
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ClassTypeDecl.h"
-
 #include "Type.h"
 
 namespace ACC {
