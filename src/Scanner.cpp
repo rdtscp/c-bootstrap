@@ -97,7 +97,7 @@ atl::string Scanner::getFilepath() const {
 }
 
 Position Scanner::getPosition() const {
-  return Position(line, column, getFilepath() + getFilename());
+  return Position(column, line, getFilepath() + getFilename());
 }
 
 void Scanner::updateCurrFile() {

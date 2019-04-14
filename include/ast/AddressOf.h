@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Expr.h"
+#include "Type.h"
 
 namespace ACC {
 

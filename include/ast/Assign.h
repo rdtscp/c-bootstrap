@@ -2,6 +2,7 @@
 
 #include "Expr.h"
 #include "Stmt.h"
+#include "Type.h"
 
 namespace ACC {
 

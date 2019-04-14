@@ -2,6 +2,7 @@
 
 #include "Expr.h"
 #include "Literal.h"
+#include "Type.h"
 
 namespace ACC {
 

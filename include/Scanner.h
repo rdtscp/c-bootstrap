@@ -17,6 +17,8 @@ public:
 
   Scanner operator=(const Scanner &rhs) = delete;
 
+  virtual ~Scanner() {}
+
   virtual char next();
 
   char peek();
@@ -38,6 +40,6 @@ protected:
   atl::string abspath;
 
   void updateCurrFile();
-};
+}; // namespace ACC
 
 } // namespace ACC

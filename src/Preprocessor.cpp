@@ -25,7 +25,8 @@ char PPScanner::next() {
 
 Preprocessor::Preprocessor(const SourceHandler &src,
                            const atl::vector<atl::string> &includePaths)
-    : includePaths(includePaths) {
+// : includePaths(includePaths) {
+{
   fileScanners.push_back(atl::shared_ptr<PPScanner>(new PPScanner(src)));
 }
 

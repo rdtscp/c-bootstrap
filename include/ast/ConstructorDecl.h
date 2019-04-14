@@ -2,6 +2,7 @@
 
 #include "ClassType.h"
 #include "Scope.h"
+#include "Type.h"
 #include "VarDecl.h"
 
 namespace ACC {
