@@ -63,7 +63,7 @@ void Writer::add(const atl::shared_ptr<X86::Operand> &op1,
 }
 
 void Writer::block(atl::string blockName, const atl::string &comment) {
-  write("\n" + blockName + ":");
+  write("\n" + blockName + ":" + "\t" + comment);
 }
 
 void Writer::call(const atl::string &ident, const atl::string &comment) {

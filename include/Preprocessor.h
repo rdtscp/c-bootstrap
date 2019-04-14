@@ -26,7 +26,7 @@ public:
   SourceHandler getSource();
 
 private:
-  const atl::vector<atl::string> &includePaths;
+  // const atl::vector<atl::string> &includePaths;
   atl::stack<atl::shared_ptr<PPScanner>> fileScanners;
 };
 
