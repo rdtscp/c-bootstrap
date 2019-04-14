@@ -291,6 +291,7 @@ atl::string DotGraph::visit(DoWhile &dw) {
   return whileID;
 }
 atl::string DotGraph::visit(EnumClassTypeDecl &ectd) {
+  // TODO
   const atl::string enumClassTypeDeclID =
       "EnumClassTypeDecl" + atl::to_string(++nodeCount);
   declare(enumClassTypeDeclID,
