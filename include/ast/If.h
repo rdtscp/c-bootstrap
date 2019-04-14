@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Expr.h"
+#include "Type.h"
 
 namespace ACC {
 
@@ -18,7 +19,7 @@ public:
      const atl::shared_ptr<Stmt> &p_ifBody,
      const atl::shared_ptr<Stmt> &p_elseBody);
 
-  atl::shared_ptr<If> getptr(){ return shared_from_this(); }
+  atl::shared_ptr<If> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "If"; }
 

@@ -120,9 +120,9 @@ public:
     INVALID // in case we cannot recognise a character as part of a valid token
   };
 
-  atl::string data;
-  Position position;
   Class tokenClass;
+  Position position;
+  atl::string data;
 
   SourceToken()
       : tokenClass(Class::INVALID), position(Position(-1, -1, "")), data("") {}

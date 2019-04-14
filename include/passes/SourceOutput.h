@@ -14,7 +14,6 @@ public:
   void print();
 
 private:
-  int nodeCount = 0;
   atl::shared_ptr<Program> progAST;
   std::map<std::string, atl::string> classTypeDeclIDs;
 

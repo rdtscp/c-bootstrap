@@ -2,6 +2,7 @@
 
 #include "Expr.h"
 #include "Literal.h"
+#include "Type.h"
 
 namespace ACC {
 
@@ -9,7 +10,6 @@ class IntLiteral : public Literal,
                    public atl::enable_shared_from_this<IntLiteral> {
 public:
   IntLiteral(const atl::string &p_literal);
-
 
   atl::string getLiteral() const override {
     if (value.find('x') != -1) {
@@ -28,8 +28,8 @@ public:
 
   bool operator==(const IntLiteral &rhs) const;
   bool operator!=(const IntLiteral &rhs) const;
-  
-  atl::shared_ptr<IntLiteral> getptr(){ return shared_from_this(); }
+
+  atl::shared_ptr<IntLiteral> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "IntLiteral"; }
 

@@ -13,8 +13,8 @@ public:
 
   Position() {}
 
-  Position(int line, int column, atl::string file)
-      : line(line), column(column), file(file) {}
+  Position(int column, int line, atl::string file)
+      : column(column), line(line), file(file) {}
 
   atl::string toString() {
     return file + ":" + atl::to_string(line) + ":" + atl::to_string(column);

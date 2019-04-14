@@ -480,7 +480,6 @@ SourceToken Lexer::nextToken() {
 
 SourceToken Lexer::lexStringLiteral() {
   atl::string literal;
-  int currLine = scanner.getPosition().line;
 
   while (true) {
     char c = scanner.next();
@@ -523,7 +522,6 @@ void Lexer::passComment() {
       if (c == '*' && scanner.peek() == '/') {
         scanner.next(); // Consume the closing DIV.
         c = scanner.next();
-        char temp = scanner.peek();
         return;
       }
       if (c == '\0')

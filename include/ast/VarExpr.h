@@ -2,6 +2,7 @@
 
 #include "Expr.h"
 #include "Identifier.h"
+#include "VarDecl.h"
 
 namespace ACC {
 

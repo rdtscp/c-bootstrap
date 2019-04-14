@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ClassTypeDecl.h"
-
 #include "Type.h"
 
 namespace ACC {
@@ -16,7 +15,7 @@ public:
 
   int getBytes() const override;
 
-  atl::string getSignature() const;
+  atl::string getSignature() const override;
 
   bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;

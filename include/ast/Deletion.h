@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Stmt.h"
+#include "Type.h"
 #include "VarExpr.h"
 
 namespace ACC {

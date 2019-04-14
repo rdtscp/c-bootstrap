@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ast/Type.h"
+
 #include "ast/AddressOf.h"
 #include "ast/Allocation.h"
 #include "ast/ArrayAccess.h"

@@ -2,6 +2,7 @@
 
 #include "Stmt.h"
 #include "StringLiteral.h"
+#include "Type.h"
 
 namespace ACC {
 
