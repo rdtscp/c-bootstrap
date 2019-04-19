@@ -9,7 +9,7 @@
 using namespace ACC;
 
 // atl::string test_prefix =
-    // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
 atl::string test_prefix = "../../test/tests/";
 
 TEST(ParserTest, AllTokens) {
@@ -214,8 +214,7 @@ TEST(ParserTest, BinOp) {
   isalphaModifiers.insert(FunDecl::FunModifiers::STATIC);
   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
       atl::shared_ptr<FunDef>(new FunDef(
-          isalphaModifiers,
-          atl::make_shared<Identifier>(Identifier("isalpha")),
+          isalphaModifiers, atl::make_shared<Identifier>(Identifier("isalpha")),
           {atl::make_shared<VarDecl>(
               VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
                       atl::make_shared<Identifier>(Identifier("c"))))},
