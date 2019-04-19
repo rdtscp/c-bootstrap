@@ -5,6 +5,7 @@ namespace ACC {
 
 namespace FileSystem {
 
+/* Returns the parentDirector of any path. */
 static atl::string parentDir(const atl::string &filepath) {
   atl::string output;
 
@@ -25,11 +26,14 @@ static atl::string parentDir(const atl::string &filepath) {
   return output;
 }
 
-static std::string resolveRelativePath(atl::string currFilepath,
+/* Takes in the current absolute filepath, and a relative
+ * path, and resolved the relative path to an absolute path.
+ */
+static atl::string resolveRelativePath(atl::string currFilepath,
                                        const atl::string &relativePath) {
   // Already an absolute path, return it.
   if (relativePath[0] == '/')
-    return relativePath.c_str();
+    return relativePath;
 
   // Strip the file from the path.
   if (currFilepath[currFilepath.size() - 1] != '/')
@@ -47,7 +51,7 @@ static std::string resolveRelativePath(atl::string currFilepath,
   }
   for (int idx = endIdx; idx < relativePath.size(); ++idx)
     currFilepath += relativePath[idx];
-  return currFilepath.c_str();
+  return currFilepath;
 }
 
 } // namespace FileSystem
