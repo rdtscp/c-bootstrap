@@ -25,8 +25,8 @@ TEST(FileSystemTest, TestParentDir) {
 TEST(FileSystemTest, TestResolveRelativePath) {
   const atl::string currFilepath = "/path/to/some/directory/file.cpp";
   const atl::string relativePath = "../../header.h";
-  const std::string expected = "/path/to/header.h";
-  const std::string actual =
+  const atl::string expected = "/path/to/header.h";
+  const atl::string actual =
       FileSystem::resolveRelativePath(currFilepath, relativePath);
   ASSERT_EQ(actual, expected);
 }
