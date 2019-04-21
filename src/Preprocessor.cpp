@@ -25,46 +25,47 @@ char PPScanner::next() {
 
 /* ---- Preprocessor ---- */
 
-Preprocessor::Preprocessor(const atl::vector<atl::string> &includePaths)
-    : includePaths(includePaths) {}
+Preprocessor::Preprocessor(const SourceHandler &src,
+                           const atl::vector<atl::string> &includePaths,
+                           atl::shared_ptr<Preprocessor> parentPreprocessor)
+    : includePaths(includePaths), src(src),
+      parentPreprocessor(parentPreprocessor), scanner(new PPScanner(src)) {}
 
-SourceHandler Preprocessor::getSource(const SourceHandler &src) {
-  scanner = atl::shared_ptr<PPScanner>(new PPScanner(src));
-  atl::string sourceFilepath = "RAW";
-  if (src.type == SourceHandler::Type::FILEPATH)
-    sourceFilepath = src.value;
+SourceHandler Preprocessor::getSource() {
 
-  atl::string output = formatIncludeDirective(sourceFilepath) + "\n";
+  atl::string output = formatIncludeDirective(src.getFilepath()) + "\n";
   char c;
   do {
     c = scanner->next();
     if (c == '#' && scanner->peek() == 'i') {
-      const atl::string relativeIncludePath = lexInclude();
-      const atl::string absoluteIncludePath =
-          FileSystem::resolveRelativePath(sourceFilepath, relativeIncludePath);
-      const SourceHandler includeFilepath(SourceHandler::Type::FILEPATH,
-                                          absoluteIncludePath);
+      const SourceHandler includeFilepath = lexInclude();
 
       // Preprocess the included file.
-      Preprocessor includePreprocessor(includePaths);
-      const SourceHandler includeSource =
-          includePreprocessor.getSource(includeFilepath);
+      Preprocessor includePreprocessor(includeFilepath, includePaths, this);
+      const SourceHandler includeSource = includePreprocessor.getSource();
 
       // Append the preprocessed source.
       output += includeSource.value;
 
       // Mark we are returning to the original file.
       output += Preprocessor::formatIncludeDirective(
-          sourceFilepath, scanner->getPosition().line);
+          src.getFilepath(), scanner->getPosition().line);
+    } else if (c == '#' && scanner->peek() == 'p') {
+      const bool filePreprocessed = lexPragmaOnce();
+      if (filePreprocessed)
+        return SourceHandler(SourceHandler::Type::RAW, output + "\n");
     } else {
       output += c;
     }
   } while (c != '\0');
+  markVisited(src.getFilepath());
   return SourceHandler(SourceHandler::Type::RAW, output);
 }
 
-/* Have found `#i`, lex the rest. */
-atl::string Preprocessor::lexInclude() {
+// bool Preprocessor::filePreprocessed(const atl::string &filename) { if }
+
+/* Have found `#i`, lex the rest and return a SourceHandler. */
+SourceHandler Preprocessor::lexInclude() {
   lexKeyword("#include");
   scanner->next(); // Skip space.
   char c = scanner->next();
@@ -72,8 +73,7 @@ atl::string Preprocessor::lexInclude() {
     throw "Preprocessor: #include directives must be followed by a string "
           "filepath";
 
-  // scanner->next();
-  const atl::string relativeFilepath = lexStringLiteral();
+  const atl::string relativeIncludePath = lexStringLiteral();
   c = scanner->next();
   while (c != '\n') {
     if (!atl::isspace(c))
@@ -82,8 +82,26 @@ atl::string Preprocessor::lexInclude() {
     c = scanner->next();
   }
 
-  return relativeFilepath;
+  const atl::string absoluteIncludePath =
+      FileSystem::resolveRelativePath(src.getFilepath(), relativeIncludePath);
+
+  return SourceHandler(SourceHandler::Type::FILEPATH, absoluteIncludePath);
 }
+
+bool Preprocessor::lexPragmaOnce() {
+  lexKeyword("#pragma once");
+  char c = scanner->next();
+  while (c != '\n') {
+    if (!atl::isspace(c))
+      throw "Preprocessor: #pragma once directive must end with whitespace "
+            "and "
+            "a newline.";
+    c = scanner->next();
+  }
+  return checkVisited(src.getFilepath());
+}
+
+/* Helpers */
 
 void Preprocessor::lexKeyword(const atl::string &keyword) {
   atl::string literal(1, keyword[0]);
@@ -124,4 +142,21 @@ atl::string Preprocessor::lexStringLiteral() {
     }
   }
   return literal;
+}
+bool Preprocessor::checkVisited(const atl::string &filepath) const {
+  if (parentPreprocessor != nullptr) {
+    return parentPreprocessor->checkVisited(filepath);
+  } else {
+    for (int idx = 0; idx < filesPreprocessed.size(); ++idx)
+      if (filesPreprocessed[idx] == filepath)
+        return true;
+
+    return false;
+  }
+}
+void Preprocessor::markVisited(const atl::string &filepath) {
+  if (parentPreprocessor != nullptr)
+    parentPreprocessor->markVisited(filepath);
+  else
+    filesPreprocessed.push_back(filepath);
 }

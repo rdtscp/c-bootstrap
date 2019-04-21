@@ -9,20 +9,19 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-atl::string test_prefix = "../../test/tests/";
+atl::string test_prefix =
+    "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+// atl::string test_prefix = "../../test/tests/";
 
 TEST(PreprocessorTest, TestConstruction) {
-  ACC::Preprocessor preprocessor({});
-  const SourceHandler pp_src =
-      preprocessor.getSource(SourceHandler(SourceHandler::Type::RAW, "foo"));
+  ACC::Preprocessor preprocessor(SourceHandler(SourceHandler::Type::RAW, "foo"),
+                                 {});
+  const SourceHandler pp_src = preprocessor.getSource();
   ASSERT_EQ(pp_src.type, SourceHandler::Type::RAW);
   ASSERT_EQ(std::string(pp_src.value.c_str()), "# 1 \"RAW\"\nfoo");
 }
 
 TEST(PreprocessorTest, TestFormatIncludeDirective) {
-  ACC::Preprocessor preprocessor({});
   const atl::string formattedInclude =
       ACC::Preprocessor::formatIncludeDirective("test/tests/scanner/header.h");
   ASSERT_EQ(std::string(formattedInclude.c_str()),
@@ -35,10 +34,10 @@ TEST(PreprocessorTest, TestFileExists) {
 }
 
 TEST(PreprocessorTest, TestInclude) {
-  ACC::Preprocessor preprocessor({});
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "preprocessor/test1.cpp");
-  const SourceHandler pp_src = preprocessor.getSource(src);
+  ACC::Preprocessor preprocessor(src, {});
+  const SourceHandler pp_src = preprocessor.getSource();
 
   atl::string actual_val = pp_src.value.c_str();
   atl::string expect_val =
@@ -51,10 +50,10 @@ TEST(PreprocessorTest, TestInclude) {
 }
 
 TEST(PreprocessorTest, TestIncludeChildDir) {
-  ACC::Preprocessor preprocessor({});
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "preprocessor/test2.cpp");
-  const SourceHandler pp_src = preprocessor.getSource(src);
+  ACC::Preprocessor preprocessor(src, {});
+  const SourceHandler pp_src = preprocessor.getSource();
 
   atl::string actual_val = pp_src.value.c_str();
   atl::string expect_val =
@@ -68,10 +67,10 @@ TEST(PreprocessorTest, TestIncludeChildDir) {
 }
 
 TEST(PreprocessorTest, TestIncludeParentDir) {
-  ACC::Preprocessor preprocessor({});
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "preprocessor/other_dir/test3.cpp");
-  const SourceHandler pp_src = preprocessor.getSource(src);
+  ACC::Preprocessor preprocessor(src, {});
+  const SourceHandler pp_src = preprocessor.getSource();
 
   atl::string actual_val = pp_src.value.c_str();
   atl::string expect_val =
@@ -82,6 +81,26 @@ TEST(PreprocessorTest, TestIncludeParentDir) {
       +"preprocessor/other_dir/test3.cpp\"\nint test3() { return 1; }";
 
   ASSERT_EQ(actual_val, expect_val);
+}
+
+TEST(PreprocessorTest, TestPragmaOnce) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "preprocessor/test4.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  const SourceHandler pp_src = preprocessor.getSource();
+
+  std::string actual_val = pp_src.value.c_str();
+  atl::string expect_val =
+      "# 1 \"" + test_prefix + "preprocessor/test4.cpp\"\n# 1 \"" +
+      test_prefix +
+      "preprocessor/header4.h\"\n\nint header4() { return 1; }\n# 2 \"" +
+      test_prefix + "preprocessor/test4.cpp\"\nint test4() { return 1; }\n";
+
+  std::cout << actual_val << std::endl;
+  std::cout << "--------" << std::endl;
+  std::cout << expect_val.c_str() << std::endl;
+
+  ASSERT_EQ(actual_val, expect_val.c_str());
 }
 
 // The fixture for testing class Project1. From google test primer.

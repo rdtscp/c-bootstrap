@@ -22,9 +22,11 @@ public:
 
 class Preprocessor {
 public:
-  Preprocessor(const atl::vector<atl::string> &includePaths);
+  Preprocessor(
+      const SourceHandler &src, const atl::vector<atl::string> &includePaths,
+      const atl::shared_ptr<Preprocessor> parentPreprocessor = nullptr);
 
-  SourceHandler getSource(const SourceHandler &src);
+  SourceHandler getSource();
 
   static atl::string formatIncludeDirective(const atl::string &filepath,
                                             const int lineNum = 1) {
@@ -38,13 +40,19 @@ public:
 
 private:
   const atl::vector<atl::string> &includePaths;
+  const SourceHandler &src;
+  const atl::shared_ptr<Preprocessor> parentPreprocessor;
   atl::shared_ptr<PPScanner> scanner;
+  atl::vector<atl::string> filesPreprocessed;
 
-  atl::string lexInclude();
+  SourceHandler lexInclude();
+  bool lexPragmaOnce();
 
   /* Helpers */
   void lexKeyword(const atl::string &keyword);
   atl::string lexStringLiteral();
+  bool checkVisited(const atl::string &filepath) const;
+  void markVisited(const atl::string &filepath);
 };
 
 } // namespace ACC
