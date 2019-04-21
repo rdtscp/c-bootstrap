@@ -43,9 +43,9 @@ int main(int argc, char const *argv[]) {
   }
 
   if (preprocess) {
-    ACC::Preprocessor preprocessor({});
     ACC::SourceHandler src(ACC::SourceHandler::Type::FILEPATH, inFilename);
-    ACC::SourceHandler pp_src = preprocessor.getSource(src);
+    ACC::Preprocessor preprocessor(src, {});
+    ACC::SourceHandler pp_src = preprocessor.getSource();
     printf("\n%s\n", pp_src.value.c_str());
 
     return 0;
