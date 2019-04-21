@@ -11,6 +11,13 @@ public:
       : type(type), value(value) {}
   const Type type;
   const atl::string value;
+
+  atl::string getFilepath() const {
+    if (type == Type::FILEPATH)
+      return value;
+    else
+      return "RAW";
+  }
 };
 
 } // namespace ACC
