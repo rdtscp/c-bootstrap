@@ -37,7 +37,10 @@ SourceHandler Preprocessor::getSource() {
   char c;
   do {
     c = scanner->next();
-    if (c == '#' && scanner->peek() == 'i') {
+    // Skip through Comments.
+    if (c == '/' && (scanner->peek() == '*' || scanner->peek() == '/')) {
+      passComment();
+    } else if (c == '#' && scanner->peek() == 'i') {
       const SourceHandler includeFilepath = lexInclude();
 
       // Preprocess the included file.
@@ -159,4 +162,30 @@ void Preprocessor::markVisited(const atl::string &filepath) {
     parentPreprocessor->markVisited(filepath);
   else
     filesPreprocessed.push_back(filepath);
+}
+void Preprocessor::passComment() {
+  // Consume the '/' or '*' character.
+  char c = scanner->next();
+  int currLine = scanner->getPosition().line;
+  if (c == '/') {
+    while (scanner->getPosition().line == currLine)
+      scanner->next();
+    return;
+  } else if (c == '*') {
+    c = scanner->next();
+    while (true) {
+      c = scanner->next();
+      if (c == '*' && scanner->peek() == '/') {
+        scanner->next(); // Consume the closing DIV.
+        c = scanner->next();
+        return;
+      }
+      if (c == '\0')
+        break;
+    }
+  }
+  throw std::runtime_error(
+      std::string(
+          "Preprocessor: Lexing Comment Returned Unexpected SourceToken(s). ") +
+      scanner->getPosition().toString().c_str());
 }
