@@ -14,7 +14,10 @@ class Parser final {
 
 public:
   Parser(Lexer &lexer);
-  Parser(Parser &rhs) = delete;
+  Parser(const Parser &rhs) = delete;
+  Parser(Parser &&rhs) = delete;
+  Parser &operator=(const Parser &rhs) = delete;
+  Parser &operator=(Parser &&rhs) = delete;
 
   /* Parses the Tokens into an AST with root node Program. */
   atl::shared_ptr<Program> getAST();
