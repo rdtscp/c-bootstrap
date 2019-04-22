@@ -12,7 +12,8 @@
 
 int main(int argc, char const *argv[]) {
   if (argc < 4) {
-    printf("Usage: acc <input> <output> { x86 } [ --print |  --opt | --pp ]\n");
+    printf("Usage: acc <input> <output> { x86 } [ --graph |  --opt | "
+           "--preprocess ]\n");
     return 1;
   }
   const atl::string inFilename(argv[1]);
@@ -33,11 +34,11 @@ int main(int argc, char const *argv[]) {
   if (argc > 3) {
     for (int i = 4; i < argc; ++i) {
       const atl::string flag(argv[i]);
-      if (flag == "--print")
+      if (flag == "--graph")
         outputGraph = true;
       if (flag == "--opt")
         optimise = true;
-      if (flag == "--pp")
+      if (flag == "--preprocess")
         preprocess = true;
     }
   }
@@ -51,7 +52,8 @@ int main(int argc, char const *argv[]) {
     return 0;
   } else {
     ACC::SourceHandler src(ACC::SourceHandler::Type::FILEPATH, inFilename);
-    ACC::Scanner scanner(src);
+    ACC::Preprocessor preprocessor(src, {});
+    ACC::Scanner scanner(preprocessor.getSource());
     ACC::Lexer lexer(scanner);
     ACC::Parser parser(lexer);
     atl::shared_ptr<ACC::Program> progAST = parser.getAST();
