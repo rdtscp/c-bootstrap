@@ -184,8 +184,5 @@ void Preprocessor::passComment() {
         break;
     }
   }
-  throw std::runtime_error(
-      std::string(
-          "Preprocessor: Lexing Comment Returned Unexpected SourceToken(s). ") +
-      scanner->getPosition().toString().c_str());
+  throw "Preprocessor: Lexing Comment Returned Unexpected SourceToken(s). ";
 }
