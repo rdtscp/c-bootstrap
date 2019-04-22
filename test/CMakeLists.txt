@@ -3,6 +3,10 @@ enable_testing()
 # I couldn't make it work with INTERFACE_INCLUDE_DIRECTORIES
 include_directories("${source_dir}/googletest/include")
 
+add_executable(runFileSystemUnitTests Test_FileSystem.cpp  main.cpp)
+target_link_libraries(runFileSystemUnitTests libgtest libgmock)
+add_test(FileSystemUnitTests runFileSystemUnitTests)
+
 add_executable(runScannerUnitTests Test_Scanner.cpp  main.cpp)
 target_link_libraries(runScannerUnitTests libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis)
 add_test(ScannerUnitTests runScannerUnitTests)

@@ -48,7 +48,7 @@ char Scanner::next() {
   return nextChar;
 }
 
-char Scanner::peek() {
+char Scanner::peek() const {
   if (currChar == file.end())
     return '\0';
   return *currChar;

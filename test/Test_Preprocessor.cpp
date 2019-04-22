@@ -1,5 +1,7 @@
 #include "atl/include/string.h"
 
+#include <iostream>
+
 #include "gtest/gtest.h"
 
 #include "Preprocessor.h"
@@ -8,15 +10,97 @@
 using namespace ACC;
 
 // atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
 atl::string test_prefix = "../../test/tests/";
 
 TEST(PreprocessorTest, TestConstruction) {
-  ACC::Preprocessor preprocessor(SourceHandler(SourceHandler::Type::RAW, ""),
+  ACC::Preprocessor preprocessor(SourceHandler(SourceHandler::Type::RAW, "foo"),
                                  {});
   const SourceHandler pp_src = preprocessor.getSource();
   ASSERT_EQ(pp_src.type, SourceHandler::Type::RAW);
-  ASSERT_EQ(pp_src.value, "");
+  ASSERT_EQ(std::string(pp_src.value.c_str()), "# 1 \"RAW\"\nfoo");
+}
+
+TEST(PreprocessorTest, TestFormatIncludeDirective) {
+  const atl::string formattedInclude =
+      ACC::Preprocessor::formatIncludeDirective("test/tests/scanner/header.h");
+  ASSERT_EQ(std::string(formattedInclude.c_str()),
+            "# 1 \"test/tests/scanner/header.h\"");
+}
+
+TEST(PreprocessorTest, TestFileExists) {
+  ASSERT_TRUE(Preprocessor::fileExists(test_prefix + "preprocessor/test1.cpp"));
+  ASSERT_TRUE(Preprocessor::fileExists(test_prefix + "preprocessor/header1.h"));
+}
+
+TEST(PreprocessorTest, TestInclude) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "preprocessor/test1.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  const SourceHandler pp_src = preprocessor.getSource();
+
+  atl::string actual_val = pp_src.value.c_str();
+  atl::string expect_val =
+      "# 1 \"" + test_prefix + +"preprocessor/test1.cpp\"\n# 1 \"" +
+      test_prefix +
+      +"preprocessor/header1.h\"\nint header1() { return 1; }\n# 2 \"" +
+      test_prefix + +"preprocessor/test1.cpp\"\nint test1() { return 1; }";
+
+  ASSERT_EQ(actual_val, expect_val);
+}
+
+TEST(PreprocessorTest, TestIncludeChildDir) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "preprocessor/test2.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  const SourceHandler pp_src = preprocessor.getSource();
+
+  atl::string actual_val = pp_src.value.c_str();
+  atl::string expect_val =
+      "# 1 \"" + test_prefix + +"preprocessor/test2.cpp\"\n# 1 \"" +
+      test_prefix +
+      +"preprocessor/other_dir/header2.h\"\nint header2() { return 1; }\n# 2 "
+       "\"" +
+      test_prefix + +"preprocessor/test2.cpp\"\nint test2() { return 1; }";
+
+  ASSERT_EQ(actual_val, expect_val);
+}
+
+TEST(PreprocessorTest, TestIncludeParentDir) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "preprocessor/other_dir/test3.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  const SourceHandler pp_src = preprocessor.getSource();
+
+  atl::string actual_val = pp_src.value.c_str();
+  atl::string expect_val =
+      "# 1 \"" + test_prefix + +"preprocessor/other_dir/test3.cpp\"\n# 1 \"" +
+      test_prefix +
+      +"preprocessor/header3.h\"\nint header3() { return 1; }\n# 2 \"" +
+      test_prefix +
+      +"preprocessor/other_dir/test3.cpp\"\nint test3() { return 1; }";
+
+  ASSERT_EQ(actual_val, expect_val);
+}
+
+TEST(PreprocessorTest, TestPragmaOnce) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "preprocessor/test4.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  const SourceHandler pp_src = preprocessor.getSource();
+
+  std::string actual_val = pp_src.value.c_str();
+  atl::string expect_val =
+      "# 1 \"" + test_prefix + "preprocessor/test4.cpp\"\n# 1 \"" +
+      test_prefix +
+      "preprocessor/header4.h\"\n\nint header4() { return 1; }\n# 2 \"" +
+      test_prefix + "preprocessor/test4.cpp\"\nint test4() { return 1; }\n";
+
+  std::cout << actual_val << std::endl;
+  std::cout << "--------" << std::endl;
+  std::cout << expect_val.c_str() << std::endl;
+
+  ASSERT_EQ(actual_val, expect_val.c_str());
 }
 
 // The fixture for testing class Project1. From google test primer.
