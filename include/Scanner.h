@@ -21,7 +21,7 @@ public:
 
   virtual char next();
 
-  char peek();
+  char peek() const;
 
   SourceHandler getFileContents() const;
 

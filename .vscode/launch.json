@@ -51,6 +51,19 @@
       "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
     },
     {
+      "name": "(lldb) File System Unit Tests",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/test/runFileSystemUnitTests",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "lldb",
+      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
+    },
+    {
       "name": "(lldb) Scanner Unit Tests",
       "type": "cppdbg",
       "request": "launch",

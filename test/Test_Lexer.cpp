@@ -10,7 +10,7 @@
 using namespace ACC;
 
 // atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
 atl::string test_prefix = "../../test/tests/";
 
 TEST(LexerTest, AllTokens) {
