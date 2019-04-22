@@ -23,7 +23,7 @@
         "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/parser/class.cpp",
         "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/class.s",
         "x86",
-        "--print"
+        "--graph"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
@@ -41,7 +41,7 @@
         "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main_.cpp",
         "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/class.s",
         "x86",
-        "--print"
+        "--graph"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
