@@ -12,7 +12,10 @@ class Lexer final {
 
 public:
   Lexer(Scanner &scanner);
-  Lexer(Lexer &rhs) = delete;
+  Lexer(const Lexer &rhs) = delete;
+  Lexer(Lexer &&rhs) = delete;
+  Lexer &operator=(const Lexer &rhs) = delete;
+  Lexer &operator=(Lexer &&rhs) = delete;
 
   /* Parses the next Token out of the Input File. */
   SourceToken nextToken();
