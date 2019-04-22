@@ -295,6 +295,18 @@ atl::string DotGraph::visit(EnumClassTypeDecl &ectd) {
       "EnumClassTypeDecl" + atl::to_string(++nodeCount);
   declare(enumClassTypeDeclID,
           "enum class " + ectd.getIdentifier()->toString());
+  for (const auto &name_val : ectd.states) {
+    const atl::string stateID =
+        "EnumClassTypeDeclState" + atl::to_string(++nodeCount);
+    declare(stateID, name_val.first.c_str());
+    join(enumClassTypeDeclID, stateID);
+    if (name_val.second != "") {
+      const atl::string stateValueID =
+          "EnumClassTypeDeclState" + atl::to_string(++nodeCount);
+      declare(stateValueID, name_val.second.c_str());
+      join(stateID, stateValueID);
+    }
+  }
   return enumClassTypeDeclID;
 }
 atl::string DotGraph::visit(For &f) {
