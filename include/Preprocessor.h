@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fstream>
+
 #include "atl/include/pair.h"
 #include "atl/include/shared_ptr.h"
 #include "atl/include/stack.h"
@@ -11,7 +13,7 @@
 
 namespace ACC {
 
-class PPScanner : Scanner {
+class PPScanner : public Scanner {
 public:
   PPScanner(const SourceHandler &src);
 
@@ -20,14 +22,37 @@ public:
 
 class Preprocessor {
 public:
-  Preprocessor(const SourceHandler &src,
-               const atl::vector<atl::string> &includePaths);
+  Preprocessor(
+      const SourceHandler &src, const atl::vector<atl::string> &includePaths,
+      const atl::shared_ptr<Preprocessor> parentPreprocessor = nullptr);
 
   SourceHandler getSource();
 
+  static atl::string formatIncludeDirective(const atl::string &filepath,
+                                            const int lineNum = 1) {
+    const atl::string lineNum_s = atl::to_string(lineNum);
+    return "# " + lineNum_s + " \"" + filepath + "\"";
+  }
+
+  static bool fileExists(const atl::string &filepath) {
+    return std::ifstream(filepath.c_str()).good();
+  }
+
 private:
-  // const atl::vector<atl::string> &includePaths;
-  atl::stack<atl::shared_ptr<PPScanner>> fileScanners;
+  const atl::vector<atl::string> &includePaths;
+  const SourceHandler &src;
+  const atl::shared_ptr<Preprocessor> parentPreprocessor;
+  atl::shared_ptr<PPScanner> scanner;
+  atl::vector<atl::string> filesPreprocessed;
+
+  SourceHandler lexInclude();
+  bool lexPragmaOnce();
+
+  /* Helpers */
+  void lexKeyword(const atl::string &keyword);
+  atl::string lexStringLiteral();
+  bool checkVisited(const atl::string &filepath) const;
+  void markVisited(const atl::string &filepath);
 };
 
 } // namespace ACC

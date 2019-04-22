@@ -11,9 +11,9 @@
 
 using namespace ACC;
 
-atl::string test_prefix =
-    "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/compiler/test/tests/";
-// atl::string test_prefix = "../../test/tests/";
+// atl::string test_prefix =
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
+atl::string test_prefix = "../../test/tests/";
 
 TEST(ASTAnalysisTest, DotGraph) {
   const atl::string filepath = test_prefix + "parser/fundecls.c";
