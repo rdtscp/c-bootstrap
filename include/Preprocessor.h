@@ -25,6 +25,10 @@ public:
   Preprocessor(
       const SourceHandler &src, const atl::vector<atl::string> &includePaths,
       const atl::shared_ptr<Preprocessor> parentPreprocessor = nullptr);
+  Preprocessor(const Preprocessor &rhs) = delete;
+  Preprocessor(Preprocessor &&rhs) = delete;
+  Preprocessor &operator=(const Preprocessor &rhs) = delete;
+  Preprocessor &operator=(Preprocessor &&rhs) = delete;
 
   SourceHandler getSource();
 
