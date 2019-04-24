@@ -1,6 +1,8 @@
 #include "ast/ArrayType.h"
 #include "ast/IntLiteral.h"
 
+#include "Error.h"
+
 using namespace ACC;
 
 ArrayType::ArrayType(const atl::shared_ptr<Type> &p_type,
@@ -10,8 +12,8 @@ ArrayType::ArrayType(const atl::shared_ptr<Type> &p_type,
 int ArrayType::getBytes() const {
   int elementSize = type->getBytes();
   if (size->astClass() != "IntLiteral")
-    throw "Internal Error: Attempted to getBytes() of dynamic "
-          "ArrayType.";
+    throw error(
+        "Internal Error: Attempted to getBytes() of dynamic ArrayType.");
 
   const atl::shared_ptr<IntLiteral> sizeIntLiteral =
       atl::static_pointer_cast<IntLiteral>(size);
