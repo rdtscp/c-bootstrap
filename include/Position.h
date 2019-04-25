@@ -16,7 +16,7 @@ public:
   Position(int column, int line, atl::string file)
       : column(column), line(line), file(file) {}
 
-  atl::string toString() {
+  atl::string toString() const {
     return file + ":" + atl::to_string(line) + ":" + atl::to_string(column);
   }
 };

@@ -1,12 +1,15 @@
 #include "Preprocessor.h"
 
+#include "Error.h"
 #include "FileSystem.h"
 
 using namespace ACC;
 
 /* ---- PPScanner ---- */
 
-PPScanner::PPScanner(const SourceHandler &src) : Scanner(src) {}
+PPScanner::PPScanner(const SourceHandler &src) : Scanner(src) {
+  abspath = src.getFilepath();
+}
 
 char PPScanner::next() {
   char nextChar = *currChar;
@@ -73,15 +76,18 @@ SourceHandler Preprocessor::lexInclude() {
   scanner->next(); // Skip space.
   char c = scanner->next();
   if (c != '"')
-    throw "Preprocessor: #include directives must be followed by a string "
-          "filepath";
+    throw error("Preprocessor: #include directives must be followed by a "
+                "string filepath.",
+                scanner->getPosition());
 
   const atl::string relativeIncludePath = lexStringLiteral();
   c = scanner->next();
   while (c != '\n') {
     if (!atl::isspace(c))
-      throw "Preprocessor: #include directive must end with whitespace and a "
-            "newline.";
+      throw error(
+          "Preprocessor: #include directive must end with whitespace and a "
+          "newline.",
+          scanner->getPosition());
     c = scanner->next();
   }
 
@@ -96,9 +102,9 @@ bool Preprocessor::lexPragmaOnce() {
   char c = scanner->next();
   while (c != '\n') {
     if (!atl::isspace(c))
-      throw "Preprocessor: #pragma once directive must end with whitespace "
-            "and "
-            "a newline.";
+      throw error("Preprocessor: #pragma once directive must end with "
+                  "whitespace and a newline.",
+                  scanner->getPosition());
     c = scanner->next();
   }
   return checkVisited(src.getFilepath());
@@ -111,7 +117,8 @@ void Preprocessor::lexKeyword(const atl::string &keyword) {
 
   for (int i = 1; i < keyword.length(); ++i) {
     if (scanner->peek() != keyword[i])
-      throw "Preprocessor: Could not Lex Keyword";
+      throw error("Preprocessor: Could not Lex Keyword",
+                  scanner->getPosition());
 
     literal += scanner->next();
   }
@@ -121,7 +128,7 @@ void Preprocessor::lexKeyword(const atl::string &keyword) {
       (peekChar != '_'))
     return;
 
-  throw "Preprocessor: Could not Lex Keyword";
+  throw error("Preprocessor: Could not Lex Keyword", scanner->getPosition());
 }
 atl::string Preprocessor::lexStringLiteral() {
   atl::string literal;
@@ -129,9 +136,12 @@ atl::string Preprocessor::lexStringLiteral() {
   while (true) {
     char c = scanner->next();
     if (c == '\0')
-      throw "Preprocessor: Unexpected EOF in String Literal.";
+      throw error("Preprocessor: Unexpected EOF in String Literal.",
+                  scanner->getPosition());
     if (c == '\n')
-      throw "Preprocessor: Unexpected Newline Character in String Literal. ";
+      throw error(
+          "Preprocessor: Unexpected Newline Character in String Literal. ",
+          scanner->getPosition());
 
     // Check if we are about to see an escaped character.
     if (c == '\\') {
@@ -184,5 +194,7 @@ void Preprocessor::passComment() {
         break;
     }
   }
-  throw "Preprocessor: Lexing Comment Returned Unexpected SourceToken(s). ";
+  throw error(
+      "Preprocessor: Lexing Comment Returned Unexpected SourceToken(s). ",
+      scanner->getPosition());
 }

@@ -2,6 +2,7 @@
 #include <cassert>
 #include <stdexcept>
 
+#include "Error.h"
 #include "Parser.h"
 
 using namespace ACC;
@@ -816,8 +817,9 @@ atl::shared_ptr<For> Parser::parseFor() {
   const atl::shared_ptr<Expr> endBodyExpr = parseExpr();
   /* TODO: Check this Stmt is Valid ASTNode Type. */
   if (endBodyExpr->astClass() != "PrefixOp")
-    throw "TEMP: For Loops do not support end of body expressions other than "
-          "prefix operations";
+    throw error(
+        "TEMP: For Loops do not support end of body expressions other than "
+        "prefix operations");
   expect(TC::RPAR);
   const atl::shared_ptr<Stmt> body = parseStmt();
   return atl::make_shared<For>(
@@ -1083,7 +1085,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
       operation = PrefixOp::Op::DEC;
     atl::shared_ptr<Expr> incrementExpr = parseObjExpr();
     if (incrementExpr->astClass() != "VarExpr")
-      throw "Attempted operator++ on Expr that was not a VarExpr";
+      throw error("Attempted operator++ on Expr that was not a VarExpr");
     const atl::shared_ptr<VarExpr> variable =
         atl::static_pointer_cast<VarExpr>(incrementExpr);
     return atl::make_shared<PrefixOp>(PrefixOp(operation, variable));
