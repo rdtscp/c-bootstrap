@@ -28,14 +28,13 @@ char PPScanner::next() {
 
 /* ---- Preprocessor ---- */
 
-Preprocessor::Preprocessor(const SourceHandler &src,
-                           const atl::vector<atl::string> &includePaths,
-                           atl::shared_ptr<Preprocessor> parentPreprocessor)
-    : includePaths(includePaths), src(src),
-      parentPreprocessor(parentPreprocessor), scanner(new PPScanner(src)) {}
+Preprocessor::Preprocessor(const SourceHandler &p_src,
+                           const atl::vector<atl::string> &p_includePaths,
+                           atl::shared_ptr<Preprocessor> p_parentPreprocessor)
+    : includePaths(p_includePaths), src(p_src),
+      parentPreprocessor(p_parentPreprocessor), scanner(new PPScanner(src)) {}
 
 SourceHandler Preprocessor::getSource() {
-
   atl::string output = formatIncludeDirective(src.getFilepath()) + "\n";
   char c;
   do {
@@ -94,7 +93,18 @@ SourceHandler Preprocessor::lexInclude() {
   const atl::string absoluteIncludePath =
       FileSystem::resolveRelativePath(src.getFilepath(), relativeIncludePath);
 
-  return SourceHandler(SourceHandler::Type::FILEPATH, absoluteIncludePath);
+  // Check the file exists.
+  if (fileExists(absoluteIncludePath))
+    return SourceHandler(SourceHandler::Type::FILEPATH, absoluteIncludePath);
+
+  for (int idx = 0; idx < includePaths.size(); ++idx) {
+    const atl::string currIncludePath = includePaths[idx] + relativeIncludePath;
+    if (fileExists(currIncludePath))
+      return SourceHandler(SourceHandler::Type::FILEPATH, currIncludePath);
+  }
+  throw error("Preprocessor: Could not include file that does not exist: " +
+                  relativeIncludePath,
+              scanner->getPosition());
 }
 
 bool Preprocessor::lexPragmaOnce() {

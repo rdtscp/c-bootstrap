@@ -25,6 +25,10 @@ public:
   Preprocessor(
       const SourceHandler &src, const atl::vector<atl::string> &includePaths,
       const atl::shared_ptr<Preprocessor> parentPreprocessor = nullptr);
+
+  Preprocessor(const SourceHandler &&src,
+               const atl::vector<atl::string> &includePaths,
+               const atl::shared_ptr<Preprocessor> parentPreprocessor) = delete;
   Preprocessor(const Preprocessor &rhs) = delete;
   Preprocessor(Preprocessor &&rhs) = delete;
   Preprocessor &operator=(const Preprocessor &rhs) = delete;
@@ -43,7 +47,7 @@ public:
   }
 
 private:
-  const atl::vector<atl::string> &includePaths;
+  const atl::vector<atl::string> includePaths;
   const SourceHandler &src;
   const atl::shared_ptr<Preprocessor> parentPreprocessor;
   atl::shared_ptr<PPScanner> scanner;
