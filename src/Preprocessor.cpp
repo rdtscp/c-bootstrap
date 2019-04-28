@@ -85,7 +85,7 @@ SourceHandler Preprocessor::lexInclude() {
   char c = scanner->next();
   if (c == '<') {
     lexKeyword("<initializer_list>");
-    return SourceHandler(SourceHandler::Type::RAW, "");
+    return SourceHandler(SourceHandler::Type::RAW, "\n");
   }
   if (c != '"')
     throw error("Preprocessor: #include directives must be followed by a "
