@@ -61,7 +61,7 @@ private:
   atl::string lexStringLiteral();
   bool checkVisited(const atl::string &filepath) const;
   void markVisited(const atl::string &filepath);
-  void passComment();
+  int passComment();
 };
 
 } // namespace ACC
