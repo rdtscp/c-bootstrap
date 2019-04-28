@@ -319,7 +319,8 @@ bool Parser::acceptWhile(int offset) { return accept(TC::WHILE, offset); }
 bool Parser::acceptExpr(int offset) {
   return accept({TC::LPAR, TC::SIZEOF, TC::ASTERIX, TC::MINUS, TC::IDENTIFIER,
                  TC::INT_LITERAL, TC::CHAR_LITERAL, TC::STRING_LITERAL, TC::NEW,
-                 TC::PREFIXINC, TC::TRUE_VAL, TC::FALSE_VAL, TC::NOT, TC::REF},
+                 TC::PREFIXINC, TC::TRUE_VAL, TC::FALSE_VAL, TC::NOT, TC::REF,
+                 TC::THIS},
                 offset);
 }
 bool Parser::acceptObjExpr(int offset) {
