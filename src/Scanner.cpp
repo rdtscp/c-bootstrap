@@ -59,7 +59,7 @@ SourceHandler Scanner::getFileContents() const {
   return SourceHandler(SourceHandler::Type::RAW, fileStr);
 }
 
-atl::string Scanner::getFilename() const {
+atl::string Scanner::getFilename(const atl::string &abspath) {
   atl::vector<atl::string> directories;
   atl::string currDir;
   for (const char currChar : abspath) {
@@ -75,7 +75,7 @@ atl::string Scanner::getFilename() const {
   return directories[directories.size() - 1];
 }
 
-atl::string Scanner::getFilepath() const {
+atl::string Scanner::getFilepath(const atl::string &abspath) {
   atl::vector<atl::string> directories;
   atl::string currDir;
   for (int i = 0; i < abspath.length(); ++i) {
@@ -97,7 +97,7 @@ atl::string Scanner::getFilepath() const {
 }
 
 Position Scanner::getPosition() const {
-  return Position(column, line, getFilepath() + getFilename());
+  return Position(column, line, filepath + filename);
 }
 
 void Scanner::updateCurrFile() {
@@ -114,16 +114,17 @@ void Scanner::updateCurrFile() {
   next(); // Skip space;
   next(); // Skip quote;
 
-  atl::string filename;
+  atl::string abspath;
   if (peek() != '<') {
     while (peek() != '\"') {
-      filename += next();
+      abspath += next();
     }
   }
   while (peek() != '\n') {
     next();
   }
-  abspath = filename;
+  filepath = getFilepath(abspath);
+  filename = getFilename(abspath);
   line = lineNum;
   column = 1;
 }

@@ -8,7 +8,10 @@ using namespace ACC;
 /* ---- PPScanner ---- */
 
 PPScanner::PPScanner(const SourceHandler &src) : Scanner(src) {
-  abspath = src.getFilepath();
+  const atl::string abspath = src.getFilepath();
+
+  filepath = getFilepath(abspath);
+  filename = getFilename(abspath);
 }
 
 char PPScanner::next() {
@@ -74,6 +77,10 @@ SourceHandler Preprocessor::lexInclude() {
   lexKeyword("#include");
   scanner->next(); // Skip space.
   char c = scanner->next();
+  if (c == '<') {
+    lexKeyword("<initializer_list>");
+    return SourceHandler(SourceHandler::Type::RAW, "");
+  }
   if (c != '"')
     throw error("Preprocessor: #include directives must be followed by a "
                 "string filepath.",
