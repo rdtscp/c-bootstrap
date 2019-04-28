@@ -25,9 +25,9 @@ public:
 
   SourceHandler getFileContents() const;
 
-  atl::string getFilename() const;
+  static atl::string getFilename(const atl::string &abspath);
 
-  atl::string getFilepath() const;
+  static atl::string getFilepath(const atl::string &abspath);
 
   Position getPosition() const;
 
@@ -37,7 +37,8 @@ protected:
   int line;
   atl::string file;
 
-  atl::string abspath;
+  atl::string filepath;
+  atl::string filename;
 
   void updateCurrFile();
 }; // namespace ACC
