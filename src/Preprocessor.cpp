@@ -12,6 +12,12 @@ PPScanner::PPScanner(const SourceHandler &src) : Scanner(src) {
 
   filepath = getFilepath(abspath);
   filename = getFilename(abspath);
+
+  const char last_char = *(file.end() - 1);
+  if (last_char != '\n') {
+    throw error("Files must end with `\\n`: " + filepath + filename +
+                ". But ended with: " + atl::string(1, last_char));
+  }
 }
 
 char PPScanner::next() {
