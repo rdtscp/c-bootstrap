@@ -38,7 +38,7 @@ SourceToken Parser::expect(TC expected) {
     return output;
   }
   throw ACC::Error("Parser: Expected Token " + ACC::tokToStr(expected) +
-                       " but found " + ACC::tokToStr(currToken.tokenClass),
+                       " but found " + ACC::tokToStr(currToken),
                    currToken.position);
 }
 
@@ -50,8 +50,7 @@ SourceToken Parser::expect(atl::vector<TC> expected) {
       return output;
     }
   }
-  throw ACC::Error("Parser: Unexpected Token " +
-                       ACC::tokToStr(currToken.tokenClass),
+  throw ACC::Error("Parser: Unexpected Token " + ACC::tokToStr(currToken),
                    currToken.position);
 }
 
