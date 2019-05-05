@@ -17,8 +17,7 @@ int ArrayType::getBytes() const {
 
   const atl::shared_ptr<IntLiteral> sizeIntLiteral =
       atl::static_pointer_cast<IntLiteral>(size);
-  return std::stoi(std::string(sizeIntLiteral->getLiteral().c_str())) *
-         elementSize;
+  return atl::stoi(sizeIntLiteral->getLiteral()) * elementSize;
 }
 
 atl::string ArrayType::getSignature() const {
