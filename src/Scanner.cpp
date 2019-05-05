@@ -98,11 +98,11 @@ void Scanner::updateCurrFile() {
 
   char nextChar = next();
 
-  std::string lineNumStr(1, nextChar);
+  atl::string lineNumStr(1, nextChar);
   while (!atl::isspace(peek())) {
     lineNumStr += next();
   }
-  unsigned int lineNum = std::stoul(lineNumStr, nullptr, 10);
+  int lineNum = atl::stoi(lineNumStr);
 
   next(); // Skip space;
   next(); // Skip quote;
