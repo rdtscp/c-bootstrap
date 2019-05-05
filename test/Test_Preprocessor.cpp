@@ -1,6 +1,6 @@
-#include "atl/include/string.h"
-
 #include "gtest/gtest.h"
+
+#include "atl/include/string.h"
 
 #include "Preprocessor.h"
 #include "SourceToken.h"
@@ -41,7 +41,7 @@ TEST(PreprocessorTest, TestInclude) {
       "# 1 \"" + test_prefix + +"preprocessor/test1.cpp\"\n# 1 \"" +
       test_prefix +
       +"preprocessor/header1.h\"\nint header1() { return 1; }\n# 2 \"" +
-      test_prefix + +"preprocessor/test1.cpp\"\nint test1() { return 1; }\n";
+      test_prefix + +"preprocessor/test1.cpp\"\n\nint test1() { return 1; }\n";
 
   ASSERT_EQ(actual_val, expect_val);
 }
@@ -58,7 +58,7 @@ TEST(PreprocessorTest, TestIncludeChildDir) {
       test_prefix +
       +"preprocessor/other_dir/header2.h\"\nint header2() { return 1; }\n# 2 "
        "\"" +
-      test_prefix + +"preprocessor/test2.cpp\"\nint test2() { return 1; }\n";
+      test_prefix + +"preprocessor/test2.cpp\"\n\nint test2() { return 1; }\n";
 
   ASSERT_EQ(actual_val, expect_val);
 }
@@ -75,7 +75,7 @@ TEST(PreprocessorTest, TestIncludeParentDir) {
       test_prefix +
       +"preprocessor/header3.h\"\nint header3() { return 1; }\n# 2 \"" +
       test_prefix +
-      +"preprocessor/other_dir/test3.cpp\"\nint test3() { return 1; }\n";
+      +"preprocessor/other_dir/test3.cpp\"\n\nint test3() { return 1; }\n";
 
   ASSERT_EQ(actual_val, expect_val);
 }
@@ -91,9 +91,9 @@ TEST(PreprocessorTest, TestPragmaOnce) {
       "# 1 \"" + test_prefix + "preprocessor/test4.cpp\"\n# 1 \"" +
       test_prefix +
       "preprocessor/header4.h\"\n\nint header4() { return 1; }\n# 2 \"" +
-      test_prefix + "preprocessor/test4.cpp\"\nint test4() { return 1; }\n";
+      test_prefix + "preprocessor/test4.cpp\"\n\nint test4() { return 1; }\n";
 
-  ASSERT_EQ(actual_val, expect_val.c_str());
+  ASSERT_EQ(actual_val, expect_val);
 }
 
 // The fixture for testing class Project1. From google test primer.

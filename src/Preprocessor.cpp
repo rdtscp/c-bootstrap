@@ -66,7 +66,8 @@ SourceHandler Preprocessor::getSource() {
 
       // Mark we are returning to the original file.
       output += Preprocessor::formatIncludeDirective(
-          src.getFilepath(), scanner->getPosition().line);
+                    src.getFilepath(), scanner->getPosition().line) +
+                "\n";
     } else if (c == '#' && scanner->peek() == 'p') {
       const bool filePreprocessed = lexPragmaOnce();
       if (filePreprocessed) {
