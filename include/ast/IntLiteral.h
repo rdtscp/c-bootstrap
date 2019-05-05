@@ -11,14 +11,7 @@ class IntLiteral : public Literal,
 public:
   IntLiteral(const atl::string &p_literal);
 
-  atl::string getLiteral() const override {
-    if (value.find('x') != -1) {
-      unsigned int intValue =
-          std::stoul(std::string(value.c_str()), nullptr, 16);
-      return atl::to_string(intValue);
-    }
-    return value;
-  }
+  atl::string getLiteral() const override { return value; }
 
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
