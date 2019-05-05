@@ -1,6 +1,4 @@
 #include "atl/include/set.h"
-#include <cassert>
-#include <stdexcept>
 
 #include "Error.h"
 #include "Parser.h"
@@ -58,7 +56,9 @@ SourceToken Parser::expect(atl::vector<TC> expected) {
 }
 
 SourceToken Parser::lookAhead(int i) {
-  assert(i >= 0);
+  if (i < 0)
+    throw Error("Parser: Cannot lookAhead negative indices.");
+
   if (i == 0)
     return currToken;
   while (tokenBuffer.size() < i) {

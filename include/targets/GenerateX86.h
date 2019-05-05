@@ -1,8 +1,6 @@
 #pragma once
 
 #include "atl/include/string.h"
-#include <algorithm>
-#include <stack>
 
 #include "AST.h"
 #include "ASTVisitor.h"

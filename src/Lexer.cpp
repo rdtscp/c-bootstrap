@@ -1,7 +1,5 @@
-#include "Error.h"
-#include <stdexcept>
-
 #include "Lexer.h"
+#include "Error.h"
 
 using namespace ACC;
 
@@ -54,7 +52,7 @@ SourceToken Lexer::nextToken() {
     }
   }
   // Recognise IDENTIFIERS & Keyword Tokens.
-  if (isalpha(c) || c == '_') {
+  if (atl::isalpha(c) || c == '_') {
     atl::string literal(1, c);
     // Check for BOOL Token.
     if (c == 'b' && scanner.peek() == 'o') {
@@ -352,7 +350,8 @@ SourceToken Lexer::nextToken() {
       }
       // If the next character is an illegal characater for an IDENTIFIER, we
       // have finished finding the token.
-      if (!isalpha(peek) && !isdigit(peek) && peek != '_' && peek != '$') {
+      if (!atl::isalpha(peek) && !atl::isdigit(peek) && peek != '_' &&
+          peek != '$') {
         return SourceToken(TC::IDENTIFIER, scanner.getPosition(), literal);
       }
       // We are still Lexing the token.
@@ -361,14 +360,14 @@ SourceToken Lexer::nextToken() {
     }
   }
   // Recognise INT_LITERAL Token.
-  if (isdigit(c)) {
+  if (atl::isdigit(c)) {
     atl::string literal(1, c);
     if (scanner.peek() == 'x') {
       literal += scanner.next();
       while (atl::isalpha(scanner.peek()) || atl::isdigit(scanner.peek()))
         literal += scanner.next();
     } else {
-      while (isdigit(scanner.peek()))
+      while (atl::isdigit(scanner.peek()))
         literal += scanner.next();
     }
 
@@ -539,7 +538,7 @@ atl::pair<bool, atl::string> Lexer::tryLexKeyword(const atl::string &keyword) {
   }
 
   char peek = scanner.peek();
-  if ((literal == keyword) && (!isalpha(peek)) && (!isdigit(peek)) &&
+  if ((literal == keyword) && (!atl::isalpha(peek)) && (!atl::isdigit(peek)) &&
       (peek != '_'))
     keywordMatch = true;
 
