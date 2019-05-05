@@ -210,8 +210,8 @@ SourceToken Lexer::nextToken() {
           scanner.next();
           return SourceToken(TC::OPNE, scanner.getPosition(), "operator!=");
         } else {
-          throw ACC::Error("Could not Lex operator overload: " +
-                           scanner.getPosition().toString());
+          throw ACC::Error("Lexer: Could not Lex operator overload.",
+                           scanner.getPosition());
         }
       }
     }
