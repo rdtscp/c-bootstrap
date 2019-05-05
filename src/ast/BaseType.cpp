@@ -18,11 +18,13 @@ int BaseType::getBytes() const {
     return 4;
   case PrimitiveType::BOOL:
     return 1;
+  default:
+    return 4;
   }
 }
 
 atl::string BaseType::getSignature() const {
-    switch (primitiveType) {
+  switch (primitiveType) {
   case PrimitiveType::CHAR:
     return "char";
   case PrimitiveType::INT:
@@ -35,9 +37,10 @@ atl::string BaseType::getSignature() const {
     return "uint";
   case PrimitiveType::BOOL:
     return "bool";
+  default:
+    return "void";
   }
 }
-
 
 bool BaseType::operator==(Type &rhs) const {
   if (rhs.astClass() == astClass())
@@ -50,4 +53,3 @@ bool BaseType::operator==(const BaseType &rhs) const {
   return primitiveType == rhs.primitiveType;
 }
 bool BaseType::operator!=(const BaseType &rhs) const { return !(*this == rhs); }
-
