@@ -86,7 +86,7 @@ TEST(ParserTest, StructDecl) {
   const int expectSize = expectedDecls.size();
   ASSERT_EQ(actualSize, expectSize);
 
-  for (int i = 0; i < expectedDecls.size(); ++i)
+  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
@@ -166,7 +166,7 @@ TEST(ParserTest, VarDecls) {
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
-  for (int i = 0; i < expectedDecls.size(); ++i)
+  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
@@ -177,7 +177,8 @@ TEST(ParserTest, FunDecl) {
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   atl::shared_ptr<Program> actual = parser.getAST();
-  ASSERT_EQ(actual->decls.size(), 2);
+  const unsigned int expected_size = 2;
+  ASSERT_EQ(actual->decls.size(), expected_size);
   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
       atl::make_shared<VarDecl>(
           VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
@@ -197,7 +198,7 @@ TEST(ParserTest, FunDecl) {
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
-  for (int i = 0; i < expectedDecls.size(); ++i)
+  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
@@ -208,7 +209,8 @@ TEST(ParserTest, BinOp) {
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   atl::shared_ptr<Program> actual = parser.getAST();
-  ASSERT_EQ(actual->decls.size(), 2);
+  const unsigned int expected_size = 2;
+  ASSERT_EQ(actual->decls.size(), expected_size);
   atl::set<FunDecl::FunModifiers> isalphaModifiers;
   isalphaModifiers.insert(FunDecl::FunModifiers::STATIC);
   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
@@ -286,7 +288,7 @@ TEST(ParserTest, BinOp) {
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
-  for (int i = 0; i < expectedDecls.size(); ++i)
+  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 

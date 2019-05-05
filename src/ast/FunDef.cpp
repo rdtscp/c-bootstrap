@@ -35,7 +35,7 @@ bool FunDef::operator==(const FunDecl &rhs) const {
   if (funParams.size() != rhs.funParams.size())
     return false;
 
-  for (int i = 0; i < funParams.size(); ++i)
+  for (unsigned int i = 0; i < funParams.size(); ++i)
     if (*funParams[i]->type != *rhs.funParams[i]->type)
       return false;
 
@@ -57,7 +57,7 @@ bool FunDef::operator==(const FunDef &rhs) const {
   if (funParams.size() != rhs.funParams.size())
     return false;
 
-  for (int i = 0; i < funParams.size(); ++i)
+  for (unsigned int i = 0; i < funParams.size(); ++i)
     if (*funParams[i]->type != *rhs.funParams[i]->type)
       return false;
 

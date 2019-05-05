@@ -42,7 +42,7 @@ private:
   SourceToken expect(atl::vector<SourceToken::Class> expected);
 
   /* Looks ahead 'i' number of Tokens. */
-  SourceToken lookAhead(int i);
+  SourceToken lookAhead(unsigned int i);
 
   /* Populates currToken with the next unconsumed Token. */
   void nextToken();
