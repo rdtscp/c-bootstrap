@@ -1,7 +1,6 @@
-
-
 #include "gtest/gtest.h"
 
+#include "Error.h"
 #include "Parser.h"
 #include "SourceHandler.h"
 #include "SourceToken.h"
@@ -20,15 +19,15 @@ TEST(ParserTest, AllTokens) {
   ACC::Parser parser(lexer);
   try {
     parser.getAST();
-  } catch (std::runtime_error const &err) {
+  } catch (ACC::Error const &err) {
     ASSERT_TRUE(true);
     return;
   } catch (...) {
-    printf("Expected a std::runtime_error\n");
+    printf("Expected an ACC::Error\n");
     ASSERT_TRUE(false);
     return;
   }
-  printf("Expected a std::runtime_error, but no exception was thrown.\n");
+  printf("Expected an ACC::Error, but no exception was thrown.\n");
   ASSERT_TRUE(false);
 }
 
@@ -40,15 +39,15 @@ TEST(ParserTest, InvalidIdentifier) {
     ACC::Lexer lexer(scanner);
     ACC::Parser parser(lexer);
     parser.getAST();
-  } catch (std::runtime_error const &err) {
+  } catch (ACC::Error const &err) {
     ASSERT_TRUE(true);
     return;
   } catch (...) {
-    printf("Expected a std::runtime_error\n");
+    printf("Expected an ACC::Error\n");
     ASSERT_TRUE(false);
     return;
   }
-  printf("Expected a std::runtime_error, but no exception was thrown.\n");
+  printf("Expected an ACC::Error, but no exception was thrown.\n");
   ASSERT_TRUE(false);
 }
 
@@ -309,15 +308,15 @@ TEST(ParserTest, InvalidSignatureFunDef) {
   ACC::Parser parser(lexer);
   try {
     parser.getAST();
-  } catch (std::runtime_error const &err) {
+  } catch (ACC::Error const &err) {
     ASSERT_TRUE(true);
     return;
   } catch (...) {
-    printf("Expected a std::runtime_error\n");
+    printf("Expected a ACC::Error\n");
     ASSERT_TRUE(false);
     return;
   }
-  printf("Expected a std::runtime_error, but no exception was thrown.\n");
+  printf("Expected a ACC::Error, but no exception was thrown.\n");
   ASSERT_TRUE(false);
 }
 
