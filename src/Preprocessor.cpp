@@ -176,8 +176,8 @@ void Preprocessor::lexKeyword(const atl::string &keyword) {
   }
 
   char peekChar = scanner->peek();
-  if ((literal == keyword) && (!isalpha(peekChar)) && (!isdigit(peekChar)) &&
-      (peekChar != '_'))
+  if ((literal == keyword) && (!atl::isalpha(peekChar)) &&
+      (!atl::isdigit(peekChar)) && (peekChar != '_'))
     return;
 
   throw ACC::Error("Preprocessor: Could not Lex Keyword",
