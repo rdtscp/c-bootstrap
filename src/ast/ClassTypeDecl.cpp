@@ -12,7 +12,7 @@ ClassTypeDecl::ClassTypeDecl(
     const atl::vector<atl::shared_ptr<Decl>> &p_classDecls)
     : classType(p_classType), classDecls(p_classDecls) {
   /* Add `this` parameter to all FunDecls. */
-  for (int declIdx = 0; declIdx < classDecls.size(); ++declIdx) {
+  for (unsigned int declIdx = 0; declIdx < classDecls.size(); ++declIdx) {
     const atl::shared_ptr<Decl> currDecl = classDecls[declIdx];
     if (currDecl->astClass() == "ConstructorDecl") {
       // Create a new ConstructorDecl as a copy of the original.
@@ -29,7 +29,7 @@ ClassTypeDecl::ClassTypeDecl(
       newConstructorParams.push_back(thisParam);
 
       // Append all the other params.
-      for (int paramIdx = 0;
+      for (unsigned int paramIdx = 0;
            paramIdx < newConstructorDecl->constructorParams.size();
            ++paramIdx) {
         newConstructorParams.push_back(
@@ -57,7 +57,7 @@ ClassTypeDecl::ClassTypeDecl(
       newConstructorParams.push_back(thisParam);
 
       // Append all the other params.
-      for (int paramIdx = 0;
+      for (unsigned int paramIdx = 0;
            paramIdx < newConstructorDef->constructorParams.size(); ++paramIdx) {
         newConstructorParams.push_back(
             newConstructorDef->constructorParams[paramIdx]);
@@ -84,7 +84,7 @@ ClassTypeDecl::ClassTypeDecl(
       newFunParams.push_back(thisParam);
 
       // Append all the other params.
-      for (int paramIdx = 0; paramIdx < newFunDecl->funParams.size();
+      for (unsigned int paramIdx = 0; paramIdx < newFunDecl->funParams.size();
            ++paramIdx) {
         newFunParams.push_back(newFunDecl->funParams[paramIdx]);
       }
@@ -110,7 +110,7 @@ ClassTypeDecl::ClassTypeDecl(
       newFunParams.push_back(thisParam);
 
       // Append all the other params.
-      for (int paramIdx = 0; paramIdx < newFunDef->funParams.size();
+      for (unsigned int paramIdx = 0; paramIdx < newFunDef->funParams.size();
            ++paramIdx) {
         newFunParams.push_back(newFunDef->funParams[paramIdx]);
       }
@@ -144,7 +144,7 @@ bool ClassTypeDecl::operator==(const ClassTypeDecl &rhs) const {
   if (classDecls.size() != rhs.classDecls.size())
     return false;
 
-  for (int i = 0; i < classDecls.size(); ++i)
+  for (unsigned int i = 0; i < classDecls.size(); ++i)
     if (*classDecls[i] != *rhs.classDecls[i])
       return false;
 

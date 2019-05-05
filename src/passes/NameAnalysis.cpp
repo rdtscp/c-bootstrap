@@ -14,7 +14,7 @@ void NameAnalysis::error(const atl::string &error) {
 
 void NameAnalysis::printErrors() {
   printf("Name Analysis Errors:\n");
-  for (int idx = 0; idx < errors.size(); ++idx)
+  for (unsigned int idx = 0; idx < errors.size(); ++idx)
     printf("\t%s\n", errors[idx].c_str());
 }
 
@@ -42,7 +42,7 @@ void NameAnalysis::visit(Block &b) {
   b.outerScope = currScope;
   currScope = b.getptr();
 
-  for (int idx = 0; idx < b.stmts.size(); ++idx)
+  for (unsigned int idx = 0; idx < b.stmts.size(); ++idx)
     b.stmts[idx]->accept(*this);
 
   currScope = b.outerScope;
@@ -61,7 +61,7 @@ void NameAnalysis::visit(ClassTypeDecl &ctd) {
   currScope = ctd.getptr();
 
   inClassTypeDecl = true;
-  for (int idx = 0; idx < ctd.classDecls.size(); ++idx)
+  for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx)
     ctd.classDecls[idx]->accept(*this);
   inClassTypeDecl = false;
 
@@ -71,7 +71,7 @@ void NameAnalysis::visit(ConstructorDecl &cd) {
   cd.outerScope = currScope;
   currScope = cd.getptr();
 
-  for (int idx = 0; idx < cd.constructorParams.size(); ++idx)
+  for (unsigned int idx = 0; idx < cd.constructorParams.size(); ++idx)
     cd.constructorParams[idx]->accept(*this);
 
   currScope = cd.outerScope;
@@ -80,7 +80,7 @@ void NameAnalysis::visit(ConstructorDef &cd) {
   cd.outerScope = currScope;
   currScope = cd.getptr();
 
-  for (int idx = 0; idx < cd.constructorParams.size(); ++idx)
+  for (unsigned int idx = 0; idx < cd.constructorParams.size(); ++idx)
     cd.constructorParams[idx]->accept(*this);
   cd.constructorBlock->accept(*this);
 
@@ -111,7 +111,7 @@ void NameAnalysis::visit(For &f) {
 }
 void NameAnalysis::visit(FunCall &fc) {
   // Resolve the FunDecl/FunDef in TypeAnalysis.
-  for (int idx = 0; idx < fc.funArgs.size(); ++idx)
+  for (unsigned int idx = 0; idx < fc.funArgs.size(); ++idx)
     fc.funArgs[idx]->accept(*this);
 }
 void NameAnalysis::visit(FunDecl &fd) {
@@ -119,7 +119,7 @@ void NameAnalysis::visit(FunDecl &fd) {
   if (!inClassTypeDecl)
     currScope->insertDecl(fd.getptr());
 
-  for (int idx = 0; idx < fd.funParams.size(); ++idx)
+  for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
 }
 void NameAnalysis::visit(FunDef &fd) {
@@ -130,7 +130,7 @@ void NameAnalysis::visit(FunDef &fd) {
   fd.outerScope = currScope;
   currScope = fd.getptr();
 
-  for (int idx = 0; idx < fd.funParams.size(); ++idx)
+  for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
   fd.funBlock->accept(*this);
 
@@ -152,7 +152,7 @@ void NameAnalysis::visit(Namespace &n) {
   n.outerScope = currScope;
   currScope = n.getptr();
 
-  for (int i = 0; i < n.namespaceDecls.size(); ++i)
+  for (unsigned int i = 0; i < n.namespaceDecls.size(); ++i)
     n.namespaceDecls[i]->accept(*this);
 
   currScope = n.outerScope;
@@ -163,7 +163,7 @@ void NameAnalysis::visit(PrefixOp &po) { po.variable->accept(*this); }
 void NameAnalysis::visit(Program &p) {
   currScope = atl::make_shared<Block>(Block({}));
 
-  for (int idx = 0; idx < p.decls.size(); ++idx)
+  for (unsigned int idx = 0; idx < p.decls.size(); ++idx)
     p.decls[idx]->accept(*this);
 
   p.globalScope = currScope;
@@ -190,7 +190,7 @@ void NameAnalysis::visit(StructTypeDecl &std) {
   currScope = std.getptr();
 
   /* Check that the fields in this struct are unique */
-  for (int idx = 0; idx < std.varDecls.size(); ++idx) {
+  for (unsigned int idx = 0; idx < std.varDecls.size(); ++idx) {
     if (currScope->duplicateDeclarationLocal(std.varDecls[idx]))
       return error("Struct " + std.getIdentifier()->toString() +
                    " contained multiple fields with the same identifier: " +

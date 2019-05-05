@@ -119,7 +119,7 @@ atl::string SourceOutput::visit(BinOp &bo) {
 }
 atl::string SourceOutput::visit(Block &b) {
   atl::string output = "{\n";
-  for (int idx = 0; idx < b.stmts.size(); ++idx) {
+  for (unsigned int idx = 0; idx < b.stmts.size(); ++idx) {
     output += b.stmts[idx]->accept(*this);
   }
   output += "\n}";
@@ -139,7 +139,7 @@ atl::string SourceOutput::visit(ClassType &ct) {
 }
 atl::string SourceOutput::visit(ClassTypeDecl &ctd) {
   atl::string output = ctd.getIdentifier()->toString() + " {";
-  for (int i = 0; i < ctd.classDecls.size(); ++i) {
+  for (unsigned int i = 0; i < ctd.classDecls.size(); ++i) {
     output += "\n";
     switch (ctd.classDecls[i]->visibility) {
     case ClassTypeDecl::Visibility::PUBLIC:
@@ -162,7 +162,7 @@ atl::string SourceOutput::visit(ClassTypeDecl &ctd) {
 atl::string SourceOutput::visit(ConstructorDecl &cd) {
   atl::string output = cd.classType->accept(*this);
   output += "(";
-  for (int i = 0; i < cd.constructorParams.size(); ++i) {
+  for (unsigned int i = 0; i < cd.constructorParams.size(); ++i) {
     atl::string currParam = cd.constructorParams[i]->type->accept(*this) + " " +
                             cd.constructorParams[i]->getIdentifier();
     if (i != (cd.constructorParams.size() - 1))
@@ -176,7 +176,7 @@ atl::string SourceOutput::visit(ConstructorDecl &cd) {
 atl::string SourceOutput::visit(ConstructorDef &cd) {
   atl::string output = cd.classType->accept(*this);
   output += "(";
-  for (int i = 0; i < cd.constructorParams.size(); ++i) {
+  for (unsigned int i = 0; i < cd.constructorParams.size(); ++i) {
     atl::string currParam = cd.constructorParams[i]->type->accept(*this) + " " +
                             cd.constructorParams[i]->getIdentifier();
     if (i != (cd.constructorParams.size() - 1))
@@ -187,7 +187,7 @@ atl::string SourceOutput::visit(ConstructorDef &cd) {
   const int initialiserListSize = cd.initialiserList.size();
   if (initialiserListSize > 0) {
     output += " : ";
-    for (int idx = 0; idx < initialiserListSize; ++idx) {
+    for (unsigned int idx = 0; idx < initialiserListSize; ++idx) {
       output += cd.initialiserList[idx]->lhs->accept(*this);
       output += "(";
       output += cd.initialiserList[idx]->lhs->accept(*this);
@@ -238,7 +238,7 @@ atl::string SourceOutput::visit(EnumClassTypeDecl &ectd) {
 atl::string SourceOutput::visit(For &f) { return ""; }
 atl::string SourceOutput::visit(FunCall &fc) {
   atl::string output = fc.funIdentifier->toString() + "(";
-  for (int i = 0; i < fc.funArgs.size(); ++i) {
+  for (unsigned int i = 0; i < fc.funArgs.size(); ++i) {
     atl::string currParam = fc.funArgs[i]->accept(*this);
     if (i != (fc.funArgs.size() - 1))
       currParam += ", ";
@@ -250,7 +250,7 @@ atl::string SourceOutput::visit(FunCall &fc) {
 atl::string SourceOutput::visit(FunDecl &fd) {
   atl::string output = fd.funType->accept(*this) + " ";
   output += fd.getIdentifier()->toString() + "(";
-  for (int i = 0; i < fd.funParams.size(); ++i) {
+  for (unsigned int i = 0; i < fd.funParams.size(); ++i) {
     atl::string currParam = fd.funParams[i]->type->accept(*this) + " " +
                             fd.funParams[i]->getIdentifier();
     if (i != (fd.funParams.size() - 1))
@@ -264,7 +264,7 @@ atl::string SourceOutput::visit(FunDecl &fd) {
 atl::string SourceOutput::visit(FunDef &fd) {
   atl::string output = fd.funType->accept(*this) + " ";
   output += fd.getIdentifier()->toString() + "(";
-  for (int i = 0; i < fd.funParams.size(); ++i) {
+  for (unsigned int i = 0; i < fd.funParams.size(); ++i) {
     atl::string currParam = fd.funParams[i]->type->accept(*this) + " " +
                             fd.funParams[i]->getIdentifier();
     if (i != (fd.funParams.size() - 1))
@@ -316,7 +316,7 @@ atl::string SourceOutput::visit(PrefixOp &po) {
 }
 atl::string SourceOutput::visit(Program &p) {
   atl::string output;
-  for (int idx = 0; idx < p.decls.size(); ++idx) {
+  for (unsigned int idx = 0; idx < p.decls.size(); ++idx) {
     output += p.decls[idx]->accept(*this) + "\n";
   }
   return output;
@@ -345,7 +345,7 @@ atl::string SourceOutput::visit(StructType &st) {
 }
 atl::string SourceOutput::visit(StructTypeDecl &std) {
   atl::string output = std.getIdentifier()->toString() + " {";
-  for (int i = 0; i < std.varDecls.size(); ++i) {
+  for (unsigned int i = 0; i < std.varDecls.size(); ++i) {
     output += "\n";
     output += std.varDecls[i]->accept(*this);
   }

@@ -44,10 +44,7 @@ Preprocessor::Preprocessor(const SourceHandler &p_src,
     : includePaths(p_includePaths), src(p_src),
       parentPreprocessor(p_parentPreprocessor), scanner(new PPScanner(src)) {}
 
-static unsigned int getSourceDepth = 0;
-
 SourceHandler Preprocessor::getSource() {
-  ++getSourceDepth;
   atl::string output = formatIncludeDirective(src.getFilepath()) + "\n";
   char c;
   do {
@@ -69,11 +66,11 @@ SourceHandler Preprocessor::getSource() {
 
       // Mark we are returning to the original file.
       output += Preprocessor::formatIncludeDirective(
-          src.getFilepath(), scanner->getPosition().line);
+                    src.getFilepath(), scanner->getPosition().line) +
+                "\n";
     } else if (c == '#' && scanner->peek() == 'p') {
       const bool filePreprocessed = lexPragmaOnce();
       if (filePreprocessed) {
-        --getSourceDepth;
         return SourceHandler(SourceHandler::Type::RAW, output + "\n");
       } else {
         markVisited(src.getFilepath());
@@ -82,7 +79,6 @@ SourceHandler Preprocessor::getSource() {
       output += c;
     }
   } while (c != '\0');
-  --getSourceDepth;
   return SourceHandler(SourceHandler::Type::RAW, output);
 }
 
@@ -139,7 +135,7 @@ SourceHandler Preprocessor::lexInclude() {
   if (fileExists(absoluteIncludePath))
     return SourceHandler(SourceHandler::Type::FILEPATH, absoluteIncludePath);
 
-  for (int idx = 0; idx < includePaths.size(); ++idx) {
+  for (unsigned int idx = 0; idx < includePaths.size(); ++idx) {
     const atl::string currIncludePath = includePaths[idx] + relativeIncludePath;
     if (fileExists(currIncludePath))
       return SourceHandler(SourceHandler::Type::FILEPATH, currIncludePath);
@@ -168,7 +164,7 @@ bool Preprocessor::lexPragmaOnce() {
 void Preprocessor::lexKeyword(const atl::string &keyword) {
   atl::string literal(1, keyword[0]);
 
-  for (int i = 1; i < keyword.length(); ++i) {
+  for (unsigned int i = 1; i < keyword.length(); ++i) {
     if (scanner->peek() != keyword[i])
       throw ACC::Error("Preprocessor: Could not Lex Keyword",
                        scanner->getPosition());
@@ -210,22 +206,12 @@ atl::string Preprocessor::lexStringLiteral() {
   }
   return literal;
 }
-static unsigned int checkVisitedDepth = 0;
+
 bool Preprocessor::checkVisited(const atl::string &filepath) const {
-  ++checkVisitedDepth;
-  const int thisDepth = checkVisitedDepth;
-  const int otherDepth = getSourceDepth;
-  if (thisDepth - otherDepth > 0)
-    ACC::Error("Uh oh");
-  if (otherDepth > 15 || thisDepth > 15)
-    ACC::Error("uh oh");
   if (parentPreprocessor != nullptr) {
-    const bool res = parentPreprocessor->checkVisited(filepath);
-    --checkVisitedDepth;
-    return res;
+    return parentPreprocessor->checkVisited(filepath);
   } else {
-    --checkVisitedDepth;
-    for (int idx = 0; idx < filesPreprocessed.size(); ++idx)
+    for (unsigned int idx = 0; idx < filesPreprocessed.size(); ++idx)
       if (filesPreprocessed[idx] == filepath)
         return true;
 

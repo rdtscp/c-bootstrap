@@ -21,7 +21,7 @@ bool FunCall::operator==(const FunCall &rhs) const {
   if (funArgs.size() != rhs.funArgs.size())
     return false;
 
-  for (int i = 0; i < funArgs.size(); ++i) {
+  for (unsigned int i = 0; i < funArgs.size(); ++i) {
     if (*funArgs[i] != *rhs.funArgs[i])
       return false;
   }
