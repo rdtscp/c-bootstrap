@@ -1,6 +1,4 @@
 #include "atl/include/set.h"
-#include <cassert>
-#include <stdexcept>
 
 #include "Error.h"
 #include "Parser.h"
@@ -39,7 +37,7 @@ SourceToken Parser::expect(TC expected) {
     nextToken();
     return output;
   }
-  throw ACC::Error("Parsing: Expected Token " + ACC::tokToStr(expected) +
+  throw ACC::Error("Parser: Expected Token " + ACC::tokToStr(expected) +
                        " but found " + ACC::tokToStr(currToken.tokenClass),
                    currToken.position);
 }
@@ -52,13 +50,15 @@ SourceToken Parser::expect(atl::vector<TC> expected) {
       return output;
     }
   }
-  throw ACC::Error("Parsing: Unexpected Token " +
+  throw ACC::Error("Parser: Unexpected Token " +
                        ACC::tokToStr(currToken.tokenClass),
                    currToken.position);
 }
 
 SourceToken Parser::lookAhead(int i) {
-  assert(i >= 0);
+  if (i < 0)
+    throw Error("Parser: Cannot lookAhead negative indices.");
+
   if (i == 0)
     return currToken;
   while (tokenBuffer.size() < i) {
@@ -693,7 +693,7 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
     expect(TC::LPAR);
     if (varType->astClass() != "ClassType")
       throw ACC::Error(
-          "Construction of Variable of non-class type not supported.",
+          "Parser: Construction of Variable of non-class type not supported.",
           currToken.position);
 
     atl::shared_ptr<ClassType> classType =
@@ -819,9 +819,10 @@ atl::shared_ptr<For> Parser::parseFor() {
   const atl::shared_ptr<Expr> endBodyExpr = parseExpr();
   /* TODO: Check this Stmt is Valid ASTNode Type. */
   if (endBodyExpr->astClass() != "PrefixOp")
-    throw ACC::Error(
-        "TEMP: For Loops do not support end of body expressions other than "
-        "prefix operations");
+    throw ACC::Error("Parser TEMP: For Loops do not support end of body "
+                     "expressions other than "
+                     "prefix operations",
+                     currToken.position);
   expect(TC::RPAR);
   const atl::shared_ptr<Stmt> body = parseStmt();
   return atl::make_shared<For>(
@@ -1087,7 +1088,9 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
       operation = PrefixOp::Op::DEC;
     atl::shared_ptr<Expr> incrementExpr = parseObjExpr();
     if (incrementExpr->astClass() != "VarExpr")
-      throw ACC::Error("Attempted operator++ on Expr that was not a VarExpr");
+      throw ACC::Error(
+          "Parser: Attempted operator++ on Expr that was not a VarExpr",
+          currToken.position);
     const atl::shared_ptr<VarExpr> variable =
         atl::static_pointer_cast<VarExpr>(incrementExpr);
     return atl::make_shared<PrefixOp>(PrefixOp(operation, variable));
@@ -1099,7 +1102,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     if (accept(TC::IDENTIFIER) && accept(TC::LPAR, 1)) {
       atl::shared_ptr<Expr> funCall = parseObjExpr();
       if (funCall->astClass() != "FunCall")
-        throw ACC::Error("Parsing: Expected FunCall", currToken.position);
+        throw ACC::Error("Parser: Expected FunCall", currToken.position);
       return atl::make_shared<Allocation>(
           Allocation(atl::static_pointer_cast<FunCall>(funCall)));
     } else {

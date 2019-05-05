@@ -1,7 +1,5 @@
 #include "atl/include/ifstream.h"
 #include "atl/include/vector.h"
-#include <fstream>
-#include <stdexcept>
 
 #include "Scanner.h"
 

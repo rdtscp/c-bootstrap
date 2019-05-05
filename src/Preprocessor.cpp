@@ -15,7 +15,8 @@ PPScanner::PPScanner(const SourceHandler &src) : Scanner(src) {
 
   const char last_char = *(file.end() - 1);
   if (last_char != '\n') {
-    throw ACC::Error("Files must end with `\\n`: " + filepath + filename +
+    throw ACC::Error("Preprocessor: Files must end with `\\n`: " + filepath +
+                     filename +
                      ". But ended with: " + atl::string(1, last_char));
   }
 }
@@ -176,8 +177,8 @@ void Preprocessor::lexKeyword(const atl::string &keyword) {
   }
 
   char peekChar = scanner->peek();
-  if ((literal == keyword) && (!isalpha(peekChar)) && (!isdigit(peekChar)) &&
-      (peekChar != '_'))
+  if ((literal == keyword) && (!atl::isalpha(peekChar)) &&
+      (!atl::isdigit(peekChar)) && (peekChar != '_'))
     return;
 
   throw ACC::Error("Preprocessor: Could not Lex Keyword",

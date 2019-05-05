@@ -1,7 +1,6 @@
 #pragma once
 
 #include "atl/include/string.h"
-#include <string>
 
 #include "Position.h"
 #include "SourceHandler.h"
