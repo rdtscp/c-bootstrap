@@ -177,7 +177,8 @@ TEST(ParserTest, FunDecl) {
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   atl::shared_ptr<Program> actual = parser.getAST();
-  ASSERT_EQ(actual->decls.size(), 2);
+  const unsigned int expected_size = 2;
+  ASSERT_EQ(actual->decls.size(), expected_size);
   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
       atl::make_shared<VarDecl>(
           VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
