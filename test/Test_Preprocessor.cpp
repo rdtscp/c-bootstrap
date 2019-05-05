@@ -93,7 +93,7 @@ TEST(PreprocessorTest, TestPragmaOnce) {
       "preprocessor/header4.h\"\n\nint header4() { return 1; }\n# 2 \"" +
       test_prefix + "preprocessor/test4.cpp\"\nint test4() { return 1; }\n";
 
-  ASSERT_EQ(actual_val, expect_val.c_str());
+  ASSERT_EQ(actual_val, expect_val);
 }
 
 // The fixture for testing class Project1. From google test primer.
