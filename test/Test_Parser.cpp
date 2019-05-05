@@ -209,7 +209,8 @@ TEST(ParserTest, BinOp) {
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   atl::shared_ptr<Program> actual = parser.getAST();
-  ASSERT_EQ(actual->decls.size(), 2);
+  const unsigned int expected_size = 2;
+  ASSERT_EQ(actual->decls.size(), expected_size);
   atl::set<FunDecl::FunModifiers> isalphaModifiers;
   isalphaModifiers.insert(FunDecl::FunModifiers::STATIC);
   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
