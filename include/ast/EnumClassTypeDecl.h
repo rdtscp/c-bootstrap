@@ -1,7 +1,6 @@
 #pragma once
 
-#include <map>
-#include <string>
+#include "atl/include/unordered_map.h"
 
 #include "Decl.h"
 #include "PrimitiveType.h"
@@ -15,10 +14,11 @@ class EnumClassTypeDecl
 
 public:
   atl::shared_ptr<Identifier> identifier;
-  std::map<std::string, std::string> states;
+  atl::unordered_map<atl::string, atl::string> states;
 
-  EnumClassTypeDecl(const atl::shared_ptr<Identifier> &p_identifier,
-                    const std::map<std::string, std::string> &p_states);
+  EnumClassTypeDecl(
+      const atl::shared_ptr<Identifier> &p_identifier,
+      const atl::unordered_map<atl::string, atl::string> &p_states);
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
 

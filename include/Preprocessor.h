@@ -1,7 +1,6 @@
 #pragma once
 
-#include <fstream>
-
+#include "atl/include/ifstream.h"
 #include "atl/include/pair.h"
 #include "atl/include/shared_ptr.h"
 #include "atl/include/stack.h"
@@ -43,7 +42,7 @@ public:
   }
 
   static bool fileExists(const atl::string &filepath) {
-    return std::ifstream(filepath.c_str()).good();
+    return atl::ifstream(filepath).good();
   }
 
 private:

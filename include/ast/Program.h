@@ -1,7 +1,6 @@
 #pragma once
 
-#include <map>
-#include <string>
+#include "atl/include/unordered_map.h"
 
 #include "ASTNode.h"
 #include "ast/FunDecl.h"
@@ -18,7 +17,7 @@ public:
   atl::vector<atl::shared_ptr<FunDecl>> funDecls;
   atl::vector<atl::shared_ptr<VarDecl>> globalVars;
   atl::shared_ptr<Block> globalScope;
-  std::map<std::string, Namespace> namespaces;
+  atl::unordered_map<atl::string, Namespace> namespaces;
 
   Program(const atl::vector<atl::shared_ptr<Decl>> &p_decls);
 

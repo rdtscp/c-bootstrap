@@ -50,8 +50,8 @@ atl::shared_ptr<ASTNode> Optimiser::visit(BinOp &bo) {
     atl::shared_ptr<IntLiteral> rhsIntLiteral =
         atl::static_pointer_cast<IntLiteral>(bo.rhs);
 
-    int lhsVal = std::stoi(lhsIntLiteral->getLiteral().c_str());
-    int rhsVal = std::stoi(rhsIntLiteral->getLiteral().c_str());
+    int lhsVal = atl::stoi(lhsIntLiteral->getLiteral());
+    int rhsVal = atl::stoi(rhsIntLiteral->getLiteral());
 
     int newVal;
     optimised("Converted a BinOp of Two IntLiterals into its Result.");

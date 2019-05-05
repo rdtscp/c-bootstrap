@@ -355,7 +355,7 @@ atl::shared_ptr<Program> Parser::parseProgram() {
   }
 
   expect(TC::ENDOFFILE);
-  return atl::make_shared<Program>(Program(decls));
+  return atl::shared_ptr<Program>(new Program(decls));
 }
 
 atl::shared_ptr<Identifier> Parser::parseIdentifier() {
@@ -563,7 +563,7 @@ atl::shared_ptr<EnumClassTypeDecl> Parser::parseEnumClassTypeDecl() {
   expect(TC::LBRA);
 
   bool moreStates = false;
-  std::map<std::string, std::string> states;
+  atl::unordered_map<atl::string, atl::string> states;
   do {
     const atl::string stateIdentifier = expect(TC::IDENTIFIER).data;
     atl::string stateValue = "";
@@ -575,8 +575,7 @@ atl::shared_ptr<EnumClassTypeDecl> Parser::parseEnumClassTypeDecl() {
       }
       stateValue += expect(TC::INT_LITERAL).data;
     }
-    states[std::string(stateIdentifier.c_str())] =
-        std::string(stateValue.c_str());
+    states[stateIdentifier] = stateValue;
     if (accept(TC::COMMA)) {
       expect(TC::COMMA);
       moreStates = true;
