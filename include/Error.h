@@ -5,9 +5,9 @@
 
 namespace ACC {
 
-class error {
+class Error {
 public:
-  error(const atl::string &message, const Position &position = Position()) {
+  Error(const atl::string &message, const Position &position = Position()) {
     printf("\nerror in file: %s\n%s\n\n", position.toString().c_str(),
            message.c_str());
   }

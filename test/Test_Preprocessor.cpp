@@ -18,14 +18,13 @@ TEST(PreprocessorTest, TestConstruction) {
       SourceHandler(SourceHandler::Type::RAW, "foo\n"), {});
   const SourceHandler pp_src = preprocessor.getSource();
   ASSERT_EQ(pp_src.type, SourceHandler::Type::RAW);
-  ASSERT_EQ(std::string(pp_src.value.c_str()), "# 1 \"RAW\"\nfoo\n");
+  ASSERT_EQ(pp_src.value, "# 1 \"RAW\"\nfoo\n");
 }
 
 TEST(PreprocessorTest, TestFormatIncludeDirective) {
   const atl::string formattedInclude =
       ACC::Preprocessor::formatIncludeDirective("test/tests/scanner/header.h");
-  ASSERT_EQ(std::string(formattedInclude.c_str()),
-            "# 1 \"test/tests/scanner/header.h\"");
+  ASSERT_EQ(formattedInclude, "# 1 \"test/tests/scanner/header.h\"");
 }
 
 TEST(PreprocessorTest, TestFileExists) {
@@ -89,16 +88,12 @@ TEST(PreprocessorTest, TestPragmaOnce) {
   ACC::Preprocessor preprocessor(src, {});
   const SourceHandler pp_src = preprocessor.getSource();
 
-  std::string actual_val = pp_src.value.c_str();
-  atl::string expect_val =
+  const atl::string actual_val = pp_src.value;
+  const atl::string expect_val =
       "# 1 \"" + test_prefix + "preprocessor/test4.cpp\"\n# 1 \"" +
       test_prefix +
       "preprocessor/header4.h\"\n\nint header4() { return 1; }\n# 2 \"" +
       test_prefix + "preprocessor/test4.cpp\"\nint test4() { return 1; }\n";
-
-  std::cout << actual_val << std::endl;
-  std::cout << "--------" << std::endl;
-  std::cout << expect_val.c_str() << std::endl;
 
   ASSERT_EQ(actual_val, expect_val.c_str());
 }

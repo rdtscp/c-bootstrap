@@ -12,7 +12,7 @@ ArrayType::ArrayType(const atl::shared_ptr<Type> &p_type,
 int ArrayType::getBytes() const {
   int elementSize = type->getBytes();
   if (size->astClass() != "IntLiteral")
-    throw error(
+    throw ACC::Error(
         "Internal Error: Attempted to getBytes() of dynamic ArrayType.");
 
   const atl::shared_ptr<IntLiteral> sizeIntLiteral =

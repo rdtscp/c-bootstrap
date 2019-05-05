@@ -15,8 +15,8 @@ PPScanner::PPScanner(const SourceHandler &src) : Scanner(src) {
 
   const char last_char = *(file.end() - 1);
   if (last_char != '\n') {
-    throw error("Files must end with `\\n`: " + filepath + filename +
-                ". But ended with: " + atl::string(1, last_char));
+    throw ACC::Error("Files must end with `\\n`: " + filepath + filename +
+                     ". But ended with: " + atl::string(1, last_char));
   }
 }
 
@@ -43,7 +43,10 @@ Preprocessor::Preprocessor(const SourceHandler &p_src,
     : includePaths(p_includePaths), src(p_src),
       parentPreprocessor(p_parentPreprocessor), scanner(new PPScanner(src)) {}
 
+static unsigned int getSourceDepth = 0;
+
 SourceHandler Preprocessor::getSource() {
+  ++getSourceDepth;
   atl::string output = formatIncludeDirective(src.getFilepath()) + "\n";
   char c;
   do {
@@ -68,13 +71,17 @@ SourceHandler Preprocessor::getSource() {
           src.getFilepath(), scanner->getPosition().line);
     } else if (c == '#' && scanner->peek() == 'p') {
       const bool filePreprocessed = lexPragmaOnce();
-      if (filePreprocessed)
+      if (filePreprocessed) {
+        --getSourceDepth;
         return SourceHandler(SourceHandler::Type::RAW, output + "\n");
+      } else {
+        markVisited(src.getFilepath());
+      }
     } else {
       output += c;
     }
   } while (c != '\0');
-  markVisited(src.getFilepath());
+  --getSourceDepth;
   return SourceHandler(SourceHandler::Type::RAW, output);
 }
 
@@ -99,24 +106,25 @@ SourceHandler Preprocessor::lexInclude() {
       stdio_h_str += "struct FILE;\n";
       stdio_h_str += "extern \"C\" FILE *fopen(char *, char *);\n";
       stdio_h_str += "extern \"C\" void fclose(FILE *);\n";
-      stdio_h_str += "extern \"C\" char *fgets(char *, int, FILE *);";
+      stdio_h_str += "extern \"C\" char *fgets(char *, int, FILE *);\n";
       return SourceHandler(SourceHandler::Type::RAW, stdio_h_str);
     } else {
-      throw error("Preprocessor: #include directives must be followed by a "
-                  "string filepath.",
-                  scanner->getPosition());
+      throw ACC::Error(
+          "Preprocessor: #include directives must be followed by a "
+          "string filepath.",
+          scanner->getPosition());
     }
   } else if (c != '"') {
-    throw error("Preprocessor: #include directives must be followed by a "
-                "string filepath.",
-                scanner->getPosition());
+    throw ACC::Error("Preprocessor: #include directives must be followed by a "
+                     "string filepath.",
+                     scanner->getPosition());
   }
 
   const atl::string relativeIncludePath = lexStringLiteral();
   c = scanner->next();
   while (c != '\n') {
     if (!atl::isspace(c))
-      throw error(
+      throw ACC::Error(
           "Preprocessor: #include directive must end with whitespace and a "
           "newline.",
           scanner->getPosition());
@@ -135,9 +143,10 @@ SourceHandler Preprocessor::lexInclude() {
     if (fileExists(currIncludePath))
       return SourceHandler(SourceHandler::Type::FILEPATH, currIncludePath);
   }
-  throw error("Preprocessor: Could not include file that does not exist: " +
-                  relativeIncludePath,
-              scanner->getPosition());
+  throw ACC::Error(
+      "Preprocessor: Could not include file that does not exist: " +
+          relativeIncludePath,
+      scanner->getPosition());
 }
 
 bool Preprocessor::lexPragmaOnce() {
@@ -145,9 +154,9 @@ bool Preprocessor::lexPragmaOnce() {
   char c = scanner->next();
   while (c != '\n') {
     if (!atl::isspace(c))
-      throw error("Preprocessor: #pragma once directive must end with "
-                  "whitespace and a newline.",
-                  scanner->getPosition());
+      throw ACC::Error("Preprocessor: #pragma once directive must end with "
+                       "whitespace and a newline.",
+                       scanner->getPosition());
     c = scanner->next();
   }
   return checkVisited(src.getFilepath());
@@ -160,8 +169,8 @@ void Preprocessor::lexKeyword(const atl::string &keyword) {
 
   for (int i = 1; i < keyword.length(); ++i) {
     if (scanner->peek() != keyword[i])
-      throw error("Preprocessor: Could not Lex Keyword",
-                  scanner->getPosition());
+      throw ACC::Error("Preprocessor: Could not Lex Keyword",
+                       scanner->getPosition());
 
     literal += scanner->next();
   }
@@ -171,7 +180,8 @@ void Preprocessor::lexKeyword(const atl::string &keyword) {
       (peekChar != '_'))
     return;
 
-  throw error("Preprocessor: Could not Lex Keyword", scanner->getPosition());
+  throw ACC::Error("Preprocessor: Could not Lex Keyword",
+                   scanner->getPosition());
 }
 atl::string Preprocessor::lexStringLiteral() {
   atl::string literal;
@@ -179,10 +189,10 @@ atl::string Preprocessor::lexStringLiteral() {
   while (true) {
     char c = scanner->next();
     if (c == '\0')
-      throw error("Preprocessor: Unexpected EOF in String Literal.",
-                  scanner->getPosition());
+      throw ACC::Error("Preprocessor: Unexpected EOF in String Literal.",
+                       scanner->getPosition());
     if (c == '\n')
-      throw error(
+      throw ACC::Error(
           "Preprocessor: Unexpected Newline Character in String Literal. ",
           scanner->getPosition());
 
@@ -199,10 +209,21 @@ atl::string Preprocessor::lexStringLiteral() {
   }
   return literal;
 }
+static unsigned int checkVisitedDepth = 0;
 bool Preprocessor::checkVisited(const atl::string &filepath) const {
+  ++checkVisitedDepth;
+  const int thisDepth = checkVisitedDepth;
+  const int otherDepth = getSourceDepth;
+  if (thisDepth - otherDepth > 0)
+    ACC::Error("Uh oh");
+  if (otherDepth > 15 || thisDepth > 15)
+    ACC::Error("uh oh");
   if (parentPreprocessor != nullptr) {
-    return parentPreprocessor->checkVisited(filepath);
+    const bool res = parentPreprocessor->checkVisited(filepath);
+    --checkVisitedDepth;
+    return res;
   } else {
+    --checkVisitedDepth;
     for (int idx = 0; idx < filesPreprocessed.size(); ++idx)
       if (filesPreprocessed[idx] == filepath)
         return true;
@@ -240,7 +261,7 @@ int Preprocessor::passComment() {
         break;
     }
   }
-  throw error(
+  throw ACC::Error(
       "Preprocessor: Lexing Comment Returned Unexpected SourceToken(s). ",
       scanner->getPosition());
 }

@@ -39,12 +39,9 @@ SourceToken Parser::expect(TC expected) {
     nextToken();
     return output;
   }
-  throw std::runtime_error(
-      std::string("Parsing: Expected Token ") +
-      ACC::tokToStr(expected).c_str() + " at " +
-      currToken.position.toString().c_str() +
-      " but found: " + ACC::tokToStr(currToken.tokenClass).c_str() + "(" +
-      currToken.data.c_str() + ")");
+  throw ACC::Error("Parsing: Expected Token " + ACC::tokToStr(expected) +
+                       " but found " + ACC::tokToStr(currToken.tokenClass),
+                   currToken.position);
 }
 
 SourceToken Parser::expect(atl::vector<TC> expected) {
@@ -55,8 +52,9 @@ SourceToken Parser::expect(atl::vector<TC> expected) {
       return output;
     }
   }
-  throw std::runtime_error(std::string("Parsing: Invalid Token at ") +
-                           currToken.position.toString().c_str());
+  throw ACC::Error("Parsing: Unexpected Token " +
+                       ACC::tokToStr(currToken.tokenClass),
+                   currToken.position);
 }
 
 SourceToken Parser::lookAhead(int i) {
@@ -449,8 +447,9 @@ atl::shared_ptr<ConstructorDecl> Parser::parseConstructor() {
   expect(TC::RPAR);
 
   if (acceptBlock() && unnamedParams) {
-    throw std::runtime_error(
-        "Parser: Constructor signature did not provide names for parameters.");
+    throw ACC::Error(
+        "Parser: Constructor signature did not provide names for parameters.",
+        currToken.position);
   } else if (acceptBlock()) {
     atl::shared_ptr<Block> constructorBlock = parseBlock();
     atl::shared_ptr<ConstructorDef> cd(
@@ -526,8 +525,9 @@ atl::shared_ptr<Decl> Parser::parseDecl() {
     return ectd;
   }
 
-  throw std::runtime_error("Parser: Expected a Struct/Variable/Function "
-                           "Declaration but none was found.");
+  throw ACC::Error("Parser: Expected a Struct/Variable/Function Declaration "
+                   "but none was found.",
+                   currToken.position);
 }
 atl::shared_ptr<Deletion> Parser::parseDeletion() {
   TC deletionToken = expect({TC::DELETE, TC::DELETEARR}).tokenClass;
@@ -625,8 +625,9 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
   // TODO: Modifiers for FunDecls
 
   if (acceptBlock() && !isDef) {
-    throw std::runtime_error(
-        "Parser: FunDef signature did not provide names for parameters.");
+    throw ACC::Error(
+        "Parser: FunDef signature did not provide names for parameters.",
+        currToken.position);
   } else if (acceptBlock()) {
     atl::shared_ptr<Block> funBlock = parseBlock();
     atl::shared_ptr<FunDef> fd(
@@ -691,8 +692,9 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
   } else if (accept(TC::LPAR)) {
     expect(TC::LPAR);
     if (varType->astClass() != "ClassType")
-      throw std::runtime_error(
-          "Construction of Variable of non-class type not supported at ");
+      throw ACC::Error(
+          "Construction of Variable of non-class type not supported.",
+          currToken.position);
 
     atl::shared_ptr<ClassType> classType =
         atl::static_pointer_cast<ClassType>(varType);
@@ -817,7 +819,7 @@ atl::shared_ptr<For> Parser::parseFor() {
   const atl::shared_ptr<Expr> endBodyExpr = parseExpr();
   /* TODO: Check this Stmt is Valid ASTNode Type. */
   if (endBodyExpr->astClass() != "PrefixOp")
-    throw error(
+    throw ACC::Error(
         "TEMP: For Loops do not support end of body expressions other than "
         "prefix operations");
   expect(TC::RPAR);
@@ -1085,7 +1087,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
       operation = PrefixOp::Op::DEC;
     atl::shared_ptr<Expr> incrementExpr = parseObjExpr();
     if (incrementExpr->astClass() != "VarExpr")
-      throw error("Attempted operator++ on Expr that was not a VarExpr");
+      throw ACC::Error("Attempted operator++ on Expr that was not a VarExpr");
     const atl::shared_ptr<VarExpr> variable =
         atl::static_pointer_cast<VarExpr>(incrementExpr);
     return atl::make_shared<PrefixOp>(PrefixOp(operation, variable));
@@ -1097,9 +1099,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     if (accept(TC::IDENTIFIER) && accept(TC::LPAR, 1)) {
       atl::shared_ptr<Expr> funCall = parseObjExpr();
       if (funCall->astClass() != "FunCall")
-        throw std::runtime_error(
-            std::string("Parsing: Expected a FunCall at ") +
-            currToken.position.toString().c_str());
+        throw ACC::Error("Parsing: Expected FunCall", currToken.position);
       return atl::make_shared<Allocation>(
           Allocation(atl::static_pointer_cast<FunCall>(funCall)));
     } else {
@@ -1278,9 +1278,8 @@ atl::shared_ptr<Expr> Parser::parseLitExpr() {
   if (acceptExpr())
     return parseExpr();
 
-  throw std::runtime_error(
-      std::string("Parsing: Expected a Literal Expression at ") +
-      currToken.position.toString().c_str());
+  throw ACC::Error("Parser: Expected a Literal Expression.",
+                   currToken.position);
 }
 
 atl::string Parser::parseOperatorOverload() {
@@ -1317,7 +1316,8 @@ atl::shared_ptr<BaseType> Parser::tokenToType(const TC &tc) {
   case TC::BOOL:
     return atl::make_shared<BaseType>(BaseType(PrimitiveType::BOOL));
   default:
-    throw std::runtime_error(std::string("Parsing: Cannot resolve Token ") +
-                             tokToStr(tc).c_str() + "  to a type.");
+    throw ACC::Error("Parser: Cannot resolve Token " + tokToStr(tc) +
+                         "  to a type.",
+                     currToken.position);
   }
 }

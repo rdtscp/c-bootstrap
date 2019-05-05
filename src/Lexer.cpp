@@ -100,8 +100,8 @@ SourceToken Lexer::nextToken() {
             scanner.next();
             return SourceToken(TC::DELETEARR, scanner.getPosition());
           } else {
-            throw error("Lexer: Unexpected Token. Expected 'delete[]'",
-                        scanner.getPosition());
+            throw ACC::Error("Lexer: Unexpected Token. Expected 'delete[]'",
+                             scanner.getPosition());
           }
         }
         return SourceToken(TC::DELETE, scanner.getPosition());
@@ -212,9 +212,8 @@ SourceToken Lexer::nextToken() {
           scanner.next();
           return SourceToken(TC::OPNE, scanner.getPosition(), "operator!=");
         } else {
-          atl::string error = "Could not Lex operator overload: " +
-                              scanner.getPosition().toString();
-          throw std::runtime_error(error.c_str());
+          throw ACC::Error("Could not Lex operator overload: " +
+                           scanner.getPosition().toString());
         }
       }
     }
@@ -473,8 +472,8 @@ SourceToken Lexer::nextToken() {
     return nextToken();
 
   // if we reach this point, it means we did not recognise a valid token
-  throw std::runtime_error(std::string("Lexer: Unexpected Token. ") +
-                           scanner.getPosition().toString().c_str());
+  throw ACC::Error("Lexer: Unexpected Token: " + atl::string(1, c),
+                   scanner.getPosition());
 }
 
 SourceToken Lexer::lexStringLiteral() {
@@ -483,14 +482,11 @@ SourceToken Lexer::lexStringLiteral() {
   while (true) {
     char c = scanner.next();
     if (c == '\0')
-      throw std::runtime_error(
-          std::string("Lexer: Unexpected EOF in String Literal. ") +
-          scanner.getPosition().toString().c_str());
+      throw ACC::Error("Lexer: Unexpected EOF in String Literal.",
+                       scanner.getPosition());
     if (c == '\n')
-      throw std::runtime_error(
-          std::string(
-              "Lexer: Unexpected Newline Character in String Literal. ") +
-          scanner.getPosition().toString().c_str());
+      throw ACC::Error("Lexer: Unexpected Newline in String Literal.",
+                       scanner.getPosition());
 
     // Check if we are about to see an escaped character.
     if (c == '\\') {
@@ -527,10 +523,8 @@ void Lexer::passComment() {
         break;
     }
   }
-  throw std::runtime_error(
-      std::string(
-          "Lexer: Lexing Comment Returned Unexpected SourceToken(s). ") +
-      scanner.getPosition().toString().c_str());
+  throw ACC::Error("Lexer: Lexing Comment Returned Unexpected SourceToken(s).",
+                   scanner.getPosition());
 }
 
 atl::pair<bool, atl::string> Lexer::tryLexKeyword(const atl::string &keyword) {
