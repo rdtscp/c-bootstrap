@@ -39,8 +39,8 @@ static atl::string resolveRelativePath(atl::string currFilepath,
   if (currFilepath[currFilepath.size() - 1] != '/')
     currFilepath = parentDir(currFilepath);
 
-  int endIdx = 0;
-  for (int idx = 0; idx < relativePath.size(); ++idx) {
+  unsigned int endIdx = 0;
+  for (unsigned int idx = 0; idx < relativePath.size(); ++idx) {
     if (relativePath[idx] == '.' && relativePath[++idx] == '.' &&
         relativePath[++idx] == '/') {
       currFilepath = parentDir(currFilepath);
@@ -49,7 +49,7 @@ static atl::string resolveRelativePath(atl::string currFilepath,
       break;
     }
   }
-  for (int idx = endIdx; idx < relativePath.size(); ++idx)
+  for (unsigned int idx = endIdx; idx < relativePath.size(); ++idx)
     currFilepath += relativePath[idx];
   return currFilepath;
 }

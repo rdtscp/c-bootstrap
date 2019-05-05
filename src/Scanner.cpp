@@ -53,7 +53,8 @@ SourceHandler Scanner::getFileContents() const {
 atl::string Scanner::getFilename(const atl::string &abspath) {
   atl::vector<atl::string> directories;
   atl::string currDir;
-  for (const char currChar : abspath) {
+  for (unsigned int idx = 0; idx < abspath.size(); ++idx) {
+    const char currChar = abspath[idx];
     if (currChar == '/') {
       directories.push_back(currDir);
       currDir = "";
@@ -69,7 +70,7 @@ atl::string Scanner::getFilename(const atl::string &abspath) {
 atl::string Scanner::getFilepath(const atl::string &abspath) {
   atl::vector<atl::string> directories;
   atl::string currDir;
-  for (int i = 0; i < abspath.length(); ++i) {
+  for (unsigned int i = 0; i < abspath.length(); ++i) {
     const char currChar = abspath[i];
     if (currChar == '/') {
       directories.push_back(currDir);
@@ -81,7 +82,7 @@ atl::string Scanner::getFilepath(const atl::string &abspath) {
   directories.push_back(currDir);
 
   atl::string filepath;
-  for (int i = 0; i < directories.size() - 1; ++i)
+  for (unsigned int i = 0; i < directories.size() - 1; ++i)
     filepath += directories[i] + '/';
 
   return filepath;

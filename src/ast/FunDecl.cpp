@@ -18,7 +18,7 @@ atl::string FunDecl::getSignature() const {
 
   output += "(";
 
-  for (int idx = 0; idx < funParams.size(); ++idx) {
+  for (unsigned int idx = 0; idx < funParams.size(); ++idx) {
     output += funParams[idx]->type->getSignature();
     if (idx != funParams.size() - 1) {
       output += ", ";
@@ -52,7 +52,7 @@ bool FunDecl::operator==(const FunDecl &rhs) const {
   if (funParams.size() != rhs.funParams.size())
     return false;
 
-  for (int i = 0; i < funParams.size(); ++i)
+  for (unsigned int i = 0; i < funParams.size(); ++i)
     if (*funParams[i]->type != *rhs.funParams[i]->type)
       return false;
 

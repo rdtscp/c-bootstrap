@@ -30,7 +30,7 @@ bool ConstructorDef::operator==(const ConstructorDef &rhs) const {
   if (constructorParams.size() != rhs.constructorParams.size())
     return false;
 
-  for (int i = 0; i < constructorParams.size(); ++i)
+  for (unsigned int i = 0; i < constructorParams.size(); ++i)
     if (*constructorParams[i] != *rhs.constructorParams[i])
       return false;
 

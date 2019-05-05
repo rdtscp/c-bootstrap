@@ -13,7 +13,7 @@ void GenerateX86::error(atl::string error) {
 
 void GenerateX86::printErrors() const {
   printf("FATAL x86 Generation Errors:\n");
-  for (int idx = 0; idx < errors.size(); ++idx)
+  for (unsigned int idx = 0; idx < errors.size(); ++idx)
     printf("\t%s\n", errors[idx].c_str());
 }
 
@@ -83,7 +83,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
   currScope = b.getptr();
-  for (int idx = 0; idx < b.stmts.size(); ++idx)
+  for (unsigned int idx = 0; idx < b.stmts.size(); ++idx)
     b.stmts[idx]->accept(*this);
 
   currScope = b.outerScope;
@@ -261,7 +261,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   currScope = p.globalScope;
 
   x86.write("SECTION .data");
-  for (int idx = 0; idx < p.globalVars.size(); ++idx) {
+  for (unsigned int idx = 0; idx < p.globalVars.size(); ++idx) {
     const atl::shared_ptr<VarDecl> &globalVar = p.globalVars[idx];
     alloc(*globalVar);
   }
@@ -274,7 +274,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   x86.call("main");
   x86.ret();
 
-  for (int idx = 0; idx < p.funDecls.size(); ++idx)
+  for (unsigned int idx = 0; idx < p.funDecls.size(); ++idx)
     p.funDecls[idx]->accept(*this);
 
   return atl::make_shared<X86::None>();
