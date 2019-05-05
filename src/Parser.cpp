@@ -55,10 +55,7 @@ SourceToken Parser::expect(atl::vector<TC> expected) {
                    currToken.position);
 }
 
-SourceToken Parser::lookAhead(int i) {
-  if (i < 0)
-    throw Error("Parser: Cannot lookAhead negative indices.");
-
+SourceToken Parser::lookAhead(unsigned int i) {
   if (i == 0)
     return currToken;
   while (tokenBuffer.size() < i) {
