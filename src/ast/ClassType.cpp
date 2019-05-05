@@ -11,8 +11,8 @@ int ClassType::getBytes() const {
     return aggregateBytes;
 
   // @TODO: Calculate SUM of VarDecls.
-  const int classDeclsSize = typeDefinition->classDecls.size();
-  for (int i = 0; i < classDeclsSize; ++i) {
+  const unsigned int classDeclsSize = typeDefinition->classDecls.size();
+  for (unsigned int i = 0; i < classDeclsSize; ++i) {
     if (typeDefinition->classDecls[i]->astClass() == "VarDecl") {
       aggregateBytes +=
           atl::static_pointer_cast<VarDecl>(typeDefinition->classDecls[i])
@@ -29,9 +29,7 @@ int ClassType::getBytes() const {
   return aggregateBytes;
 }
 
-atl::string ClassType::getSignature() const {
-  return identifier->toString();
-}
+atl::string ClassType::getSignature() const { return identifier->toString(); }
 
 bool ClassType::operator==(Type &rhs) const {
   if (rhs.astClass() == astClass())

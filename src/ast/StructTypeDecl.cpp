@@ -26,7 +26,7 @@ bool StructTypeDecl::operator==(const StructTypeDecl &rhs) const {
   if (varDecls.size() != rhs.varDecls.size())
     return false;
 
-  for (int i = 0; i < varDecls.size(); ++i)
+  for (unsigned int i = 0; i < varDecls.size(); ++i)
     if (*varDecls[i] != *rhs.varDecls[i])
       return false;
 

@@ -86,7 +86,7 @@ TEST(ParserTest, StructDecl) {
   const int expectSize = expectedDecls.size();
   ASSERT_EQ(actualSize, expectSize);
 
-  for (int i = 0; i < expectedDecls.size(); ++i)
+  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
@@ -166,7 +166,7 @@ TEST(ParserTest, VarDecls) {
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
-  for (int i = 0; i < expectedDecls.size(); ++i)
+  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
@@ -197,7 +197,7 @@ TEST(ParserTest, FunDecl) {
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
-  for (int i = 0; i < expectedDecls.size(); ++i)
+  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
@@ -286,7 +286,7 @@ TEST(ParserTest, BinOp) {
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
-  for (int i = 0; i < expectedDecls.size(); ++i)
+  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 

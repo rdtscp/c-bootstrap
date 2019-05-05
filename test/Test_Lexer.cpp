@@ -94,7 +94,7 @@ TEST(LexerTest, AllTokens) {
 
   ASSERT_EQ(expected.size(), actual.size());
 
-  for (int i = 0; i < actual.size(); ++i) {
+  for (unsigned int i = 0; i < actual.size(); ++i) {
     ASSERT_EQ(actual[i], expected[i]);
   }
 }

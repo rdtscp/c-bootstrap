@@ -12,7 +12,7 @@ atl::shared_ptr<Type> TypeAnalysis::error(const atl::string &error) {
 
 void TypeAnalysis::printErrors() {
   printf("Type Analysis Errors:\n");
-  for (int idx = 0; idx < errors.size(); ++idx)
+  for (unsigned int idx = 0; idx < errors.size(); ++idx)
     printf("\t%s\n", errors[idx].c_str());
 }
 
@@ -57,7 +57,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(Block &b) {
   b.outerScope = currScope;
   currScope = b.getptr();
 
-  for (int idx = 0; idx < b.stmts.size(); ++idx)
+  for (unsigned int idx = 0; idx < b.stmts.size(); ++idx)
     b.stmts[idx]->accept(*this);
 
   currScope = b.outerScope;
@@ -116,7 +116,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(FunDef &fd) {
   fd.outerScope = currScope;
   currScope = fd.outerScope;
 
-  for (int idx = 0; idx < fd.funParams.size(); ++idx)
+  for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
   fd.funBlock->accept(*this);
   currScope = fd.outerScope;
@@ -164,7 +164,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(MemberAccess &ma) {
   // atl::shared_ptr<StructTypeDecl> structTypeDecl =
   //     atl::static_pointer_cast<StructTypeDecl>(identDecl);
 
-  // for (int idx = 0; idx < structTypeDecl->varDecls.size(); ++idx)
+  // for (unsigned int idx = 0; idx < structTypeDecl->varDecls.size(); ++idx)
   //   if (*structTypeDecl->varDecls[idx]->identifier == *ma.fieldIdentifier)
   //     return structTypeDecl->varDecls[idx]->type;
   return nullptr;
@@ -173,7 +173,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(MemberAccess &ma) {
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(MemberCall &mc) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(Namespace &n) {
-  for (int i = 0; i < n.namespaceDecls.size(); ++i)
+  for (unsigned int i = 0; i < n.namespaceDecls.size(); ++i)
     n.namespaceDecls[i]->accept(*this);
   return nullptr;
 }
@@ -189,7 +189,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(PrefixOp &po) {
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(Program &p) {
   currScope = p.globalScope;
-  for (int idx = 0; idx < p.decls.size(); ++idx)
+  for (unsigned int idx = 0; idx < p.decls.size(); ++idx)
     p.decls[idx]->accept(*this);
   return nullptr;
 }
