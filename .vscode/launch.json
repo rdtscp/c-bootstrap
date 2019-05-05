@@ -33,15 +33,15 @@
       "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
     },
     {
-      "name": "(lldb) acc - main_.cpp",
+      "name": "(lldb) acc - main.cpp",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/build/acc",
       "args": [
-        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main_.cpp",
-        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/class.s",
+        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/main.cpp",
+        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main.s",
         "x86",
-        "--graph"
+        "--preprocess"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
