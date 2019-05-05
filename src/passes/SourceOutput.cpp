@@ -65,6 +65,8 @@ atl::string SourceOutput::visit(BaseType &bt) {
     return "unsigned int";
   case PrimitiveType::BOOL:
     return "bool";
+  default:
+    return "";
   }
 }
 atl::string SourceOutput::visit(BinOp &bo) {
@@ -184,7 +186,7 @@ atl::string SourceOutput::visit(ConstructorDef &cd) {
     output += currParam;
   }
   output += ")";
-  const int initialiserListSize = cd.initialiserList.size();
+  const unsigned int initialiserListSize = cd.initialiserList.size();
   if (initialiserListSize > 0) {
     output += " : ";
     for (unsigned int idx = 0; idx < initialiserListSize; ++idx) {
