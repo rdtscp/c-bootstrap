@@ -47,9 +47,9 @@ atl::string None::toString() const { return "None::INTERNAL_ERROR"; }
 
 /* ---- X86::Writer ---- */
 
-Writer::Writer(const atl::string &filename) {
-  std::string std_filename(filename.c_str());
-  x86Output.open(std_filename);
+Writer::Writer(const atl::string &filename) : x86Output(filename) {
+  if (!x86Output.good())
+    throw "Not good!";
 }
 
 void Writer::add(const atl::shared_ptr<X86::Operand> &op1,
@@ -130,9 +130,7 @@ void Writer::push(const atl::shared_ptr<X86::Operand> &op,
   write(output);
 }
 
-void Writer::ret(const atl::string &comment) {
-  x86Output << "ret" << std::endl;
-}
+void Writer::ret(const atl::string &comment) { write("ret"); }
 
 void Writer::sub(const atl::shared_ptr<X86::Operand> &op, const int value,
                  const atl::string &comment) {
@@ -140,6 +138,4 @@ void Writer::sub(const atl::shared_ptr<X86::Operand> &op, const int value,
         comment);
 }
 
-void Writer::write(const atl::string &str) {
-  x86Output << str.c_str() << std::endl;
-}
+void Writer::write(const atl::string &str) { x86Output.write(str); }

@@ -1,8 +1,8 @@
 #pragma once
 
+#include "atl/include/ofstream.h"
 #include "atl/include/shared_ptr.h"
 #include "atl/include/string.h"
-#include <fstream>
 
 namespace ACC {
 
@@ -57,6 +57,7 @@ public:
 class Writer final {
 public:
   Writer(const atl::string &filename);
+  Writer(const Writer &) = delete;
 
   void add(const atl::shared_ptr<X86::Operand> &op1,
            const atl::shared_ptr<X86::Operand> &op2,
@@ -84,7 +85,7 @@ public:
   void write(const atl::string &str);
 
 private:
-  std::ofstream x86Output;
+  atl::ofstream x86Output;
 };
 
 static atl::shared_ptr<Register> eax(new Register(32, "eax"));

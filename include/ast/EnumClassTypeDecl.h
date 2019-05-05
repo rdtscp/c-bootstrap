@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 
 #include "Decl.h"
 #include "PrimitiveType.h"
@@ -18,7 +19,6 @@ public:
 
   EnumClassTypeDecl(const atl::shared_ptr<Identifier> &p_identifier,
                     const std::map<std::string, std::string> &p_states);
-
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
 
