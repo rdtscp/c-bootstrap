@@ -74,10 +74,32 @@ SourceHandler Preprocessor::lexInclude() {
   lexKeyword("#include");
   scanner->next(); // Skip space.
   char c = scanner->next();
-  if (c != '"')
+  if (c == '<') {
+    /* BIG HACK: Just accept we have to have:
+     *   <initializer_list>
+     *   <stdio.h>
+     */
+    if (scanner->peek() == 'i') {
+      lexKeyword("<initializer_list>");
+      return SourceHandler(SourceHandler::Type::RAW, "\n");
+    } else if (scanner->peek() == 's') {
+      lexKeyword("<stdio.h>");
+      atl::string stdio_h_str;
+      stdio_h_str += "struct FILE;\n";
+      stdio_h_str += "extern \"C\" FILE *fopen(char *, char *);\n";
+      stdio_h_str += "extern \"C\" void fclose(FILE *);\n";
+      stdio_h_str += "extern \"C\" char *fgets(char *, int, FILE *);";
+      return SourceHandler(SourceHandler::Type::RAW, stdio_h_str);
+    } else {
+      throw error("Preprocessor: #include directives must be followed by a "
+                  "string filepath.",
+                  scanner->getPosition());
+    }
+  } else if (c != '"') {
     throw error("Preprocessor: #include directives must be followed by a "
                 "string filepath.",
                 scanner->getPosition());
+  }
 
   const atl::string relativeIncludePath = lexStringLiteral();
   c = scanner->next();

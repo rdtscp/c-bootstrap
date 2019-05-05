@@ -10,16 +10,9 @@ using namespace ACC;
 Scanner::Scanner(const SourceHandler &src) : column(1), line(1) {
   if (src.type == SourceHandler::Type::FILEPATH) {
     /* My Compiler */
-    std::ifstream fileStream(src.value.c_str());
+    atl::ifstream fileStream(src.value);
     if (fileStream.good())
-#ifdef ACC_COMPILER
       file = fileStream.readIntoString();
-#else
-      file =
-          atl::string(std::string((std::istreambuf_iterator<char>(fileStream)),
-                                  std::istreambuf_iterator<char>())
-                          .c_str());
-#endif
   } else if (src.type == SourceHandler::Type::RAW) {
     file = src.value;
   }
