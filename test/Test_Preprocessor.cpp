@@ -1,7 +1,5 @@
 #include "atl/include/string.h"
 
-#include <iostream>
-
 #include "gtest/gtest.h"
 
 #include "Preprocessor.h"
