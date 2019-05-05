@@ -8,7 +8,16 @@ using namespace ACC;
 /* ---- PPScanner ---- */
 
 PPScanner::PPScanner(const SourceHandler &src) : Scanner(src) {
-  abspath = src.getFilepath();
+  const atl::string abspath = src.getFilepath();
+
+  filepath = getFilepath(abspath);
+  filename = getFilename(abspath);
+
+  const char last_char = *(file.end() - 1);
+  if (last_char != '\n') {
+    throw error("Files must end with `\\n`: " + filepath + filename +
+                ". But ended with: " + atl::string(1, last_char));
+  }
 }
 
 char PPScanner::next() {
@@ -41,7 +50,9 @@ SourceHandler Preprocessor::getSource() {
     c = scanner->next();
     // Skip through Comments.
     if (c == '/' && (scanner->peek() == '*' || scanner->peek() == '/')) {
-      passComment();
+      const int linesInComment = passComment();
+      const atl::string newlines(linesInComment, '\n');
+      output += newlines;
     } else if (c == '#' && scanner->peek() == 'i') {
       const SourceHandler includeFilepath = lexInclude();
 
@@ -205,22 +216,25 @@ void Preprocessor::markVisited(const atl::string &filepath) {
   else
     filesPreprocessed.push_back(filepath);
 }
-void Preprocessor::passComment() {
+int Preprocessor::passComment() {
   // Consume the '/' or '*' character.
   char c = scanner->next();
   int currLine = scanner->getPosition().line;
   if (c == '/') {
     while (scanner->getPosition().line == currLine)
       scanner->next();
-    return;
+    return 1;
   } else if (c == '*') {
+    int numLines = 0;
     c = scanner->next();
     while (true) {
       c = scanner->next();
+      if (c == '\n')
+        ++numLines;
       if (c == '*' && scanner->peek() == '/') {
         scanner->next(); // Consume the closing DIV.
-        c = scanner->next();
-        return;
+        // c = scanner->next();
+        return numLines;
       }
       if (c == '\0')
         break;

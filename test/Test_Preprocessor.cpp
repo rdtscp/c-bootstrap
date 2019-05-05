@@ -14,11 +14,11 @@ using namespace ACC;
 atl::string test_prefix = "../../test/tests/";
 
 TEST(PreprocessorTest, TestConstruction) {
-  ACC::Preprocessor preprocessor(SourceHandler(SourceHandler::Type::RAW, "foo"),
-                                 {});
+  ACC::Preprocessor preprocessor(
+      SourceHandler(SourceHandler::Type::RAW, "foo\n"), {});
   const SourceHandler pp_src = preprocessor.getSource();
   ASSERT_EQ(pp_src.type, SourceHandler::Type::RAW);
-  ASSERT_EQ(std::string(pp_src.value.c_str()), "# 1 \"RAW\"\nfoo");
+  ASSERT_EQ(std::string(pp_src.value.c_str()), "# 1 \"RAW\"\nfoo\n");
 }
 
 TEST(PreprocessorTest, TestFormatIncludeDirective) {
@@ -44,7 +44,7 @@ TEST(PreprocessorTest, TestInclude) {
       "# 1 \"" + test_prefix + +"preprocessor/test1.cpp\"\n# 1 \"" +
       test_prefix +
       +"preprocessor/header1.h\"\nint header1() { return 1; }\n# 2 \"" +
-      test_prefix + +"preprocessor/test1.cpp\"\nint test1() { return 1; }";
+      test_prefix + +"preprocessor/test1.cpp\"\nint test1() { return 1; }\n";
 
   ASSERT_EQ(actual_val, expect_val);
 }
@@ -61,7 +61,7 @@ TEST(PreprocessorTest, TestIncludeChildDir) {
       test_prefix +
       +"preprocessor/other_dir/header2.h\"\nint header2() { return 1; }\n# 2 "
        "\"" +
-      test_prefix + +"preprocessor/test2.cpp\"\nint test2() { return 1; }";
+      test_prefix + +"preprocessor/test2.cpp\"\nint test2() { return 1; }\n";
 
   ASSERT_EQ(actual_val, expect_val);
 }
@@ -78,7 +78,7 @@ TEST(PreprocessorTest, TestIncludeParentDir) {
       test_prefix +
       +"preprocessor/header3.h\"\nint header3() { return 1; }\n# 2 \"" +
       test_prefix +
-      +"preprocessor/other_dir/test3.cpp\"\nint test3() { return 1; }";
+      +"preprocessor/other_dir/test3.cpp\"\nint test3() { return 1; }\n";
 
   ASSERT_EQ(actual_val, expect_val);
 }
