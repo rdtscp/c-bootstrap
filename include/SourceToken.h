@@ -135,10 +135,10 @@ public:
   }
 };
 
-static atl::string tokToStr(const SourceToken::Class &tok) {
-  switch (tok) {
+static atl::string tokToStr(const SourceToken::Class tokenClass) {
+  switch (tokenClass) {
   case SourceToken::Class::IDENTIFIER:
-    return "IDENTIFIER";
+    return "IDENTIFIER()";
   case SourceToken::Class::ASSIGN:
     return "=";
   case SourceToken::Class::LBRA:
@@ -298,6 +298,13 @@ static atl::string tokToStr(const SourceToken::Class &tok) {
   default:
     return "UNKNOWN TOKEN.";
   }
+}
+
+static atl::string tokToStr(const SourceToken &token) {
+  if (token.tokenClass == SourceToken::Class::IDENTIFIER)
+    return "IDENTIFIER(" + token.data + ")";
+
+  return tokToStr(token.tokenClass);
 }
 
 } // namespace ACC
