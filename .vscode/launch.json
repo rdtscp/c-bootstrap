@@ -40,8 +40,7 @@
       "args": [
         "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/main.cpp",
         "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main.s",
-        "x86",
-        "--preprocess"
+        "x86"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
