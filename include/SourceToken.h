@@ -65,6 +65,8 @@ public:
     TRUE_VAL,   // "true"
     THROW,      // "throw"
     STATIC,     // "static"
+    TEMPLATE,   // "template"
+    TYPENAME,   // "typename"
 
     // operators overrides
     OPASSIGN, // "operator="
@@ -295,6 +297,10 @@ static atl::string tokToStr(const SourceToken::Class tokenClass) {
     return ":";
   case SourceToken::Class::NAMESPACEACCESS:
     return "::";
+  case SourceToken::Class::TEMPLATE:
+    return "template";
+  case SourceToken::Class::TYPENAME:
+    return "typename";
   default:
     return "UNKNOWN TOKEN.";
   }

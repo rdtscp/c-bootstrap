@@ -281,6 +281,14 @@ SourceToken Lexer::nextToken() {
           return SourceToken(TC::STRUCT, scanner.getPosition());
       }
     }
+    // Check for TEMPLATE
+    else if (c == 't' && scanner.peek() == 'e') {
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("template");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return SourceToken(TC::TEMPLATE, scanner.getPosition());
+    }
     // Check for THIS and THROW Token.
     else if (c == 't' && scanner.peek() == 'h') {
       c = scanner.next();
@@ -308,11 +316,25 @@ SourceToken Lexer::nextToken() {
     }
     // Check for TYPEDEF Token.
     else if (c == 't' && scanner.peek() == 'y') {
-      atl::pair<bool, atl::string> lexResult = tryLexKeyword("typedef");
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("type");
       literal = lexResult.second;
 
-      if (lexResult.first)
-        return SourceToken(TC::TYPEDEF, scanner.getPosition());
+      if (lexResult.second == "type") {
+        c = scanner.next();
+        if (c == 'd') {
+          atl::pair<bool, atl::string> lexResult = tryLexKeyword("def");
+          literal += lexResult.second;
+
+          if (lexResult.first)
+            return SourceToken(TC::TYPEDEF, scanner.getPosition());
+        } else if (c == 'n') {
+          atl::pair<bool, atl::string> lexResult = tryLexKeyword("name");
+          literal += lexResult.second;
+
+          if (lexResult.first)
+            return SourceToken(TC::TYPENAME, scanner.getPosition());
+        }
+      }
     }
     // Check for UNSIGNED Token.
     else if (c == 'u' && scanner.peek() == 'n') {
