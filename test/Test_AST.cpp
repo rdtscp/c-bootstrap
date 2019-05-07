@@ -109,14 +109,14 @@ TEST(ASTTest, ClassTypeDeclComparisons) {
   const atl::shared_ptr<Identifier> classOneIdent(new Identifier("ClassOne"));
   const atl::shared_ptr<ClassType> classOneType(new ClassType(classOneIdent));
 
-  const ClassTypeDecl classOne(classOneType, {});
+  const ClassTypeDef classOne(classOneType, {});
 
-  ASSERT_EQ(classOne, ClassTypeDecl(classOne));
+  ASSERT_EQ(classOne, ClassTypeDef(classOne));
 
   const atl::shared_ptr<Identifier> classTwoIdent(new Identifier("ClassTwo"));
   const atl::shared_ptr<ClassType> classTwoType(new ClassType(classTwoIdent));
 
-  const ClassTypeDecl classTwo(classTwoType, {});
+  const ClassTypeDef classTwo(classTwoType, {});
 
   ASSERT_NE(classOne, classTwo);
 }
@@ -351,9 +351,9 @@ TEST(ASTTest, Scope_resolveFunCall_innerScope) {
   ASSERT_EQ(*funDeclOne, *resolvedFunDecl);
 }
 
-TEST(ASTTest, ClassTypeDecl_resolveVarExpr) {
+TEST(ASTTest, ClassTypeDef_resolveVarExpr) {
   /* Store a class with a member variable in the current scope. */
-  const atl::shared_ptr<ClassTypeDecl> classTypeDecl(new ClassTypeDecl(
+  const atl::shared_ptr<ClassTypeDef> classTypeDef(new ClassTypeDef(
       atl::make_shared<ClassType>(
           ClassType(atl::make_shared<Identifier>(Identifier("MyClass")))),
       {atl::make_shared<VarDecl>(
@@ -363,8 +363,8 @@ TEST(ASTTest, ClassTypeDecl_resolveVarExpr) {
   /* Resolve it */
   const atl::shared_ptr<Identifier> searchIdent(new Identifier("memberVar"));
   atl::shared_ptr<VarDecl> resolvedVarDecl =
-      classTypeDecl->resolveVarExpr(searchIdent);
-  ASSERT_EQ(resolvedVarDecl.get(), classTypeDecl->classDecls[0].get());
+      classTypeDef->resolveVarExpr(searchIdent);
+  ASSERT_EQ(resolvedVarDecl.get(), classTypeDef->classDecls[0].get());
 }
 
 // The fixture for testing class Project1. From google test primer.

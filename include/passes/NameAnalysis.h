@@ -24,7 +24,7 @@ private:
   atl::shared_ptr<Scope> currScope;
 
   // Too lazy to make MemberFunDecl/MemberFunDef ASTNodes
-  bool inClassTypeDecl;
+  bool inClassTypeDef;
 
   /* ---- Visit AST ---- */
 
@@ -40,6 +40,7 @@ private:
   void visit(CharLiteral &cl) override;
   void visit(ClassType &ct) override;
   void visit(ClassTypeDecl &ctd) override;
+  void visit(ClassTypeDef &ctd) override;
   void visit(ConstructorDecl &cd) override;
   void visit(ConstructorDef &cd) override;
   void visit(Deletion &d) override;

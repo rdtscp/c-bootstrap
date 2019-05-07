@@ -1,12 +1,11 @@
 #pragma once
 
-#include "ClassType.h"
 #include "Decl.h"
 #include "Scope.h"
-#include "Type.h"
-#include "VarDecl.h"
 
 namespace ACC {
+
+class ClassType;
 
 class ClassTypeDecl : public Decl,
                       public Scope,
@@ -14,10 +13,8 @@ class ClassTypeDecl : public Decl,
 
 public:
   atl::shared_ptr<ClassType> classType;
-  atl::vector<atl::shared_ptr<Decl>> classDecls;
 
-  ClassTypeDecl(const atl::shared_ptr<ClassType> &p_classType,
-                const atl::vector<atl::shared_ptr<Decl>> &p_classDecls);
+  ClassTypeDecl(const atl::shared_ptr<ClassType> &p_classType);
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
 

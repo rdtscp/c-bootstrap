@@ -5,7 +5,7 @@
 using namespace ACC;
 
 NameAnalysis::NameAnalysis(atl::shared_ptr<Program> progAST)
-    : progAST(progAST), inClassTypeDecl(false) {}
+    : progAST(progAST), inClassTypeDef(false) {}
 
 void NameAnalysis::error(const atl::string &error) {
   errorCount++;
@@ -55,15 +55,21 @@ void NameAnalysis::visit(ClassTypeDecl &ctd) {
     return error("Attempted to declare a Class with an identifier that is "
                  "already in use: " +
                  ctd.getIdentifier()->toString());
+}
+void NameAnalysis::visit(ClassTypeDef &ctd) {
+  if (currScope->duplicateDeclaration(ctd.getptr()))
+    return error("Attempted to declare a Class with an identifier that is "
+                 "already in use: " +
+                 ctd.getIdentifier()->toString());
   currScope->insertDecl(ctd.getptr());
 
   ctd.outerScope = currScope;
   currScope = ctd.getptr();
 
-  inClassTypeDecl = true;
+  inClassTypeDef = true;
   for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx)
     ctd.classDecls[idx]->accept(*this);
-  inClassTypeDecl = false;
+  inClassTypeDef = false;
 
   currScope = ctd.outerScope;
 }
@@ -116,7 +122,7 @@ void NameAnalysis::visit(FunCall &fc) {
 }
 void NameAnalysis::visit(FunDecl &fd) {
   // Resolve the FunDecl Signature in TypeAnalysis.
-  if (!inClassTypeDecl)
+  if (!inClassTypeDef)
     currScope->insertDecl(fd.getptr());
 
   for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
@@ -124,7 +130,7 @@ void NameAnalysis::visit(FunDecl &fd) {
 }
 void NameAnalysis::visit(FunDef &fd) {
   // Resolve the FunDef Signature in TypeAnalysis.
-  if (!inClassTypeDecl)
+  if (!inClassTypeDef)
     currScope->insertDecl(fd.getptr());
 
   fd.outerScope = currScope;
@@ -212,14 +218,14 @@ void NameAnalysis::visit(TypeDefDecl &tdd) {
 }
 void NameAnalysis::visit(ValueAt &va) { va.derefExpr->accept(*this); }
 void NameAnalysis::visit(VarDecl &vd) {
-  if (!inClassTypeDecl && currScope->duplicateDeclarationLocal(vd.getptr()))
+  if (!inClassTypeDef && currScope->duplicateDeclarationLocal(vd.getptr()))
     return error("Attempted to declare a Variable with an identifier that is "
                  "already in use: " +
                  vd.getIdentifier()->toString());
   currScope->insertDecl(vd.getptr());
 }
 void NameAnalysis::visit(VarDef &vd) {
-  if (!inClassTypeDecl && currScope->duplicateDeclarationLocal(vd.getptr()))
+  if (!inClassTypeDef && currScope->duplicateDeclarationLocal(vd.getptr()))
     return error("Attempted to define a Variable with an identifier that is "
                  "already in use: " +
                  vd.getIdentifier()->toString());

@@ -101,6 +101,9 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassType &ct) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassTypeDecl &ctd) {
   return atl::make_shared<X86::None>();
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassTypeDef &ctd) {
+  return atl::make_shared<X86::None>();
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorDecl &cd) {
   return atl::make_shared<X86::None>();
 }

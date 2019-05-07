@@ -14,6 +14,7 @@ class BoolLiteral;
 class CharLiteral;
 class ClassType;
 class ClassTypeDecl;
+class ClassTypeDef;
 class ConstructorDecl;
 class ConstructorDef;
 class Deletion;
@@ -67,6 +68,7 @@ public:
   virtual T visit(CharLiteral &cl) = 0;
   virtual T visit(ClassType &ct) = 0;
   virtual T visit(ClassTypeDecl &ctd) = 0;
+  virtual T visit(ClassTypeDef &ctd) = 0;
   virtual T visit(ConstructorDecl &cd) = 0;
   virtual T visit(ConstructorDef &cd) = 0;
   virtual T visit(Deletion &d) = 0;

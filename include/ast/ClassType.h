@@ -1,15 +1,17 @@
 #pragma once
 
-#include "ClassTypeDecl.h"
+#include "ClassTypeDef.h"
 #include "Type.h"
 
 namespace ACC {
+
+class ClassTypeDef;
 
 class ClassType : public Type, public atl::enable_shared_from_this<ClassType> {
 
 public:
   atl::shared_ptr<Identifier> identifier;
-  atl::shared_ptr<ClassTypeDecl> typeDefinition;
+  atl::shared_ptr<ClassTypeDef> typeDefinition;
 
   ClassType(const atl::shared_ptr<Identifier> &p_identifier);
 
