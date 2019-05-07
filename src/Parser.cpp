@@ -1126,35 +1126,25 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
   return parseObjExpr();
 }
 atl::shared_ptr<Expr> Parser::parseObjExpr() {
-  if (accept(TC::IDENTIFIER) && accept(TC::LPAR, 1)) {
-    atl::shared_ptr<Expr> output = parseFunCall();
-    while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
-      if (accept({TC::DOT, TC::PTRDOT})) {
-        expect({TC::DOT, TC::PTRDOT});
-        if (accept(TC::LPAR, 1)) {
-          atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
-          output =
-              atl::make_shared<MemberCall>(MemberCall(output, memberFunCall));
-        } else {
-          const atl::string ident_str = expect(TC::IDENTIFIER).data;
-          const atl::shared_ptr<Identifier> fieldIdentifier(
-              new Identifier(ident_str));
-          output = atl::make_shared<MemberAccess>(
-              MemberAccess(output, fieldIdentifier));
-        }
-      } else {
-        expect(TC::LSBR);
-        atl::shared_ptr<Expr> arrayIndexExpr = parseObjExpr();
-        expect(TC::RSBR);
-        output =
-            atl::make_shared<ArrayAccess>(ArrayAccess(output, arrayIndexExpr));
-      }
-    }
-    return output;
-  }
   if (accept(TC::IDENTIFIER)) {
     const atl::shared_ptr<Identifier> ident = parseIdentifier();
-    atl::shared_ptr<Expr> output = atl::make_shared<VarExpr>(VarExpr(ident));
+    atl::shared_ptr<Expr> output;
+    if (accept(TC::LPAR)) {
+      expect(TC::LPAR);
+      atl::vector<atl::shared_ptr<Expr>> params;
+      if (acceptExpr())
+        params.push_back(parseLitExpr());
+      while (accept(TC::COMMA)) {
+        expect(TC::COMMA);
+        params.push_back(parseLitExpr());
+      }
+
+      expect(TC::RPAR);
+      output = atl::make_shared<FunCall>(FunCall(ident, params));
+    } else {
+      output = atl::make_shared<VarExpr>(VarExpr(ident));
+    }
+
     while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
       if (accept({TC::DOT, TC::PTRDOT})) {
         expect({TC::DOT, TC::PTRDOT});
