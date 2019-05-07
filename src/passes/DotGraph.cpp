@@ -365,6 +365,7 @@ atl::string DotGraph::visit(FunDef &fd) {
   join(funcID, fd.funBlock->accept(*this));
   return funcID;
 }
+atl::string DotGraph::visit(Identifier &i) { return ""; }
 atl::string DotGraph::visit(If &i) {
   const atl::string ifID = "If" + atl::to_string(++nodeCount);
   declare(ifID, "if then else");

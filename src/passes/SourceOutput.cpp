@@ -282,6 +282,7 @@ atl::string SourceOutput::visit(FunDef &fd) {
 
   return output;
 }
+atl::string SourceOutput::visit(Identifier &i) { return i.toString(); }
 atl::string SourceOutput::visit(If &i) {
   atl::string output = "if (";
   output += i.ifCondition->accept(*this);

@@ -26,6 +26,7 @@ class For;
 class FunCall;
 class FunDecl;
 class FunDef;
+class Identifier;
 class If;
 class IntLiteral;
 class MemberAccess;
@@ -81,6 +82,7 @@ public:
   virtual T visit(FunCall &fc) = 0;
   virtual T visit(FunDecl &fd) = 0;
   virtual T visit(FunDef &fd) = 0;
+  virtual T visit(Identifier &i) = 0;
   virtual T visit(If &i) = 0;
   virtual T visit(IntLiteral &il) = 0;
   virtual T visit(MemberAccess &ma) = 0;

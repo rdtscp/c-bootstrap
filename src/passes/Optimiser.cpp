@@ -170,6 +170,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(FunDef &fd) {
   currScope = fd.funBlock->outerScope;
   return fd.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(Identifier &i) { return i.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(If &i) {
   i.ifCondition = atl::static_pointer_cast<Expr>(i.ifCondition->accept(*this));
   i.ifBody = atl::static_pointer_cast<Stmt>(i.ifBody->accept(*this));

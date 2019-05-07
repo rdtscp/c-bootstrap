@@ -202,6 +202,9 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(FunDef &fd) {
   currScope = fd.funBlock->outerScope;
   return atl::make_shared<X86::None>(X86::None());
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(Identifier &i) {
+  return atl::make_shared<X86::None>();
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(If &i) {
   /* Calculate Names for Blocks */
   const atl::string trueBlockName =

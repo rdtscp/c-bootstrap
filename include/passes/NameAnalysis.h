@@ -13,7 +13,7 @@ public:
 
   NameAnalysis(atl::shared_ptr<Program> progAST);
 
-  void error(const atl::string &error);
+  void error(const atl::string &error, const Position &pos = Position());
 
   void printErrors();
 
@@ -52,6 +52,7 @@ private:
   void visit(FunCall &fc) override;
   void visit(FunDecl &fd) override;
   void visit(FunDef &fd) override;
+  void visit(Identifier &i) override;
   void visit(If &i) override;
   void visit(IntLiteral &il) override;
   void visit(MemberAccess &ma) override;
