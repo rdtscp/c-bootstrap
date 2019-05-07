@@ -358,20 +358,19 @@ atl::shared_ptr<Program> Parser::parseProgram() {
 atl::shared_ptr<Identifier> Parser::parseIdentifier() {
   atl::shared_ptr<Identifier> identifier;
   if (acceptOperatorOverload()) {
-    identifier =
-        atl::make_shared<Identifier>(Identifier(parseOperatorOverload()));
+    identifier = createNode<Identifier>(
+        atl::make_shared<Identifier>(Identifier(parseOperatorOverload())));
   } else {
-    identifier =
-        atl::make_shared<Identifier>(Identifier(expect(TC::IDENTIFIER).data));
+    identifier = createNode<Identifier>(
+        atl::make_shared<Identifier>(Identifier(expect(TC::IDENTIFIER).data)));
     while (accept(TC::NAMESPACEACCESS)) {
       expect(TC::NAMESPACEACCESS);
       if (acceptOperatorOverload()) {
-        identifier =
-            atl::make_shared<Identifier>(Identifier(parseOperatorOverload()));
+        identifier = createNode<Identifier>(
+            atl::make_shared<Identifier>(Identifier(parseOperatorOverload())));
         break;
       }
-      identifier = atl::make_shared<Identifier>(
-          Identifier(expect(TC::IDENTIFIER).data, identifier));
+      identifier = parseIdentifier();
     }
   }
   return identifier;
@@ -737,8 +736,7 @@ atl::shared_ptr<Type> Parser::parseType() {
   atl::shared_ptr<Type> type;
   if (acceptStructType()) {
     expect(TC::STRUCT);
-    const atl::shared_ptr<Identifier> structIdentifier =
-        createNode<Identifier>(parseIdentifier());
+    const atl::shared_ptr<Identifier> structIdentifier = parseIdentifier();
     type = createNode<StructType>(
         atl::make_shared<StructType>(StructType(structIdentifier)));
   } else if (acceptClassType()) {
@@ -1186,9 +1184,7 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
           output = createNode<MemberCall>(
               atl::make_shared<MemberCall>(MemberCall(output, memberFunCall)));
         } else {
-          const atl::string ident_str = expect(TC::IDENTIFIER).data;
-          const atl::shared_ptr<Identifier> fieldIdentifier(
-              new Identifier(ident_str));
+          const atl::shared_ptr<Identifier> fieldIdentifier = parseIdentifier();
           output = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
               MemberAccess(output, fieldIdentifier)));
         }
@@ -1204,9 +1200,9 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
   }
   if (accept(TC::THIS)) {
     expect(TC::THIS);
-    atl::shared_ptr<Expr> output =
-        createNode<VarExpr>(atl::make_shared<VarExpr>(
-            VarExpr(atl::make_shared<Identifier>(Identifier("this")))));
+    atl::shared_ptr<Expr> output = createNode<VarExpr>(
+        atl::make_shared<VarExpr>(VarExpr(createNode<Identifier>(
+            atl::make_shared<Identifier>(Identifier("this"))))));
     while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
       if (accept({TC::DOT, TC::PTRDOT})) {
         expect({TC::DOT, TC::PTRDOT});
@@ -1215,9 +1211,7 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
           output = createNode<MemberCall>(
               atl::make_shared<MemberCall>(MemberCall(output, memberFunCall)));
         } else {
-          const atl::string ident_str = expect(TC::IDENTIFIER).data;
-          const atl::shared_ptr<Identifier> fieldIdentifier(
-              new Identifier(ident_str));
+          const atl::shared_ptr<Identifier> fieldIdentifier = parseIdentifier();
           output = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
               MemberAccess(output, fieldIdentifier)));
         }
@@ -1241,9 +1235,7 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
         output = createNode<MemberCall>(
             atl::make_shared<MemberCall>(MemberCall(output, memberFunCall)));
       } else {
-        const atl::string ident_str = expect(TC::IDENTIFIER).data;
-        const atl::shared_ptr<Identifier> fieldIdentifier(
-            new Identifier(ident_str));
+        const atl::shared_ptr<Identifier> fieldIdentifier = parseIdentifier();
         output = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
             MemberAccess(output, fieldIdentifier)));
       }
