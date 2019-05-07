@@ -15,6 +15,8 @@ class Type;
 
 class ASTNode {
 public:
+  Position position;
+
   virtual ~ASTNode() {}
 
   virtual void accept(ASTVisitor<void> &v) = 0;

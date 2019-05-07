@@ -7,9 +7,10 @@ using namespace ACC;
 NameAnalysis::NameAnalysis(atl::shared_ptr<Program> progAST)
     : progAST(progAST), inClassTypeDef(false) {}
 
-void NameAnalysis::error(const atl::string &error) {
+void NameAnalysis::error(const atl::string &error, const Position &pos) {
   errorCount++;
-  errors.push_back(error);
+  errors.push_back("Name Analysis Error at: " + pos.toString() + "\n\t" +
+                   error);
 }
 
 void NameAnalysis::printErrors() {
@@ -141,6 +142,9 @@ void NameAnalysis::visit(FunDef &fd) {
   fd.funBlock->accept(*this);
 
   currScope = fd.outerScope;
+}
+void NameAnalysis::visit(Identifier &i) {
+  // TODO
 }
 void NameAnalysis::visit(If &i) {
   i.ifCondition->accept(*this);

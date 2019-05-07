@@ -13,7 +13,8 @@ public:
 
   TypeAnalysis(atl::shared_ptr<Program> progAST);
 
-  atl::shared_ptr<Type> error(const atl::string &error);
+  atl::shared_ptr<Type> error(const atl::string &error,
+                              const Position &pos = Position());
 
   void printErrors();
 
@@ -50,6 +51,7 @@ private:
   atl::shared_ptr<Type> visit(FunCall &fc) override;
   atl::shared_ptr<Type> visit(FunDecl &fd) override;
   atl::shared_ptr<Type> visit(FunDef &fd) override;
+  atl::shared_ptr<Type> visit(Identifier &i) override;
   atl::shared_ptr<Type> visit(If &i) override;
   atl::shared_ptr<Type> visit(IntLiteral &il) override;
   atl::shared_ptr<Type> visit(MemberAccess &ma) override;

@@ -60,6 +60,7 @@ private:
   atl::shared_ptr<X86::Operand> visit(FunCall &fc) override;
   atl::shared_ptr<X86::Operand> visit(FunDecl &fd) override;
   atl::shared_ptr<X86::Operand> visit(FunDef &fd) override;
+  atl::shared_ptr<X86::Operand> visit(Identifier &i) override;
   atl::shared_ptr<X86::Operand> visit(If &i) override;
   atl::shared_ptr<X86::Operand> visit(IntLiteral &il) override;
   atl::shared_ptr<X86::Operand> visit(MemberAccess &ma) override;

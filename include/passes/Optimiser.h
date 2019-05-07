@@ -50,6 +50,7 @@ private:
   atl::shared_ptr<ASTNode> visit(FunCall &fc) override;
   atl::shared_ptr<ASTNode> visit(FunDecl &fd) override;
   atl::shared_ptr<ASTNode> visit(FunDef &fd) override;
+  atl::shared_ptr<ASTNode> visit(Identifier &i) override;
   atl::shared_ptr<ASTNode> visit(If &i) override;
   atl::shared_ptr<ASTNode> visit(IntLiteral &il) override;
   atl::shared_ptr<ASTNode> visit(MemberAccess &ma) override;

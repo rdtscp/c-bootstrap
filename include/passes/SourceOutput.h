@@ -49,6 +49,7 @@ private:
   atl::string visit(FunCall &fc) override;
   atl::string visit(FunDecl &fd) override;
   atl::string visit(FunDef &fd) override;
+  atl::string visit(Identifier &i) override;
   atl::string visit(If &i) override;
   atl::string visit(IntLiteral &il) override;
   atl::string visit(MemberAccess &ma) override;

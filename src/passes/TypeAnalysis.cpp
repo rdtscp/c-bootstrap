@@ -4,9 +4,10 @@ using namespace ACC;
 TypeAnalysis::TypeAnalysis(atl::shared_ptr<Program> progAST)
     : progAST(progAST) {}
 
-atl::shared_ptr<Type> TypeAnalysis::error(const atl::string &error) {
+atl::shared_ptr<Type> TypeAnalysis::error(const atl::string &error,
+                                          const Position &pos) {
   errorCount++;
-  errors.push_back(error);
+  errors.push_back("Type Error at: " + pos.toString() + "\n\t" + error);
   return nullptr;
 }
 
@@ -29,9 +30,10 @@ atl::shared_ptr<Type> TypeAnalysis::visit(ArrayAccess &aa) {
   atl::shared_ptr<Type> arrayExprType = aa.array->accept(*this);
   atl::shared_ptr<Type> arrayIndex = aa.index->accept(*this);
   if (arrayExprType->astClass() != "ArrayType")
-    return error("Type Error: Attempted to index an expression which was not "
+    return error("Attempted to index an expression which was not "
                  "an array. Was of type: " +
-                 arrayExprType->astClass());
+                     arrayExprType->astClass(),
+                 aa.array->position);
   if (arrayIndex->astClass() != "BaseType")
     return error("Type Error: Attempted to index an array using an expression "
                  "which was not of type int. Was of type: " +
@@ -125,6 +127,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(FunDef &fd) {
   currScope = fd.outerScope;
   return fd.funType;
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(Identifier &i) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(If &i) {
   atl::shared_ptr<Type> condType = i.ifCondition->accept(*this);
 
