@@ -4,9 +4,11 @@ using namespace ACC;
 
 Optimiser::Optimiser(atl::shared_ptr<Program> &progAST) : progAST(progAST) {}
 
-void Optimiser::optimised(const atl::string &error) {
+void Optimiser::optimised(const atl::string &message,
+                          const atl::shared_ptr<ASTNode> &node) {
   optimisationsCount++;
-  optimisations.push_back(error);
+  optimisations.push_back("Optimisation at: " + node->position.toString() +
+                          "\n\t" + message + "\n\t\t");
 }
 
 void Optimiser::printOptimisations() {
@@ -54,7 +56,8 @@ atl::shared_ptr<ASTNode> Optimiser::visit(BinOp &bo) {
     int rhsVal = atl::stoi(rhsIntLiteral->getLiteral());
 
     int newVal;
-    optimised("Converted a BinOp of Two IntLiterals into its Result.");
+    optimised("Converted a BinOp of Two IntLiterals into its Result.",
+              bo.getptr());
     switch (bo.operation) {
     case Op::ADD:
       newVal = lhsVal + rhsVal;
