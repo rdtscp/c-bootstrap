@@ -23,6 +23,7 @@ public:
   atl::shared_ptr<Program> getAST();
 
 private:
+  Position prevPosition;
   SourceToken currToken;
   Lexer &lexer;
   atl::vector<SourceToken> tokenBuffer;
@@ -145,7 +146,7 @@ private:
   atl::shared_ptr<BaseType> tokenToType(const SourceToken::Class &tc);
   template <typename T>
   atl::shared_ptr<T> createNode(atl::shared_ptr<ASTNode> node) {
-    node->position = currToken.position;
+    node->position = prevPosition;
     return node;
   }
 };

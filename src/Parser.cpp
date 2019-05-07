@@ -7,7 +7,8 @@ using namespace ACC;
 using TC = SourceToken::Class;
 
 Parser::Parser(Lexer &lexer)
-    : currToken(TC::INVALID, Position(-1, -1, "")), lexer(lexer) {}
+    : prevPosition(Position()), currToken(TC::INVALID, Position(-1, -1, "")),
+      lexer(lexer) {}
 
 atl::shared_ptr<Program> Parser::getAST() {
   nextToken();
@@ -34,6 +35,7 @@ bool Parser::accept(atl::vector<TC> expected, int offset) {
 SourceToken Parser::expect(TC expected) {
   if (expected == currToken.tokenClass) {
     SourceToken output = currToken;
+    prevPosition = currToken.position;
     nextToken();
     return output;
   }
@@ -46,6 +48,7 @@ SourceToken Parser::expect(atl::vector<TC> expected) {
   for (unsigned int idx = 0; idx < expected.size(); ++idx) {
     if (expected[idx] == currToken.tokenClass) {
       SourceToken output = currToken;
+      prevPosition = currToken.position;
       nextToken();
       return output;
     }
