@@ -4,10 +4,12 @@ using namespace ACC;
 TypeAnalysis::TypeAnalysis(atl::shared_ptr<Program> progAST)
     : progAST(progAST) {}
 
-atl::shared_ptr<Type> TypeAnalysis::error(const atl::string &error,
-                                          const Position &pos) {
+atl::shared_ptr<Type>
+TypeAnalysis::error(const atl::string &error,
+                    const atl::shared_ptr<ASTNode> &node) {
   errorCount++;
-  errors.push_back("Type Error at: " + pos.toString() + "\n\t" + error);
+  errors.push_back("Type Error at: " + node->position.toString() + "\n\t" +
+                   error);
   return nullptr;
 }
 
@@ -29,15 +31,17 @@ atl::shared_ptr<Type> TypeAnalysis::visit(Allocation &a) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(ArrayAccess &aa) {
   atl::shared_ptr<Type> arrayExprType = aa.array->accept(*this);
   atl::shared_ptr<Type> arrayIndex = aa.index->accept(*this);
-  if (arrayExprType->astClass() != "ArrayType")
+  if (arrayExprType->astClass() != "ArrayType" &&
+      arrayExprType->astClass() != "PointerType")
     return error("Attempted to index an expression which was not "
                  "an array. Was of type: " +
                      arrayExprType->astClass(),
-                 aa.array->position);
+                 aa.array);
   if (arrayIndex->astClass() != "BaseType")
-    return error("Type Error: Attempted to index an array using an expression "
+    return error("Attempted to index an array using an expression "
                  "which was not of type int. Was of type: " +
-                 arrayIndex->astClass());
+                     arrayIndex->astClass(),
+                 aa.index);
 
   return atl::static_pointer_cast<ArrayType>(arrayExprType)->type;
 }
@@ -46,7 +50,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(Assign &as) {
   atl::shared_ptr<Type> lhs = as.lhs->accept(*this);
   atl::shared_ptr<Type> rhs = as.rhs->accept(*this);
   if (*lhs != *rhs)
-    return error("Assignation has mismatched types.");
+    return error("Assignation has mismatched types.", as.getptr());
   return nullptr;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(BaseType &bt) { return bt.getptr(); }
@@ -100,13 +104,13 @@ atl::shared_ptr<Type> TypeAnalysis::visit(DoWhile &dw) {
   dw.body->accept(*this);
   atl::shared_ptr<Type> conditionType = dw.condition->accept(*this);
   if (conditionType->astClass() != "BaseType")
-    return error("Type Analysis: Type of DoWhile condition is invalid.");
+    return error("Type of DoWhile condition is invalid.", dw.condition);
   atl::shared_ptr<BaseType> conditionBaseType =
       atl::static_pointer_cast<BaseType>(conditionType);
   if (conditionBaseType->primitiveType != PrimitiveType::INT &&
       conditionBaseType->primitiveType != PrimitiveType::BOOL)
-    return error(
-        "Type Analysis: Type of DoWhile condition is not INT or BOOL.");
+    return error("Type Analysis: Type of DoWhile condition is not INT or BOOL.",
+                 dw.condition);
   return nullptr;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(EnumClassTypeDecl &ectd) {
@@ -132,14 +136,14 @@ atl::shared_ptr<Type> TypeAnalysis::visit(If &i) {
   atl::shared_ptr<Type> condType = i.ifCondition->accept(*this);
 
   if (condType->astClass() != "BaseType")
-    return error("Type Analysis: Type of If condition is invalid.");
+    return error("Type of If condition is invalid.", i.ifCondition);
 
   atl::shared_ptr<BaseType> condBaseType =
       atl::static_pointer_cast<BaseType>(condType);
 
   if (condBaseType->primitiveType != PrimitiveType::INT &&
       condBaseType->primitiveType != PrimitiveType::BOOL)
-    return error("Type Analysis: Type of If condition is not INT or BOOL.");
+    return error("Type of If condition is not INT or BOOL.", i.ifCondition);
 
   i.ifBody->accept(*this);
 
@@ -153,8 +157,9 @@ atl::shared_ptr<Type> TypeAnalysis::visit(IntLiteral &il) {
 atl::shared_ptr<Type> TypeAnalysis::visit(MemberAccess &ma) {
   atl::shared_ptr<Type> objType = ma.object->accept(*this);
   if (objType->astClass() != "StructType")
-    return error("Type Analysis: Attempted to access field on expression "
-                 "that is not a struct");
+    return error("Attempted to access field on expression "
+                 "that is not a struct",
+                 objType);
 
   atl::shared_ptr<StructType> structType =
       atl::static_pointer_cast<StructType>(objType);
@@ -236,7 +241,8 @@ atl::shared_ptr<Type> TypeAnalysis::visit(ValueAt &va) {
   if (exprType->astClass() != "PointerType")
     return error("Attempted to dereference variable that wasn't a pointer. Was "
                  "of type: " +
-                 exprType->astClass());
+                     exprType->astClass(),
+                 va.derefExpr);
   return atl::static_pointer_cast<PointerType>(exprType)->pointedType;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(VarDecl &vd) {
@@ -250,12 +256,13 @@ atl::shared_ptr<Type> TypeAnalysis::visit(VarExpr &ve) {
 atl::shared_ptr<Type> TypeAnalysis::visit(While &w) {
   atl::shared_ptr<Type> conditionType = w.condition->accept(*this);
   if (conditionType->astClass() != "BaseType")
-    return error("Type Analysis: Type of While condition is invalid.");
+    return error("Type of While condition is invalid.", w.condition);
   atl::shared_ptr<BaseType> conditionBaseType =
       atl::static_pointer_cast<BaseType>(conditionType);
   if (conditionBaseType->primitiveType != PrimitiveType::INT &&
       conditionBaseType->primitiveType != PrimitiveType::BOOL)
-    return error("Type Analysis: Type of While condition is not INT or BOOl.");
+    return error("Type Analysis: Type of While condition is not INT or BOOl.",
+                 w.condition);
   w.body->accept(*this);
   return nullptr;
 }

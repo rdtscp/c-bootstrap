@@ -7,10 +7,11 @@ using namespace ACC;
 NameAnalysis::NameAnalysis(atl::shared_ptr<Program> progAST)
     : progAST(progAST), inClassTypeDef(false) {}
 
-void NameAnalysis::error(const atl::string &error, const Position &pos) {
+void NameAnalysis::error(const atl::string &error,
+                         const atl::shared_ptr<ASTNode> &node) {
   errorCount++;
-  errors.push_back("Name Analysis Error at: " + pos.toString() + "\n\t" +
-                   error);
+  errors.push_back("Name Analysis Error at: " + node->position.toString() +
+                   "\n\t" + error);
 }
 
 void NameAnalysis::printErrors() {
@@ -55,13 +56,15 @@ void NameAnalysis::visit(ClassTypeDecl &ctd) {
   if (currScope->duplicateDeclaration(ctd.getptr()))
     return error("Attempted to declare a Class with an identifier that is "
                  "already in use: " +
-                 ctd.getIdentifier()->toString());
+                     ctd.getIdentifier()->toString(),
+                 ctd.getptr());
 }
 void NameAnalysis::visit(ClassTypeDef &ctd) {
   if (currScope->duplicateDeclaration(ctd.getptr()))
     return error("Attempted to declare a Class with an identifier that is "
                  "already in use: " +
-                 ctd.getIdentifier()->toString());
+                     ctd.getIdentifier()->toString(),
+                 ctd.getptr());
   currScope->insertDecl(ctd.getptr());
 
   ctd.outerScope = currScope;
@@ -194,7 +197,8 @@ void NameAnalysis::visit(StructTypeDecl &std) {
   if (currScope->duplicateDeclarationLocal(std.getptr()))
     return error("Attempted to declare a Struct with an identifier that is "
                  "already in use: " +
-                 std.getIdentifier()->toString());
+                     std.getIdentifier()->toString(),
+                 std.getptr());
 
   currScope->insertDecl(std.getptr());
 
@@ -205,8 +209,9 @@ void NameAnalysis::visit(StructTypeDecl &std) {
   for (unsigned int idx = 0; idx < std.varDecls.size(); ++idx) {
     if (currScope->duplicateDeclarationLocal(std.varDecls[idx]))
       return error("Struct " + std.getIdentifier()->toString() +
-                   " contained multiple fields with the same identifier: " +
-                   std.varDecls[idx]->getIdentifier()->toString());
+                       " contained multiple fields with the same identifier: " +
+                       std.varDecls[idx]->getIdentifier()->toString(),
+                   atl::static_pointer_cast<Decl>(std.varDecls[idx]));
     std.varDecls[idx]->accept(*this);
   }
 
@@ -227,14 +232,16 @@ void NameAnalysis::visit(VarDecl &vd) {
   if (!inClassTypeDef && currScope->duplicateDeclarationLocal(vd.getptr()))
     return error("Attempted to declare a Variable with an identifier that is "
                  "already in use: " +
-                 vd.getIdentifier()->toString());
+                     vd.getIdentifier()->toString(),
+                 atl::static_pointer_cast<Decl>(vd.getptr()));
   currScope->insertDecl(vd.getptr());
 }
 void NameAnalysis::visit(VarDef &vd) {
   if (!inClassTypeDef && currScope->duplicateDeclarationLocal(vd.getptr()))
     return error("Attempted to define a Variable with an identifier that is "
                  "already in use: " +
-                 vd.getIdentifier()->toString());
+                     vd.getIdentifier()->toString(),
+                 atl::static_pointer_cast<Decl>(vd.getptr()));
   currScope->insertDecl(vd.getptr());
 }
 void NameAnalysis::visit(VarExpr &ve) {
@@ -242,7 +249,8 @@ void NameAnalysis::visit(VarExpr &ve) {
       currScope->resolveVarExpr(ve.varIdentifier);
   if (varDecl == nullptr)
     return error("Attempted to reference undeclared variable: " +
-                 ve.varIdentifier->toString());
+                     ve.varIdentifier->toString(),
+                 ve.getptr());
   ve.varDecl = varDecl;
 }
 void NameAnalysis::visit(While &w) {
