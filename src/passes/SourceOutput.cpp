@@ -302,6 +302,7 @@ atl::string SourceOutput::visit(Namespace &n) {
 
   return output;
 }
+atl::string SourceOutput::visit(Nullptr &n) { return "nullptr"; }
 atl::string SourceOutput::visit(ParenthExpr &pe) {
   atl::string output = "(";
   output += pe.innerExpr->accept(*this);

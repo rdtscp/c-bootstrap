@@ -180,6 +180,10 @@ atl::shared_ptr<Type> TypeAnalysis::visit(Namespace &n) {
     n.namespaceDecls[i]->accept(*this);
   return nullptr;
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(Nullptr &n) {
+  return atl::make_shared<PointerType>(
+      PointerType(atl::make_shared<BaseType>(BaseType((PrimitiveType::VOID)))));
+}
 atl::shared_ptr<Type> TypeAnalysis::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);
 }
