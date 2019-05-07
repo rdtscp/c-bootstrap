@@ -247,8 +247,12 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(MemberCall &mc) {
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Namespace &n) {
+  // const unsigned int numDecls = n.namespaceDecls.size();
   return nullptr;
-  // return n.namespaceBlock->accept(*this);
+}
+
+atl::shared_ptr<X86::Operand> GenerateX86::visit(Nullptr &n) {
+  return genIntValue(0);
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);

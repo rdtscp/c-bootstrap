@@ -53,6 +53,7 @@ private:
   atl::string visit(MemberAccess &ma) override;
   atl::string visit(MemberCall &mc) override;
   atl::string visit(Namespace &n) override;
+  atl::string visit(Nullptr &n) override;
   atl::string visit(ParenthExpr &pe) override;
   atl::string visit(PointerType &pt) override;
   atl::string visit(PrefixOp &pi) override;

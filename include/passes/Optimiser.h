@@ -55,6 +55,7 @@ private:
   atl::shared_ptr<ASTNode> visit(MemberAccess &ma) override;
   atl::shared_ptr<ASTNode> visit(MemberCall &mc) override;
   atl::shared_ptr<ASTNode> visit(Namespace &n) override;
+  atl::shared_ptr<ASTNode> visit(Nullptr &n) override;
   atl::shared_ptr<ASTNode> visit(ParenthExpr &pe) override;
   atl::shared_ptr<ASTNode> visit(PointerType &pt) override;
   atl::shared_ptr<ASTNode> visit(PrefixOp &pi) override;
