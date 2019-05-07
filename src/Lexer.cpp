@@ -238,6 +238,8 @@ SourceToken Lexer::nextToken() {
 
         if (lexResult.first)
           return SourceToken(TC::PROTECTED, scanner.getPosition());
+      } else {
+        literal += c;
       }
     }
     // Check for PUBLIC Token.
@@ -287,6 +289,8 @@ SourceToken Lexer::nextToken() {
 
         if (lexResult.first)
           return SourceToken(TC::STRUCT, scanner.getPosition());
+      } else {
+        literal += c;
       }
     }
     // Check for TEMPLATE
@@ -312,6 +316,8 @@ SourceToken Lexer::nextToken() {
 
         if (lexResult.first)
           return SourceToken(TC::THROW, scanner.getPosition());
+      } else {
+        literal += c;
       }
     }
     // Check for TRUE Token.
