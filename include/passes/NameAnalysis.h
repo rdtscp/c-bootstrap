@@ -57,6 +57,7 @@ private:
   void visit(MemberAccess &ma) override;
   void visit(MemberCall &mc) override;
   void visit(Namespace &n) override;
+  void visit(Nullptr &n) override;
   void visit(ParenthExpr &pe) override;
   void visit(PointerType &pt) override;
   void visit(PrefixOp &po) override;
