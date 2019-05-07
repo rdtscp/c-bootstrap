@@ -760,7 +760,7 @@ atl::shared_ptr<Type> Parser::parseType() {
   if (accept(TC::ASTERIX)) {
     while (accept(TC::ASTERIX)) {
       expect(TC::ASTERIX);
-      type = atl::shared_ptr<PointerType>(new PointerType(type));
+      type = createNode<PointerType>(new PointerType(type));
     }
   } else if (accept(TC::REF)) {
     expect(TC::REF);
