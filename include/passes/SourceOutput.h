@@ -37,6 +37,7 @@ private:
   atl::string visit(CharLiteral &cl) override;
   atl::string visit(ClassType &ct) override;
   atl::string visit(ClassTypeDecl &ctd) override;
+  atl::string visit(ClassTypeDef &ctd) override;
   atl::string visit(ConstructorDecl &cd) override;
   atl::string visit(ConstructorDef &cd) override;
   atl::string visit(Deletion &d) override;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Decl.h"
-
 #include "FunDecl.h"
 #include "Stmt.h"
 #include "Type.h"

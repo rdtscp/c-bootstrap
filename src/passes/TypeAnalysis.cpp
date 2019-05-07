@@ -80,6 +80,9 @@ atl::shared_ptr<Type> TypeAnalysis::visit(ClassType &ct) {
 atl::shared_ptr<Type> TypeAnalysis::visit(ClassTypeDecl &ctd) {
   return ctd.classType;
 }
+atl::shared_ptr<Type> TypeAnalysis::visit(ClassTypeDef &ctd) {
+  return ctd.classType;
+}
 atl::shared_ptr<Type> TypeAnalysis::visit(ConstructorDecl &cd) {
   return nullptr;
 }

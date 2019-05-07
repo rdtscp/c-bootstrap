@@ -189,6 +189,11 @@ atl::string DotGraph::visit(ClassType &ct) {
 atl::string DotGraph::visit(ClassTypeDecl &ctd) {
   const atl::string classID = "Class" + atl::to_string(++nodeCount);
   declare(classID, ctd.getIdentifier()->toString());
+  return classID;
+}
+atl::string DotGraph::visit(ClassTypeDef &ctd) {
+  const atl::string classID = "Class" + atl::to_string(++nodeCount);
+  declare(classID, ctd.getIdentifier()->toString());
 
   const atl::string publicDecls = "public" + atl::to_string(++nodeCount);
   const atl::string privateDecls = "private" + atl::to_string(++nodeCount);

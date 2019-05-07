@@ -140,6 +140,10 @@ atl::string SourceOutput::visit(ClassType &ct) {
   return ct.identifier->toString();
 }
 atl::string SourceOutput::visit(ClassTypeDecl &ctd) {
+  atl::string output = ctd.getIdentifier()->toString() + ";";
+  return output;
+}
+atl::string SourceOutput::visit(ClassTypeDef &ctd) {
   atl::string output = ctd.getIdentifier()->toString() + " {";
   for (unsigned int i = 0; i < ctd.classDecls.size(); ++i) {
     output += "\n";

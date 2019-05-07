@@ -123,6 +123,9 @@ atl::shared_ptr<ASTNode> Optimiser::visit(ClassType &ct) { return ct.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(ClassTypeDecl &ctd) {
   return ctd.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(ClassTypeDef &ctd) {
+  return ctd.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(ConstructorDecl &cd) {
   return cd.getptr();
 }

@@ -1,5 +1,7 @@
 #include "ast/ClassType.h"
 
+#include "ast/VarDecl.h"
+
 using namespace ACC;
 
 ClassType::ClassType(const atl::shared_ptr<Identifier> &p_identifier)
