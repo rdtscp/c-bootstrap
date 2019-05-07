@@ -163,6 +163,8 @@ void NameAnalysis::visit(Namespace &n) {
 
   currScope = n.outerScope;
 }
+
+void NameAnalysis::visit(Nullptr &n) {}
 void NameAnalysis::visit(ParenthExpr &pe) { pe.innerExpr->accept(*this); }
 void NameAnalysis::visit(PointerType &pt) {}
 void NameAnalysis::visit(PrefixOp &po) { po.variable->accept(*this); }

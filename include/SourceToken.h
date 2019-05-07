@@ -67,6 +67,7 @@ public:
     STATIC,     // "static"
     TEMPLATE,   // "template"
     TYPENAME,   // "typename"
+    NULLPTR,    // "nullptr"
 
     // operators overrides
     OPASSIGN, // "operator="

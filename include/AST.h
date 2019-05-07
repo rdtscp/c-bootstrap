@@ -34,6 +34,7 @@
 #include "ast/MemberAccess.h"
 #include "ast/MemberCall.h"
 #include "ast/Namespace.h"
+#include "ast/Nullptr.h"
 #include "ast/Op.h"
 #include "ast/ParenthExpr.h"
 #include "ast/PointerType.h"

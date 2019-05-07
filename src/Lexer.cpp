@@ -176,6 +176,14 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::NEW, scanner.getPosition());
     }
+    // Check for NULLPTR Token.
+    else if (c == 'n' && scanner.peek() == 'u') {
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("nullptr");
+      literal = lexResult.second;
+
+      if (lexResult.first)
+        return SourceToken(TC::NULLPTR, scanner.getPosition());
+    }
     // Check for operator overload Tokens.
     else if (c == 'o' && scanner.peek() == 'p') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("operator");

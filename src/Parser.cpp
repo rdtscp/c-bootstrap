@@ -1258,6 +1258,10 @@ atl::shared_ptr<Expr> Parser::parseLitExpr() {
     expect(TC::FALSE_VAL);
     return atl::make_shared<BoolLiteral>(BoolLiteral("false"));
   }
+  if (accept(TC::NULLPTR)) {
+    expect(TC::NULLPTR);
+    return atl::make_shared<Nullptr>(Nullptr());
+  }
   if (accept(TC::LPAR) && (!acceptType(1) || accept(TC::IDENTIFIER, 1))) {
     expect(TC::LPAR);
     atl::shared_ptr<Expr> innerExpr = parseExpr();
