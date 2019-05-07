@@ -13,7 +13,8 @@ public:
 
   Optimiser(atl::shared_ptr<Program> &progAST);
 
-  void optimised(const atl::string &error);
+  void optimised(const atl::string &message,
+                 const atl::shared_ptr<ASTNode> &node);
 
   void printOptimisations();
 
