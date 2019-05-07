@@ -140,27 +140,34 @@ atl::string SourceOutput::visit(ClassType &ct) {
   return ct.identifier->toString();
 }
 atl::string SourceOutput::visit(ClassTypeDecl &ctd) {
-  atl::string output = ctd.getIdentifier()->toString() + ";";
+  atl::string output = "class " + ctd.getIdentifier()->accept(*this) + ";";
   return output;
 }
 atl::string SourceOutput::visit(ClassTypeDef &ctd) {
-  atl::string output = ctd.getIdentifier()->toString() + " {";
+  atl::string output = "class " + ctd.getIdentifier()->accept(*this) + " {";
+  // Print Public:
+  output += "public:\n";
   for (unsigned int i = 0; i < ctd.classDecls.size(); ++i) {
     output += "\n";
-    switch (ctd.classDecls[i]->visibility) {
-    case ClassTypeDecl::Visibility::PUBLIC:
-      output += "public:\n";
-      break;
-    case ClassTypeDecl::Visibility::PRIVATE:
-      output += "private:\n";
-      break;
-    case ClassTypeDecl::Visibility::PROTECTED:
-      output += "protected:\n";
-      break;
-    case ClassTypeDecl::Visibility::NONE:
-      break;
+    if (ctd.classDecls[i]->visibility == ClassTypeDecl::Visibility::PUBLIC) {
+      output += ctd.classDecls[i]->accept(*this);
     }
-    output += ctd.classDecls[i]->accept(*this);
+  }
+  // Print Private:
+  output += "private:\n";
+  for (unsigned int i = 0; i < ctd.classDecls.size(); ++i) {
+    output += "\n";
+    if (ctd.classDecls[i]->visibility == ClassTypeDecl::Visibility::PRIVATE) {
+      output += ctd.classDecls[i]->accept(*this);
+    }
+  }
+  // Print Protected
+  output += "protected:\n";
+  for (unsigned int i = 0; i < ctd.classDecls.size(); ++i) {
+    output += "\n";
+    if (ctd.classDecls[i]->visibility == ClassTypeDecl::Visibility::PROTECTED) {
+      output += ctd.classDecls[i]->accept(*this);
+    }
   }
   output += "\n};";
   return output;
@@ -169,8 +176,9 @@ atl::string SourceOutput::visit(ConstructorDecl &cd) {
   atl::string output = cd.classType->accept(*this);
   output += "(";
   for (unsigned int i = 0; i < cd.constructorParams.size(); ++i) {
-    atl::string currParam = cd.constructorParams[i]->type->accept(*this) + " " +
-                            cd.constructorParams[i]->getIdentifier();
+    atl::string currParam =
+        cd.constructorParams[i]->type->accept(*this) + " " +
+        cd.constructorParams[i]->getIdentifier()->accept(*this);
     if (i != (cd.constructorParams.size() - 1))
       currParam += ", ";
     output += currParam;
@@ -183,8 +191,9 @@ atl::string SourceOutput::visit(ConstructorDef &cd) {
   atl::string output = cd.classType->accept(*this);
   output += "(";
   for (unsigned int i = 0; i < cd.constructorParams.size(); ++i) {
-    atl::string currParam = cd.constructorParams[i]->type->accept(*this) + " " +
-                            cd.constructorParams[i]->getIdentifier();
+    atl::string currParam =
+        cd.constructorParams[i]->type->accept(*this) + " " +
+        cd.constructorParams[i]->getIdentifier()->accept(*this);
     if (i != (cd.constructorParams.size() - 1))
       currParam += ", ";
     output += currParam;
@@ -258,7 +267,7 @@ atl::string SourceOutput::visit(FunDecl &fd) {
   output += fd.getIdentifier()->toString() + "(";
   for (unsigned int i = 0; i < fd.funParams.size(); ++i) {
     atl::string currParam = fd.funParams[i]->type->accept(*this) + " " +
-                            fd.funParams[i]->getIdentifier();
+                            fd.funParams[i]->getIdentifier()->accept(*this);
     if (i != (fd.funParams.size() - 1))
       currParam += ", ";
     output += currParam;
@@ -272,7 +281,7 @@ atl::string SourceOutput::visit(FunDef &fd) {
   output += fd.getIdentifier()->toString() + "(";
   for (unsigned int i = 0; i < fd.funParams.size(); ++i) {
     atl::string currParam = fd.funParams[i]->type->accept(*this) + " " +
-                            fd.funParams[i]->getIdentifier();
+                            fd.funParams[i]->getIdentifier()->accept(*this);
     if (i != (fd.funParams.size() - 1))
       currParam += ", ";
     output += currParam;
@@ -299,7 +308,13 @@ atl::string SourceOutput::visit(MemberAccess &ma) { return ""; }
 atl::string SourceOutput::visit(MemberCall &mc) { return ""; }
 atl::string SourceOutput::visit(Namespace &n) {
   atl::string output = "namespace ";
-  output += n.getIdentifier();
+  output += n.getIdentifier()->accept(*this);
+  output += "{\n";
+  const unsigned int numDecls = n.namespaceDecls.size();
+  for (unsigned int idx = 0; idx < numDecls; ++idx) {
+    output += n.namespaceDecls[idx]->accept(*this) + "\n";
+  }
+  output += "}";
 
   return output;
 }
@@ -391,13 +406,13 @@ atl::string SourceOutput::visit(ValueAt &va) {
 }
 atl::string SourceOutput::visit(VarDecl &vd) {
   atl::string output = vd.type->accept(*this) + " ";
-  output += vd.getIdentifier()->toString();
+  output += vd.getIdentifier()->accept(*this);
   output += ";";
   return output;
 }
 atl::string SourceOutput::visit(VarDef &vd) {
   atl::string output = vd.type->accept(*this) + " ";
-  output += vd.getIdentifier()->toString() + " = ";
+  output += vd.getIdentifier()->accept(*this) + " = ";
   output += vd.varValue->accept(*this);
   output += ";";
   return output;
