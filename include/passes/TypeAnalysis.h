@@ -14,7 +14,7 @@ public:
   TypeAnalysis(atl::shared_ptr<Program> progAST);
 
   atl::shared_ptr<Type> error(const atl::string &error,
-                              const Position &pos = Position());
+                              const atl::shared_ptr<ASTNode> &node);
 
   void printErrors();
 

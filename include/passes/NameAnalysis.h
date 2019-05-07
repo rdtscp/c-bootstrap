@@ -13,7 +13,7 @@ public:
 
   NameAnalysis(atl::shared_ptr<Program> progAST);
 
-  void error(const atl::string &error, const Position &pos = Position());
+  void error(const atl::string &error, const atl::shared_ptr<ASTNode> &node);
 
   void printErrors();
 
