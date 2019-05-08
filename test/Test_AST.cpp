@@ -74,9 +74,11 @@ TEST(ASTTest, PointerTypeComparisons) {
 }
 
 TEST(ASTTest, StructTypeComparisons) {
-  StructType structType(atl::make_shared<Identifier>(Identifier("struct1")));
-  StructType structType2(atl::make_shared<Identifier>(Identifier("struct2")));
-  StructType structType3(atl::make_shared<Identifier>(Identifier("struct2")));
+  StructType structType(atl::shared_ptr<Identifier>(new Identifier("struct1")));
+  StructType structType2(
+      atl::shared_ptr<Identifier>(new Identifier("struct2")));
+  StructType structType3(
+      atl::shared_ptr<Identifier>(new Identifier("struct2")));
 
   ASSERT_FALSE(structType == structType2);
 
@@ -84,12 +86,12 @@ TEST(ASTTest, StructTypeComparisons) {
 }
 
 TEST(ASTTest, VarDeclComparisons) {
-  VarDecl vd1(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-              atl::make_shared<Identifier>(Identifier("var1")));
-  VarDecl vd2(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-              atl::make_shared<Identifier>(Identifier("var2")));
-  VarDecl vd3(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-              atl::make_shared<Identifier>(Identifier("var2")));
+  VarDecl vd1(atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+              atl::shared_ptr<Identifier>(new Identifier("var1")));
+  VarDecl vd2(atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+              atl::shared_ptr<Identifier>(new Identifier("var2")));
+  VarDecl vd3(atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
+              atl::shared_ptr<Identifier>(new Identifier("var2")));
 
   ASSERT_FALSE(vd1 == vd2);
   ASSERT_TRUE(vd2 == vd3);
@@ -334,13 +336,13 @@ TEST(ASTTest, Scope_resolveFunCall_innerScope) {
   currScope->outerScope = outerScope;
 
   /* Store a function in the current scope. */
-  const atl::shared_ptr<FunDecl> funDeclOne(
-      new FunDecl(atl::set<FunDecl::FunModifiers>(),
-                  atl::make_shared<Identifier>(Identifier("myFunc")),
-                  {atl::make_shared<VarDecl>(VarDecl(
-                      atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-                      atl::make_shared<Identifier>(Identifier("paramOne"))))},
-                  atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID))));
+  const atl::shared_ptr<FunDecl> funDeclOne(new FunDecl(
+      atl::set<FunDecl::FunModifiers>(),
+      atl::shared_ptr<Identifier>(new Identifier("myFunc")),
+      {atl::make_shared<VarDecl>(
+          VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
+                  atl::shared_ptr<Identifier>(new Identifier("paramOne"))))},
+      atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID))));
 
   currScope->insertDecl(funDeclOne);
 
@@ -355,10 +357,10 @@ TEST(ASTTest, ClassTypeDef_resolveVarExpr) {
   /* Store a class with a member variable in the current scope. */
   const atl::shared_ptr<ClassTypeDef> classTypeDef(new ClassTypeDef(
       atl::make_shared<ClassType>(
-          ClassType(atl::make_shared<Identifier>(Identifier("MyClass")))),
+          ClassType(atl::shared_ptr<Identifier>(new Identifier("MyClass")))),
       {atl::make_shared<VarDecl>(
           VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                  atl::make_shared<Identifier>(Identifier("memberVar"))))}));
+                  atl::shared_ptr<Identifier>(new Identifier("memberVar"))))}));
 
   /* Resolve it */
   const atl::shared_ptr<Identifier> searchIdent(new Identifier("memberVar"));

@@ -278,7 +278,7 @@ atl::string SourceOutput::visit(FunDecl &fd) {
 }
 atl::string SourceOutput::visit(FunDef &fd) {
   atl::string output = fd.funType->accept(*this) + " ";
-  output += fd.getIdentifier()->toString() + "(";
+  output += fd.getIdentifier()->accept(*this) + "(";
   for (unsigned int i = 0; i < fd.funParams.size(); ++i) {
     atl::string currParam = fd.funParams[i]->type->accept(*this) + " " +
                             fd.funParams[i]->getIdentifier()->accept(*this);
