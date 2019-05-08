@@ -76,11 +76,12 @@ atl::shared_ptr<Type> TypeAnalysis::visit(CharLiteral &cl) {
   return atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR));
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(ClassType &ct) {
-  // atl::shared_ptr<Decl> findDecl = currScope->find(ct.getptr());
-  // if (findDecl->astClass() != "ClassTypeDecl")
-  //   return error("Attempted to use a ClassType that was not declared.");
+  atl::shared_ptr<Decl> findDecl = currScope->resolveClassType(ct.getptr());
+  if (findDecl == nullptr || findDecl->astClass() != "ClassTypeDef")
+    return error("Attempted to use a ClassType that was not defined: " +
+                     ct.identifier->toString(),
+                 ct.getptr());
 
-  // ct.typeDefinition = atl::static_pointer_cast<ClassTypeDecl>(findDecl);
   return ct.getptr();
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(ClassTypeDecl &ctd) {
@@ -251,7 +252,7 @@ atl::shared_ptr<Type> TypeAnalysis::visit(VarDecl &vd) {
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(VarDef &vd) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(VarExpr &ve) {
-  return ve.varDecl->type->accept(*this);
+  return ve.varDecl->type;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(While &w) {
   atl::shared_ptr<Type> conditionType = w.condition->accept(*this);
