@@ -1,6 +1,7 @@
 #include "atl/include/ifstream.h"
 #include "atl/include/vector.h"
 
+#include "Error.h"
 #include "Scanner.h"
 
 using namespace ACC;
@@ -11,6 +12,8 @@ Scanner::Scanner(const SourceHandler &src) : column(1), line(1) {
     atl::ifstream fileStream(src.value);
     if (fileStream.good())
       file = fileStream.readIntoString();
+    else
+      throw ACC::Error("Scanner: File does not exist: " + src.value);
   } else if (src.type == SourceHandler::Type::RAW) {
     file = src.value;
   }
