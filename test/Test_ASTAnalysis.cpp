@@ -13,7 +13,8 @@
 using namespace ACC;
 
 // atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_ASTAnalysis/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
+// "test/tests/Test_ASTAnalysis/";
 atl::string test_prefix = "../../test/tests/Test_ASTAnalysis/";
 
 TEST(Test_ASTAnalysis, AmbiguousIdentifier) {
@@ -57,7 +58,11 @@ TEST(Test_ASTAnalysis, DuplicateFunction) {
 
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
-  // ASSERT_NE(0, nameAnalysis.errorCount);
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+
+  TypeAnalysis typeAnalysis(progAST);
+  typeAnalysis.run();
+  ASSERT_NE(0, typeAnalysis.errorCount);
 }
 
 TEST(Test_ASTAnalysis, DuplicateVariable) {
@@ -103,6 +108,25 @@ TEST(Test_ASTAnalysis, NoMainFunc) {
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
+}
+
+TEST(Test_ASTAnalysis, StringClass) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "StringClass/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  NameAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+
+  TypeAnalysis typeAnalysis(progAST);
+  typeAnalysis.run();
+  // ASSERT_EQ(0, typeAnalysis.errorCount);
 }
 
 // The fixture for testing class Project1. From google test primer.
