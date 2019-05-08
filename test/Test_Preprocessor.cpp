@@ -7,9 +7,10 @@
 
 using namespace ACC;
 
-atl::string test_prefix = "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
-                          "test/tests/PreprocessorTest/";
-// atl::string test_prefix = "../../test/tests/PreprocessorTest/";
+// atl::string test_prefix =
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
+// "test/tests/PreprocessorTest/";
+atl::string test_prefix = "../../test/tests/PreprocessorTest/";
 
 TEST(PreprocessorTest, TestConstruction) {
   const SourceHandler src(SourceHandler::Type::RAW,
