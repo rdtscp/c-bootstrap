@@ -16,13 +16,13 @@ TEST(PreprocessorTest, TestConstruction) {
       SourceHandler(SourceHandler::Type::RAW, "foo\n"), {});
   const SourceHandler pp_src = preprocessor.getSource();
   ASSERT_EQ(pp_src.type, SourceHandler::Type::RAW);
-  ASSERT_EQ(pp_src.value, "# 1 \"RAW\"\nfoo\n");
+  ASSERT_EQ(pp_src.value, "\n# 1 \"RAW\"foo\n");
 }
 
 TEST(PreprocessorTest, TestFormatIncludeDirective) {
   const atl::string formattedInclude =
       ACC::Preprocessor::formatIncludeDirective("test/tests/scanner/header.h");
-  ASSERT_EQ(formattedInclude, "# 1 \"test/tests/scanner/header.h\"");
+  ASSERT_EQ(formattedInclude, "\n# 1 \"test/tests/scanner/header.h\"");
 }
 
 TEST(PreprocessorTest, TestFileExists) {
@@ -38,9 +38,9 @@ TEST(PreprocessorTest, TestInclude) {
 
   atl::string actual_val = pp_src.value.c_str();
   atl::string expect_val =
-      "# 1 \"" + test_prefix + +"preprocessor/test1.cpp\"\n# 1 \"" +
+      "\n# 1 \"" + test_prefix + +"preprocessor/test1.cpp\"\n# 1 \"" +
       test_prefix +
-      +"preprocessor/header1.h\"\nint header1() { return 1; }\n# 2 \"" +
+      +"preprocessor/header1.h\"\nint header1() { return 1; }\n\n# 2 \"" +
       test_prefix + +"preprocessor/test1.cpp\"\n\nint test1() { return 1; }\n";
 
   ASSERT_EQ(actual_val, expect_val);
@@ -54,9 +54,9 @@ TEST(PreprocessorTest, TestIncludeChildDir) {
 
   atl::string actual_val = pp_src.value.c_str();
   atl::string expect_val =
-      "# 1 \"" + test_prefix + +"preprocessor/test2.cpp\"\n# 1 \"" +
+      "\n# 1 \"" + test_prefix + +"preprocessor/test2.cpp\"\n# 1 \"" +
       test_prefix +
-      +"preprocessor/other_dir/header2.h\"\nint header2() { return 1; }\n# 2 "
+      +"preprocessor/other_dir/header2.h\"\nint header2() { return 1; }\n\n# 2 "
        "\"" +
       test_prefix + +"preprocessor/test2.cpp\"\n\nint test2() { return 1; }\n";
 
@@ -71,13 +71,13 @@ TEST(PreprocessorTest, TestIncludeParentDir) {
 
   atl::string actual_val = pp_src.value.c_str();
   atl::string expect_val =
-      "# 1 \"" + test_prefix + +"preprocessor/other_dir/test3.cpp\"\n# 1 \"" +
+      "\n# 1 \"" + test_prefix + "preprocessor/other_dir/test3.cpp\"\n# 1 \"" +
       test_prefix +
-      +"preprocessor/header3.h\"\nint header3() { return 1; }\n# 2 \"" +
+      +"preprocessor/header3.h\"\nint header3() { return 1; }\n\n# 2 \"" +
       test_prefix +
       +"preprocessor/other_dir/test3.cpp\"\n\nint test3() { return 1; }\n";
 
-  ASSERT_EQ(actual_val, expect_val);
+  ASSERT_EQ(std::string(actual_val.c_str()), std::string(expect_val.c_str()));
 }
 
 TEST(PreprocessorTest, TestPragmaOnce) {
@@ -88,9 +88,9 @@ TEST(PreprocessorTest, TestPragmaOnce) {
 
   const atl::string actual_val = pp_src.value;
   const atl::string expect_val =
-      "# 1 \"" + test_prefix + "preprocessor/test4.cpp\"\n# 1 \"" +
+      "\n# 1 \"" + test_prefix + "preprocessor/test4.cpp\"\n# 1 \"" +
       test_prefix +
-      "preprocessor/header4.h\"\n\nint header4() { return 1; }\n# 2 \"" +
+      "preprocessor/header4.h\"\n\nint header4() { return 1; }\n\n# 2 \"" +
       test_prefix + "preprocessor/test4.cpp\"\n\nint test4() { return 1; }\n";
 
   ASSERT_EQ(actual_val, expect_val);
