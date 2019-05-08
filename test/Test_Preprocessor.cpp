@@ -47,10 +47,6 @@ TEST(PreprocessorTest, TestFileExists) {
       Preprocessor::fileExists(test_prefix + "TestFileExists/test.cpp"));
   ASSERT_TRUE(
       Preprocessor::fileExists(test_prefix + "TestFileExists/header.h"));
-  ASSERT_FALSE(
-      Preprocessor::fileExists(test_prefix + "TestFileExists/test2.cpp"));
-  ASSERT_FALSE(
-      Preprocessor::fileExists(test_prefix + "TestFileExists/header2.h"));
 }
 
 TEST(PreprocessorTest, TestInclude) {
