@@ -45,7 +45,9 @@ Preprocessor::Preprocessor(const SourceHandler &p_src,
       parentPreprocessor(p_parentPreprocessor), scanner(new PPScanner(src)) {}
 
 SourceHandler Preprocessor::getSource() {
-  atl::string output = formatIncludeDirective(src.getFilepath()) + "\n";
+  atl::string output = formatIncludeDirective(src.getFilepath());
+  if (parentPreprocessor != nullptr)
+    output += "\n";
   char c;
   do {
     c = scanner->next();
