@@ -8,11 +8,11 @@ target_link_libraries(runTest_AST libgtest libgmock AST DotGraph GenerateX86 Nam
 add_test(ASTUnitTests runTest_AST)
 
 add_executable(runTest_ASTAnalysis Test_ASTAnalysis.cpp  main.cpp)
-target_link_libraries(runTest_ASTAnalysis libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis Preprocessor)
+target_link_libraries(runTest_ASTAnalysis libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser Preprocessor TypeAnalysis)
 add_test(ASTAnalysisUnitTests runTest_ASTAnalysis)
 
 add_executable(runTest_CodeGeneration Test_CodeGeneration.cpp  main.cpp)
-target_link_libraries(runTest_CodeGeneration libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis)
+target_link_libraries(runTest_CodeGeneration libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser Preprocessor TypeAnalysis)
 add_test(CodeGenerationUnitTests runTest_CodeGeneration)
 
 add_executable(runTest_FileSystem Test_FileSystem.cpp  main.cpp)
@@ -20,7 +20,7 @@ target_link_libraries(runTest_FileSystem libgtest libgmock)
 add_test(FileSystemUnitTests runTest_FileSystem)
 
 add_executable(runTest_Lexer Test_Lexer.cpp main.cpp)
-target_link_libraries(runTest_Lexer libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis)
+target_link_libraries(runTest_Lexer libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser Preprocessor TypeAnalysis)
 add_test(LexerUnitTests runTest_Lexer)
 
 add_executable(runTest_Optimiser Test_Optimiser.cpp  main.cpp)
