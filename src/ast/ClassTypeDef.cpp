@@ -23,9 +23,14 @@ ClassTypeDef::ClassTypeDef(
       atl::vector<atl::shared_ptr<VarDecl>> newConstructorParams;
 
       // Append a hardcoded "this" parameter.
+      const Position &thisPosition = newConstructorDecl->position;
+      const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
+      thisType->position = thisPosition;
+      const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
+      thisType->position = thisPosition;
       const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(atl::shared_ptr<PointerType>(new PointerType(classType)),
-                      atl::shared_ptr<Identifier>(new Identifier("this"))));
+          new VarDecl(thisType, thisIdent));
+      thisParam->Decl::position = thisPosition;
       newConstructorParams.push_back(thisParam);
 
       // Append all the other params.
@@ -51,9 +56,14 @@ ClassTypeDef::ClassTypeDef(
       atl::vector<atl::shared_ptr<VarDecl>> newConstructorParams;
 
       // Append a hardcoded "this" parameter.
+      const Position &thisPosition = newConstructorDef->position;
+      const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
+      thisType->position = thisPosition;
+      const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
+      thisType->position = thisPosition;
       const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(atl::shared_ptr<PointerType>(new PointerType(classType)),
-                      atl::shared_ptr<Identifier>(new Identifier("this"))));
+          new VarDecl(thisType, thisIdent));
+      thisParam->Decl::position = thisPosition;
       newConstructorParams.push_back(thisParam);
 
       // Append all the other params.
@@ -78,9 +88,14 @@ ClassTypeDef::ClassTypeDef(
       atl::vector<atl::shared_ptr<VarDecl>> newFunParams;
 
       // Append a hardcoded "this" parameter.
+      const Position &thisPosition = newFunDecl->position;
+      const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
+      thisType->position = thisPosition;
+      const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
+      thisType->position = thisPosition;
       const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(atl::shared_ptr<PointerType>(new PointerType(classType)),
-                      atl::shared_ptr<Identifier>(new Identifier("this"))));
+          new VarDecl(thisType, thisIdent));
+      thisParam->Decl::position = thisPosition;
       newFunParams.push_back(thisParam);
 
       // Append all the other params.
@@ -104,9 +119,14 @@ ClassTypeDef::ClassTypeDef(
       atl::vector<atl::shared_ptr<VarDecl>> newFunParams;
 
       // Append a hardcoded "this" parameter.
+      const Position &thisPosition = newFunDef->position;
+      const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
+      thisType->position = thisPosition;
+      const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
+      thisType->position = thisPosition;
       const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(atl::shared_ptr<PointerType>(new PointerType(classType)),
-                      atl::shared_ptr<Identifier>(new Identifier("this"))));
+          new VarDecl(thisType, thisIdent));
+      thisParam->Decl::position = thisPosition;
       newFunParams.push_back(thisParam);
 
       // Append all the other params.
