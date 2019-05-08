@@ -45,9 +45,7 @@ Preprocessor::Preprocessor(const SourceHandler &p_src,
       parentPreprocessor(p_parentPreprocessor), scanner(new PPScanner(src)) {}
 
 SourceHandler Preprocessor::getSource() {
-  atl::string output = formatIncludeDirective(src.getFilepath());
-  if (parentPreprocessor != nullptr)
-    output += "\n";
+  atl::string output = formatIncludeDirective(src.getFilepath()) + "\n";
   char c;
   do {
     c = scanner->next();
@@ -75,11 +73,13 @@ SourceHandler Preprocessor::getSource() {
         return SourceHandler(SourceHandler::Type::RAW, output + "\n");
       } else {
         markVisited(src.getFilepath());
+        output += "\n";
       }
     } else {
       output += c;
     }
   } while (c != '\0');
+  output += "\n";
   return SourceHandler(SourceHandler::Type::RAW, output);
 }
 
@@ -119,8 +119,7 @@ SourceHandler Preprocessor::lexInclude() {
   }
 
   const atl::string relativeIncludePath = lexStringLiteral();
-  c = scanner->next();
-  while (c != '\n') {
+  while (scanner->peek() != '\n') {
     if (!atl::isspace(c))
       throw ACC::Error(
           "Preprocessor: #include directive must end with whitespace and a "
