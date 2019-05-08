@@ -36,9 +36,9 @@ public:
   SourceHandler getSource();
 
   static atl::string formatIncludeDirective(const atl::string &filepath,
-                                            const int lineNum = 1) {
+                                            const int lineNum = 0) {
     const atl::string lineNum_s = atl::to_string(lineNum);
-    return "\n# " + lineNum_s + " \"" + filepath + "\"";
+    return "# " + lineNum_s + " \"" + filepath + "\"";
   }
 
   static bool fileExists(const atl::string &filepath) {
