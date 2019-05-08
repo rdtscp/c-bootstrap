@@ -118,7 +118,7 @@
       "name": "(lldb) ASTAnalysis Unit Tests",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/test/runASTAnalysisUnitTests",
+      "program": "${workspaceFolder}/build/test/runTest_ASTAnalysis",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

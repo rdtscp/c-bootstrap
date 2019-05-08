@@ -13,10 +13,10 @@
 using namespace ACC;
 
 // atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_ASTAnalaysis/";
-atl::string test_prefix = "../../test/tests/Test_ASTAnalaysis/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_ASTAnalysis/";
+atl::string test_prefix = "../../test/tests/Test_ASTAnalysis/";
 
-TEST(ASTAnalysisTest, AmbiguousIdentifier) {
+TEST(Test_ASTAnalysis, AmbiguousIdentifier) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "AmbiguousIdentifier/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
@@ -31,7 +31,7 @@ TEST(ASTAnalysisTest, AmbiguousIdentifier) {
   ASSERT_NE(0, nameAnalysis.errorCount);
 }
 
-TEST(ASTAnalysisTest, DotGraph) {
+TEST(Test_ASTAnalysis, DotGraph) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "DotGraph/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
@@ -45,7 +45,7 @@ TEST(ASTAnalysisTest, DotGraph) {
   dotGraph.print();
 }
 
-TEST(ASTAnalysisTest, DuplicateFunction) {
+TEST(Test_ASTAnalysis, DuplicateFunction) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "DuplicateFunction/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
@@ -60,7 +60,7 @@ TEST(ASTAnalysisTest, DuplicateFunction) {
   // ASSERT_NE(0, nameAnalysis.errorCount);
 }
 
-TEST(ASTAnalysisTest, DuplicateVariable) {
+TEST(Test_ASTAnalysis, DuplicateVariable) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "DuplicateVariable/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
@@ -75,7 +75,7 @@ TEST(ASTAnalysisTest, DuplicateVariable) {
   // ASSERT_NE(0, nameAnalysis.errorCount);
 }
 
-TEST(ASTAnalysisTest, NameAnalysis) {
+TEST(Test_ASTAnalysis, NameAnalysis) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "NameAnalysis/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
@@ -90,7 +90,7 @@ TEST(ASTAnalysisTest, NameAnalysis) {
   ASSERT_EQ(0, nameAnalysis.errorCount);
 }
 
-TEST(ASTAnalysisTest, NoMainFunc) {
+TEST(Test_ASTAnalysis, NoMainFunc) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "NoMainFunc/test.cpp");
   ACC::Preprocessor preprocessor(src, {});

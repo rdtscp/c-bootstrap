@@ -27,9 +27,9 @@ add_executable(runPreprocessorUnitTests Test_Preprocessor.cpp  main.cpp)
 target_link_libraries(runPreprocessorUnitTests libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser Preprocessor TypeAnalysis)
 add_test(PreprocessorUnitTests runPreprocessorUnitTests)
 
-add_executable(runASTAnalysisUnitTests Test_ASTAnalysis.cpp  main.cpp)
-target_link_libraries(runASTAnalysisUnitTests libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis)
-add_test(ASTAnalysisUnitTests runASTAnalysisUnitTests)
+add_executable(runTest_ASTAnalysis Test_ASTAnalysis.cpp  main.cpp)
+target_link_libraries(runTest_ASTAnalysis libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis Preprocessor)
+add_test(ASTAnalysisUnitTests runTest_ASTAnalysis)
 
 add_executable(runOptimiserUnitTests Test_Optimiser.cpp  main.cpp)
 target_link_libraries(runOptimiserUnitTests libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis)
