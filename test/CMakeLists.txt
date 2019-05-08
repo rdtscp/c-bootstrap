@@ -24,7 +24,7 @@ target_link_libraries(runTest_Lexer libgtest libgmock AST DotGraph GenerateX86 N
 add_test(LexerUnitTests runTest_Lexer)
 
 add_executable(runTest_Optimiser Test_Optimiser.cpp  main.cpp)
-target_link_libraries(runTest_Optimiser libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis)
+target_link_libraries(runTest_Optimiser libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser Preprocessor TypeAnalysis)
 add_test(OptimiserUnitTests runTest_Optimiser)
 
 add_executable(runTest_Parser Test_Parser.cpp  main.cpp)

@@ -3,6 +3,7 @@
 #include "gtest/gtest.h"
 
 #include "Parser.h"
+#include "Preprocessor.h"
 #include "passes/DotGraph.h"
 #include "passes/NameAnalysis.h"
 #include "passes/Optimiser.h"
