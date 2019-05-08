@@ -14,7 +14,7 @@ using namespace ACC;
 // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_Lexer/";
 atl::string test_prefix = "../../test/tests/Test_Lexer/";
 
-TEST(LexerTest, AllTokens) {
+TEST(Test_Lexer, AllTokens) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "AllTokens/test.txt");
   ACC::Preprocessor preprocessor(src, {});
@@ -101,7 +101,7 @@ TEST(LexerTest, AllTokens) {
   }
 }
 
-TEST(LexerTest, FunDecl) {
+TEST(Test_Lexer, FunDecl) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "FunDecl/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
@@ -114,7 +114,7 @@ TEST(LexerTest, FunDecl) {
   }
 }
 
-TEST(LexerTest, NestedComments) {
+TEST(Test_Lexer, NestedComments) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "NestedComments/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
@@ -127,7 +127,7 @@ TEST(LexerTest, NestedComments) {
   }
 }
 
-TEST(LexerTest, VarDecls) {
+TEST(Test_Lexer, VarDecls) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "VarDecls/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
