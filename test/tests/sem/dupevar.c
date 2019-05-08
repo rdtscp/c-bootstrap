@@ -1,3 +1,0 @@
-int var;
-
-char var;

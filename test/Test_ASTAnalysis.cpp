@@ -4,6 +4,7 @@
 
 #include "Lexer.h"
 #include "Parser.h"
+#include "Preprocessor.h"
 #include "Scanner.h"
 #include "passes/DotGraph.h"
 #include "passes/NameAnalysis.h"
@@ -12,13 +13,29 @@
 using namespace ACC;
 
 // atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-atl::string test_prefix = "../../test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_ASTAnalysis/";
+atl::string test_prefix = "../../test/tests/Test_ASTAnalysis/";
 
-TEST(ASTAnalysisTest, DotGraph) {
-  const atl::string filepath = test_prefix + "parser/fundecls.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_ASTAnalysis, AmbiguousIdentifier) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "AmbiguousIdentifier/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  NameAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  // ASSERT_NE(0, nameAnalysis.errorCount);
+}
+
+TEST(Test_ASTAnalysis, DotGraph) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "DotGraph/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -28,24 +45,11 @@ TEST(ASTAnalysisTest, DotGraph) {
   dotGraph.print();
 }
 
-TEST(ASTAnalysisTest, NameAnalysis) {
-  const atl::string filepath = test_prefix + "parser/fundecls.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
-  Lexer lexer(scanner);
-  Parser parser(lexer);
-
-  atl::shared_ptr<Program> progAST = parser.getAST();
-
-  NameAnalysis nameAnalysis(progAST);
-  nameAnalysis.run();
-  ASSERT_EQ(0, nameAnalysis.errorCount);
-}
-
-TEST(ASTAnalysisTest, DuplicateFunction) {
-  const atl::string filepath = test_prefix + "sem/dupefun.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_ASTAnalysis, DuplicateFunction) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "DuplicateFunction/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -56,10 +60,11 @@ TEST(ASTAnalysisTest, DuplicateFunction) {
   // ASSERT_NE(0, nameAnalysis.errorCount);
 }
 
-TEST(ASTAnalysisTest, DuplicateVariable) {
-  const atl::string filepath = test_prefix + "sem/dupevar.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_ASTAnalysis, DuplicateVariable) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "DuplicateVariable/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -70,25 +75,11 @@ TEST(ASTAnalysisTest, DuplicateVariable) {
   // ASSERT_NE(0, nameAnalysis.errorCount);
 }
 
-TEST(ASTAnalysisTest, AmbiguousIdentifier) {
-  const atl::string filepath = test_prefix + "sem/ambig.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
-  Lexer lexer(scanner);
-  Parser parser(lexer);
-
-  atl::shared_ptr<Program> progAST = parser.getAST();
-
-  NameAnalysis nameAnalysis(progAST);
-  ;
-  nameAnalysis.run();
-  // ASSERT_NE(0, nameAnalysis.errorCount);
-}
-
-TEST(ASTAnalysisTest, NoMainFunc) {
-  const atl::string filepath = test_prefix + "sem/nomain.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_ASTAnalysis, NameAnalysis) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "NameAnalysis/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -99,10 +90,11 @@ TEST(ASTAnalysisTest, NoMainFunc) {
   ASSERT_EQ(0, nameAnalysis.errorCount);
 }
 
-TEST(ASTAnalysisTest, Fibonacci) {
-  const atl::string filepath = test_prefix + "fibonacci.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_ASTAnalysis, NoMainFunc) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "NoMainFunc/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
   Parser parser(lexer);
 
@@ -111,54 +103,6 @@ TEST(ASTAnalysisTest, Fibonacci) {
   NameAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
-  TypeAnalysis typeAnalysis(progAST);
-  typeAnalysis.run();
-  // ASSERT_EQ(0, typeAnalysis.errorCount);
-}
-
-TEST(ASTAnalysisTest, TicTacToe) {
-  const atl::string filepath = test_prefix + "tictactoe.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
-  Lexer lexer(scanner);
-  Parser parser(lexer);
-
-  atl::shared_ptr<Program> progAST = parser.getAST();
-
-  NameAnalysis nameAnalysis(progAST);
-  nameAnalysis.run();
-  ASSERT_EQ(0, nameAnalysis.errorCount);
-  TypeAnalysis typeAnalysis(progAST);
-  typeAnalysis.run();
-  // ASSERT_EQ(0, typeAnalysis.errorCount);
-}
-
-TEST(ASTAnalysisTest, DotGraphClass) {
-  const atl::string filepath = test_prefix + "parser/class.cpp";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
-  Lexer lexer(scanner);
-  Parser parser(lexer);
-
-  atl::shared_ptr<Program> progAST = parser.getAST();
-
-  NameAnalysis nameAnalysis(progAST);
-  nameAnalysis.run();
-  // ASSERT_EQ(0, nameAnalysis.errorCount);
-
-  // TypeAnalysis typeAnalysis(progAST);
-  // typeAnalysis.run();
-  // ASSERT_EQ(0, typeAnalysis.errorCount);
-
-  // DotGraph dotGraph(progAST);
-  // dotGraph.print();
-}
-
-TEST(ASTTest, ClassTypeDecl_resolveThisVarExpr) {
-  // Create Program node which has a class with one method.
-  // Run name analysis and then assert that the member method has a `this`
-  // variable.
-  ASSERT_TRUE(true);
 }
 
 // The fixture for testing class Project1. From google test primer.

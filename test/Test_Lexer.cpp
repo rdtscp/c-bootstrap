@@ -4,19 +4,21 @@
 #include "gtest/gtest.h"
 
 #include "Lexer.h"
+#include "Preprocessor.h"
 #include "Scanner.h"
 #include "SourceToken.h"
 
 using namespace ACC;
 
 // atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-atl::string test_prefix = "../../test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_Lexer/";
+atl::string test_prefix = "../../test/tests/Test_Lexer/";
 
-TEST(LexerTest, AllTokens) {
-  const atl::string filepath = test_prefix + "lexer/alltokens.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_Lexer, AllTokens) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "AllTokens/test.txt");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
 
   atl::vector<SourceToken::Class> expected = {
@@ -99,46 +101,43 @@ TEST(LexerTest, AllTokens) {
   }
 }
 
-TEST(LexerTest, NestedComments) {
-  const atl::string filepath = test_prefix + "lexer/nested_comments.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_Lexer, FunDecl) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "FunDecl/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
 
   SourceToken::Class currToken = SourceToken::Class::INVALID;
   while (currToken != SourceToken::Class::ENDOFFILE) {
     currToken = lexer.nextToken().tokenClass;
   }
-
-  ASSERT_TRUE(true);
 }
 
-TEST(LexerTest, VarDecls) {
-  const atl::string filepath = test_prefix + "parser/vardecl.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_Lexer, NestedComments) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "NestedComments/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
 
   SourceToken::Class currToken = SourceToken::Class::INVALID;
   while (currToken != SourceToken::Class::ENDOFFILE) {
     currToken = lexer.nextToken().tokenClass;
   }
-
-  ASSERT_TRUE(true);
 }
 
-TEST(LexerTest, FunDecl) {
-  const atl::string filepath = test_prefix + "parser/fundecl.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_Lexer, VarDecls) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "VarDecls/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
 
   SourceToken::Class currToken = SourceToken::Class::INVALID;
   while (currToken != SourceToken::Class::ENDOFFILE) {
     currToken = lexer.nextToken().tokenClass;
   }
-
-  ASSERT_TRUE(true);
 }
 
 // The fixture for testing class Project1. From google test primer.

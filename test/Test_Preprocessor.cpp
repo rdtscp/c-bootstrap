@@ -9,10 +9,37 @@ using namespace ACC;
 
 // atl::string test_prefix =
 // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
-// "test/tests/PreprocessorTest/";
-atl::string test_prefix = "../../test/tests/PreprocessorTest/";
+// "test/tests/Test_Preprocessor/";
+atl::string test_prefix = "../../test/tests/Test_Preprocessor/";
 
-TEST(PreprocessorTest, TestConstruction) {
+TEST(Test_Preprocessor, AdjacentInclude) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "AdjacentInclude/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  const SourceHandler pp_src = preprocessor.getSource();
+
+  atl::string actual = pp_src.value;
+  atl::string expect = "";
+  expect += "# 0 \"" + test_prefix + "AdjacentInclude/test.cpp\"\n";
+  expect += "# 0 \"" + test_prefix + "AdjacentInclude/header.h\"\n";
+  expect += "int header() { return 1; }\n";
+  expect += "\n";
+  expect += "# 1 \"" + test_prefix + "AdjacentInclude/test.cpp\"\n";
+  expect += "# 0 \"" + test_prefix + "AdjacentInclude/header2.h\"\n";
+  expect += "int header2() { return 1; }\n";
+  expect += "\n";
+  expect += "# 2 \"" + test_prefix + "AdjacentInclude/test.cpp\"\n";
+  expect += "\n";
+  expect += "int main(int argc, char **argv) { return 1; }\n";
+  expect += "\n";
+
+  std::string actual_val = actual.c_str();
+  std::string expect_val = expect.c_str();
+
+  ASSERT_EQ(actual_val, expect_val);
+}
+
+TEST(Test_Preprocessor, Construction) {
   const SourceHandler src(SourceHandler::Type::RAW,
                           "int main(int argc, char **argv) { return 1; }\n");
   ACC::Preprocessor preprocessor(src, {});
@@ -31,7 +58,12 @@ TEST(PreprocessorTest, TestConstruction) {
   ASSERT_EQ(actual_val, expect_val);
 }
 
-TEST(PreprocessorTest, TestFormatIncludeDirective) {
+TEST(Test_Preprocessor, FileExists) {
+  ASSERT_TRUE(Preprocessor::fileExists(test_prefix + "FileExists/test.cpp"));
+  ASSERT_TRUE(Preprocessor::fileExists(test_prefix + "FileExists/header.h"));
+}
+
+TEST(Test_Preprocessor, FormatIncludeDirective) {
   const atl::string actual =
       ACC::Preprocessor::formatIncludeDirective("path/to/the/header.h");
   const atl::string expect = "# 0 \"path/to/the/header.h\"";
@@ -42,26 +74,19 @@ TEST(PreprocessorTest, TestFormatIncludeDirective) {
   ASSERT_EQ(actual_val, expect_val);
 }
 
-TEST(PreprocessorTest, TestFileExists) {
-  ASSERT_TRUE(
-      Preprocessor::fileExists(test_prefix + "TestFileExists/test.cpp"));
-  ASSERT_TRUE(
-      Preprocessor::fileExists(test_prefix + "TestFileExists/header.h"));
-}
-
-TEST(PreprocessorTest, TestInclude) {
+TEST(Test_Preprocessor, IncludeChildDir) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "TestInclude/test.cpp");
+                          test_prefix + "IncludeChildDir/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
   const SourceHandler pp_src = preprocessor.getSource();
 
   atl::string actual = pp_src.value;
   atl::string expect = "";
-  expect += "# 0 \"" + test_prefix + "TestInclude/test.cpp\"\n";
-  expect += "# 0 \"" + test_prefix + "TestInclude/header.h\"\n";
+  expect += "# 0 \"" + test_prefix + "IncludeChildDir/test.cpp\"\n";
+  expect += "# 0 \"" + test_prefix + "IncludeChildDir/subdir/header.h\"\n";
   expect += "int header() { return 1; }\n";
   expect += "\n";
-  expect += "# 1 \"" + test_prefix + "TestInclude/test.cpp\"\n";
+  expect += "# 1 \"" + test_prefix + "IncludeChildDir/test.cpp\"\n";
   expect += "\n";
   expect += "int main(int argc, char **argv) { return 1; }\n";
   expect += "\n";
@@ -72,24 +97,19 @@ TEST(PreprocessorTest, TestInclude) {
   ASSERT_EQ(actual_val, expect_val);
 }
 
-TEST(PreprocessorTest, TestNestedInclude) {
+TEST(Test_Preprocessor, IncludeNormal) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "TestNestedInclude/test.cpp");
+                          test_prefix + "IncludeNormal/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
   const SourceHandler pp_src = preprocessor.getSource();
 
   atl::string actual = pp_src.value;
   atl::string expect = "";
-  expect += "# 0 \"" + test_prefix + "TestNestedInclude/test.cpp\"\n";
-  expect += "# 0 \"" + test_prefix + "TestNestedInclude/header.h\"\n";
-  expect += "# 0 \"" + test_prefix + "TestNestedInclude/header2.h\"\n";
-  expect += "int header2() { return 1; }\n";
-  expect += "\n";
-  expect += "# 1 \"" + test_prefix + "TestNestedInclude/header.h\"\n";
-  expect += "\n";
+  expect += "# 0 \"" + test_prefix + "IncludeNormal/test.cpp\"\n";
+  expect += "# 0 \"" + test_prefix + "IncludeNormal/header.h\"\n";
   expect += "int header() { return 1; }\n";
   expect += "\n";
-  expect += "# 1 \"" + test_prefix + "TestNestedInclude/test.cpp\"\n";
+  expect += "# 1 \"" + test_prefix + "IncludeNormal/test.cpp\"\n";
   expect += "\n";
   expect += "int main(int argc, char **argv) { return 1; }\n";
   expect += "\n";
@@ -100,59 +120,9 @@ TEST(PreprocessorTest, TestNestedInclude) {
   ASSERT_EQ(actual_val, expect_val);
 }
 
-TEST(PreprocessorTest, TestAdjacentInclude) {
+TEST(Test_Preprocessor, IncludeParentDir) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "TestAdjacentInclude/test.cpp");
-  ACC::Preprocessor preprocessor(src, {});
-  const SourceHandler pp_src = preprocessor.getSource();
-
-  atl::string actual = pp_src.value;
-  atl::string expect = "";
-  expect += "# 0 \"" + test_prefix + "TestAdjacentInclude/test.cpp\"\n";
-  expect += "# 0 \"" + test_prefix + "TestAdjacentInclude/header.h\"\n";
-  expect += "int header() { return 1; }\n";
-  expect += "\n";
-  expect += "# 1 \"" + test_prefix + "TestAdjacentInclude/test.cpp\"\n";
-  expect += "# 0 \"" + test_prefix + "TestAdjacentInclude/header2.h\"\n";
-  expect += "int header2() { return 1; }\n";
-  expect += "\n";
-  expect += "# 2 \"" + test_prefix + "TestAdjacentInclude/test.cpp\"\n";
-  expect += "\n";
-  expect += "int main(int argc, char **argv) { return 1; }\n";
-  expect += "\n";
-
-  std::string actual_val = actual.c_str();
-  std::string expect_val = expect.c_str();
-
-  ASSERT_EQ(actual_val, expect_val);
-}
-
-TEST(PreprocessorTest, TestIncludeChildDir) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "TestIncludeChildDir/test.cpp");
-  ACC::Preprocessor preprocessor(src, {});
-  const SourceHandler pp_src = preprocessor.getSource();
-
-  atl::string actual = pp_src.value;
-  atl::string expect = "";
-  expect += "# 0 \"" + test_prefix + "TestIncludeChildDir/test.cpp\"\n";
-  expect += "# 0 \"" + test_prefix + "TestIncludeChildDir/subdir/header.h\"\n";
-  expect += "int header() { return 1; }\n";
-  expect += "\n";
-  expect += "# 1 \"" + test_prefix + "TestIncludeChildDir/test.cpp\"\n";
-  expect += "\n";
-  expect += "int main(int argc, char **argv) { return 1; }\n";
-  expect += "\n";
-
-  std::string actual_val = actual.c_str();
-  std::string expect_val = expect.c_str();
-
-  ASSERT_EQ(actual_val, expect_val);
-}
-
-TEST(PreprocessorTest, TestIncludeParentDir) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "TestIncludeParentDir/subdir/test.cpp");
+                          test_prefix + "IncludeParentDir/subdir/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
   const SourceHandler pp_src = preprocessor.getSource();
 
@@ -162,11 +132,11 @@ TEST(PreprocessorTest, TestIncludeParentDir) {
   // const SourceHandler pp_src = preprocessor.getSource();
   atl::string actual = pp_src.value;
   atl::string expect = "";
-  expect += "# 0 \"" + test_prefix + "TestIncludeParentDir/subdir/test.cpp\"\n";
-  expect += "# 0 \"" + test_prefix + "TestIncludeParentDir/header.h\"\n";
+  expect += "# 0 \"" + test_prefix + "IncludeParentDir/subdir/test.cpp\"\n";
+  expect += "# 0 \"" + test_prefix + "IncludeParentDir/header.h\"\n";
   expect += "int header() { return 1; }\n";
   expect += "\n";
-  expect += "# 1 \"" + test_prefix + "TestIncludeParentDir/subdir/test.cpp\"\n";
+  expect += "# 1 \"" + test_prefix + "IncludeParentDir/subdir/test.cpp\"\n";
   expect += "\n";
   expect += "int main(int argc, char **argv) { return 1; }\n";
   expect += "\n";
@@ -177,39 +147,67 @@ TEST(PreprocessorTest, TestIncludeParentDir) {
   ASSERT_EQ(actual_val, expect_val);
 }
 
-TEST(PreprocessorTest, TestPragmaOnce) {
+TEST(Test_Preprocessor, NestedInclude) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "TestPragmaOnce/test.cpp");
+                          test_prefix + "NestedInclude/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
   const SourceHandler pp_src = preprocessor.getSource();
 
   atl::string actual = pp_src.value;
   atl::string expect = "";
-  expect += "# 0 \"" + test_prefix + "TestPragmaOnce/test.cpp\"\n";
-  expect += "# 0 \"" + test_prefix + "TestPragmaOnce/header.h\"\n";
-  expect += "# 0 \"" + test_prefix + "TestPragmaOnce/header_derived.h\"\n";
-  expect += "# 0 \"" + test_prefix + "TestPragmaOnce/header_base.h\"\n";
+  expect += "# 0 \"" + test_prefix + "NestedInclude/test.cpp\"\n";
+  expect += "# 0 \"" + test_prefix + "NestedInclude/header.h\"\n";
+  expect += "# 0 \"" + test_prefix + "NestedInclude/header2.h\"\n";
+  expect += "int header2() { return 1; }\n";
+  expect += "\n";
+  expect += "# 1 \"" + test_prefix + "NestedInclude/header.h\"\n";
+  expect += "\n";
+  expect += "int header() { return 1; }\n";
+  expect += "\n";
+  expect += "# 1 \"" + test_prefix + "NestedInclude/test.cpp\"\n";
+  expect += "\n";
+  expect += "int main(int argc, char **argv) { return 1; }\n";
+  expect += "\n";
+
+  std::string actual_val = actual.c_str();
+  std::string expect_val = expect.c_str();
+
+  ASSERT_EQ(actual_val, expect_val);
+}
+
+TEST(Test_Preprocessor, PragmaOnce) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "PragmaOnce/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  const SourceHandler pp_src = preprocessor.getSource();
+
+  atl::string actual = pp_src.value;
+  atl::string expect = "";
+  expect += "# 0 \"" + test_prefix + "PragmaOnce/test.cpp\"\n";
+  expect += "# 0 \"" + test_prefix + "PragmaOnce/header.h\"\n";
+  expect += "# 0 \"" + test_prefix + "PragmaOnce/header_derived.h\"\n";
+  expect += "# 0 \"" + test_prefix + "PragmaOnce/header_base.h\"\n";
   expect += "\n";
   expect += "\n";
   expect += "int header_base() { return 1; }\n";
   expect += "\n";
-  expect += "# 1 \"" + test_prefix + "TestPragmaOnce/header_derived.h\"\n";
+  expect += "# 1 \"" + test_prefix + "PragmaOnce/header_derived.h\"\n";
   expect += "\n";
   expect += "int header_derived() { return 1; }\n";
   expect += "\n";
-  expect += "# 1 \"" + test_prefix + "TestPragmaOnce/header.h\"\n";
-  expect += "# 0 \"" + test_prefix + "TestPragmaOnce/header_derived2.h\"\n";
-  expect += "# 0 \"" + test_prefix + "TestPragmaOnce/header_base.h\"\n";
+  expect += "# 1 \"" + test_prefix + "PragmaOnce/header.h\"\n";
+  expect += "# 0 \"" + test_prefix + "PragmaOnce/header_derived2.h\"\n";
+  expect += "# 0 \"" + test_prefix + "PragmaOnce/header_base.h\"\n";
   expect += "\n";
-  expect += "# 1 \"" + test_prefix + "TestPragmaOnce/header_derived2.h\"\n";
+  expect += "# 1 \"" + test_prefix + "PragmaOnce/header_derived2.h\"\n";
   expect += "\n";
   expect += "int header_derived2() { return 1; }\n";
   expect += "\n";
-  expect += "# 2 \"" + test_prefix + "TestPragmaOnce/header.h\"\n";
+  expect += "# 2 \"" + test_prefix + "PragmaOnce/header.h\"\n";
   expect += "\n";
   expect += "int header() { return 1; }\n";
   expect += "\n";
-  expect += "# 1 \"" + test_prefix + "TestPragmaOnce/test.cpp\"\n";
+  expect += "# 1 \"" + test_prefix + "PragmaOnce/test.cpp\"\n";
   expect += "\n";
   expect += "int main(int argc, char **argv) { return 1; }\n";
   expect += "\n";

@@ -1,0 +1,3 @@
+int var;
+
+char var;
