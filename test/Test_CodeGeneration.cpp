@@ -8,19 +8,21 @@
 
 #include "Lexer.h"
 #include "Parser.h"
+#include "Preprocessor.h"
 #include "Scanner.h"
 #include "targets/GenerateX86.h"
 
 using namespace ACC;
 
 // atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-atl::string test_prefix = "../../test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_CodeGeneration/";
+atl::string test_prefix = "../../test/tests/Test_CodeGeneration/";
 
-TEST(CodeGenerationTest, X86_fundeclsc) {
-  const atl::string filepath = test_prefix + "parser/fundecls.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_CodeGeneration, X86_SimpleFuncs) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "X86_SimpleFuncs/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   atl::shared_ptr<Program> progAST = parser.getAST();
