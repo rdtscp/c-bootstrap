@@ -28,7 +28,7 @@ target_link_libraries(runTest_Optimiser libgtest libgmock AST DotGraph GenerateX
 add_test(OptimiserUnitTests runTest_Optimiser)
 
 add_executable(runTest_Parser Test_Parser.cpp  main.cpp)
-target_link_libraries(runTest_Parser libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser TypeAnalysis)
+target_link_libraries(runTest_Parser libgtest libgmock AST DotGraph GenerateX86 NameAnalysis Optimiser Parser Preprocessor TypeAnalysis)
 add_test(ParserUnitTests runTest_Parser)
 
 add_executable(runTest_Preprocessor Test_Preprocessor.cpp  main.cpp)

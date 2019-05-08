@@ -2,211 +2,22 @@
 
 #include "Error.h"
 #include "Parser.h"
+#include "Preprocessor.h"
 #include "SourceHandler.h"
 #include "SourceToken.h"
 
 using namespace ACC;
 
 // atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-atl::string test_prefix = "../../test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_Parser/";
+atl::string test_prefix = "../../test/tests/Test_Parser/";
 
-TEST(ParserTest, AllTokens) {
-  const atl::string filepath = test_prefix + "lexer/alltokens.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
-  ACC::Lexer lexer(scanner);
-  ACC::Parser parser(lexer);
-  try {
-    parser.getAST();
-  } catch (ACC::Error const &err) {
-    ASSERT_TRUE(true);
-    return;
-  } catch (...) {
-    printf("Expected an ACC::Error\n");
-    ASSERT_TRUE(false);
-    return;
-  }
-  printf("Expected an ACC::Error, but no exception was thrown.\n");
-  ASSERT_TRUE(false);
-}
-
-TEST(ParserTest, InvalidIdentifier) {
-  const atl::string filepath = test_prefix + "lexer/errors.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
-  try {
-    ACC::Lexer lexer(scanner);
-    ACC::Parser parser(lexer);
-    parser.getAST();
-  } catch (ACC::Error const &err) {
-    ASSERT_TRUE(true);
-    return;
-  } catch (...) {
-    printf("Expected an ACC::Error\n");
-    ASSERT_TRUE(false);
-    return;
-  }
-  printf("Expected an ACC::Error, but no exception was thrown.\n");
-  ASSERT_TRUE(false);
-}
-
-TEST(ParserTest, NestedComments) {
-  const atl::string filepath = test_prefix + "lexer/nested_comments.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
-  ACC::Lexer lexer(scanner);
-  ACC::Parser parser(lexer);
-  atl::shared_ptr<Program> p = parser.getAST();
-
-  ASSERT_TRUE(true);
-}
-
-TEST(ParserTest, StructDecl) {
-  const atl::string filepath = test_prefix + "parser/structdecl.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
-  ACC::Lexer lexer(scanner);
-  ACC::Parser parser(lexer);
-  atl::shared_ptr<Program> actual = parser.getAST();
-
-  atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
-      atl::make_shared<StructTypeDecl>(StructTypeDecl(
-          atl::make_shared<StructType>(StructType(
-              atl::shared_ptr<Identifier>(new Identifier("FooStruct")))),
-          {atl::make_shared<VarDecl>(VarDecl(
-              atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-              atl::shared_ptr<Identifier>(new Identifier("fooInt"))))})),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<StructType>(StructType(
-              atl::shared_ptr<Identifier>(new Identifier("FooStruct")))),
-          atl::shared_ptr<Identifier>(new Identifier("myFooStruct"))))};
-
-  const int actualSize = actual->decls.size();
-  const int expectSize = expectedDecls.size();
-  ASSERT_EQ(actualSize, expectSize);
-
-  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
-    ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
-}
-
-TEST(ParserTest, VarDecls) {
-  const atl::string filepath = test_prefix + "parser/vardecl.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
-  ACC::Lexer lexer(scanner);
-  ACC::Parser parser(lexer);
-  atl::shared_ptr<Program> actual = parser.getAST();
-
-  atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
-      atl::make_shared<StructTypeDecl>(StructTypeDecl(
-          atl::make_shared<StructType>(StructType(
-              atl::shared_ptr<Identifier>(new Identifier("FooStruct")))),
-          {atl::make_shared<VarDecl>(VarDecl(
-              atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-              atl::shared_ptr<Identifier>(new Identifier("fooInt"))))})),
-      atl::make_shared<VarDecl>(
-          VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                  atl::shared_ptr<Identifier>(new Identifier("myInt")))),
-      atl::make_shared<VarDecl>(
-          VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-                  atl::shared_ptr<Identifier>(new Identifier("myChar")))),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<PointerType>(PointerType(
-              atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)))),
-          atl::shared_ptr<Identifier>(new Identifier("myIntPtr")))),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<PointerType>(PointerType(
-              atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))),
-          atl::shared_ptr<Identifier>(new Identifier("myCharPtr")))),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<PointerType>(PointerType(
-              atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID)))),
-          atl::shared_ptr<Identifier>(new Identifier("myVoidPtr")))),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<PointerType>(
-              PointerType(atl::make_shared<PointerType>(PointerType(
-                  atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)))))),
-          atl::shared_ptr<Identifier>(new Identifier("myIntPtrPtr")))),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<PointerType>(
-              PointerType(atl::make_shared<PointerType>(PointerType(
-                  atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))))),
-          atl::shared_ptr<Identifier>(new Identifier("myCharPtrPtr")))),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<PointerType>(
-              PointerType(atl::make_shared<PointerType>(PointerType(
-                  atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID)))))),
-          atl::shared_ptr<Identifier>(new Identifier("myVoidPtrPtr")))),
-      atl::make_shared<VarDecl>(
-          VarDecl(atl::make_shared<ArrayType>(ArrayType(
-                      atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                      atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
-                  atl::shared_ptr<Identifier>(new Identifier("myIntArr")))),
-      atl::make_shared<VarDecl>(
-          VarDecl(atl::make_shared<ArrayType>(ArrayType(
-                      atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
-                      atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
-                  atl::shared_ptr<Identifier>(new Identifier("myCharArr")))),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<StructType>(StructType(
-              atl::shared_ptr<Identifier>(new Identifier("FooStruct")))),
-          atl::shared_ptr<Identifier>(new Identifier("myFooStruct")))),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<PointerType>(
-              PointerType(atl::make_shared<StructType>(StructType(
-                  atl::shared_ptr<Identifier>(new Identifier("FooStruct")))))),
-          atl::shared_ptr<Identifier>(new Identifier("myFooStructPtr")))),
-      atl::make_shared<VarDecl>(VarDecl(
-          atl::make_shared<ArrayType>(ArrayType(
-              atl::make_shared<StructType>(StructType(
-                  atl::shared_ptr<Identifier>(new Identifier("FooStruct")))),
-              atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
-          atl::shared_ptr<Identifier>(new Identifier("myFooStructArr"))))};
-
-  ASSERT_EQ(actual->decls.size(), expectedDecls.size());
-
-  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
-    ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
-}
-
-TEST(ParserTest, FunDecl) {
-  const atl::string filepath = test_prefix + "parser/fundecl.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
-  ACC::Lexer lexer(scanner);
-  ACC::Parser parser(lexer);
-  atl::shared_ptr<Program> actual = parser.getAST();
-  const unsigned int expected_size = 2;
-  ASSERT_EQ(actual->decls.size(), expected_size);
-  atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
-      atl::make_shared<VarDecl>(
-          VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                  atl::shared_ptr<Identifier>(new Identifier("myGlobalInt")))),
-      atl::shared_ptr<FunDef>(new FunDef(
-          atl::set<FunDecl::FunModifiers>(),
-          atl::shared_ptr<Identifier>(new Identifier("main")),
-          {atl::make_shared<VarDecl>(
-               VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-                       atl::shared_ptr<Identifier>(new Identifier("argc")))),
-           atl::make_shared<VarDecl>(VarDecl(
-               atl::make_shared<PointerType>(PointerType(
-                   atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))),
-               atl::shared_ptr<Identifier>(new Identifier("argv"))))},
-          atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
-          atl::make_shared<Block>(Block({}))))};
-
-  ASSERT_EQ(actual->decls.size(), expectedDecls.size());
-
-  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
-    ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
-}
-
-TEST(ParserTest, BinOp) {
-  const atl::string filepath = test_prefix + "parser/binop.cpp";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
-  ACC::Lexer lexer(scanner);
+TEST(Test_Parser, BinOp) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "BinOp/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   atl::shared_ptr<Program> actual = parser.getAST();
   const unsigned int expected_size = 2;
@@ -293,20 +104,66 @@ TEST(ParserTest, BinOp) {
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
-TEST(ParserTest, ComplexBinOp) {
-  const atl::string filepath = test_prefix + "parser/fundecls.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_Parser, ClassDefinition) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "ClassDefinition/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> actual = parser.getAST();
+  ASSERT_TRUE(true);
+}
+
+TEST(Test_Parser, ComplexBinOp) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "ComplexBinOp/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   atl::shared_ptr<Program> actual = parser.getAST();
   /* @TODO Test AST */
 }
 
-TEST(ParserTest, InvalidSignatureFunDef) {
-  const atl::string filepath = test_prefix + "parser/invalidfundef.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_Parser, FunDecl) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "FunDecl/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> actual = parser.getAST();
+  const unsigned int expected_size = 2;
+  ASSERT_EQ(actual->decls.size(), expected_size);
+  atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
+      atl::make_shared<VarDecl>(
+          VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+                  atl::shared_ptr<Identifier>(new Identifier("myGlobalInt")))),
+      atl::shared_ptr<FunDef>(new FunDef(
+          atl::set<FunDecl::FunModifiers>(),
+          atl::shared_ptr<Identifier>(new Identifier("main")),
+          {atl::make_shared<VarDecl>(
+               VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+                       atl::shared_ptr<Identifier>(new Identifier("argc")))),
+           atl::make_shared<VarDecl>(VarDecl(
+               atl::make_shared<PointerType>(PointerType(
+                   atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))),
+               atl::shared_ptr<Identifier>(new Identifier("argv"))))},
+          atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+          atl::make_shared<Block>(Block({}))))};
+
+  ASSERT_EQ(actual->decls.size(), expectedDecls.size());
+
+  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
+    ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
+}
+
+TEST(Test_Parser, InvalidSignatureFunDef) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "InvalidSignatureFunDef/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   try {
@@ -323,14 +180,114 @@ TEST(ParserTest, InvalidSignatureFunDef) {
   ASSERT_TRUE(false);
 }
 
-TEST(ParserTest, ClassDefinition) {
-  const atl::string filepath = test_prefix + "parser/class.cpp";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
+TEST(Test_Parser, StructDecl) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "StructDecl/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   atl::shared_ptr<Program> actual = parser.getAST();
-  ASSERT_TRUE(true);
+
+  atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
+      atl::make_shared<StructTypeDecl>(StructTypeDecl(
+          atl::make_shared<StructType>(StructType(
+              atl::shared_ptr<Identifier>(new Identifier("FooStruct")))),
+          {atl::make_shared<VarDecl>(VarDecl(
+              atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+              atl::shared_ptr<Identifier>(new Identifier("fooInt"))))})),
+      atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<StructType>(StructType(
+              atl::shared_ptr<Identifier>(new Identifier("FooStruct")))),
+          atl::shared_ptr<Identifier>(new Identifier("myFooStruct"))))};
+
+  const int actualSize = actual->decls.size();
+  const int expectSize = expectedDecls.size();
+  ASSERT_EQ(actualSize, expectSize);
+
+  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
+    ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
+}
+
+TEST(Test_Parser, VarDecls) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "VarDecls/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> actual = parser.getAST();
+
+  atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
+      atl::make_shared<StructTypeDecl>(StructTypeDecl(
+          atl::make_shared<StructType>(StructType(
+              atl::shared_ptr<Identifier>(new Identifier("FooStruct")))),
+          {atl::make_shared<VarDecl>(VarDecl(
+              atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+              atl::shared_ptr<Identifier>(new Identifier("fooInt"))))})),
+      atl::make_shared<VarDecl>(
+          VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+                  atl::shared_ptr<Identifier>(new Identifier("myInt")))),
+      atl::make_shared<VarDecl>(
+          VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
+                  atl::shared_ptr<Identifier>(new Identifier("myChar")))),
+      atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<PointerType>(PointerType(
+              atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)))),
+          atl::shared_ptr<Identifier>(new Identifier("myIntPtr")))),
+      atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<PointerType>(PointerType(
+              atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))),
+          atl::shared_ptr<Identifier>(new Identifier("myCharPtr")))),
+      atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<PointerType>(PointerType(
+              atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID)))),
+          atl::shared_ptr<Identifier>(new Identifier("myVoidPtr")))),
+      atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<PointerType>(
+              PointerType(atl::make_shared<PointerType>(PointerType(
+                  atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)))))),
+          atl::shared_ptr<Identifier>(new Identifier("myIntPtrPtr")))),
+      atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<PointerType>(
+              PointerType(atl::make_shared<PointerType>(PointerType(
+                  atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)))))),
+          atl::shared_ptr<Identifier>(new Identifier("myCharPtrPtr")))),
+      atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<PointerType>(
+              PointerType(atl::make_shared<PointerType>(PointerType(
+                  atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID)))))),
+          atl::shared_ptr<Identifier>(new Identifier("myVoidPtrPtr")))),
+      atl::make_shared<VarDecl>(
+          VarDecl(atl::make_shared<ArrayType>(ArrayType(
+                      atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+                      atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
+                  atl::shared_ptr<Identifier>(new Identifier("myIntArr")))),
+      atl::make_shared<VarDecl>(
+          VarDecl(atl::make_shared<ArrayType>(ArrayType(
+                      atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
+                      atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
+                  atl::shared_ptr<Identifier>(new Identifier("myCharArr")))),
+      atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<StructType>(StructType(
+              atl::shared_ptr<Identifier>(new Identifier("FooStruct")))),
+          atl::shared_ptr<Identifier>(new Identifier("myFooStruct")))),
+      atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<PointerType>(
+              PointerType(atl::make_shared<StructType>(StructType(
+                  atl::shared_ptr<Identifier>(new Identifier("FooStruct")))))),
+          atl::shared_ptr<Identifier>(new Identifier("myFooStructPtr")))),
+      atl::make_shared<VarDecl>(VarDecl(
+          atl::make_shared<ArrayType>(ArrayType(
+              atl::make_shared<StructType>(StructType(
+                  atl::shared_ptr<Identifier>(new Identifier("FooStruct")))),
+              atl::shared_ptr<IntLiteral>(new IntLiteral("5")))),
+          atl::shared_ptr<Identifier>(new Identifier("myFooStructArr"))))};
+
+  ASSERT_EQ(actual->decls.size(), expectedDecls.size());
+
+  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
+    ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
 // The fixture for testing class Project1. From google test primer.
