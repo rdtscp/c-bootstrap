@@ -23,6 +23,8 @@ public:
   Identifier(const atl::string &p_value,
              const atl::shared_ptr<Identifier> &p_parentIdentifier);
 
+  Identifier(const Identifier &) = delete;
+
   atl::string toString() const;
 
   atl::shared_ptr<Identifier> getptr() { return shared_from_this(); }

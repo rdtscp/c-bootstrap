@@ -24,8 +24,8 @@ ClassTypeDef::ClassTypeDef(
 
       // Append a hardcoded "this" parameter.
       const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(atl::make_shared<PointerType>(PointerType(classType)),
-                      atl::make_shared<Identifier>(Identifier("this"))));
+          new VarDecl(atl::shared_ptr<PointerType>(new PointerType(classType)),
+                      atl::shared_ptr<Identifier>(new Identifier("this"))));
       newConstructorParams.push_back(thisParam);
 
       // Append all the other params.
@@ -52,8 +52,8 @@ ClassTypeDef::ClassTypeDef(
 
       // Append a hardcoded "this" parameter.
       const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(atl::make_shared<PointerType>(PointerType(classType)),
-                      atl::make_shared<Identifier>(Identifier("this"))));
+          new VarDecl(atl::shared_ptr<PointerType>(new PointerType(classType)),
+                      atl::shared_ptr<Identifier>(new Identifier("this"))));
       newConstructorParams.push_back(thisParam);
 
       // Append all the other params.
@@ -79,8 +79,8 @@ ClassTypeDef::ClassTypeDef(
 
       // Append a hardcoded "this" parameter.
       const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(atl::make_shared<PointerType>(PointerType(classType)),
-                      atl::make_shared<Identifier>(Identifier("this"))));
+          new VarDecl(atl::shared_ptr<PointerType>(new PointerType(classType)),
+                      atl::shared_ptr<Identifier>(new Identifier("this"))));
       newFunParams.push_back(thisParam);
 
       // Append all the other params.
@@ -105,8 +105,8 @@ ClassTypeDef::ClassTypeDef(
 
       // Append a hardcoded "this" parameter.
       const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(atl::make_shared<PointerType>(PointerType(classType)),
-                      atl::make_shared<Identifier>(Identifier("this"))));
+          new VarDecl(atl::shared_ptr<PointerType>(new PointerType(classType)),
+                      atl::shared_ptr<Identifier>(new Identifier("this"))));
       newFunParams.push_back(thisParam);
 
       // Append all the other params.

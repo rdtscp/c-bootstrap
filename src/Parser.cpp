@@ -359,15 +359,15 @@ atl::shared_ptr<Identifier> Parser::parseIdentifier() {
   atl::shared_ptr<Identifier> identifier;
   if (acceptOperatorOverload()) {
     identifier = createNode<Identifier>(
-        atl::make_shared<Identifier>(Identifier(parseOperatorOverload())));
+        atl::shared_ptr<Identifier>(new Identifier(parseOperatorOverload())));
   } else {
-    identifier = createNode<Identifier>(
-        atl::make_shared<Identifier>(Identifier(expect(TC::IDENTIFIER).data)));
+    identifier = createNode<Identifier>(atl::shared_ptr<Identifier>(
+        new Identifier(expect(TC::IDENTIFIER).data)));
     while (accept(TC::NAMESPACEACCESS)) {
       expect(TC::NAMESPACEACCESS);
       if (acceptOperatorOverload()) {
-        identifier = createNode<Identifier>(
-            atl::make_shared<Identifier>(Identifier(parseOperatorOverload())));
+        identifier = createNode<Identifier>(atl::shared_ptr<Identifier>(
+            new Identifier(parseOperatorOverload())));
         break;
       }
       identifier = parseIdentifier();
@@ -598,7 +598,7 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
   if (acceptOpOverload()) {
     const atl::string identifier = parseOperatorOverload();
     funIdentifier = createNode<Identifier>(
-        atl::make_shared<Identifier>(Identifier(identifier)));
+        atl::shared_ptr<Identifier>(new Identifier(identifier)));
   } else {
     funIdentifier = parseIdentifier();
   }
@@ -1206,7 +1206,7 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
     expect(TC::THIS);
     atl::shared_ptr<Expr> output = createNode<VarExpr>(
         atl::make_shared<VarExpr>(VarExpr(createNode<Identifier>(
-            atl::make_shared<Identifier>(Identifier("this"))))));
+            atl::shared_ptr<Identifier>(new Identifier("this"))))));
     while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
       if (accept({TC::DOT, TC::PTRDOT})) {
         expect({TC::DOT, TC::PTRDOT});
