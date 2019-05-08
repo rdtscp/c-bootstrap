@@ -8,12 +8,12 @@
 using namespace ACC;
 
 // atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-atl::string test_prefix = "../../test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_Scanner/";
+atl::string test_prefix = "../../test/tests/Test_Scanner/";
 
-TEST(ScannerTest, TestAPI) {
-  const atl::string filepath = test_prefix + "scanner/scanner.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
+TEST(ScannerTest, API) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "API/test.cpp");
   ACC::Scanner scanner(src);
 
   atl::string output;
@@ -58,8 +58,8 @@ TEST(ScannerTest, TestAPI) {
 }
 
 TEST(ScannerTest, FetchingPastEOF) {
-  const atl::string filepath = test_prefix + "scanner/eof.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "FetchingPastEOF/test.cpp");
   ACC::Scanner scanner(src);
   ASSERT_EQ(scanner.next(), 'c');
   ASSERT_EQ(scanner.next(), 'h');
@@ -76,8 +76,8 @@ TEST(ScannerTest, FetchingPastEOF) {
 }
 
 TEST(ScannerTest, PeekingPastEOF) {
-  const atl::string filepath = test_prefix + "scanner/eof.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "PeekingPastEOF/test.cpp");
   ACC::Scanner scanner(src);
   ASSERT_EQ(scanner.next(), 'c');
   ASSERT_EQ(scanner.peek(), 'h');
@@ -104,8 +104,9 @@ TEST(ScannerTest, PeekingPastEOF) {
 }
 
 TEST(ScannerTest, ScanningPreprocessorDirectives) {
-  const atl::string filepath = test_prefix + "scanner/ppdirectives.cpp";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix +
+                              "ScanningPreprocessorDirectives/test.cpp");
   ACC::Scanner scanner(src);
 
   while (scanner.next() != '\0') {
