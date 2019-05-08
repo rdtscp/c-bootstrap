@@ -11,14 +11,15 @@
 using namespace ACC;
 
 // atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/";
-atl::string test_prefix = "../../test/tests/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_Optimiser/";
+atl::string test_prefix = "../../test/tests/Test_Optimiser/";
 
-TEST(OptimiserTest, FunDeclsC) {
-  const atl::string filepath = test_prefix + "parser/fundecls.c";
-  const SourceHandler src(SourceHandler::Type::FILEPATH, filepath);
-  ACC::Scanner scanner(src);
-  ACC::Lexer lexer(scanner);
+TEST(Test_Optimiser, FunDecls) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "FunDecls/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
   ACC::Parser parser(lexer);
   atl::shared_ptr<ACC::Program> progAST = parser.getAST();
 
