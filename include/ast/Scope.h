@@ -14,6 +14,12 @@ public:
 
   void insertDecl(const atl::shared_ptr<Decl> &decl);
 
+  atl::shared_ptr<ClassTypeDecl>
+  resolveClassType(const atl::shared_ptr<ClassType> &type) const;
+
+  atl::shared_ptr<StructTypeDecl>
+  resolveStructType(const atl::shared_ptr<StructType> &type) const;
+
   atl::shared_ptr<VarDecl>
   resolveVarExpr(const atl::shared_ptr<Identifier> identifier) const;
   atl::shared_ptr<FunDecl> resolveFunCall(const atl::string funSignature) const;

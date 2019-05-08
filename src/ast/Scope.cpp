@@ -1,4 +1,5 @@
 #include "ast/Scope.h"
+#include "ast/ClassType.h"
 #include "ast/FunDecl.h"
 
 using namespace ACC;
@@ -7,6 +8,21 @@ Scope::Scope() : decls({}), outerScope(nullptr) {}
 
 void Scope::insertDecl(const atl::shared_ptr<Decl> &decl) {
   decls.push_back(decl);
+}
+
+atl::shared_ptr<ClassTypeDecl>
+Scope::resolveClassType(const atl::shared_ptr<ClassType> &type) const {
+  for (int idx = decls.size() - 1; idx >= 0; --idx) {
+    if (decls[idx]->astClass() == "ClassTypeDecl" ||
+        decls[idx]->astClass() == "ClassTypeDef") {
+      if (*decls[idx]->getIdentifier() == *type->identifier)
+        return decls[idx];
+    }
+  }
+  if (outerScope != nullptr)
+    return outerScope->resolveClassType(type);
+
+  return nullptr;
 }
 
 atl::shared_ptr<VarDecl>
