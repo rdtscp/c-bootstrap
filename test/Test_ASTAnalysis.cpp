@@ -11,9 +11,10 @@
 
 using namespace ACC;
 
-atl::string test_prefix = "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
-                          "test/tests/Test_ASTAnalysis/";
-// atl::string test_prefix = "../../test/tests/Test_ASTAnalysis/";
+// atl::string test_prefix =
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
+// "test/tests/Test_ASTAnalysis/";
+atl::string test_prefix = "../../test/tests/Test_ASTAnalysis/";
 
 TEST(Test_ASTAnalysis, AmbiguousIdentifier) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
