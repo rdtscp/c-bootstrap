@@ -119,12 +119,25 @@ atl::shared_ptr<Type> TypeAnalysis::visit(EnumClassTypeDecl &ectd) {
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(For &f) { return nullptr; }
 atl::shared_ptr<Type> TypeAnalysis::visit(FunCall &fc) {
-  return atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID));
+  const atl::shared_ptr<FunDecl> calledFunc =
+      currScope->resolveFunCall(fc.getSignature());
+  if (calledFunc == nullptr)
+    return error(
+        "Attempted to call a function which not exist with signature: " +
+            fc.getSignature(),
+        fc.getptr());
+  return calledFunc->funType;
 }
 atl::shared_ptr<Type> TypeAnalysis::visit(FunDecl &fd) { return fd.funType; }
 atl::shared_ptr<Type> TypeAnalysis::visit(FunDef &fd) {
   fd.outerScope = currScope;
   currScope = fd.outerScope;
+
+  const atl::shared_ptr<FunDecl> possibleDuplicate =
+      currScope->resolveFunCall(fd.getSignature());
+  if (possibleDuplicate != nullptr) {
+    return error("Function with this signature already exists.", fd.getptr());
+  }
 
   for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);

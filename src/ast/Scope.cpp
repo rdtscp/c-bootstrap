@@ -10,6 +10,22 @@ void Scope::insertDecl(const atl::shared_ptr<Decl> &decl) {
   decls.push_back(decl);
 }
 
+atl::shared_ptr<VarDecl>
+Scope::findVarDecl(const atl::shared_ptr<Identifier> identifier) const {
+  for (int idx = decls.size() - 1; idx >= 0; --idx) {
+    if (decls[idx]->astClass() != "VarDecl" &&
+        decls[idx]->astClass() != "VarDef")
+      continue;
+    if (*decls[idx]->getIdentifier() == *identifier) {
+      return atl::static_pointer_cast<VarDecl>(decls[idx]);
+    }
+  }
+  if (outerScope != nullptr)
+    return outerScope->findVarDecl(identifier);
+
+  return nullptr;
+}
+
 atl::shared_ptr<ClassTypeDecl>
 Scope::resolveClassType(const atl::shared_ptr<ClassType> &type) const {
   for (int idx = decls.size() - 1; idx >= 0; --idx) {

@@ -5,13 +5,13 @@
 
 namespace ACC {
 
-class NameAnalysis : public ASTVisitor<void> {
+class SemanticAnalysis : public ASTVisitor<void> {
 
 public:
   int errorCount = 0;
   atl::vector<atl::string> errors;
 
-  NameAnalysis(atl::shared_ptr<Program> progAST);
+  SemanticAnalysis(atl::shared_ptr<Program> progAST);
 
   void error(const atl::string &error, const atl::shared_ptr<ASTNode> &node);
 

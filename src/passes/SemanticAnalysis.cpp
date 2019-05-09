@@ -1,46 +1,46 @@
-#include "passes/NameAnalysis.h"
+#include "passes/SemanticAnalysis.h"
 
 #include "atl/include/set.h"
 
 using namespace ACC;
 
-NameAnalysis::NameAnalysis(atl::shared_ptr<Program> progAST)
+SemanticAnalysis::SemanticAnalysis(atl::shared_ptr<Program> progAST)
     : progAST(progAST), inClassTypeDef(false) {}
 
-void NameAnalysis::error(const atl::string &error,
-                         const atl::shared_ptr<ASTNode> &node) {
+void SemanticAnalysis::error(const atl::string &error,
+                             const atl::shared_ptr<ASTNode> &node) {
   errorCount++;
-  errors.push_back("Name Analysis Error at: " + node->position.toString() +
+  errors.push_back("Semantic Analysis Error at: " + node->position.toString() +
                    "\n\t" + error);
 }
 
-void NameAnalysis::printErrors() {
+void SemanticAnalysis::printErrors() {
   printf("Name Analysis Errors:\n");
   for (unsigned int idx = 0; idx < errors.size(); ++idx)
     printf("\t%s\n", errors[idx].c_str());
 }
 
-void NameAnalysis::run() { visit(*progAST); }
+void SemanticAnalysis::run() { visit(*progAST); }
 
 /* ---- Visit AST ---- */
 
-void NameAnalysis::visit(AddressOf &ao) { ao.addressOfExpr->accept(*this); }
-void NameAnalysis::visit(Allocation &a) {
+void SemanticAnalysis::visit(AddressOf &ao) { ao.addressOfExpr->accept(*this); }
+void SemanticAnalysis::visit(Allocation &a) {
   if (a.varConstructorCall)
     a.varConstructorCall->accept(*this);
 }
-void NameAnalysis::visit(ArrayAccess &aa) { aa.array->accept(*this); }
-void NameAnalysis::visit(ArrayType &at) {}
-void NameAnalysis::visit(Assign &as) {
+void SemanticAnalysis::visit(ArrayAccess &aa) { aa.array->accept(*this); }
+void SemanticAnalysis::visit(ArrayType &at) {}
+void SemanticAnalysis::visit(Assign &as) {
   as.lhs->accept(*this);
   as.rhs->accept(*this);
 }
-void NameAnalysis::visit(BaseType &bt) {}
-void NameAnalysis::visit(BinOp &bo) {
+void SemanticAnalysis::visit(BaseType &bt) {}
+void SemanticAnalysis::visit(BinOp &bo) {
   bo.lhs->accept(*this);
   bo.rhs->accept(*this);
 }
-void NameAnalysis::visit(Block &b) {
+void SemanticAnalysis::visit(Block &b) {
   b.outerScope = currScope;
   currScope = b.getptr();
 
@@ -49,17 +49,17 @@ void NameAnalysis::visit(Block &b) {
 
   currScope = b.outerScope;
 }
-void NameAnalysis::visit(BoolLiteral &bl) {}
-void NameAnalysis::visit(CharLiteral &cl) {}
-void NameAnalysis::visit(ClassType &ct) {}
-void NameAnalysis::visit(ClassTypeDecl &ctd) {
+void SemanticAnalysis::visit(BoolLiteral &bl) {}
+void SemanticAnalysis::visit(CharLiteral &cl) {}
+void SemanticAnalysis::visit(ClassType &ct) {}
+void SemanticAnalysis::visit(ClassTypeDecl &ctd) {
   if (currScope->duplicateDeclaration(ctd.getptr()))
     return error("Attempted to declare a Class with an identifier that is "
                  "already in use: " +
                      ctd.getIdentifier()->toString(),
                  ctd.getptr());
 }
-void NameAnalysis::visit(ClassTypeDef &ctd) {
+void SemanticAnalysis::visit(ClassTypeDef &ctd) {
   if (currScope->duplicateDeclaration(ctd.getptr()))
     return error("Attempted to declare a Class with an identifier that is "
                  "already in use: " +
@@ -77,7 +77,7 @@ void NameAnalysis::visit(ClassTypeDef &ctd) {
 
   currScope = ctd.outerScope;
 }
-void NameAnalysis::visit(ConstructorDecl &cd) {
+void SemanticAnalysis::visit(ConstructorDecl &cd) {
   cd.outerScope = currScope;
   currScope = cd.getptr();
 
@@ -86,7 +86,7 @@ void NameAnalysis::visit(ConstructorDecl &cd) {
 
   currScope = cd.outerScope;
 }
-void NameAnalysis::visit(ConstructorDef &cd) {
+void SemanticAnalysis::visit(ConstructorDef &cd) {
   cd.outerScope = currScope;
   currScope = cd.getptr();
 
@@ -96,19 +96,19 @@ void NameAnalysis::visit(ConstructorDef &cd) {
 
   currScope = cd.outerScope;
 }
-void NameAnalysis::visit(Deletion &d) { d.deletionVar->accept(*this); }
-void NameAnalysis::visit(DestructorDecl &dd) {}
-void NameAnalysis::visit(DestructorDef &dd) {
+void SemanticAnalysis::visit(Deletion &d) { d.deletionVar->accept(*this); }
+void SemanticAnalysis::visit(DestructorDecl &dd) {}
+void SemanticAnalysis::visit(DestructorDef &dd) {
   dd.destructorBlock->accept(*this);
 }
-void NameAnalysis::visit(DoWhile &dw) {
+void SemanticAnalysis::visit(DoWhile &dw) {
   dw.condition->accept(*this);
   dw.body->accept(*this);
 }
-void NameAnalysis::visit(EnumClassTypeDecl &ectd) {
+void SemanticAnalysis::visit(EnumClassTypeDecl &ectd) {
   // TODO:
 }
-void NameAnalysis::visit(For &f) {
+void SemanticAnalysis::visit(For &f) {
   f.outerScope = currScope;
   currScope = f.getptr();
 
@@ -119,12 +119,12 @@ void NameAnalysis::visit(For &f) {
 
   currScope = f.outerScope;
 }
-void NameAnalysis::visit(FunCall &fc) {
+void SemanticAnalysis::visit(FunCall &fc) {
   // Resolve the FunDecl/FunDef in TypeAnalysis.
   for (unsigned int idx = 0; idx < fc.funArgs.size(); ++idx)
     fc.funArgs[idx]->accept(*this);
 }
-void NameAnalysis::visit(FunDecl &fd) {
+void SemanticAnalysis::visit(FunDecl &fd) {
   // Resolve the FunDecl Signature in TypeAnalysis.
   if (!inClassTypeDef)
     currScope->insertDecl(fd.getptr());
@@ -132,10 +132,14 @@ void NameAnalysis::visit(FunDecl &fd) {
   for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
 }
-void NameAnalysis::visit(FunDef &fd) {
-  // Resolve the FunDef Signature in TypeAnalysis.
-  if (!inClassTypeDef)
-    currScope->insertDecl(fd.getptr());
+void SemanticAnalysis::visit(FunDef &fd) {
+  const atl::shared_ptr<Decl> existingDecl =
+      currScope->findVarDecl(fd.getIdentifier());
+  if (existingDecl != nullptr)
+    return error("Name Analysis: FunDef Identifier already in use: " +
+                     fd.getIdentifier()->toString(),
+                 fd.getptr());
+  currScope->insertDecl(fd.getptr());
 
   fd.outerScope = currScope;
   currScope = fd.getptr();
@@ -146,22 +150,22 @@ void NameAnalysis::visit(FunDef &fd) {
 
   currScope = fd.outerScope;
 }
-void NameAnalysis::visit(Identifier &i) {
+void SemanticAnalysis::visit(Identifier &i) {
   // TODO
 }
-void NameAnalysis::visit(If &i) {
+void SemanticAnalysis::visit(If &i) {
   i.ifCondition->accept(*this);
   i.ifBody->accept(*this);
   if (i.elseBody)
     i.elseBody->accept(*this);
 }
-void NameAnalysis::visit(IntLiteral &il) {}
-void NameAnalysis::visit(MemberAccess &ma) { ma.object->accept(*this); }
-void NameAnalysis::visit(MemberCall &mc) {
+void SemanticAnalysis::visit(IntLiteral &il) {}
+void SemanticAnalysis::visit(MemberAccess &ma) { ma.object->accept(*this); }
+void SemanticAnalysis::visit(MemberCall &mc) {
   mc.object->accept(*this);
   mc.funCall->accept(*this);
 }
-void NameAnalysis::visit(Namespace &n) {
+void SemanticAnalysis::visit(Namespace &n) {
   n.outerScope = currScope;
   currScope = n.getptr();
 
@@ -171,11 +175,11 @@ void NameAnalysis::visit(Namespace &n) {
   currScope = n.outerScope;
 }
 
-void NameAnalysis::visit(Nullptr &n) {}
-void NameAnalysis::visit(ParenthExpr &pe) { pe.innerExpr->accept(*this); }
-void NameAnalysis::visit(PointerType &pt) {}
-void NameAnalysis::visit(PrefixOp &po) { po.variable->accept(*this); }
-void NameAnalysis::visit(Program &p) {
+void SemanticAnalysis::visit(Nullptr &n) {}
+void SemanticAnalysis::visit(ParenthExpr &pe) { pe.innerExpr->accept(*this); }
+void SemanticAnalysis::visit(PointerType &pt) {}
+void SemanticAnalysis::visit(PrefixOp &po) { po.variable->accept(*this); }
+void SemanticAnalysis::visit(Program &p) {
   currScope = atl::make_shared<Block>(Block({}));
 
   for (unsigned int idx = 0; idx < p.decls.size(); ++idx)
@@ -183,17 +187,17 @@ void NameAnalysis::visit(Program &p) {
 
   p.globalScope = currScope;
 }
-void NameAnalysis::visit(ReferenceType &rt) {
+void SemanticAnalysis::visit(ReferenceType &rt) {
   rt.referencedType->accept(*this);
 }
-void NameAnalysis::visit(Return &r) {
+void SemanticAnalysis::visit(Return &r) {
   if (r.returnExpr)
     r.returnExpr->accept(*this);
 }
-void NameAnalysis::visit(SizeOf &so) {}
-void NameAnalysis::visit(StringLiteral &sl) {}
-void NameAnalysis::visit(StructType &st) {}
-void NameAnalysis::visit(StructTypeDecl &std) {
+void SemanticAnalysis::visit(SizeOf &so) {}
+void SemanticAnalysis::visit(StringLiteral &sl) {}
+void SemanticAnalysis::visit(StructType &st) {}
+void SemanticAnalysis::visit(StructTypeDecl &std) {
   if (currScope->duplicateDeclarationLocal(std.getptr()))
     return error("Attempted to declare a Struct with an identifier that is "
                  "already in use: " +
@@ -217,34 +221,34 @@ void NameAnalysis::visit(StructTypeDecl &std) {
 
   currScope = std.outerScope;
 }
-void NameAnalysis::visit(TertiaryExpr &t) {
+void SemanticAnalysis::visit(TertiaryExpr &t) {
   t.tertiaryCondition->accept(*this);
   t.tertiaryIfBody->accept(*this);
   t.tertiaryElseBody->accept(*this);
 }
-void NameAnalysis::visit(Throw &t) {}
-void NameAnalysis::visit(TypeCast &tc) { tc.expr->accept(*this); }
-void NameAnalysis::visit(TypeDefDecl &tdd) {
+void SemanticAnalysis::visit(Throw &t) {}
+void SemanticAnalysis::visit(TypeCast &tc) { tc.expr->accept(*this); }
+void SemanticAnalysis::visit(TypeDefDecl &tdd) {
   // TODO:
 }
-void NameAnalysis::visit(ValueAt &va) { va.derefExpr->accept(*this); }
-void NameAnalysis::visit(VarDecl &vd) {
-  if (!inClassTypeDef && currScope->duplicateDeclarationLocal(vd.getptr()))
-    return error("Attempted to declare a Variable with an identifier that is "
-                 "already in use: " +
+void SemanticAnalysis::visit(ValueAt &va) { va.derefExpr->accept(*this); }
+void SemanticAnalysis::visit(VarDecl &vd) {
+  if (currScope->findVarDecl(vd.getIdentifier()))
+    return error("Name Analysis: Attempted to declare a Variable with an "
+                 "identifier that is already in use: " +
                      vd.getIdentifier()->toString(),
                  atl::static_pointer_cast<Decl>(vd.getptr()));
   currScope->insertDecl(vd.getptr());
 }
-void NameAnalysis::visit(VarDef &vd) {
-  if (!inClassTypeDef && currScope->duplicateDeclarationLocal(vd.getptr()))
-    return error("Attempted to define a Variable with an identifier that is "
-                 "already in use: " +
+void SemanticAnalysis::visit(VarDef &vd) {
+  if (currScope->findVarDecl(vd.getIdentifier()))
+    return error("Name Analysis: Attempted to define a Variable with an "
+                 "identifier that is already in use: " +
                      vd.getIdentifier()->toString(),
                  atl::static_pointer_cast<Decl>(vd.getptr()));
   currScope->insertDecl(vd.getptr());
 }
-void NameAnalysis::visit(VarExpr &ve) {
+void SemanticAnalysis::visit(VarExpr &ve) {
   const atl::shared_ptr<VarDecl> varDecl =
       currScope->resolveVarExpr(ve.varIdentifier);
   if (varDecl == nullptr)
@@ -253,7 +257,7 @@ void NameAnalysis::visit(VarExpr &ve) {
                  ve.getptr());
   ve.varDecl = varDecl;
 }
-void NameAnalysis::visit(While &w) {
+void SemanticAnalysis::visit(While &w) {
   w.condition->accept(*this);
   w.body->accept(*this);
 }
