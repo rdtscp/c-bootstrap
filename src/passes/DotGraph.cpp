@@ -91,6 +91,9 @@ atl::string DotGraph::visit(BaseType &bt) {
   case PrimitiveType::BOOL:
     output = "bool";
     break;
+  case PrimitiveType::NULLPTR_T:
+    output = "nullptr_t";
+    break;
   }
   if (bt.typeModifiers.find(Type::Modifiers::CONST)) {
     output += " const ";
