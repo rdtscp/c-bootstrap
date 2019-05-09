@@ -12,6 +12,8 @@ public:
 
   AddressOf(const atl::shared_ptr<Expr> &p_addressOfExpr);
 
+  atl::string getSignature() const override;
+
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

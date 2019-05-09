@@ -8,6 +8,13 @@ Allocation::Allocation(const atl::shared_ptr<Type> &p_varType)
 Allocation::Allocation(const atl::shared_ptr<FunCall> &p_varConstructorCall)
     : varType(nullptr), varConstructorCall(p_varConstructorCall) {}
 
+atl::string Allocation::getSignature() const {
+  if (varType != nullptr)
+    return varType->getSignature() + "*";
+
+  return varConstructorCall->getSignature() + "*";
+}
+
 bool Allocation::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<Allocation *>(&rhs);

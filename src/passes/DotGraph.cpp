@@ -401,7 +401,7 @@ atl::string DotGraph::visit(MemberAccess &ma) {
   const atl::string objID = ma.object->accept(*this);
   const atl::string fieldID =
       "MemberAccess_Field" + atl::to_string(++nodeCount);
-  declare(fieldID, ma.fieldIdentifier->toString());
+  declare(fieldID, ma.fieldVariable->varIdentifier->toString());
 
   join(memberAccessID, fieldID);
   join(memberAccessID, objID);

@@ -12,6 +12,8 @@ public:
 
   ValueAt(const atl::shared_ptr<Expr> &p_derefExpr);
 
+  atl::string getSignature() const override;
+
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

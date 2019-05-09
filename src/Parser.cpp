@@ -1196,8 +1196,10 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
               atl::make_shared<MemberCall>(MemberCall(output, memberFunCall)));
         } else {
           const atl::shared_ptr<Identifier> fieldIdentifier = parseIdentifier();
+          const atl::shared_ptr<VarExpr> fieldVarExpr = createNode<VarExpr>(
+              atl::shared_ptr<VarExpr>(new VarExpr(fieldIdentifier)));
           output = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
-              MemberAccess(output, fieldIdentifier)));
+              MemberAccess(output, fieldVarExpr)));
         }
       } else {
         expect(TC::LSBR);
@@ -1223,8 +1225,10 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
               atl::make_shared<MemberCall>(MemberCall(output, memberFunCall)));
         } else {
           const atl::shared_ptr<Identifier> fieldIdentifier = parseIdentifier();
+          const atl::shared_ptr<VarExpr> fieldVarExpr = createNode<VarExpr>(
+              atl::shared_ptr<VarExpr>(new VarExpr(fieldIdentifier)));
           output = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
-              MemberAccess(output, fieldIdentifier)));
+              MemberAccess(output, fieldVarExpr)));
         }
       } else {
         expect(TC::LSBR);
@@ -1247,8 +1251,10 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
             atl::make_shared<MemberCall>(MemberCall(output, memberFunCall)));
       } else {
         const atl::shared_ptr<Identifier> fieldIdentifier = parseIdentifier();
-        output = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
-            MemberAccess(output, fieldIdentifier)));
+        const atl::shared_ptr<VarExpr> fieldVarExpr = createNode<VarExpr>(
+            atl::shared_ptr<VarExpr>(new VarExpr(fieldIdentifier)));
+        output = createNode<MemberAccess>(
+            atl::make_shared<MemberAccess>(MemberAccess(output, fieldVarExpr)));
       }
     } else {
       expect(TC::LSBR);

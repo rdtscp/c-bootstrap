@@ -4,6 +4,8 @@ using namespace ACC;
 
 BoolLiteral::BoolLiteral(const atl::string &p_literal) : Literal(p_literal) {}
 
+atl::string BoolLiteral::getSignature() const { return "bool"; }
+
 bool BoolLiteral::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<BoolLiteral *>(&rhs);

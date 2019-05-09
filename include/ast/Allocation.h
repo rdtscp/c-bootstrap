@@ -18,6 +18,8 @@ public:
 
   virtual ~Allocation() {}
 
+  atl::string getSignature() const override;
+
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

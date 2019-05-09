@@ -4,6 +4,7 @@ using namespace ACC;
 
 IntLiteral::IntLiteral(const atl::string &p_literal) : Literal(p_literal) {}
 
+
 bool IntLiteral::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<IntLiteral *>(&rhs);

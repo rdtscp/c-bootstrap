@@ -17,6 +17,8 @@ public:
                const atl::shared_ptr<Expr> &p_tertiaryIfBody,
                const atl::shared_ptr<Expr> &p_tertiaryElseBody);
 
+  atl::string getSignature() const override;
+
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

@@ -6,6 +6,18 @@ FunCall::FunCall(const atl::shared_ptr<Identifier> &p_funIdentifier,
                  const atl::vector<atl::shared_ptr<Expr>> &p_funArgs)
     : funIdentifier(p_funIdentifier), funArgs(p_funArgs) {}
 
+atl::string FunCall::getSignature() const {
+  atl::string output = funIdentifier->toString() + "(";
+  const int numArgs = funArgs.size();
+  for (int idx = 0; idx < numArgs; ++idx) {
+    output += funArgs[idx]->getSignature();
+    if (idx < numArgs - 1)
+      output += ", ";
+  }
+  output += ")";
+  return output;
+}
+
 bool FunCall::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<FunCall *>(&rhs);

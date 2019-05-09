@@ -4,6 +4,8 @@ using namespace ACC;
 
 SizeOf::SizeOf(const atl::shared_ptr<Type> &p_type) : type(p_type) {}
 
+atl::string SizeOf::getSignature() const { return "int"; }
+
 bool SizeOf::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<SizeOf *>(&rhs);

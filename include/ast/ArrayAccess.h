@@ -15,6 +15,8 @@ public:
   ArrayAccess(const atl::shared_ptr<Expr> &p_array,
               const atl::shared_ptr<Expr> &p_index);
 
+  atl::string getSignature() const override;
+
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

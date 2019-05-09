@@ -6,6 +6,10 @@ MemberCall::MemberCall(const atl::shared_ptr<Expr> &p_object,
                        const atl::shared_ptr<FunCall> &p_funCall)
     : object(p_object), funCall(p_funCall) {}
 
+atl::string MemberCall::getSignature() const {
+  return funCall->getSignature();
+}    
+
 bool MemberCall::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<MemberCall *>(&rhs);
