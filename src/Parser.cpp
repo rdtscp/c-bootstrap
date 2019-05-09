@@ -380,9 +380,16 @@ atl::shared_ptr<Identifier> Parser::parseIdentifier() {
 atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
   expect(TC::CLASS);
   const atl::shared_ptr<Identifier> classIdentifier = parseIdentifier();
-  expect(TC::LBRA);
+  atl::shared_ptr<ClassType> classType = createNode<ClassType>(
+      atl::shared_ptr<ClassType>(new ClassType(classIdentifier)));
+  if (accept(TC::SC)) {
+    return createNode<ClassTypeDecl>(
+        atl::shared_ptr<ClassTypeDecl>(new ClassTypeDecl(classType)));
+  }
 
-  atl::shared_ptr<ClassType> classType(new ClassType(classIdentifier));
+  // TODO: Parse Inheritance
+
+  expect(TC::LBRA);
 
   atl::vector<atl::shared_ptr<Decl>> classDecls;
   TC currVisibility = TC::PRIVATE;
