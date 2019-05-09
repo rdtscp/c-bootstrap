@@ -11,10 +11,9 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
-// "test/tests/Test_ASTAnalysis/";
-atl::string test_prefix = "../../test/tests/Test_ASTAnalysis/";
+atl::string test_prefix = "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
+                          "test/tests/Test_ASTAnalysis/";
+// atl::string test_prefix = "../../test/tests/Test_ASTAnalysis/";
 
 TEST(Test_ASTAnalysis, AmbiguousIdentifier) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
@@ -126,6 +125,22 @@ TEST(Test_ASTAnalysis, StringClass) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
+TEST(Test_ASTAnalysis, UndefinedClass) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "UndefinedClass/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis semanticAnalysis(progAST);
+  semanticAnalysis.run();
+  semanticAnalysis.printErrors();
+  ASSERT_NE(0, semanticAnalysis.errorCount);
+}
+
 TEST(Test_ASTAnalysis, UndefinedFunction) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "UndefinedFunction/test.cpp");
@@ -139,7 +154,7 @@ TEST(Test_ASTAnalysis, UndefinedFunction) {
   SemanticAnalysis semanticAnalysis(progAST);
   semanticAnalysis.run();
   semanticAnalysis.printErrors();
-  ASSERT_EQ(0, semanticAnalysis.errorCount);
+  ASSERT_NE(0, semanticAnalysis.errorCount);
 }
 
 TEST(Test_ASTAnalysis, UndefinedVariable) {
