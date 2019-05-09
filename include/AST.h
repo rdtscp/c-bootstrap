@@ -47,8 +47,6 @@
 #include "ast/SizeOf.h"
 #include "ast/Stmt.h"
 #include "ast/StringLiteral.h"
-#include "ast/StructType.h"
-#include "ast/StructTypeDecl.h"
 #include "ast/TertiaryExpr.h"
 #include "ast/Throw.h"
 #include "ast/Type.h"

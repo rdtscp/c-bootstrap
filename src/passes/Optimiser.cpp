@@ -226,12 +226,6 @@ atl::shared_ptr<ASTNode> Optimiser::visit(SizeOf &so) { return so.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(StringLiteral &sl) {
   return sl.getptr();
 }
-atl::shared_ptr<ASTNode> Optimiser::visit(StructType &st) {
-  return st.getptr();
-}
-atl::shared_ptr<ASTNode> Optimiser::visit(StructTypeDecl &std) {
-  return std.getptr();
-}
 atl::shared_ptr<ASTNode> Optimiser::visit(TertiaryExpr &t) {
   return t.getptr();
 }

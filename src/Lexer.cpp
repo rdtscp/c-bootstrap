@@ -274,24 +274,13 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::SIZEOF, scanner.getPosition());
     }
-    // Check for STRUCT and STATIC Token.
+    // Check for STATIC Token.
     else if (c == 's' && scanner.peek() == 't') {
-      c = scanner.next();
-      if (scanner.peek() == 'a') {
-        atl::pair<bool, atl::string> lexResult = tryLexKeyword("tatic");
-        literal += lexResult.second;
+      atl::pair<bool, atl::string> lexResult = tryLexKeyword("static");
+      literal = lexResult.second;
 
-        if (lexResult.first)
-          return SourceToken(TC::STATIC, scanner.getPosition());
-      } else if (scanner.peek() == 'r') {
-        atl::pair<bool, atl::string> lexResult = tryLexKeyword("truct");
-        literal += lexResult.second;
-
-        if (lexResult.first)
-          return SourceToken(TC::STRUCT, scanner.getPosition());
-      } else {
-        literal += c;
-      }
+      if (lexResult.first)
+        return SourceToken(TC::STATIC, scanner.getPosition());
     }
     // Check for TEMPLATE
     else if (c == 't' && scanner.peek() == 'e') {

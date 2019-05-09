@@ -100,9 +100,6 @@ bool Parser::acceptDecl(int offset) {
   if (acceptClassTypeDecl(offset))
     return true;
 
-  if (acceptStructTypeDecl(offset))
-    return true;
-
   if (acceptVarDecl(offset))
     return true;
 
@@ -133,14 +130,6 @@ bool Parser::acceptFunDecl(int offset) {
   if (accept(TC::STATIC))
     ++offset;
 
-  if (acceptStructType(offset)) {
-    offset += 2;
-    while (accept(TC::ASTERIX, offset))
-      ++offset;
-    return (accept(TC::IDENTIFIER, offset) || acceptOpOverload(offset)) &&
-           accept(TC::LPAR, offset + 1);
-  }
-
   if (acceptType(offset)) {
     if (accept(TC::CONST))
       ++offset;
@@ -167,15 +156,6 @@ bool Parser::acceptOpOverload(int offset) {
                  TC::OPGE, TC::OPGT, TC::OPLE, TC::OPLT, TC::OPNE},
                 offset);
 }
-bool Parser::acceptStructTypeDecl(int offset) {
-  if (!acceptStructType(offset))
-    return false;
-
-  if (!accept(TC::LBRA, offset + 2))
-    return false;
-
-  return true;
-}
 bool Parser::acceptTypeDefDecl(int offset) { return accept(TC::TYPEDEF); }
 bool Parser::acceptVarDecl(int offset) {
   if (accept(TC::STATIC))
@@ -187,21 +167,8 @@ bool Parser::acceptVarDecl(int offset) {
   if (accept(TC::CONST))
     ++offset;
 
-  if (accept(TC::STRUCT, offset)) {
-    ++offset;
-    if (!accept(TC::IDENTIFIER, offset))
-      return false;
-
-    ++offset;
-    while (accept(TC::ASTERIX, offset))
-      ++offset;
-
-    if (!accept(TC::IDENTIFIER, offset))
-      return false;
-
-  } else if (accept(
-                 {TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UINT, TC::BOOL},
-                 offset)) {
+  if (accept({TC::INT, TC::CHAR, TC::SHORT, TC::VOID, TC::UINT, TC::BOOL},
+             offset)) {
     ++offset;
     if (accept(TC::ASTERIX, offset) && !accept(TC::REF, offset) &&
         !accept(TC::AND, offset))
@@ -247,22 +214,11 @@ bool Parser::acceptVarDecl(int offset) {
 bool Parser::acceptClassType(int offset) {
   return accept(TC::IDENTIFIER, offset);
 }
-bool Parser::acceptStructType(int offset) {
-  if (!accept(TC::STRUCT, offset))
-    return false;
-
-  if (!accept(TC::IDENTIFIER, offset + 1))
-    return false;
-
-  return true;
-}
 bool Parser::acceptType(int offset) {
   if (accept(TC::CONST, offset))
     ++offset;
 
   if (accept({TC::INT, TC::CHAR, TC::VOID, TC::UINT, TC::BOOL}, offset))
-    return true;
-  if (accept(TC::STRUCT, offset) && accept(TC::IDENTIFIER, offset + 1))
     return true;
 
   if (accept(TC::IDENTIFIER, offset))
@@ -502,11 +458,6 @@ atl::shared_ptr<Decl> Parser::parseDecl() {
     expect(TC::SC);
     return ctd;
   }
-  if (acceptStructTypeDecl()) {
-    atl::shared_ptr<StructTypeDecl> std = parseStructTypeDecl();
-    expect(TC::SC);
-    return std;
-  }
 
   if (acceptFunDecl()) {
     atl::shared_ptr<FunDecl> fd = parseFunDecl();
@@ -531,7 +482,7 @@ atl::shared_ptr<Decl> Parser::parseDecl() {
     return ectd;
   }
 
-  throw ACC::Error("Parser: Expected a Struct/Variable/Function Declaration "
+  throw ACC::Error("Parser: Expected a Class/Variable/Function Declaration "
                    "but none was found.",
                    currToken.position);
 }
@@ -646,32 +597,9 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
         new FunDecl(funModifiers, funIdentifier, funParams, funType)));
   }
 }
-atl::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
-  expect(TC::STRUCT);
-  const atl::shared_ptr<Identifier> structIdentifier = parseIdentifier();
-  atl::shared_ptr<StructType> structType(new StructType(structIdentifier));
-  expect(TC::LBRA);
-  atl::vector<atl::shared_ptr<VarDecl>> fields;
-  do {
-    atl::shared_ptr<VarDecl> structField = parseVarDecl();
-    expect(TC::SC);
-    fields.push_back(structField);
-  } while (acceptVarDecl());
-
-  expect(TC::RBRA);
-
-  return createNode<StructTypeDecl>(
-      atl::make_shared<StructTypeDecl>(StructTypeDecl(structType, fields)));
-}
 atl::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
   expect(TC::TYPEDEF);
-  atl::shared_ptr<Type> aliasedType;
-  if (acceptStructTypeDecl()) {
-    atl::shared_ptr<StructTypeDecl> std = parseStructTypeDecl();
-    aliasedType = std->structType;
-  } else {
-    aliasedType = parseType();
-  }
+  atl::shared_ptr<Type> aliasedType = parseType();
   const atl::shared_ptr<Identifier> typeAlias = parseIdentifier();
   return createNode<TypeDefDecl>(
       atl::make_shared<TypeDefDecl>(TypeDefDecl(aliasedType, typeAlias)));
@@ -735,12 +663,7 @@ atl::shared_ptr<Type> Parser::parseType() {
     typeModifiers.insert(Type::Modifiers::CONST);
   }
   atl::shared_ptr<Type> type;
-  if (acceptStructType()) {
-    expect(TC::STRUCT);
-    const atl::shared_ptr<Identifier> structIdentifier = parseIdentifier();
-    type = createNode<StructType>(
-        atl::make_shared<StructType>(StructType(structIdentifier)));
-  } else if (acceptClassType()) {
+  if (acceptClassType()) {
     const atl::shared_ptr<Identifier> classIdentifier = parseIdentifier();
     type = createNode<ClassType>(
         atl::make_shared<ClassType>(ClassType(classIdentifier)));

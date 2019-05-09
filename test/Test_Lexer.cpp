@@ -39,7 +39,6 @@ TEST(Test_Lexer, AllTokens) {
       SourceToken::Class::ELSE,
       SourceToken::Class::WHILE,
       SourceToken::Class::RETURN,
-      SourceToken::Class::STRUCT,
       SourceToken::Class::SIZEOF,
       SourceToken::Class::IDENTIFIER,
       SourceToken::Class::STRING_LITERAL,

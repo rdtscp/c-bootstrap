@@ -57,8 +57,6 @@ add_library(AST SHARED
   src/ast/Scope.cpp
   src/ast/SizeOf.cpp
   src/ast/StringLiteral.cpp
-  src/ast/StructType.cpp
-  src/ast/StructTypeDecl.cpp
   src/ast/TertiaryExpr.cpp
   src/ast/Throw.cpp
   src/ast/TypeCast.cpp

@@ -22,16 +22,13 @@ Progressively changing to adopt new features of the language(s).
 
     program      -> (include)* (decl)* EOF
 
-    decl         -> structdecl ";"
-                 -> classdecl ";"
+    decl         -> classdecl ";"
                  -> vardecl ";"
                  -> arrvardecl ";"
                  -> fundecl ";"
                  -> fundef
                  -> typedecl ";"
                  -> enumdecl ";"
-
-    structdecl   -> structtype "{" (vardecl)+ "}"
 
     classdecl    -> "class" IDENT "{" (decl | accessmod )* "}" ";"
 
@@ -49,15 +46,13 @@ Progressively changing to adopt new features of the language(s).
 
     fundef       -> type IDENT "(" params ")" block
 
-    typedecl     -> "typedef" (type | structdecl) IDENT
+    typedecl     -> "typedef" type IDENT
 
     enumdecl     -> "enum" "{" statelist "}"
 
     statelist    -> (IDENT ["=" INT_LITERAL] ",")* IDENT ["=" INT_LITERAL]
 
-    type         -> ("int" | "char" | "void", "unsigned int", "bool" | structtype | classtype ) (ASTERIX)*
-
-    structtype   -> "struct" IDENT
+    type         -> ("int" | "char" | "void", "unsigned int", "bool" | classtype ) (ASTERIX)*
 
     classtype    -> IDENT
 
@@ -139,7 +134,7 @@ Progressively changing to adopt new features of the language(s).
                   | "(" exp ")"
                   | exp
 
-------
+* * *
 
 ### macOS Notes
 

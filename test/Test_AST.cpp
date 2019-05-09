@@ -73,18 +73,6 @@ TEST(ASTTest, PointerTypeComparisons) {
   ASSERT_TRUE(voidPtr == voidPtr2);
 }
 
-TEST(ASTTest, StructTypeComparisons) {
-  StructType structType(atl::shared_ptr<Identifier>(new Identifier("struct1")));
-  StructType structType2(
-      atl::shared_ptr<Identifier>(new Identifier("struct2")));
-  StructType structType3(
-      atl::shared_ptr<Identifier>(new Identifier("struct2")));
-
-  ASSERT_FALSE(structType == structType2);
-
-  ASSERT_TRUE(structType2 == structType3);
-}
-
 TEST(ASTTest, VarDeclComparisons) {
   VarDecl vd1(atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
               atl::shared_ptr<Identifier>(new Identifier("var1")));

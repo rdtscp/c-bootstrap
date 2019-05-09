@@ -472,17 +472,6 @@ atl::string DotGraph::visit(StringLiteral &sl) {
   declare(strID, "\\\"" + sl.getLiteral() + "\\\"");
   return strID;
 }
-atl::string DotGraph::visit(StructType &st) {
-  return "struct " + st.identifier->toString();
-}
-atl::string DotGraph::visit(StructTypeDecl &std) {
-  const atl::string structTypeDeclID =
-      "StructTypeDecl" + atl::to_string(++nodeCount);
-  declare(structTypeDeclID, std.structType->accept(*this) + " = {}");
-  for (unsigned int idx = 0; idx < std.varDecls.size(); ++idx)
-    join(structTypeDeclID, std.varDecls[idx]->accept(*this));
-  return structTypeDeclID;
-}
 atl::string DotGraph::visit(TertiaryExpr &t) {
   const atl::string tertiaryID = "TertiaryExpr" + atl::to_string(++nodeCount);
   const atl::string conditionID = t.tertiaryCondition->accept(*this);

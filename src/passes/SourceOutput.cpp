@@ -363,18 +363,6 @@ atl::string SourceOutput::visit(SizeOf &so) {
   return output;
 }
 atl::string SourceOutput::visit(StringLiteral &sl) { return sl.getLiteral(); }
-atl::string SourceOutput::visit(StructType &st) {
-  return "struct " + st.identifier->toString();
-}
-atl::string SourceOutput::visit(StructTypeDecl &std) {
-  atl::string output = std.getIdentifier()->toString() + " {";
-  for (unsigned int i = 0; i < std.varDecls.size(); ++i) {
-    output += "\n";
-    output += std.varDecls[i]->accept(*this);
-  }
-  output += "\n};";
-  return output;
-}
 atl::string SourceOutput::visit(TertiaryExpr &t) {
   atl::string output;
   output += t.tertiaryCondition->accept(*this);

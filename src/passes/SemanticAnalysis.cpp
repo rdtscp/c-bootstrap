@@ -348,36 +348,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(StringLiteral &sl) {
   return atl::shared_ptr<PointerType>(new PointerType(
       atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR))));
 }
-atl::shared_ptr<Type> SemanticAnalysis::visit(StructType &st) {
-  // TODO: Check StructTypeDecl exists.
-  return st.getptr();
-}
-atl::shared_ptr<Type> SemanticAnalysis::visit(StructTypeDecl &std) {
-  // TODO
-  // if (currScope->duplicateDeclarationLocal(std.getptr()))
-  //   return error("Attempted to declare a Struct with an identifier that is "
-  //                "already in use: " +
-  //                    std.getIdentifier()->toString(),
-  //                std.getptr());
-
-  // currScope->insertDecl(std.getptr());
-
-  // std.outerScope = currScope;
-  // currScope = std.getptr();
-
-  // /* Check that the fields in this struct are unique */
-  // for (unsigned int idx = 0; idx < std.varDecls.size(); ++idx) {
-  //   if (currScope->duplicateDeclarationLocal(std.varDecls[idx]))
-  //     return error("Struct " + std.getIdentifier()->toString() +
-  //                      " contained multiple fields with the same identifier:
-  //                      " + std.varDecls[idx]->getIdentifier()->toString(),
-  //                  atl::static_pointer_cast<Decl>(std.varDecls[idx]));
-  //   std.varDecls[idx]->accept(*this);
-  // }
-
-  // currScope = std.outerScope;
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
-}
 atl::shared_ptr<Type> SemanticAnalysis::visit(TertiaryExpr &t) {
   const atl::shared_ptr<Type> conditionType =
       t.tertiaryCondition->accept(*this);
