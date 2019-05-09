@@ -638,18 +638,12 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
         currToken.position);
   } else if (acceptBlock()) {
     atl::shared_ptr<Block> funBlock = parseBlock();
-    atl::shared_ptr<FunDef> fd(
-        new FunDef(funModifiers, funIdentifier, funParams, funType, funBlock));
-    return fd;
-    // return atl::make_shared<FunDef>(
-    //     FunDef(funBlock, funIdent, funParams, funType));
+    return createNode<FunDef>(atl::shared_ptr<FunDef>(
+        new FunDef(funModifiers, funIdentifier, funParams, funType, funBlock)));
   } else {
     expect(TC::SC);
-    atl::shared_ptr<FunDecl> fd(
-        new FunDecl(funModifiers, funIdentifier, funParams, funType));
-    return fd;
-    // return atl::make_shared<FunDecl>(FunDecl(funIdent, funParams,
-    // funType));
+    return createNode<FunDecl>(atl::shared_ptr<FunDecl>(
+        new FunDecl(funModifiers, funIdentifier, funParams, funType)));
   }
 }
 atl::shared_ptr<StructTypeDecl> Parser::parseStructTypeDecl() {
