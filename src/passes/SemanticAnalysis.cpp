@@ -317,7 +317,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(PointerType &pt) {
-  pt.pointedType->accept(*this);
   return pt.getptr();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(PrefixOp &po) {
@@ -413,7 +412,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(TypeDefDecl &tdd) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ValueAt &va) {
-  return va.derefExpr->accept(*this);
+  const atl::shared_ptr<Type> exprType = va.derefExpr->accept(*this);
+  if (exprType->astClass() != "PointerType")
+    return error("Type Analysis",
+                 "Attempted to dereference variable that wasn't a pointer. ",
+                 va.derefExpr);
+  return atl::static_pointer_cast<PointerType>(exprType)->pointedType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
   if (vd.type->astClass() == "ClassType") {
