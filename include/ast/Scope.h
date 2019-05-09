@@ -12,8 +12,16 @@ public:
   Scope();
   ~Scope() {}
 
+  atl::shared_ptr<ClassTypeDecl>
+  findClassDecl(const atl::shared_ptr<Identifier> identifier) const;
+
+  atl::shared_ptr<ClassTypeDef>
+  findClassDef(const atl::shared_ptr<Identifier> identifier) const;
+
   atl::shared_ptr<VarDecl>
   findVarDecl(const atl::shared_ptr<Identifier> identifier) const;
+
+  /* Old */
 
   void insertDecl(const atl::shared_ptr<Decl> &decl);
 
