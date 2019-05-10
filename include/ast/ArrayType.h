@@ -1,14 +1,13 @@
 #pragma once
 
 #include "Expr.h"
-#include "Type.h"
+#include "PointerType.h"
 
 namespace ACC {
 
-class ArrayType : public Type, public atl::enable_shared_from_this<ArrayType> {
+class ArrayType : public PointerType {
 
 public:
-  atl::shared_ptr<Type> type;
   atl::shared_ptr<Expr> size;
 
   ArrayType(const atl::shared_ptr<Type> &p_type,
@@ -24,7 +23,9 @@ public:
   bool operator==(const ArrayType &rhs) const;
   bool operator!=(const ArrayType &rhs) const;
 
-  atl::shared_ptr<ArrayType> getptr() { return shared_from_this(); }
+  atl::shared_ptr<PointerType> getptr() {
+    return PointerType::shared_from_this();
+  }
 
   atl::string astClass() const override { return "ArrayType"; }
 

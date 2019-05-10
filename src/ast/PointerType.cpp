@@ -1,5 +1,6 @@
 #include "ast/PointerType.h"
 #include "ast/ArrayType.h"
+#include "ast/ReferenceType.h"
 
 using namespace ACC;
 
@@ -15,11 +16,16 @@ atl::string PointerType::getSignature() const {
 bool PointerType::operator==(Type &rhs) const {
   if (rhs.astClass() == "ArrayType") {
     const ArrayType &at = *static_cast<ArrayType *>(&rhs);
-    return pointedType->astClass() == at.type->astClass();
+    return pointedType->astClass() == at.pointedType->astClass();
+  } else if (rhs.astClass() == "ReferenceType") {
+    const atl::shared_ptr<ReferenceType> rhsRefType(
+        static_cast<ReferenceType *>(&rhs));
+    return *this == *rhsRefType->referencedType;
+  } else {
+    if (rhs.astClass() == astClass())
+      return *this == *static_cast<PointerType *>(&rhs);
+    return false;
   }
-  if (rhs.astClass() == astClass())
-    return *this == *static_cast<PointerType *>(&rhs);
-  return false;
 }
 
 bool PointerType::operator!=(Type &t) const { return !(*this == t); }

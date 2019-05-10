@@ -1,4 +1,5 @@
 #include "ast/BaseType.h"
+#include "ast/ReferenceType.h"
 
 using namespace ACC;
 
@@ -43,9 +44,15 @@ atl::string BaseType::getSignature() const {
 }
 
 bool BaseType::operator==(Type &rhs) const {
-  if (rhs.astClass() == astClass())
-    return *this == *static_cast<BaseType *>(&rhs);
-  return false;
+  if (rhs.astClass() == "ReferenceType") {
+    const atl::shared_ptr<ReferenceType> rhsRefType(
+        static_cast<ReferenceType *>(&rhs));
+    return *this == *rhsRefType->referencedType;
+  } else {
+    if (rhs.astClass() == astClass())
+      return *this == *static_cast<BaseType *>(&rhs);
+    return false;
+  }
 }
 bool BaseType::operator!=(Type &t) const { return !(*this == t); }
 

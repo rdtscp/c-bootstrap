@@ -1,5 +1,5 @@
 #include "ast/ClassType.h"
-
+#include "ast/ReferenceType.h"
 #include "ast/VarDecl.h"
 
 using namespace ACC;
@@ -28,9 +28,15 @@ int ClassType::getBytes() const {
 atl::string ClassType::getSignature() const { return identifier->toString(); }
 
 bool ClassType::operator==(Type &rhs) const {
-  if (rhs.astClass() == astClass())
-    return *this == *static_cast<ClassType *>(&rhs);
-  return false;
+  if (rhs.astClass() == "ReferenceType") {
+    const atl::shared_ptr<ReferenceType> rhsRefType(
+        static_cast<ReferenceType *>(&rhs));
+    return *this == *rhsRefType->referencedType;
+  } else {
+    if (rhs.astClass() == astClass())
+      return *this == *static_cast<ClassType *>(&rhs);
+    return false;
+  }
 }
 
 bool ClassType::operator!=(Type &rhs) const { return !(*this == rhs); }
