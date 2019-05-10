@@ -19,6 +19,8 @@ int BaseType::getBytes() const {
     return 4;
   case PrimitiveType::BOOL:
     return 1;
+  case PrimitiveType::NULLPTR_T:
+    return 4;
   default:
     return 4;
   }
@@ -38,8 +40,10 @@ atl::string BaseType::getSignature() const {
     return "uint";
   case PrimitiveType::BOOL:
     return "bool";
+  case PrimitiveType::NULLPTR_T:
+    return "nullptr_t";
   default:
-    return "void";
+    return "nullptr_t";
   }
 }
 
