@@ -8,10 +8,10 @@ using namespace ACC;
 
 ArrayType::ArrayType(const atl::shared_ptr<Type> &p_type,
                      const atl::shared_ptr<Expr> &p_size)
-    : type(p_type), size(p_size) {}
+    : PointerType(p_type), size(p_size) {}
 
 int ArrayType::getBytes() const {
-  int elementSize = type->getBytes();
+  int elementSize = pointedType->getBytes();
   if (size->astClass() != "IntLiteral")
     throw ACC::Error(
         "Internal Error: Attempted to getBytes() of dynamic ArrayType.");
@@ -22,13 +22,13 @@ int ArrayType::getBytes() const {
 }
 
 atl::string ArrayType::getSignature() const {
-  return type->getSignature() + "[]";
+  return pointedType->getSignature() + "[]";
 }
 
 bool ArrayType::operator==(Type &rhs) const {
   if (rhs.astClass() == "PointerType") {
     const PointerType &pt = *static_cast<PointerType *>(&rhs);
-    return type->astClass() == pt.pointedType->astClass();
+    return pointedType->astClass() == pt.pointedType->astClass();
   }
   if (rhs.astClass() == astClass())
     return *this == *static_cast<ArrayType *>(&rhs);
@@ -38,7 +38,7 @@ bool ArrayType::operator==(Type &rhs) const {
 bool ArrayType::operator!=(Type &t) const { return !(*this == t); }
 
 bool ArrayType::operator==(const ArrayType &rhs) const {
-  return (*type == *rhs.type && *size == *rhs.size);
+  return (*pointedType == *rhs.pointedType && *size == *rhs.size);
 }
 
 bool ArrayType::operator!=(const ArrayType &rhs) const {

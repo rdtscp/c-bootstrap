@@ -11,11 +11,14 @@ atl::string ReferenceType::getSignature() const {
   return referencedType->getSignature() + "&";
 }
 
-
 bool ReferenceType::operator==(Type &rhs) const {
-  if (rhs.astClass() == astClass())
-    return *this == *static_cast<ReferenceType *>(&rhs);
-  return false;
+  if (referencedType->astClass() == rhs.astClass()) {
+    return *referencedType == rhs;
+  } else {
+    if (rhs.astClass() == astClass())
+      return *this == *static_cast<ReferenceType *>(&rhs);
+    return false;
+  }
 }
 
 bool ReferenceType::operator!=(Type &t) const { return !(*this == t); }

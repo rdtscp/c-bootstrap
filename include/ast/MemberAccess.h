@@ -2,6 +2,7 @@
 
 #include "Expr.h"
 #include "Identifier.h"
+#include "SourceToken.h"
 #include "Type.h"
 #include "VarExpr.h"
 
@@ -11,11 +12,13 @@ class MemberAccess : public Expr,
                      public atl::enable_shared_from_this<MemberAccess> {
 
 public:
+  SourceToken::Class accessType;
   atl::shared_ptr<Expr> object;
   atl::shared_ptr<VarExpr> fieldVariable;
 
   MemberAccess(const atl::shared_ptr<Expr> &p_object,
-               const atl::shared_ptr<VarExpr> &p_fieldVariable);
+               const atl::shared_ptr<VarExpr> &p_fieldVariable,
+               const SourceToken::Class &p_accessType);
 
   atl::string getSignature() const override;
 

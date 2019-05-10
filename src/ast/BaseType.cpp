@@ -1,4 +1,5 @@
 #include "ast/BaseType.h"
+#include "ast/ReferenceType.h"
 
 using namespace ACC;
 
@@ -18,6 +19,8 @@ int BaseType::getBytes() const {
     return 4;
   case PrimitiveType::BOOL:
     return 1;
+  case PrimitiveType::NULLPTR_T:
+    return 4;
   default:
     return 4;
   }
@@ -37,15 +40,23 @@ atl::string BaseType::getSignature() const {
     return "uint";
   case PrimitiveType::BOOL:
     return "bool";
+  case PrimitiveType::NULLPTR_T:
+    return "nullptr_t";
   default:
-    return "void";
+    return "nullptr_t";
   }
 }
 
 bool BaseType::operator==(Type &rhs) const {
-  if (rhs.astClass() == astClass())
-    return *this == *static_cast<BaseType *>(&rhs);
-  return false;
+  if (rhs.astClass() == "ReferenceType") {
+    const atl::shared_ptr<ReferenceType> rhsRefType(
+        static_cast<ReferenceType *>(&rhs));
+    return *this == *rhsRefType->referencedType;
+  } else {
+    if (rhs.astClass() == astClass())
+      return *this == *static_cast<BaseType *>(&rhs);
+    return false;
+  }
 }
 bool BaseType::operator!=(Type &t) const { return !(*this == t); }
 
