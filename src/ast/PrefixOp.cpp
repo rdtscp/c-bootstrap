@@ -1,4 +1,3 @@
-
 #include "ast/PrefixOp.h"
 
 using namespace ACC;
