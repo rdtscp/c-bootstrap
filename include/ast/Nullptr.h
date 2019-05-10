@@ -12,6 +12,8 @@ public:
 
   Nullptr();
 
+  atl::string getSignature() const override { return "nullptr_t"; }
+
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

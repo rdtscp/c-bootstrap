@@ -3,8 +3,13 @@
 using namespace ACC;
 
 MemberAccess::MemberAccess(const atl::shared_ptr<Expr> &p_object,
-                           const atl::shared_ptr<Identifier> &p_fieldIdentifier)
-    : object(p_object), fieldIdentifier(p_fieldIdentifier) {}
+                           const atl::shared_ptr<VarExpr> &p_fieldVariable)
+    : object(p_object), fieldVariable(p_fieldVariable) {}
+
+  atl::string MemberAccess::getSignature() const {
+    return "TODO";
+  }
+
 
 bool MemberAccess::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
@@ -18,7 +23,7 @@ bool MemberAccess::operator==(const MemberAccess &rhs) const {
   if (*object != *rhs.object)
     return false;
 
-  if (*fieldIdentifier != *rhs.fieldIdentifier)
+  if (*fieldVariable != *rhs.fieldVariable)
     return false;
 
   return true;

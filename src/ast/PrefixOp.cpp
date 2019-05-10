@@ -7,6 +7,8 @@ PrefixOp::PrefixOp(const Op p_operation,
                    const atl::shared_ptr<VarExpr> &p_variable)
     : operation(p_operation), variable(p_variable) {}
 
+atl::string PrefixOp::getSignature() const { return "int"; }
+
 bool PrefixOp::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<PrefixOp *>(&rhs);

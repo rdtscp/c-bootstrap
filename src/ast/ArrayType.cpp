@@ -1,5 +1,6 @@
 #include "ast/ArrayType.h"
 #include "ast/IntLiteral.h"
+#include "ast/PointerType.h"
 
 #include "Error.h"
 
@@ -25,6 +26,10 @@ atl::string ArrayType::getSignature() const {
 }
 
 bool ArrayType::operator==(Type &rhs) const {
+  if (rhs.astClass() == "PointerType") {
+    const PointerType &pt = *static_cast<PointerType *>(&rhs);
+    return type->astClass() == pt.pointedType->astClass();
+  }
   if (rhs.astClass() == astClass())
     return *this == *static_cast<ArrayType *>(&rhs);
   return false;

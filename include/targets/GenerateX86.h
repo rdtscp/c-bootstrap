@@ -75,8 +75,6 @@ private:
   atl::shared_ptr<X86::Operand> visit(Return &r) override;
   atl::shared_ptr<X86::Operand> visit(SizeOf &so) override;
   atl::shared_ptr<X86::Operand> visit(StringLiteral &sl) override;
-  atl::shared_ptr<X86::Operand> visit(StructType &st) override;
-  atl::shared_ptr<X86::Operand> visit(StructTypeDecl &std) override;
   atl::shared_ptr<X86::Operand> visit(TertiaryExpr &t) override;
   atl::shared_ptr<X86::Operand> visit(Throw &t) override;
   atl::shared_ptr<X86::Operand> visit(TypeCast &tc) override;

@@ -21,12 +21,6 @@ int ClassType::getBytes() const {
               ->getBytes();
     }
   }
-  // atl::vector<atl::shared_ptr<VarDecl>> typeVarDecls =
-  // typeDefinition->varDecls; for (int idx = 0; idx < typeVarDecls.size();
-  // ++idx) {
-  //   const atl::shared_ptr<VarDecl> &structField = typeVarDecls[idx];
-  //   aggregateBytes += structField->type->getBytes();
-  // }
 
   return aggregateBytes;
 }

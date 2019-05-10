@@ -91,6 +91,9 @@ atl::string DotGraph::visit(BaseType &bt) {
   case PrimitiveType::BOOL:
     output = "bool";
     break;
+  case PrimitiveType::NULLPTR_T:
+    output = "nullptr_t";
+    break;
   }
   if (bt.typeModifiers.find(Type::Modifiers::CONST)) {
     output += " const ";
@@ -401,7 +404,7 @@ atl::string DotGraph::visit(MemberAccess &ma) {
   const atl::string objID = ma.object->accept(*this);
   const atl::string fieldID =
       "MemberAccess_Field" + atl::to_string(++nodeCount);
-  declare(fieldID, ma.fieldIdentifier->toString());
+  declare(fieldID, ma.fieldVariable->varIdentifier->toString());
 
   join(memberAccessID, fieldID);
   join(memberAccessID, objID);
@@ -468,17 +471,6 @@ atl::string DotGraph::visit(StringLiteral &sl) {
   const atl::string strID = "StringLiteral" + atl::to_string(++nodeCount);
   declare(strID, "\\\"" + sl.getLiteral() + "\\\"");
   return strID;
-}
-atl::string DotGraph::visit(StructType &st) {
-  return "struct " + st.identifier->toString();
-}
-atl::string DotGraph::visit(StructTypeDecl &std) {
-  const atl::string structTypeDeclID =
-      "StructTypeDecl" + atl::to_string(++nodeCount);
-  declare(structTypeDeclID, std.structType->accept(*this) + " = {}");
-  for (unsigned int idx = 0; idx < std.varDecls.size(); ++idx)
-    join(structTypeDeclID, std.varDecls[idx]->accept(*this));
-  return structTypeDeclID;
 }
 atl::string DotGraph::visit(TertiaryExpr &t) {
   const atl::string tertiaryID = "TertiaryExpr" + atl::to_string(++nodeCount);

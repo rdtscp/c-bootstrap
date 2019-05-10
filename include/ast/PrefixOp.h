@@ -15,6 +15,8 @@ public:
   PrefixOp(const Op p_operation, const atl::shared_ptr<VarExpr> &p_variable);
   virtual ~PrefixOp() {}
 
+  atl::string getSignature() const override;
+
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

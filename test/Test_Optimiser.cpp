@@ -5,9 +5,8 @@
 #include "Parser.h"
 #include "Preprocessor.h"
 #include "passes/DotGraph.h"
-#include "passes/NameAnalysis.h"
 #include "passes/Optimiser.h"
-#include "passes/TypeAnalysis.h"
+#include "passes/SemanticAnalysis.h"
 
 using namespace ACC;
 
@@ -24,12 +23,10 @@ TEST(Test_Optimiser, FunDecls) {
   ACC::Parser parser(lexer);
   atl::shared_ptr<ACC::Program> progAST = parser.getAST();
 
-  NameAnalysis nameAnalysis(progAST);
+  SemanticAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
-  TypeAnalysis typeAnalysis(progAST);
-  typeAnalysis.run();
-  ASSERT_EQ(0, typeAnalysis.errorCount);
+
   Optimiser optimiser(progAST);
   do {
     optimiser.run();

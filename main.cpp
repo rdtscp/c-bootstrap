@@ -4,10 +4,9 @@
 #include "include/Parser.h"
 #include "include/Preprocessor.h"
 #include "include/passes/DotGraph.h"
-#include "include/passes/NameAnalysis.h"
 #include "include/passes/Optimiser.h"
+#include "include/passes/SemanticAnalysis.h"
 #include "include/passes/SourceOutput.h"
-#include "include/passes/TypeAnalysis.h"
 #include "include/targets/GenerateX86.h"
 
 int main(int argc, char const *argv[]) {
@@ -45,30 +44,29 @@ int main(int argc, char const *argv[]) {
 
   if (preprocess) {
     ACC::SourceHandler src(ACC::SourceHandler::Type::FILEPATH, inFilename);
-    ACC::Preprocessor preprocessor(src, {});
+    ACC::Preprocessor preprocessor(src, {"/Users/alexanderwilson/Documents/"
+                                         "GitHub/c-bootstrap/build/atl/src/",
+                                         "/Users/alexanderwilson/Documents/"
+                                         "GitHub/c-bootstrap/include/"});
     ACC::SourceHandler pp_src = preprocessor.getSource();
-    printf("\n%s\n", pp_src.value.c_str());
+    printf("%s", pp_src.value.c_str());
 
     return 0;
   } else {
     ACC::SourceHandler src(ACC::SourceHandler::Type::FILEPATH, inFilename);
-    ACC::Preprocessor preprocessor(src, {});
+    ACC::Preprocessor preprocessor(src, {"/Users/alexanderwilson/Documents/"
+                                         "GitHub/c-bootstrap/build/atl/src/",
+                                         "/Users/alexanderwilson/Documents/"
+                                         "GitHub/c-bootstrap/include/"});
     ACC::Scanner scanner(preprocessor.getSource());
     ACC::Lexer lexer(scanner);
     ACC::Parser parser(lexer);
     atl::shared_ptr<ACC::Program> progAST = parser.getAST();
 
-    ACC::NameAnalysis nameAnalysis(progAST);
-    nameAnalysis.run();
-    if (nameAnalysis.errorCount > 0) {
-      nameAnalysis.printErrors();
-      return 1;
-    }
-
-    ACC::TypeAnalysis typeAnalysis(progAST);
-    typeAnalysis.run();
-    if (typeAnalysis.errorCount > 0) {
-      typeAnalysis.printErrors();
+    ACC::SemanticAnalysis semanticAnalysis(progAST);
+    semanticAnalysis.run();
+    if (semanticAnalysis.errorCount > 0) {
+      semanticAnalysis.printErrors();
       return 1;
     }
 

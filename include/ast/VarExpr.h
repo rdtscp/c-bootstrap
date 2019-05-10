@@ -14,6 +14,8 @@ public:
 
   VarExpr(const atl::shared_ptr<Identifier> &p_varIdentifier);
 
+  atl::string getSignature() const override { return varDecl->type->getSignature(); }
+
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

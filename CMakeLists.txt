@@ -57,8 +57,6 @@ add_library(AST SHARED
   src/ast/Scope.cpp
   src/ast/SizeOf.cpp
   src/ast/StringLiteral.cpp
-  src/ast/StructType.cpp
-  src/ast/StructTypeDecl.cpp
   src/ast/TertiaryExpr.cpp
   src/ast/Throw.cpp
   src/ast/TypeCast.cpp
@@ -72,49 +70,45 @@ add_library(AST SHARED
 add_library(DotGraph SHARED src/passes/DotGraph.cpp)
 add_library(GenerateX86 SHARED src/targets/GenerateX86.cpp)
 add_library(Lexer SHARED src/Lexer.cpp)
-add_library(NameAnalysis SHARED src/passes/NameAnalysis.cpp)
 add_library(Optimiser SHARED src/passes/Optimiser.cpp)
 add_library(Parser SHARED src/Parser.cpp)
 add_library(Preprocessor SHARED src/Preprocessor.cpp)
+add_library(SemanticAnalysis SHARED src/passes/SemanticAnalysis.cpp)
 add_library(SourceOutput SHARED src/passes/SourceOutput.cpp)
-add_library(TypeAnalysis SHARED src/passes/TypeAnalysis.cpp)
 add_library(Scanner SHARED src/Scanner.cpp)
 add_library(X86 SHARED src/targets/X86.cpp)
 
 add_dependencies(AST atl)
 add_dependencies(GenerateX86 atl)
 add_dependencies(Lexer atl)
-add_dependencies(NameAnalysis atl)
 add_dependencies(Optimiser atl)
 add_dependencies(Parser atl)
 add_dependencies(Preprocessor atl)
-add_dependencies(TypeAnalysis atl)
 add_dependencies(Scanner atl)
+add_dependencies(SemanticAnalysis atl)
 add_dependencies(X86 atl)
 
 target_link_libraries(AST X86)
 target_link_libraries(DotGraph AST)
 target_link_libraries(GenerateX86  AST X86)
 target_link_libraries(Lexer Scanner)
-target_link_libraries(NameAnalysis AST)
 target_link_libraries(Optimiser AST)
 target_link_libraries(Parser AST Lexer)
 target_link_libraries(Preprocessor Scanner)
+target_link_libraries(SemanticAnalysis AST)
 target_link_libraries(SourceOutput AST)
-target_link_libraries(TypeAnalysis AST)
 
 install(
   TARGETS AST
           DotGraph
           GenerateX86
           Lexer
-          NameAnalysis
           Optimiser
           Parser
           Preprocessor
           Scanner
+          SemanticAnalysis
           SourceOutput
-          TypeAnalysis
           X86
   DESTINATION lib
 )
@@ -171,4 +165,4 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 add_executable(acc main.cpp)
 add_dependencies(acc atl)
-target_link_libraries(acc AST DotGraph GenerateX86 NameAnalysis Optimiser Parser Preprocessor Scanner SourceOutput TypeAnalysis)
+target_link_libraries(acc AST DotGraph GenerateX86 Optimiser Parser Preprocessor Scanner SemanticAnalysis SourceOutput)

@@ -21,6 +21,5 @@ int main(int argc, char *argv) {
   int myint = 4;
   className *baz = new className(1, 'b');
   int *intarr = new int[randInt()];
-  // int *intarr = new int[intarr[1] + 3];
   return 1;
 }

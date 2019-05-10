@@ -4,6 +4,10 @@ using namespace ACC;
 
 CharLiteral::CharLiteral(const atl::string &p_literal) : Literal(p_literal) {}
 
+atl::string CharLiteral::getSignature() const {
+  return "char";
+}
+
 bool CharLiteral::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<CharLiteral *>(&rhs);

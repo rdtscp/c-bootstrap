@@ -3,8 +3,7 @@
 #include "gtest/gtest.h"
 
 #include "passes/DotGraph.h"
-#include "passes/NameAnalysis.h"
-#include "passes/TypeAnalysis.h"
+#include "passes/SemanticAnalysis.h"
 
 #include "Lexer.h"
 #include "Parser.h"
@@ -27,13 +26,9 @@ TEST(Test_CodeGeneration, X86_SimpleFuncs) {
   ACC::Parser parser(lexer);
   atl::shared_ptr<Program> progAST = parser.getAST();
 
-  NameAnalysis nameAnalysis(progAST);
+  SemanticAnalysis nameAnalysis(progAST);
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
-
-  TypeAnalysis typeAnalysis(progAST);
-  typeAnalysis.run();
-  ASSERT_EQ(0, typeAnalysis.errorCount);
 
   GenerateX86 x86Generator(progAST, "./fibonacci_x86.s");
   x86Generator.run();

@@ -6,6 +6,8 @@ ArrayAccess::ArrayAccess(const atl::shared_ptr<Expr> &p_array,
                          const atl::shared_ptr<Expr> &p_index)
     : array(p_array), index(p_index) {}
 
+atl::string ArrayAccess::getSignature() const { return array->getSignature(); }
+
 bool ArrayAccess::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<ArrayAccess *>(&rhs);

@@ -1,7 +1,3 @@
-struct FooStruct {
-  int fooInt;
-};
-
 int myInt;
 char myChar;
 
@@ -15,7 +11,3 @@ void **myVoidPtrPtr;
 
 int myIntArr[5];
 char myCharArr[5];
-
-struct FooStruct myFooStruct;
-struct FooStruct *myFooStructPtr;
-struct FooStruct myFooStructArr[5];

@@ -5,7 +5,6 @@
 #include "ASTNode.h"
 #include "ast/FunDecl.h"
 #include "ast/Namespace.h"
-#include "ast/StructTypeDecl.h"
 #include "ast/VarDecl.h"
 
 namespace ACC {

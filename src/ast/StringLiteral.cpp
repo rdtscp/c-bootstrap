@@ -5,6 +5,10 @@ using namespace ACC;
 StringLiteral::StringLiteral(const atl::string &p_literal)
     : Literal(p_literal) {}
 
+atl::string StringLiteral::getSignature() const {
+  return "char*";
+}
+
 bool StringLiteral::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<StringLiteral *>(&rhs);

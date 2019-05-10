@@ -14,6 +14,8 @@ public:
   TypeCast(const atl::shared_ptr<Type> &p_type,
            const atl::shared_ptr<Expr> &p_expr);
 
+  atl::string getSignature() const override;
+
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

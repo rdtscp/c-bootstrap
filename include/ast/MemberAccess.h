@@ -3,6 +3,7 @@
 #include "Expr.h"
 #include "Identifier.h"
 #include "Type.h"
+#include "VarExpr.h"
 
 namespace ACC {
 
@@ -11,10 +12,12 @@ class MemberAccess : public Expr,
 
 public:
   atl::shared_ptr<Expr> object;
-  atl::shared_ptr<Identifier> fieldIdentifier;
+  atl::shared_ptr<VarExpr> fieldVariable;
 
   MemberAccess(const atl::shared_ptr<Expr> &p_object,
-               const atl::shared_ptr<Identifier> &p_fieldIdentifier);
+               const atl::shared_ptr<VarExpr> &p_fieldVariable);
+
+  atl::string getSignature() const override;
 
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;

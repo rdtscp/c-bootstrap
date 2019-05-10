@@ -13,6 +13,8 @@ public:
 
   ParenthExpr(const atl::shared_ptr<Expr> &p_innerExpr);
 
+  atl::string getSignature() const override { return innerExpr->getSignature(); }
+
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

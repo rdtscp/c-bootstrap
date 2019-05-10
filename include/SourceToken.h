@@ -43,7 +43,6 @@ public:
     DO,         // "do"
     WHILE,      // "while"
     RETURN,     // "return"
-    STRUCT,     // "struct"
     SIZEOF,     // "sizeof"
     CONST,      // "const"
     TYPEDEF,    // "typedef"
@@ -114,7 +113,7 @@ public:
     REF,       // '&'
     ASSIGNADD, // "+="
 
-    // struct member access
+    // class member access
     DOT,    // '.'
     PTRDOT, // "->"
 
@@ -180,8 +179,6 @@ static atl::string tokToStr(const SourceToken::Class tokenClass) {
     return "WHILE";
   case SourceToken::Class::RETURN:
     return "RETURN";
-  case SourceToken::Class::STRUCT:
-    return "STRUCT";
   case SourceToken::Class::SIZEOF:
     return "SIZEOF";
   case SourceToken::Class::STRING_LITERAL:

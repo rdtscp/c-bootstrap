@@ -16,6 +16,8 @@ public:
   MemberCall(const atl::shared_ptr<Expr> &p_object,
              const atl::shared_ptr<FunCall> &p_funCall);
 
+  atl::string getSignature() const override;
+
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

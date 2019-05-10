@@ -5,15 +5,16 @@
 
 namespace ACC {
 
-class TypeAnalysis : public ASTVisitor<atl::shared_ptr<Type>> {
+class SemanticAnalysis : public ASTVisitor<atl::shared_ptr<Type>> {
 
 public:
   int errorCount = 0;
   atl::vector<atl::string> errors;
 
-  TypeAnalysis(atl::shared_ptr<Program> progAST);
+  SemanticAnalysis(atl::shared_ptr<Program> progAST);
 
-  atl::shared_ptr<Type> error(const atl::string &error,
+  atl::shared_ptr<Type> error(const atl::string &errorType,
+                              const atl::string &error,
                               const atl::shared_ptr<ASTNode> &node);
 
   void printErrors();
@@ -22,8 +23,10 @@ public:
 
 private:
   atl::shared_ptr<Program> progAST;
+  atl::shared_ptr<Scope> currScope;
 
-  atl::shared_ptr<Block> currScope;
+  // Too lazy to make MemberFunDecl/MemberFunDef ASTNodes
+  bool inClassTypeDef;
 
   /* ---- Visit AST ---- */
 
@@ -43,7 +46,7 @@ private:
   atl::shared_ptr<Type> visit(ConstructorDecl &cd) override;
   atl::shared_ptr<Type> visit(ConstructorDef &cd) override;
   atl::shared_ptr<Type> visit(Deletion &d) override;
-  atl::shared_ptr<Type> visit(DestructorDecl &dd) override;
+  atl::shared_ptr<Type> visit(DestructorDecl &cd) override;
   atl::shared_ptr<Type> visit(DestructorDef &dd) override;
   atl::shared_ptr<Type> visit(DoWhile &dw) override;
   atl::shared_ptr<Type> visit(EnumClassTypeDecl &ectd) override;
@@ -60,14 +63,12 @@ private:
   atl::shared_ptr<Type> visit(Nullptr &n) override;
   atl::shared_ptr<Type> visit(ParenthExpr &pe) override;
   atl::shared_ptr<Type> visit(PointerType &pt) override;
-  atl::shared_ptr<Type> visit(PrefixOp &pi) override;
+  atl::shared_ptr<Type> visit(PrefixOp &po) override;
   atl::shared_ptr<Type> visit(Program &p) override;
   atl::shared_ptr<Type> visit(ReferenceType &rt) override;
   atl::shared_ptr<Type> visit(Return &r) override;
   atl::shared_ptr<Type> visit(SizeOf &so) override;
   atl::shared_ptr<Type> visit(StringLiteral &sl) override;
-  atl::shared_ptr<Type> visit(StructType &st) override;
-  atl::shared_ptr<Type> visit(StructTypeDecl &std) override;
   atl::shared_ptr<Type> visit(TertiaryExpr &t) override;
   atl::shared_ptr<Type> visit(Throw &t) override;
   atl::shared_ptr<Type> visit(TypeCast &tc) override;

@@ -16,6 +16,8 @@ public:
   BinOp(const atl::shared_ptr<Expr> &p_lhs, const Op p_operation,
         const atl::shared_ptr<Expr> &p_rhs);
 
+  atl::string getSignature() const override;
+
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 
