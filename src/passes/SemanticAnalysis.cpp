@@ -188,7 +188,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
     ctd.classDecls[idx]->accept(*this);
 
   currScope = ctd.outerScope;
-  inClassTypeDef = true;
+  inClassTypeDef = false;
 
   return ctd.classType;
 }
@@ -600,7 +600,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ValueAt &va) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
   if (vd.type->astClass() == "ClassType") {
-    const atl::shared_ptr<ClassType> vdType =
+    atl::shared_ptr<ClassType> vdType =
         atl::static_pointer_cast<ClassType>(vd.type);
     const atl::shared_ptr<ClassTypeDef> vdTypeDecl =
         currScope->findClassDef(vdType->identifier);
@@ -609,6 +609,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
       return error("Type Analysis",
                    "Attempted to declare variable with undefined class type.",
                    atl::static_pointer_cast<Decl>(vd.getptr()));
+    vdType->typeDefinition = vdTypeDecl;
   }
   if (!inClassTypeDef && currScope->findVarDecl(vd.getIdentifier()))
     return error("Name Analysis",
