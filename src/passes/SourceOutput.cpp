@@ -38,7 +38,7 @@ atl::string SourceOutput::visit(ArrayAccess &aa) {
   return output;
 }
 atl::string SourceOutput::visit(ArrayType &at) {
-  atl::string output = at.type->accept(*this);
+  atl::string output = at.pointedType->accept(*this);
   output += "[";
   output += at.size;
   output += "]";

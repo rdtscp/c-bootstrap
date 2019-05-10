@@ -53,7 +53,7 @@ atl::string DotGraph::visit(ArrayAccess &aa) {
 }
 atl::string DotGraph::visit(ArrayType &at) {
   const atl::string arrayTypeID = "ArrayType" + atl::to_string(++nodeCount);
-  declare(arrayTypeID, at.type->accept(*this) + "[]");
+  declare(arrayTypeID, at.pointedType->accept(*this) + "[]");
   const atl::string arraySize = at.size->accept(*this);
   join(arrayTypeID, arraySize);
   return arrayTypeID;

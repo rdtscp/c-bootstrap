@@ -27,11 +27,17 @@ void SemanticAnalysis::run() { visit(*progAST); }
 /* ---- Visit AST ---- */
 
 atl::shared_ptr<Type> SemanticAnalysis::visit(AddressOf &ao) {
+  // Make sure its the address of a named variable.
+  if (ao.addressOfExpr->astClass() != "VarExpr") {
+    return error("Type Error", "Cannot take the address of non LVALUE",
+                 ao.getptr());
+  }
+  // Make sure the named variable is not a T&&.
   const atl::shared_ptr<Type> exprType = ao.addressOfExpr->accept(*this);
   if (exprType->astClass() == "ReferenceType") {
     const atl::shared_ptr<ReferenceType> refExprType =
         atl::static_pointer_cast<ReferenceType>(exprType);
-    if (refExprType->referencedType->astClass() != "VarExpr")
+    if (refExprType->referencedType->astClass() == "ReferenceType")
       return error("Type Error", "Cannot take the address of non LVALUE.",
                    ao.getptr());
   }
@@ -61,13 +67,15 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ArrayAccess &aa) {
                      arrayIndex->astClass(),
                  aa.index);
 
-  return atl::static_pointer_cast<ArrayType>(arrayExprType)->type;
+  return atl::static_pointer_cast<ArrayType>(arrayExprType)->pointedType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ArrayType &at) {
   return at.getptr();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
+  // TODO: Collapse Types.
   const atl::shared_ptr<Type> lhsType = as.lhs->accept(*this);
+
   const atl::shared_ptr<Type> rhsType = as.rhs->accept(*this);
   if (*lhsType != *rhsType)
     return error("Type Analysis",
