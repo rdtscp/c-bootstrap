@@ -1248,12 +1248,6 @@ atl::shared_ptr<VarDecl> Parser::parseParam() {
   atl::shared_ptr<Identifier> varIdentifier;
   if (accept(TC::IDENTIFIER))
     varIdentifier = parseIdentifier();
-  if (accept(TC::LSBR)) {
-    expect(TC::LSBR);
-    const atl::shared_ptr<Expr> arraySize = parseLitExpr();
-    expect(TC::RSBR);
-    varType = atl::shared_ptr<ArrayType>(new ArrayType(varType, arraySize));
-  }
   atl::shared_ptr<VarDecl> output(new VarDecl(varType, varIdentifier));
   output->Decl::position = prevPosition;
   return output;
