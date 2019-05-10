@@ -1086,7 +1086,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
 atl::shared_ptr<Expr> Parser::parseObjExpr() {
   if (accept(TC::IDENTIFIER)) {
     const atl::shared_ptr<Identifier> ident = parseIdentifier();
-    atl::shared_ptr<Expr> output;
+    atl::shared_ptr<Expr> objExpr;
     if (accept(TC::LPAR)) {
       expect(TC::LPAR);
       atl::vector<atl::shared_ptr<Expr>> params;
@@ -1098,35 +1098,36 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
       }
 
       expect(TC::RPAR);
-      output = createNode<FunCall>(
+      objExpr = createNode<FunCall>(
           atl::make_shared<FunCall>(FunCall(ident, params)));
     } else {
-      output = createNode<VarExpr>(atl::make_shared<VarExpr>(VarExpr(ident)));
+      objExpr = createNode<VarExpr>(atl::make_shared<VarExpr>(VarExpr(ident)));
     }
 
     while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
       if (accept({TC::DOT, TC::PTRDOT})) {
-        expect({TC::DOT, TC::PTRDOT});
+        const SourceToken::Class accessType =
+            expect({TC::DOT, TC::PTRDOT}).tokenClass;
         if (accept(TC::LPAR, 1)) {
           atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
-          output = createNode<MemberCall>(
-              atl::make_shared<MemberCall>(MemberCall(output, memberFunCall)));
+          objExpr = createNode<MemberCall>(atl::make_shared<MemberCall>(
+              MemberCall(objExpr, memberFunCall, accessType)));
         } else {
           const atl::shared_ptr<Identifier> fieldIdentifier = parseIdentifier();
           const atl::shared_ptr<VarExpr> fieldVarExpr = createNode<VarExpr>(
               atl::shared_ptr<VarExpr>(new VarExpr(fieldIdentifier)));
-          output = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
-              MemberAccess(output, fieldVarExpr)));
+          objExpr = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
+              MemberAccess(objExpr, fieldVarExpr, accessType)));
         }
       } else {
         expect(TC::LSBR);
         atl::shared_ptr<Expr> arrayIndexExpr = parseObjExpr();
         expect(TC::RSBR);
-        output = createNode<ArrayAccess>(
-            atl::make_shared<ArrayAccess>(ArrayAccess(output, arrayIndexExpr)));
+        objExpr = createNode<ArrayAccess>(atl::make_shared<ArrayAccess>(
+            ArrayAccess(objExpr, arrayIndexExpr)));
       }
     }
-    return output;
+    return objExpr;
   }
   if (accept(TC::THIS)) {
     expect(TC::THIS);
@@ -1135,17 +1136,18 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
             atl::shared_ptr<Identifier>(new Identifier("this"))))));
     while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
       if (accept({TC::DOT, TC::PTRDOT})) {
-        expect({TC::DOT, TC::PTRDOT});
+        const SourceToken::Class accessType =
+            expect({TC::DOT, TC::PTRDOT}).tokenClass;
         if (accept(TC::LPAR, 1)) {
           atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
-          output = createNode<MemberCall>(
-              atl::make_shared<MemberCall>(MemberCall(output, memberFunCall)));
+          output = createNode<MemberCall>(atl::make_shared<MemberCall>(
+              MemberCall(output, memberFunCall, accessType)));
         } else {
           const atl::shared_ptr<Identifier> fieldIdentifier = parseIdentifier();
           const atl::shared_ptr<VarExpr> fieldVarExpr = createNode<VarExpr>(
               atl::shared_ptr<VarExpr>(new VarExpr(fieldIdentifier)));
           output = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
-              MemberAccess(output, fieldVarExpr)));
+              MemberAccess(output, fieldVarExpr, accessType)));
         }
       } else {
         expect(TC::LSBR);
@@ -1161,17 +1163,18 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
   atl::shared_ptr<Expr> output = parseLitExpr();
   while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
     if (accept({TC::DOT, TC::PTRDOT})) {
-      expect({TC::DOT, TC::PTRDOT});
+      const SourceToken::Class accessType =
+          expect({TC::DOT, TC::PTRDOT}).tokenClass;
       if (accept(TC::LPAR, 1)) {
         atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
-        output = createNode<MemberCall>(
-            atl::make_shared<MemberCall>(MemberCall(output, memberFunCall)));
+        output = createNode<MemberCall>(atl::make_shared<MemberCall>(
+            MemberCall(output, memberFunCall, accessType)));
       } else {
         const atl::shared_ptr<Identifier> fieldIdentifier = parseIdentifier();
         const atl::shared_ptr<VarExpr> fieldVarExpr = createNode<VarExpr>(
             atl::shared_ptr<VarExpr>(new VarExpr(fieldIdentifier)));
-        output = createNode<MemberAccess>(
-            atl::make_shared<MemberAccess>(MemberAccess(output, fieldVarExpr)));
+        output = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
+            MemberAccess(output, fieldVarExpr, accessType)));
       }
     } else {
       expect(TC::LSBR);

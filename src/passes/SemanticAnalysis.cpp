@@ -361,9 +361,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(IntLiteral &il) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
   const atl::shared_ptr<Type> objectType = ma.object->accept(*this);
-  if (objectType->astClass() != "ClassTypeDef")
+  if (objectType->astClass() != "ClassType")
     return error("Type Analysis",
-                 "Attempted to call a member function on a variable that was "
+                 "Attempted to access a member variable on a variable that was "
                  "not a object(class instance).",
                  ma.getptr());
   // TODO: Make sure this Class has the member function.
