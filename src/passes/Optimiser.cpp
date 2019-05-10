@@ -226,6 +226,11 @@ atl::shared_ptr<ASTNode> Optimiser::visit(SizeOf &so) { return so.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(StringLiteral &sl) {
   return sl.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(SubscriptOp &so) {
+  so.variable = so.variable->accept(*this);
+  so.index = so.index->accept(*this);
+  return so.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(TertiaryExpr &t) {
   return t.getptr();
 }

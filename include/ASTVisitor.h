@@ -41,6 +41,7 @@ class ReferenceType;
 class Return;
 class SizeOf;
 class StringLiteral;
+class SubscriptOp;
 class TertiaryExpr;
 class Throw;
 class TypeCast;
@@ -95,6 +96,7 @@ public:
   virtual T visit(Return &r) = 0;
   virtual T visit(SizeOf &so) = 0;
   virtual T visit(StringLiteral &sl) = 0;
+  virtual T visit(SubscriptOp &so) = 0;
   virtual T visit(TertiaryExpr &t) = 0;
   virtual T visit(Throw &t) = 0;
   virtual T visit(TypeCast &tc) = 0;

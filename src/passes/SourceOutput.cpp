@@ -363,6 +363,9 @@ atl::string SourceOutput::visit(SizeOf &so) {
   return output;
 }
 atl::string SourceOutput::visit(StringLiteral &sl) { return sl.getLiteral(); }
+atl::string SourceOutput::visit(SubscriptOp &so) {
+  return so.variable->accept(*this) + "[" + so.index->accept(*this) + "]";
+}
 atl::string SourceOutput::visit(TertiaryExpr &t) {
   atl::string output;
   output += t.tertiaryCondition->accept(*this);

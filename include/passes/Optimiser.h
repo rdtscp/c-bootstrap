@@ -66,6 +66,7 @@ private:
   atl::shared_ptr<ASTNode> visit(Return &r) override;
   atl::shared_ptr<ASTNode> visit(SizeOf &so) override;
   atl::shared_ptr<ASTNode> visit(StringLiteral &sl) override;
+  atl::shared_ptr<ASTNode> visit(SubscriptOp &so) override;
   atl::shared_ptr<ASTNode> visit(TertiaryExpr &t) override;
   atl::shared_ptr<ASTNode> visit(Throw &t) override;
   atl::shared_ptr<ASTNode> visit(TypeCast &tc) override;

@@ -1081,7 +1081,13 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     // Parse NOT Node.
   }
 
-  return parseObjExpr();
+  atl::shared_ptr<Expr> objExpr = parseObjExpr();
+
+  if (accept(TC::LSBR)) {
+    expect(TC::LSBR);
+  }
+
+  return objExpr;
 }
 atl::shared_ptr<Expr> Parser::parseObjExpr() {
   if (accept(TC::IDENTIFIER)) {

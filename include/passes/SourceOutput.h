@@ -64,6 +64,7 @@ private:
   atl::string visit(Return &r) override;
   atl::string visit(SizeOf &so) override;
   atl::string visit(StringLiteral &sl) override;
+  atl::string visit(SubscriptOp &so) override;
   atl::string visit(TertiaryExpr &t) override;
   atl::string visit(Throw &t) override;
   atl::string visit(TypeCast &tc) override;

@@ -555,6 +555,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(StringLiteral &sl) {
   return atl::shared_ptr<PointerType>(new PointerType(
       atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR))));
 }
+atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
+  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+}
 atl::shared_ptr<Type> SemanticAnalysis::visit(TertiaryExpr &t) {
   const atl::shared_ptr<Type> conditionType =
       t.tertiaryCondition->accept(*this);

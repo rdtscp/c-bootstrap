@@ -472,6 +472,13 @@ atl::string DotGraph::visit(StringLiteral &sl) {
   declare(strID, "\\\"" + sl.getLiteral() + "\\\"");
   return strID;
 }
+atl::string DotGraph::visit(SubscriptOp &so) {
+  const atl::string subscriptID = "SubscriptOp" + atl::to_string(++nodeCount);
+  declare(subscriptID, so.variable->varIdentifier->toString() + "[]");
+  const atl::string indexID = so.index->accept(*this);
+  join(subscriptID, indexID);
+  return subscriptID;
+}
 atl::string DotGraph::visit(TertiaryExpr &t) {
   const atl::string tertiaryID = "TertiaryExpr" + atl::to_string(++nodeCount);
   const atl::string conditionID = t.tertiaryCondition->accept(*this);
@@ -524,7 +531,7 @@ atl::string DotGraph::visit(VarDef &vd) {
 }
 atl::string DotGraph::visit(VarExpr &ve) {
   const atl::string varID = "VarExpr" + atl::to_string(++nodeCount);
-  declare(varID, ve.varIdentifier->toString().c_str());
+  declare(varID, ve.varIdentifier->toString());
   return varID;
 }
 atl::string DotGraph::visit(While &w) {
