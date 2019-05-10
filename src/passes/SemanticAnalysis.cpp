@@ -73,9 +73,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ArrayType &at) {
   return at.getptr();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
-  // TODO: Collapse Types.
   const atl::shared_ptr<Type> lhsType = as.lhs->accept(*this);
-
   const atl::shared_ptr<Type> rhsType = as.rhs->accept(*this);
   if (*lhsType != *rhsType)
     return error("Type Analysis",
