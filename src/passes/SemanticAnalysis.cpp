@@ -5,7 +5,7 @@
 using namespace ACC;
 
 SemanticAnalysis::SemanticAnalysis(atl::shared_ptr<Program> progAST)
-    : progAST(progAST) {}
+    : progAST(progAST), inClassTypeDef(false) {}
 
 atl::shared_ptr<Type>
 SemanticAnalysis::error(const atl::string &errorType, const atl::string &error,
