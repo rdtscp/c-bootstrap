@@ -13,7 +13,8 @@ void Scope::insertDecl(const atl::shared_ptr<Decl> &decl) {
 atl::shared_ptr<ClassTypeDecl>
 Scope::findClassDecl(const atl::shared_ptr<Identifier> identifier) const {
   for (int idx = decls.size() - 1; idx >= 0; --idx) {
-    if (decls[idx]->astClass() != "ClassTypeDecl")
+    if (decls[idx]->astClass() != "ClassTypeDecl" &&
+        decls[idx]->astClass() != "ClassTypeDef")
       continue;
     if (*decls[idx]->getIdentifier() == *identifier) {
       return atl::static_pointer_cast<ClassTypeDecl>(decls[idx]);
@@ -41,8 +42,46 @@ Scope::findClassDef(const atl::shared_ptr<Identifier> identifier) const {
   return nullptr;
 }
 
+atl::shared_ptr<FunDecl>
+Scope::findFunDecl(const atl::string &funSignature) const {
+  const atl::shared_ptr<FunDecl> localFind = findFunDeclLocal(funSignature);
+  if (localFind != nullptr)
+    return localFind;
+  else if (outerScope != nullptr)
+    return outerScope->findFunDecl(funSignature);
+  else
+    return nullptr;
+}
+
+atl::shared_ptr<FunDecl>
+Scope::findFunDeclLocal(const atl::string &funSignature) const {
+  for (int idx = decls.size() - 1; idx >= 0; --idx) {
+    if (decls[idx]->astClass() != "FunDecl" &&
+        decls[idx]->astClass() != "FunDef")
+      continue;
+    const atl::shared_ptr<FunDecl> currFunDecl =
+        atl::static_pointer_cast<FunDecl>(decls[idx]);
+    if (currFunDecl->getSignature() == funSignature) {
+      return currFunDecl;
+    }
+  }
+
+  return nullptr;
+}
+
 atl::shared_ptr<VarDecl>
 Scope::findVarDecl(const atl::shared_ptr<Identifier> identifier) const {
+  const atl::shared_ptr<VarDecl> localFind = findVarDeclLocal(identifier);
+  if (localFind != nullptr)
+    return localFind;
+  else if (outerScope != nullptr)
+    return outerScope->findVarDecl(identifier);
+  else
+    return nullptr;
+}
+
+atl::shared_ptr<VarDecl>
+Scope::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier) const {
   for (int idx = decls.size() - 1; idx >= 0; --idx) {
     if (decls[idx]->astClass() != "VarDecl" &&
         decls[idx]->astClass() != "VarDef")
@@ -51,8 +90,6 @@ Scope::findVarDecl(const atl::shared_ptr<Identifier> identifier) const {
       return atl::static_pointer_cast<VarDecl>(decls[idx]);
     }
   }
-  if (outerScope != nullptr)
-    return outerScope->findVarDecl(identifier);
 
   return nullptr;
 }
