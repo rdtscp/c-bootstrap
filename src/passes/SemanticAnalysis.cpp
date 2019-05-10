@@ -1,6 +1,7 @@
-#include "passes/SemanticAnalysis.h"
-
 #include "atl/include/set.h"
+
+#include "Error.h"
+#include "passes/SemanticAnalysis.h"
 
 using namespace ACC;
 
@@ -360,24 +361,150 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(IntLiteral &il) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
-  const atl::shared_ptr<Type> objectType = ma.object->accept(*this);
-  if (objectType->astClass() != "ClassType")
+  atl::shared_ptr<Type> objType = ma.object->accept(*this);
+
+  atl::shared_ptr<ClassType> objClassType;
+  if (objType->astClass() == "ClassType") {
+    if (ma.accessType != SourceToken::Class::DOT)
+      return error("Type Analysis",
+                   "Attempted to access member variable of class type without "
+                   "using `.` operator.",
+                   ma.object);
+    objClassType = atl::static_pointer_cast<ClassType>(objType);
+  } else if (objType->astClass() == "PointerType") {
+    if (ma.accessType != SourceToken::Class::PTRDOT)
+      return error("Type Analysis",
+                   "Attempted to access member variable of class type without "
+                   "using `.` operator.",
+                   ma.object);
+    objType = atl::static_pointer_cast<PointerType>(objType)->pointedType;
+    // Get ClassType
+    if (objType->astClass() != "ClassType")
+      return error("Type Analysis",
+                   "Attempted to access a member variable on a variable that "
+                   "was not an object.",
+                   ma.object);
+    objClassType = atl::static_pointer_cast<ClassType>(objType);
+  } else if (objType->astClass() == "ReferenceType") {
+    if (ma.accessType != SourceToken::Class::DOT)
+      return error("Type Analysis",
+                   "Attempted to access member variable of class type without "
+                   "using `.` operator.",
+                   ma.object);
+    objType = atl::static_pointer_cast<ReferenceType>(objType)->referencedType;
+    // Handle T&&
+    if (objType->astClass() == "ReferenceType")
+      objType =
+          atl::static_pointer_cast<ReferenceType>(objType)->referencedType;
+    // Get ClassType
+    if (objType->astClass() != "ClassType")
+      return error("Type Analysis",
+                   "Attempted to access a member variable on a variable that "
+                   "was not an object.",
+                   ma.object);
+    objClassType = atl::static_pointer_cast<ClassType>(objType);
+  } else {
     return error("Type Analysis",
-                 "Attempted to access a member variable on a variable that was "
-                 "not a object(class instance).",
-                 ma.getptr());
-  // TODO: Make sure this Class has the member function.
-  return ma.fieldVariable->accept(*this);
+                 "Attempted to access a member variable on a variable that "
+                 "was not an object.",
+                 ma.object);
+  }
+
+  const atl::shared_ptr<ClassTypeDef> objClassTypeDef =
+      objClassType->typeDefinition;
+  // Check this ClassType is Defined.
+  if (objClassTypeDef == nullptr)
+    return error("Type Error",
+                 "Attempted to access member variable of class type that has "
+                 "no definition.",
+                 ma.object);
+
+  const atl::shared_ptr<Scope> outerScope = currScope;
+  currScope = objClassTypeDef;
+
+  /* Resolve the underlying type */
+  const atl::shared_ptr<Type> memberType = ma.fieldVariable->accept(*this);
+
+  currScope = outerScope;
+
+  return memberType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
-  const atl::shared_ptr<Type> objectType = mc.object->accept(*this);
-  if (objectType->astClass() != "ClassTypeDef")
+  atl::shared_ptr<Type> objType = mc.object->accept(*this);
+  // const atl::shared_ptr<Type> memberCallType = mc.funCall->accept(*this);
+
+  atl::shared_ptr<ClassType> objClassType;
+  if (objType->astClass() == "ClassType") {
+    if (mc.accessType != SourceToken::Class::DOT)
+      return error("Type Analysis",
+                   "Attempted to call member function of class type without "
+                   "using `.` operator.",
+                   mc.object);
+    objClassType = atl::static_pointer_cast<ClassType>(objType);
+  } else if (objType->astClass() == "PointerType") {
+    if (mc.accessType != SourceToken::Class::PTRDOT)
+      return error("Type Analysis",
+                   "Attempted to access member variable of class type without "
+                   "using `.` operator.",
+                   mc.object);
+    objType = atl::static_pointer_cast<PointerType>(objType)->pointedType;
+    // Get ClassType
+    if (objType->astClass() != "ClassType")
+      return error("Type Analysis",
+                   "Attempted to call a member function on a variable that "
+                   "was not an object.",
+                   mc.object);
+    objClassType = atl::static_pointer_cast<ClassType>(objType);
+  } else if (objType->astClass() == "ReferenceType") {
+    if (mc.accessType != SourceToken::Class::DOT)
+      return error("Type Analysis",
+                   "Attempted to call member function of class type without "
+                   "using `.` operator.",
+                   mc.object);
+    objType = atl::static_pointer_cast<ReferenceType>(objType)->referencedType;
+    // Handle T&&
+    if (objType->astClass() == "ReferenceType")
+      objType =
+          atl::static_pointer_cast<ReferenceType>(objType)->referencedType;
+    // Get ClassType
+    if (objType->astClass() != "ClassType")
+      return error("Type Analysis",
+                   "Attempted to call a member function on a variable that was "
+                   "not an object.",
+                   mc.object);
+    objClassType = atl::static_pointer_cast<ClassType>(objType);
+  } else {
     return error("Type Analysis",
-                 "Attempted to call a member function on a variable that was "
-                 "not a object(class instance).",
-                 mc.getptr());
-  // TODO: Make sure this Class has the member function.
-  return mc.funCall->accept(*this);
+                 "Attempted to access a member variable on a variable that "
+                 "was not an object.",
+                 mc.object);
+  }
+
+  const atl::shared_ptr<ClassTypeDef> objClassTypeDef =
+      objClassType->typeDefinition;
+  // Check this ClassType is Defined.
+  if (objClassTypeDef == nullptr)
+    return error("Type Error",
+                 "Attempted to call member function of class type that has "
+                 "no definition.",
+                 mc.object);
+
+  /* Now Manually Visit the Member Call */
+  // Visit all parameters first.
+  for (unsigned int idx = 0; idx < mc.funCall->funArgs.size(); ++idx)
+    mc.funCall->funArgs[idx]->accept(*this);
+
+  // Check this ClassTypeDef contains the member.
+  const atl::shared_ptr<FunDecl> memberFunDecl =
+      objClassTypeDef->findFunDeclLocal(mc.funCall->getSignature());
+  if (memberFunDecl == nullptr)
+    return error("Type Error",
+                 "Attempted to call a member function that does "
+                 "not exist in the class definition.",
+                 mc.funCall);
+
+  // return mc.funCall->accept(*this);
+  return memberFunDecl->funType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Namespace &n) {
   n.outerScope = currScope;
@@ -473,15 +600,17 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ValueAt &va) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
   if (vd.type->astClass() == "ClassType") {
+    const atl::shared_ptr<ClassType> vdType =
+        atl::static_pointer_cast<ClassType>(vd.type);
     const atl::shared_ptr<ClassTypeDef> vdTypeDecl =
-        currScope->findClassDef(vd.getIdentifier());
+        currScope->findClassDef(vdType->identifier);
 
     if (vdTypeDecl == nullptr)
       return error("Type Analysis",
                    "Attempted to declare variable with undefined class type.",
                    atl::static_pointer_cast<Decl>(vd.getptr()));
   }
-  if (currScope->findVarDecl(vd.getIdentifier()))
+  if (!inClassTypeDef && currScope->findVarDecl(vd.getIdentifier()))
     return error("Name Analysis",
                  "Attempted to declare a Variable with an identifier that is "
                  "already in use: " +
@@ -524,7 +653,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarExpr &ve) {
                      ve.varIdentifier->toString(),
                  ve.getptr());
   ve.varDecl = varDecl;
-  return varDecl->type;
+  return varDecl->type->accept(*this);
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(While &w) {
   atl::shared_ptr<Type> conditionType = w.condition->accept(*this);
