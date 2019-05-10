@@ -152,7 +152,7 @@
       "externalConsole": true,
       "MIMode": "lldb",
       "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
-    }
+    },
     {
       "name": "(lldb) Scanner Unit Tests",
       "type": "cppdbg",
