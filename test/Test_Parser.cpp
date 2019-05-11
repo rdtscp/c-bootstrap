@@ -9,8 +9,9 @@
 
 using namespace ACC;
 
-// atl::string test_prefix = "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
-                        //   "test/tests/Test_Parser/";
+// atl::string test_prefix =
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
+//   "test/tests/Test_Parser/";
 atl::string test_prefix = "../../test/tests/Test_Parser/";
 
 TEST(Test_Parser, BinOp) {
