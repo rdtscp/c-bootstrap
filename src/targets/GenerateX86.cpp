@@ -32,10 +32,6 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(AddressOf &ao) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Allocation &a) {
   return atl::make_shared<X86::None>();
 }
-atl::shared_ptr<X86::Operand> GenerateX86::visit(ArrayAccess &aa) {
-  aa.array->accept(*this);
-  return atl::make_shared<X86::None>();
-}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ArrayType &at) {
   return atl::make_shared<X86::None>();
 }

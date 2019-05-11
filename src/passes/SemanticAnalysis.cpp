@@ -51,25 +51,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Allocation &a) {
   return atl::shared_ptr<PointerType>(
       new PointerType(a.varConstructorCall->accept(*this)));
 }
-atl::shared_ptr<Type> SemanticAnalysis::visit(ArrayAccess &aa) {
-  const atl::shared_ptr<Type> arrayExprType = aa.array->accept(*this);
-  const atl::shared_ptr<Type> arrayIndex = aa.index->accept(*this);
-  if (arrayExprType->astClass() != "ArrayType" &&
-      arrayExprType->astClass() != "PointerType")
-    return error("Type Analysis",
-                 "Attempted to index an expression which was not an array. Was "
-                 "of type: " +
-                     arrayExprType->astClass(),
-                 aa.array);
-  if (arrayIndex->astClass() != "BaseType")
-    return error("Type Analysis",
-                 "Attempted to index an array using an expression which was "
-                 "not of type int. Was of type: " +
-                     arrayIndex->astClass(),
-                 aa.index);
-
-  return atl::static_pointer_cast<ArrayType>(arrayExprType)->pointedType;
-}
 atl::shared_ptr<Type> SemanticAnalysis::visit(ArrayType &at) {
   return at.getptr();
 }
@@ -556,6 +537,23 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(StringLiteral &sl) {
       atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR))));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
+  // const atl::shared_ptr<Type> arrayExprType = aa.array->accept(*this);
+  // const atl::shared_ptr<Type> arrayIndex = aa.index->accept(*this);
+  // if (arrayExprType->astClass() != "ArrayType" &&
+  //     arrayExprType->astClass() != "PointerType")
+  //   return error("Type Analysis",
+  //                "Attempted to index an expression which was not an array.
+  //                Was " "of type: " +
+  //                    arrayExprType->astClass(),
+  //                aa.array);
+  // if (arrayIndex->astClass() != "BaseType")
+  //   return error("Type Analysis",
+  //                "Attempted to index an array using an expression which was "
+  //                "not of type int. Was of type: " +
+  //                    arrayIndex->astClass(),
+  //                aa.index);
+
+  // return atl::static_pointer_cast<ArrayType>(arrayExprType)->pointedType;
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(TertiaryExpr &t) {

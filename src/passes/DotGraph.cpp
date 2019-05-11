@@ -39,18 +39,6 @@ atl::string DotGraph::visit(Allocation &a) {
     return allocationID;
   }
 }
-atl::string DotGraph::visit(ArrayAccess &aa) {
-  const atl::string arrayAccessID = "ArrayAccess" + atl::to_string(++nodeCount);
-  declare(arrayAccessID, "ArrayAccess");
-
-  const atl::string arrayID = aa.array->accept(*this);
-  const atl::string indexID = aa.index->accept(*this);
-
-  join(arrayAccessID, arrayID);
-  join(arrayAccessID, indexID);
-
-  return arrayAccessID;
-}
 atl::string DotGraph::visit(ArrayType &at) {
   const atl::string arrayTypeID = "ArrayType" + atl::to_string(++nodeCount);
   declare(arrayTypeID, at.pointedType->accept(*this) + "[]");
@@ -473,11 +461,16 @@ atl::string DotGraph::visit(StringLiteral &sl) {
   return strID;
 }
 atl::string DotGraph::visit(SubscriptOp &so) {
-  const atl::string subscriptID = "SubscriptOp" + atl::to_string(++nodeCount);
-  declare(subscriptID, so.variable->varIdentifier->toString() + "[]");
+  const atl::string subscriptOpID = "SubscriptOp" + atl::to_string(++nodeCount);
+  declare(subscriptOpID, "SubscriptOp");
+
+  const atl::string arrayID = so.variable->accept(*this);
   const atl::string indexID = so.index->accept(*this);
-  join(subscriptID, indexID);
-  return subscriptID;
+
+  join(subscriptOpID, arrayID);
+  join(subscriptOpID, indexID);
+
+  return subscriptOpID;
 }
 atl::string DotGraph::visit(TertiaryExpr &t) {
   const atl::string tertiaryID = "TertiaryExpr" + atl::to_string(++nodeCount);

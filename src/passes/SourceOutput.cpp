@@ -33,10 +33,6 @@ atl::string SourceOutput::visit(Allocation &a) {
 
   return output;
 }
-atl::string SourceOutput::visit(ArrayAccess &aa) {
-  atl::string output;
-  return output;
-}
 atl::string SourceOutput::visit(ArrayType &at) {
   atl::string output = at.pointedType->accept(*this);
   output += "[";

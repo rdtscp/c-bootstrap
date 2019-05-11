@@ -61,6 +61,9 @@ bool FunDef::operator==(const FunDef &rhs) const {
     if (*funParams[i]->type != *rhs.funParams[i]->type)
       return false;
 
+  if (*funBlock != *rhs.funBlock)
+    return false;
+
   return true;
 }
 

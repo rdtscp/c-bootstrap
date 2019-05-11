@@ -4,7 +4,6 @@
 
 #include "ast/AddressOf.h"
 #include "ast/Allocation.h"
-#include "ast/ArrayAccess.h"
 #include "ast/ArrayType.h"
 #include "ast/Assign.h"
 #include "ast/BaseType.h"

@@ -19,7 +19,6 @@ include_directories("${CMAKE_SOURCE_DIR}/include/")
 add_library(AST SHARED
   src/ast/AddressOf.cpp
   src/ast/Allocation.cpp
-  src/ast/ArrayAccess.cpp
   src/ast/ArrayType.cpp
   src/ast/Assign.cpp
   src/ast/BaseType.cpp

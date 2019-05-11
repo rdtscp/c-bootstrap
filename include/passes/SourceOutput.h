@@ -27,7 +27,6 @@ private:
 
   atl::string visit(AddressOf &ao) override;
   atl::string visit(Allocation &a) override;
-  atl::string visit(ArrayAccess &aa) override;
   atl::string visit(ArrayType &at) override;
   atl::string visit(Assign &as) override;
   atl::string visit(BaseType &bt) override;

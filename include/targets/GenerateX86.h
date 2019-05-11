@@ -38,7 +38,6 @@ private:
 
   atl::shared_ptr<X86::Operand> visit(AddressOf &ao) override;
   atl::shared_ptr<X86::Operand> visit(Allocation &a) override;
-  atl::shared_ptr<X86::Operand> visit(ArrayAccess &aa) override;
   atl::shared_ptr<X86::Operand> visit(ArrayType &at) override;
   atl::shared_ptr<X86::Operand> visit(Assign &as) override;
   atl::shared_ptr<X86::Operand> visit(BaseType &bt) override;

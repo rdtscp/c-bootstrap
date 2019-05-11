@@ -29,7 +29,6 @@ private:
 
   atl::shared_ptr<ASTNode> visit(AddressOf &ao) override;
   atl::shared_ptr<ASTNode> visit(Allocation &a) override;
-  atl::shared_ptr<ASTNode> visit(ArrayAccess &aa) override;
   atl::shared_ptr<ASTNode> visit(ArrayType &at) override;
   atl::shared_ptr<ASTNode> visit(Assign &as) override;
   atl::shared_ptr<ASTNode> visit(BaseType &bt) override;

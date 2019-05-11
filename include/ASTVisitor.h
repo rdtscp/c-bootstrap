@@ -4,7 +4,6 @@ namespace ACC {
 
 class AddressOf;
 class Allocation;
-class ArrayAccess;
 class ArrayType;
 class Assign;
 class BaseType;
@@ -59,7 +58,6 @@ public:
 
   virtual T visit(AddressOf &ao) = 0;
   virtual T visit(Allocation &a) = 0;
-  virtual T visit(ArrayAccess &aa) = 0;
   virtual T visit(ArrayType &at) = 0;
   virtual T visit(Assign &as) = 0;
   virtual T visit(BaseType &bt) = 0;
