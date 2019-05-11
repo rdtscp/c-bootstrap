@@ -4,7 +4,7 @@ using namespace ACC;
 
 SubscriptOp::SubscriptOp(const atl::shared_ptr<VarExpr> &p_variable,
                          const atl::shared_ptr<Expr> &p_index)
-    : variable(p_variable), index(p_index), operatorDef(nullptr) {}
+    : variable(p_variable), index(p_index), operatorDecl(nullptr) {}
 
 atl::string SubscriptOp::getSignature() const { return "nullptr_t"; }
 
