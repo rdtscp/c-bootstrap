@@ -78,6 +78,9 @@ private:
   atl::shared_ptr<Type> visit(VarDef &vd) override;
   atl::shared_ptr<Type> visit(VarExpr &ve) override;
   atl::shared_ptr<Type> visit(While &w) override;
+
+  /* Helpers */
+  atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type);
 };
 
 } // namespace ACC

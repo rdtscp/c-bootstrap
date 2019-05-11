@@ -343,6 +343,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(IntLiteral &il) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
   atl::shared_ptr<Type> objType = ma.object->accept(*this);
+  objType = collapseReferenceTypes(objType);
 
   atl::shared_ptr<ClassType> objClassType;
   if (objType->astClass() == "ClassType") {
@@ -359,24 +360,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
                    "using `.` operator.",
                    ma.object);
     objType = atl::static_pointer_cast<PointerType>(objType)->pointedType;
-    // Get ClassType
-    if (objType->astClass() != "ClassType")
-      return error("Type Analysis",
-                   "Attempted to access a member variable on a variable that "
-                   "was not an object.",
-                   ma.object);
-    objClassType = atl::static_pointer_cast<ClassType>(objType);
-  } else if (objType->astClass() == "ReferenceType") {
-    if (ma.accessType != SourceToken::Class::DOT)
-      return error("Type Analysis",
-                   "Attempted to access member variable of class type without "
-                   "using `.` operator.",
-                   ma.object);
-    objType = atl::static_pointer_cast<ReferenceType>(objType)->referencedType;
-    // Handle T&&
-    if (objType->astClass() == "ReferenceType")
-      objType =
-          atl::static_pointer_cast<ReferenceType>(objType)->referencedType;
     // Get ClassType
     if (objType->astClass() != "ClassType")
       return error("Type Analysis",
@@ -412,7 +395,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
   atl::shared_ptr<Type> objType = mc.object->accept(*this);
-  // const atl::shared_ptr<Type> memberCallType = mc.funCall->accept(*this);
+  objType = collapseReferenceTypes(objType);
 
   atl::shared_ptr<ClassType> objClassType;
   if (objType->astClass() == "ClassType") {
@@ -434,24 +417,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
       return error("Type Analysis",
                    "Attempted to call a member function on a variable that "
                    "was not an object.",
-                   mc.object);
-    objClassType = atl::static_pointer_cast<ClassType>(objType);
-  } else if (objType->astClass() == "ReferenceType") {
-    if (mc.accessType != SourceToken::Class::DOT)
-      return error("Type Analysis",
-                   "Attempted to call member function of class type without "
-                   "using `.` operator.",
-                   mc.object);
-    objType = atl::static_pointer_cast<ReferenceType>(objType)->referencedType;
-    // Handle T&&
-    if (objType->astClass() == "ReferenceType")
-      objType =
-          atl::static_pointer_cast<ReferenceType>(objType)->referencedType;
-    // Get ClassType
-    if (objType->astClass() != "ClassType")
-      return error("Type Analysis",
-                   "Attempted to call a member function on a variable that was "
-                   "not an object.",
                    mc.object);
     objClassType = atl::static_pointer_cast<ClassType>(objType);
   } else {
@@ -537,24 +502,37 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(StringLiteral &sl) {
       atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR))));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
-  // const atl::shared_ptr<Type> arrayExprType = aa.array->accept(*this);
-  // const atl::shared_ptr<Type> arrayIndex = aa.index->accept(*this);
-  // if (arrayExprType->astClass() != "ArrayType" &&
-  //     arrayExprType->astClass() != "PointerType")
-  //   return error("Type Analysis",
-  //                "Attempted to index an expression which was not an array.
-  //                Was " "of type: " +
-  //                    arrayExprType->astClass(),
-  //                aa.array);
-  // if (arrayIndex->astClass() != "BaseType")
-  //   return error("Type Analysis",
-  //                "Attempted to index an array using an expression which was "
-  //                "not of type int. Was of type: " +
-  //                    arrayIndex->astClass(),
-  //                aa.index);
+  atl::shared_ptr<Type> objType = so.variable->accept(*this);
+  objType = collapseReferenceTypes(objType);
+  if (objType->astClass() == "ArrayType" ||
+      objType->astClass() == "PointerType") {
+    // TODO: Initialise this FunDef with an implementation.
+    const atl::shared_ptr<FunDef> arrayPointerSubscriptOpDef;
+    so.operatorDecl = arrayPointerSubscriptOpDef;
+    return atl::static_pointer_cast<PointerType>(objType)->pointedType;
+  } else if (objType->astClass() == "ClassType") {
+    const atl::shared_ptr<ClassType> objClassType =
+        atl::static_pointer_cast<ClassType>(objType);
+    const atl::shared_ptr<ClassTypeDef> objClassTypeDef =
+        objClassType->typeDefinition;
 
-  // return atl::static_pointer_cast<ArrayType>(arrayExprType)->pointedType;
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+    const atl::shared_ptr<Type> indexType = so.index->accept(*this);
+    const atl::shared_ptr<FunDecl> objSubscriptOpDecl =
+        objClassTypeDef->findFunDeclLocal(indexType->getSignature());
+    if (objSubscriptOpDecl == nullptr) {
+      return error("Type Error",
+                   "No definiton for subscript operator[] for type: " +
+                       objClassType->identifier->toString(),
+                   so.variable);
+    }
+    so.operatorDecl = objSubscriptOpDecl;
+    return objSubscriptOpDecl->funType;
+  } else {
+    return error("Type Error",
+                 "Cannot perform subscript operator[] on type: " +
+                     objType->astClass(),
+                 so.variable);
+  }
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(TertiaryExpr &t) {
   const atl::shared_ptr<Type> conditionType =
@@ -672,4 +650,13 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(While &w) {
                  w.condition);
   w.body->accept(*this);
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+}
+atl::shared_ptr<Type>
+SemanticAnalysis::collapseReferenceTypes(atl::shared_ptr<Type> type) {
+  if (type->astClass() == "ReferenceType") {
+    type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
+    if (type->astClass() == "ReferenceType")
+      type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
+  }
+  return type;
 }
