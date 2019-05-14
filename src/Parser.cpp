@@ -326,7 +326,9 @@ atl::shared_ptr<Identifier> Parser::parseIdentifier() {
             new Identifier(parseOperatorOverload())));
         break;
       }
-      identifier = parseIdentifier();
+      const atl::string identData = expect(TC::IDENTIFIER).data;
+      identifier =
+          createNode<Identifier>(new Identifier(identData, identifier));
     }
   }
   return identifier;
