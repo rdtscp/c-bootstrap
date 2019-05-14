@@ -104,7 +104,6 @@ Program::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
     const atl::shared_ptr<Decl> currDecl = decls[idx];
     if (currDecl->astClass() != "VarDecl" && currDecl->astClass() != "VarDef")
       continue;
-
     if (currDecl.get() == exemptDecl.get())
       continue;
     if (*currDecl->getIdentifier() != *identifier)
