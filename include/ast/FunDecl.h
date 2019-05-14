@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Decl.h"
+#include "FunSignature.h"
 #include "Scope.h"
 #include "Type.h"
 #include "VarDecl.h"
@@ -24,7 +25,7 @@ public:
           const atl::shared_ptr<Type> &p_funType);
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
-  atl::string getSignature() const;
+  FunSignature getSignature() const;
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
@@ -46,11 +47,11 @@ public:
                const atl::shared_ptr<Decl> exemptDecl = nullptr) const override;
 
   virtual atl::shared_ptr<FunDecl>
-  findFunDecl(const atl::string &funSignature,
+  findFunDecl(const FunSignature &funSignature,
               const atl::shared_ptr<Decl> exemptDecl = nullptr) const override;
 
   virtual atl::shared_ptr<FunDecl> findFunDeclLocal(
-      const atl::string &funSignature,
+      const FunSignature &funSignature,
       const atl::shared_ptr<Decl> exemptDecl = nullptr) const override;
 
   virtual atl::shared_ptr<VarDecl>

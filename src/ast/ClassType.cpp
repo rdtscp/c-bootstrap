@@ -25,8 +25,6 @@ int ClassType::getBytes() const {
   return aggregateBytes;
 }
 
-atl::string ClassType::getSignature() const { return identifier->toString(); }
-
 bool ClassType::operator==(Type &rhs) const {
   if (rhs.astClass() == "ReferenceType") {
     const atl::shared_ptr<ReferenceType> rhsRefType(

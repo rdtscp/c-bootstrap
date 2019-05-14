@@ -13,8 +13,6 @@ public:
 
   atl::string getLiteral() const override { return value; }
 
-  atl::string getSignature() const override { return "int"; }
-
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

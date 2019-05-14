@@ -76,7 +76,7 @@ Namespace::findClassDef(const atl::shared_ptr<Identifier> identifier,
 }
 
 atl::shared_ptr<FunDecl>
-Namespace::findFunDecl(const atl::string &funSignature,
+Namespace::findFunDecl(const FunSignature &funSignature,
                        const atl::shared_ptr<Decl> exemptDecl) const {
   const atl::shared_ptr<FunDecl> localFind =
       findFunDeclLocal(funSignature, exemptDecl);
@@ -89,18 +89,17 @@ Namespace::findFunDecl(const atl::string &funSignature,
 }
 
 atl::shared_ptr<FunDecl>
-Namespace::findFunDeclLocal(const atl::string &funSignature,
+Namespace::findFunDeclLocal(const FunSignature &funSignature,
                             const atl::shared_ptr<Decl> exemptDecl) const {
   for (int idx = namespaceDecls.size() - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = namespaceDecls[idx];
     if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")
       continue;
     const atl::shared_ptr<FunDecl> currFunDecl =
-        atl::static_pointer_cast<FunDecl>(namespaceDecls[idx]);
+        atl::static_pointer_cast<FunDecl>(currDecl);
     if (currFunDecl.get() == exemptDecl.get())
       continue;
-    if (currFunDecl->getSignature() != funSignature)
-      continue;
+    // TODO: Compare the funSignature with the currFunDecl.
 
     return currFunDecl;
   }

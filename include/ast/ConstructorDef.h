@@ -44,11 +44,11 @@ public:
                const atl::shared_ptr<Decl> exemptDecl = nullptr) const override;
 
   virtual atl::shared_ptr<FunDecl>
-  findFunDecl(const atl::string &funSignature,
+  findFunDecl(const FunSignature &funSignature,
               const atl::shared_ptr<Decl> exemptDecl = nullptr) const override;
 
   virtual atl::shared_ptr<FunDecl> findFunDeclLocal(
-      const atl::string &funSignature,
+      const FunSignature &funSignature,
       const atl::shared_ptr<Decl> exemptDecl = nullptr) const override;
 
   virtual atl::shared_ptr<VarDecl>

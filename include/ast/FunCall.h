@@ -17,8 +17,7 @@ public:
   FunCall(const atl::shared_ptr<Identifier> &p_funIdentifier,
           const atl::vector<atl::shared_ptr<Expr>> &p_funArgs);
 
-  atl::string getSignature() const override;
-
+  
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

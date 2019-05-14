@@ -17,8 +17,7 @@ public:
               const atl::shared_ptr<Expr> &p_index);
   virtual ~SubscriptOp() {}
 
-  atl::string getSignature() const override;
-
+  
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

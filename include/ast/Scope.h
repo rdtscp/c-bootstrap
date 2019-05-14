@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Decl.h"
+#include "FunSignature.h"
 
 namespace ACC {
 
@@ -20,11 +21,11 @@ public:
                const atl::shared_ptr<Decl> exemptDecl = nullptr) const = 0;
 
   virtual atl::shared_ptr<FunDecl>
-  findFunDecl(const atl::string &funSignature,
+  findFunDecl(const FunSignature &funSignature,
               const atl::shared_ptr<Decl> exemptDecl = nullptr) const = 0;
 
   virtual atl::shared_ptr<FunDecl>
-  findFunDeclLocal(const atl::string &funSignature,
+  findFunDeclLocal(const FunSignature &funSignature,
                    const atl::shared_ptr<Decl> exemptDecl = nullptr) const = 0;
 
   virtual atl::shared_ptr<VarDecl>

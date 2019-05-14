@@ -202,7 +202,7 @@ ClassTypeDef::findClassDef(const atl::shared_ptr<Identifier> identifier,
 }
 
 atl::shared_ptr<FunDecl>
-ClassTypeDef::findFunDecl(const atl::string &funSignature,
+ClassTypeDef::findFunDecl(const FunSignature &funSignature,
                           const atl::shared_ptr<Decl> exemptDecl) const {
   const atl::shared_ptr<FunDecl> localFind =
       findFunDeclLocal(funSignature, exemptDecl);
@@ -215,7 +215,7 @@ ClassTypeDef::findFunDecl(const atl::string &funSignature,
 }
 
 atl::shared_ptr<FunDecl>
-ClassTypeDef::findFunDeclLocal(const atl::string &funSignature,
+ClassTypeDef::findFunDeclLocal(const FunSignature &funSignature,
                                const atl::shared_ptr<Decl> exemptDecl) const {
   for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = classDecls[idx];
@@ -225,9 +225,7 @@ ClassTypeDef::findFunDeclLocal(const atl::string &funSignature,
       continue;
     const atl::shared_ptr<FunDecl> currFunDecl =
         atl::static_pointer_cast<FunDecl>(currDecl);
-    const atl::string currFunDeclSig = currFunDecl->getSignature();
-    if (currFunDecl->getSignature() != funSignature)
-      continue;
+    // TODO: Compare the FunDecl with the FunSignature.
 
     return currFunDecl;
   }

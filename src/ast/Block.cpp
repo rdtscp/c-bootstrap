@@ -36,13 +36,13 @@ Block::findClassDef(const atl::shared_ptr<Identifier> identifier,
 }
 
 atl::shared_ptr<FunDecl>
-Block::findFunDecl(const atl::string &funSignature,
+Block::findFunDecl(const FunSignature &funSignature,
                    const atl::shared_ptr<Decl> exemptDecl) const {
   return outerScope->findFunDecl(funSignature, exemptDecl);
 }
 
 atl::shared_ptr<FunDecl>
-Block::findFunDeclLocal(const atl::string &funSignature,
+Block::findFunDeclLocal(const FunSignature &funSignature,
                         const atl::shared_ptr<Decl> exemptDecl) const {
   return nullptr;
 }

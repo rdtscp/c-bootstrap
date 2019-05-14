@@ -17,21 +17,12 @@ atl::shared_ptr<Identifier> FunDecl::getIdentifier() const {
   return funIdentifier;
 }
 
-atl::string FunDecl::getSignature() const {
-  atl::string output = getIdentifier()->toString();
+FunSignature FunDecl::getSignature() const {
+  atl::vector<atl::shared_ptr<Type>> paramTypes;
+  for (int idx = 0; idx < funParams.size(); ++idx)
+    paramTypes.push_back(funParams[idx]->type);
 
-  output += "(";
-
-  for (unsigned int idx = 0; idx < funParams.size(); ++idx) {
-    output += funParams[idx]->type->getSignature();
-    if (idx != funParams.size() - 1) {
-      output += ", ";
-    }
-  }
-
-  output += ")";
-
-  return output;
+  return FunSignature(funType, funIdentifier, paramTypes);
 }
 
 bool FunDecl::operator==(Decl &rhs) const {
@@ -77,13 +68,13 @@ FunDecl::findClassDef(const atl::shared_ptr<Identifier> identifier,
 }
 
 atl::shared_ptr<FunDecl>
-FunDecl::findFunDecl(const atl::string &funSignature,
+FunDecl::findFunDecl(const FunSignature &funSignature,
                      const atl::shared_ptr<Decl> exemptDecl) const {
   return outerScope->findFunDecl(funSignature, exemptDecl);
 }
 
 atl::shared_ptr<FunDecl>
-FunDecl::findFunDeclLocal(const atl::string &funSignature,
+FunDecl::findFunDeclLocal(const FunSignature &funSignature,
                           const atl::shared_ptr<Decl> exemptDecl) const {
   return nullptr;
 }

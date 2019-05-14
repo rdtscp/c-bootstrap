@@ -21,10 +21,6 @@ int ArrayType::getBytes() const {
   return atl::stoi(sizeIntLiteral->getLiteral()) * elementSize;
 }
 
-atl::string ArrayType::getSignature() const {
-  return pointedType->getSignature() + "[]";
-}
-
 bool ArrayType::operator==(Type &rhs) const {
   if (rhs.astClass() == "PointerType") {
     const PointerType &pt = *static_cast<PointerType *>(&rhs);

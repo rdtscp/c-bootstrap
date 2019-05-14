@@ -26,27 +26,6 @@ int BaseType::getBytes() const {
   }
 }
 
-atl::string BaseType::getSignature() const {
-  switch (primitiveType) {
-  case PrimitiveType::CHAR:
-    return "char";
-  case PrimitiveType::INT:
-    return "int";
-  case PrimitiveType::SHORT:
-    return "short";
-  case PrimitiveType::VOID:
-    return "void";
-  case PrimitiveType::UINT:
-    return "uint";
-  case PrimitiveType::BOOL:
-    return "bool";
-  case PrimitiveType::NULLPTR_T:
-    return "nullptr_t";
-  default:
-    return "nullptr_t";
-  }
-}
-
 bool BaseType::operator==(Type &rhs) const {
   if (rhs.astClass() == "ReferenceType") {
     const atl::shared_ptr<ReferenceType> rhsRefType(

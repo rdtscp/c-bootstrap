@@ -7,10 +7,6 @@ ReferenceType::ReferenceType(const atl::shared_ptr<Type> &p_referencedType)
 
 int ReferenceType::getBytes() const { return 4; }
 
-atl::string ReferenceType::getSignature() const {
-  return referencedType->getSignature() + "&";
-}
-
 bool ReferenceType::operator==(Type &rhs) const {
   if (referencedType->astClass() == rhs.astClass()) {
     return *referencedType == rhs;

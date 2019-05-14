@@ -20,8 +20,7 @@ public:
                const atl::shared_ptr<VarExpr> &p_fieldVariable,
                const SourceToken::Class &p_accessType);
 
-  atl::string getSignature() const override;
-
+  
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 
