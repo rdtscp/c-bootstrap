@@ -6,10 +6,9 @@ namespace ACC {
 
 class Scope {
 public:
-  // atl::vector<atl::shared_ptr<Decl>> decls;
   atl::shared_ptr<Scope> outerScope;
 
-  Scope();
+  Scope() : outerScope(nullptr) {}
   virtual ~Scope() {}
 
   virtual atl::shared_ptr<ClassTypeDecl>
