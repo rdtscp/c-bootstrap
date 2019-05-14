@@ -25,9 +25,6 @@ private:
   atl::shared_ptr<Program> progAST;
   atl::shared_ptr<Scope> currScope;
 
-  // Too lazy to make MemberFunDecl/MemberFunDef ASTNodes
-  bool inClassTypeDef;
-
   /* ---- Visit AST ---- */
 
   atl::shared_ptr<Type> visit(AddressOf &ao) override;

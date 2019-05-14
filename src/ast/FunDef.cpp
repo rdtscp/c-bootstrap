@@ -1,4 +1,9 @@
 #include "ast/FunDef.h"
+#include "ast/ClassType.h"
+#include "ast/ConstructorDef.h"
+#include "ast/FunDef.h"
+#include "ast/PointerType.h"
+#include "ast/VarDecl.h"
 
 using namespace ACC;
 
@@ -68,3 +73,57 @@ bool FunDef::operator==(const FunDef &rhs) const {
 }
 
 bool FunDef::operator!=(const FunDef &rhs) const { return !(*this == rhs); }
+
+atl::shared_ptr<ClassTypeDecl>
+FunDef::findClassDecl(const atl::shared_ptr<Identifier> identifier,
+                      const atl::shared_ptr<Decl> exemptDecl) const {
+  return outerScope->findClassDecl(identifier, exemptDecl);
+}
+
+atl::shared_ptr<ClassTypeDef>
+FunDef::findClassDef(const atl::shared_ptr<Identifier> identifier,
+                     const atl::shared_ptr<Decl> exemptDecl) const {
+  return outerScope->findClassDef(identifier, exemptDecl);
+}
+
+atl::shared_ptr<FunDecl>
+FunDef::findFunDecl(const atl::string &funSignature,
+                    const atl::shared_ptr<Decl> exemptDecl) const {
+  return outerScope->findFunDecl(funSignature, exemptDecl);
+}
+
+atl::shared_ptr<FunDecl>
+FunDef::findFunDeclLocal(const atl::string &funSignature,
+                         const atl::shared_ptr<Decl> exemptDecl) const {
+  return nullptr;
+}
+
+atl::shared_ptr<VarDecl>
+FunDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
+                    const atl::shared_ptr<Decl> exemptDecl) const {
+  const atl::shared_ptr<VarDecl> localFind =
+      findVarDeclLocal(identifier, exemptDecl);
+  if (localFind != nullptr)
+    return localFind;
+  else if (outerScope != nullptr)
+    return outerScope->findVarDecl(identifier, exemptDecl);
+  else
+    return nullptr;
+}
+
+atl::shared_ptr<VarDecl>
+FunDef::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
+                         const atl::shared_ptr<Decl> exemptDecl) const {
+  const int numParams = funParams.size();
+  for (int idx = 0; idx < numParams; ++idx) {
+    const atl::shared_ptr<VarDecl> currParam = funParams[idx];
+    if (currParam.get() == exemptDecl.get())
+      continue;
+    if (*currParam->getIdentifier() != *identifier)
+      continue;
+
+    return currParam;
+  }
+
+  return nullptr;
+}

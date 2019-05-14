@@ -264,7 +264,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(PrefixOp &po) {
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
-  currScope = p.globalScope;
+  currScope = p.getptr();
 
   x86.write("SECTION .data");
   for (unsigned int idx = 0; idx < p.globalVars.size(); ++idx) {

@@ -6,7 +6,7 @@
 using namespace ACC;
 
 SemanticAnalysis::SemanticAnalysis(atl::shared_ptr<Program> progAST)
-    : progAST(progAST), inClassTypeDef(false) {}
+    : progAST(progAST) {}
 
 atl::shared_ptr<Type>
 SemanticAnalysis::error(const atl::string &errorType, const atl::string &error,
@@ -139,37 +139,30 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassType &ct) {
   return ct.getptr();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDecl &ctd) {
-  if (currScope->findClassDef(ctd.getIdentifier()))
+  if (currScope->findClassDef(ctd.getIdentifier(), ctd.getptr()))
     return error("Name Analysis",
                  "Attempted to declare a Class with an identifier that is "
                  "already in use: " +
                      ctd.getIdentifier()->toString(),
                  ctd.getptr());
-  currScope->insertDecl(ctd.getptr());
 
   return ctd.classType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
-  if (currScope->findClassDef(ctd.getIdentifier()))
+  if (currScope->findClassDef(ctd.getIdentifier(), ctd.getptr()))
     return error("Name Analysis",
                  "Attempted to declare a Class with an identifier that is "
                  "already in use: " +
                      ctd.getIdentifier()->toString(),
                  ctd.getptr());
-  currScope->insertDecl(ctd.getptr());
 
-  inClassTypeDef = true;
   ctd.outerScope = currScope;
   currScope = ctd.getptr();
-
-  for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx)
-    currScope->insertDecl(ctd.classDecls[idx]);
 
   for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx)
     ctd.classDecls[idx]->accept(*this);
 
   currScope = ctd.outerScope;
-  inClassTypeDef = false;
 
   return ctd.classType;
 }
@@ -188,14 +181,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorDef &cd) {
   cd.outerScope = currScope;
   currScope = cd.getptr();
 
-  const bool inClassTypeDef_temp = inClassTypeDef;
-  inClassTypeDef = false;
-
   for (unsigned int idx = 0; idx < cd.constructorParams.size(); ++idx)
     cd.constructorParams[idx]->accept(*this);
   cd.constructorBlock->accept(*this);
-
-  inClassTypeDef = inClassTypeDef_temp;
 
   currScope = cd.outerScope;
 
@@ -209,12 +197,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(DestructorDecl &dd) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(DestructorDef &dd) {
-  const bool inClassTypeDef_temp = inClassTypeDef;
-  inClassTypeDef = false;
-
   dd.destructorBlock->accept(*this);
-
-  inClassTypeDef = inClassTypeDef_temp;
 
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
@@ -267,7 +250,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
     fc.funArgs[idx]->accept(*this);
 
   const atl::shared_ptr<FunDecl> funDecl =
-      currScope->resolveFunCall(fc.getSignature());
+      currScope->findFunDecl(fc.getSignature());
   if (funDecl == nullptr)
     return error("Type Analysis", "Attempted to call undeclared function.",
                  fc.getptr());
@@ -276,14 +259,11 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
   return fc.funDecl->funType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(FunDecl &fd) {
-  if (!inClassTypeDef && currScope->findVarDecl(fd.getIdentifier()))
+  if (currScope->findVarDecl(fd.getIdentifier(), fd.getptr()))
     return error("Name Analysis",
                  "FunDecl Identifier already in use: " +
                      fd.getIdentifier()->toString(),
                  fd.getptr());
-
-  if (!inClassTypeDef)
-    currScope->insertDecl(fd.getptr());
 
   for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
@@ -291,27 +271,18 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDecl &fd) {
   return fd.funType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
-  if (!inClassTypeDef && currScope->findVarDecl(fd.getIdentifier()))
+  if (currScope->findVarDecl(fd.getIdentifier(), fd.getptr()))
     return error("Name Analysis",
                  "FunDef Identifier already in use: " +
                      fd.getIdentifier()->toString(),
                  fd.getIdentifier());
 
-  if (!inClassTypeDef)
-    currScope->insertDecl(fd.getptr());
-
   fd.outerScope = currScope;
   currScope = fd.getptr();
-
-  const bool inClassTypeDef_temp = inClassTypeDef;
-  inClassTypeDef = false;
 
   for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
   fd.funBlock->accept(*this);
-
-  inClassTypeDef = inClassTypeDef_temp;
-  currScope = fd.outerScope;
 
   return fd.funType;
 }
@@ -476,12 +447,11 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(PrefixOp &po) {
   return po.variable->accept(*this);
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Program &p) {
-  currScope = atl::make_shared<Block>(Block({}));
+  currScope = p.getptr();
 
   for (unsigned int idx = 0; idx < p.decls.size(); ++idx)
     p.decls[idx]->accept(*this);
 
-  p.globalScope = currScope;
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ReferenceType &rt) {
@@ -517,8 +487,11 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
         objClassType->typeDefinition;
 
     const atl::shared_ptr<Type> indexType = so.index->accept(*this);
+    const atl::string operatorSignature =
+        objClassType->getSignature() + "::operator[](" +
+        objClassType->getSignature() + "*, " + indexType->getSignature() + ")";
     const atl::shared_ptr<FunDecl> objSubscriptOpDecl =
-        objClassTypeDef->findFunDeclLocal(indexType->getSignature());
+        objClassTypeDef->findFunDeclLocal(operatorSignature);
     if (objSubscriptOpDecl == nullptr) {
       return error("Type Error",
                    "No definiton for subscript operator[] for type: " +
@@ -590,15 +563,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
                    atl::static_pointer_cast<Decl>(vd.getptr()));
     vdType->typeDefinition = vdTypeDecl;
   }
-  if (!inClassTypeDef && currScope->findVarDecl(vd.getIdentifier()))
+  if (currScope->findVarDecl(vd.getIdentifier(), vd.getptr()))
     return error("Name Analysis",
                  "Attempted to declare a Variable with an identifier that is "
                  "already in use: " +
                      vd.getIdentifier()->toString(),
                  atl::static_pointer_cast<Decl>(vd.getptr()));
-
-  if (!inClassTypeDef)
-    currScope->insertDecl(vd.getptr());
 
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
@@ -612,15 +582,14 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
                    "Attempted to define variable with undefined class type.",
                    atl::static_pointer_cast<Decl>(vd.getptr()));
   }
-  if (currScope->findVarDecl(vd.getIdentifier()))
+  if (currScope->findVarDecl(vd.getIdentifier(), vd.getptr()))
     return error("Name Analysis",
                  "Attempted to define a Variable with an identifier that is "
                  "already in use: " +
                      vd.getIdentifier()->toString(),
                  atl::static_pointer_cast<Decl>(vd.getptr()));
 
-  if (!inClassTypeDef)
-    currScope->insertDecl(vd.getptr());
+  // Visit the value initialised.
 
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }

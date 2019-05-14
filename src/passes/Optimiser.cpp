@@ -203,11 +203,10 @@ atl::shared_ptr<ASTNode> Optimiser::visit(PointerType &pt) {
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(PrefixOp &po) { return po.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(Program &p) {
-  currScope = atl::make_shared<Block>(Block({}));
+  currScope = p.getptr();
   for (unsigned int idx = 0; idx < p.decls.size(); ++idx)
     p.decls[idx] = atl::static_pointer_cast<Decl>(p.decls[idx]->accept(*this));
 
-  p.globalScope = currScope;
   return nullptr;
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(ReferenceType &rt) {

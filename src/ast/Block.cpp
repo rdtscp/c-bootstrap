@@ -1,4 +1,8 @@
 #include "ast/Block.h"
+#include "ast/ClassType.h"
+#include "ast/ClassTypeDef.h"
+#include "ast/FunDef.h"
+#include "ast/VarDef.h"
 
 using namespace ACC;
 
@@ -18,3 +22,60 @@ bool Block::operator==(const Block &rhs) const {
 }
 
 bool Block::operator!=(const Block &rhs) const { return !(*this == rhs); }
+
+atl::shared_ptr<ClassTypeDecl>
+Block::findClassDecl(const atl::shared_ptr<Identifier> identifier,
+                     const atl::shared_ptr<Decl> exemptDecl) const {
+  return outerScope->findClassDecl(identifier, exemptDecl);
+}
+
+atl::shared_ptr<ClassTypeDef>
+Block::findClassDef(const atl::shared_ptr<Identifier> identifier,
+                    const atl::shared_ptr<Decl> exemptDecl) const {
+  return outerScope->findClassDef(identifier, exemptDecl);
+}
+
+atl::shared_ptr<FunDecl>
+Block::findFunDecl(const atl::string &funSignature,
+                   const atl::shared_ptr<Decl> exemptDecl) const {
+  return outerScope->findFunDecl(funSignature, exemptDecl);
+}
+
+atl::shared_ptr<FunDecl>
+Block::findFunDeclLocal(const atl::string &funSignature,
+                        const atl::shared_ptr<Decl> exemptDecl) const {
+  return nullptr;
+}
+
+atl::shared_ptr<VarDecl>
+Block::findVarDecl(const atl::shared_ptr<Identifier> identifier,
+                   const atl::shared_ptr<Decl> exemptDecl) const {
+  const atl::shared_ptr<VarDecl> localFind =
+      findVarDeclLocal(identifier, exemptDecl);
+  if (localFind != nullptr)
+    return localFind;
+  else if (outerScope != nullptr)
+    return outerScope->findVarDecl(identifier, exemptDecl);
+  else
+    return nullptr;
+}
+
+atl::shared_ptr<VarDecl>
+Block::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
+                        const atl::shared_ptr<Decl> exemptDecl) const {
+  for (int idx = stmts.size() - 1; idx >= 0; --idx) {
+    const atl::shared_ptr<Stmt> currStmt = stmts[idx];
+    if (currStmt->astClass() != "VarDecl" && currStmt->astClass() != "VarDef")
+      continue;
+    const atl::shared_ptr<VarDecl> currVarDecl =
+        atl::static_pointer_cast<VarDecl>(currStmt);
+    if (currVarDecl.get() == exemptDecl.get())
+      continue;
+    if (*currVarDecl->getIdentifier() != *identifier)
+      continue;
+
+    return currVarDecl;
+  }
+
+  return nullptr;
+}

@@ -1,4 +1,8 @@
 #include "ast/FunDecl.h"
+#include "ast/ClassType.h"
+#include "ast/ClassTypeDef.h"
+#include "ast/FunDef.h"
+#include "ast/VarDef.h"
 
 using namespace ACC;
 
@@ -30,7 +34,6 @@ atl::string FunDecl::getSignature() const {
   return output;
 }
 
-
 bool FunDecl::operator==(Decl &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<FunDecl *>(&rhs);
@@ -60,3 +63,39 @@ bool FunDecl::operator==(const FunDecl &rhs) const {
 }
 
 bool FunDecl::operator!=(const FunDecl &rhs) const { return !(*this == rhs); }
+
+atl::shared_ptr<ClassTypeDecl>
+FunDecl::findClassDecl(const atl::shared_ptr<Identifier> identifier,
+                       const atl::shared_ptr<Decl> exemptDecl) const {
+  return outerScope->findClassDecl(identifier, exemptDecl);
+}
+
+atl::shared_ptr<ClassTypeDef>
+FunDecl::findClassDef(const atl::shared_ptr<Identifier> identifier,
+                      const atl::shared_ptr<Decl> exemptDecl) const {
+  return outerScope->findClassDef(identifier, exemptDecl);
+}
+
+atl::shared_ptr<FunDecl>
+FunDecl::findFunDecl(const atl::string &funSignature,
+                     const atl::shared_ptr<Decl> exemptDecl) const {
+  return outerScope->findFunDecl(funSignature, exemptDecl);
+}
+
+atl::shared_ptr<FunDecl>
+FunDecl::findFunDeclLocal(const atl::string &funSignature,
+                          const atl::shared_ptr<Decl> exemptDecl) const {
+  return nullptr;
+}
+
+atl::shared_ptr<VarDecl>
+FunDecl::findVarDecl(const atl::shared_ptr<Identifier> identifier,
+                     const atl::shared_ptr<Decl> exemptDecl) const {
+  return outerScope->findVarDecl(identifier, exemptDecl);
+}
+
+atl::shared_ptr<VarDecl>
+FunDecl::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
+                          const atl::shared_ptr<Decl> exemptDecl) const {
+  return nullptr;
+}

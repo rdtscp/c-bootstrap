@@ -26,7 +26,7 @@ private:
   X86::Writer x86;
   atl::shared_ptr<Program> progAST;
 
-  atl::shared_ptr<Block> currScope;
+  atl::shared_ptr<Scope> currScope;
   int blockCount = 0;
   int currFpOffset = 0;
 
