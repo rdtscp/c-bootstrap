@@ -266,7 +266,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDecl &fd) {
   for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
 
-  return fd.funType;
+  return fd.funType->accept(*this);
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
   if (currScope->findVarDecl(fd.getIdentifier(), fd.getptr()))
@@ -282,7 +282,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
     fd.funParams[idx]->accept(*this);
   fd.funBlock->accept(*this);
 
-  return fd.funType;
+  return fd.funType->accept(*this);
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Identifier &i) {
   // TODO?
@@ -407,6 +407,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
   /* Now Manually Visit the Member Call */
   // Visit all parameters first.
   atl::vector<atl::shared_ptr<Type>> funCallArgTypes;
+  funCallArgTypes.push_back(atl::shared_ptr<PointerType>(
+      new PointerType(objClassTypeDef->classType)));
   for (unsigned int idx = 0; idx < mc.funCall->funArgs.size(); ++idx)
     funCallArgTypes.push_back(mc.funCall->funArgs[idx]->accept(*this));
 
