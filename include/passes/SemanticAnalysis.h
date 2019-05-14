@@ -78,6 +78,7 @@ private:
 
   /* Helpers */
   atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type);
+  // TODO: ~Create: Type preventCascade(const Type t);
 };
 
 } // namespace ACC

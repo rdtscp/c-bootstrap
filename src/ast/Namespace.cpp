@@ -99,7 +99,8 @@ Namespace::findFunDeclLocal(const FunSignature &funSignature,
         atl::static_pointer_cast<FunDecl>(currDecl);
     if (currFunDecl.get() == exemptDecl.get())
       continue;
-    // TODO: Compare the funSignature with the currFunDecl.
+    if (funSignature != currFunDecl->getSignature())
+      continue;
 
     return currFunDecl;
   }

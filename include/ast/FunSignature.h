@@ -16,6 +16,23 @@ public:
       : funReturnType(p_funReturnType), funIdentifier(p_funIdentifier),
         funArgs(p_funArgs) {}
 
+  bool operator==(const FunSignature &rhs) const {
+    // TODO: Incorporate return type?
+
+    // Check args match.
+    for (int idx = 0; idx < funArgs.size(); ++idx)
+      if (*funArgs[idx] != *rhs.funArgs[idx])
+        return false;
+
+    // Check identifier.
+    if (*funIdentifier != *rhs.funIdentifier)
+      return false;
+
+    return true;
+  }
+
+  bool operator!=(const FunSignature &rhs) const { return !(*this == rhs); }
+
 private:
   const atl::shared_ptr<Type> funReturnType;
   const atl::shared_ptr<Identifier> funIdentifier;

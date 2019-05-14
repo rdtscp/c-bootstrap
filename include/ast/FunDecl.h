@@ -25,7 +25,7 @@ public:
           const atl::shared_ptr<Type> &p_funType);
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
-  FunSignature getSignature() const;
+  const FunSignature getSignature() const;
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;

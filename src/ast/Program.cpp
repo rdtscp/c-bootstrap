@@ -71,13 +71,12 @@ Program::findFunDeclLocal(const FunSignature &funSignature,
     const atl::shared_ptr<Decl> currDecl = decls[idx];
     if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")
       continue;
-    if (currDecl.get() == exemptDecl.get())
-      continue;
     const atl::shared_ptr<FunDecl> currFunDecl =
         atl::static_pointer_cast<FunDecl>(currDecl);
     if (currFunDecl.get() == exemptDecl.get())
       continue;
-    // TODO: Compare the funSignature with the currFunDecl.
+    if (funSignature != currFunDecl->getSignature())
+      continue;
 
     return currFunDecl;
   }

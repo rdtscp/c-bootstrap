@@ -221,11 +221,12 @@ ClassTypeDef::findFunDeclLocal(const FunSignature &funSignature,
     const atl::shared_ptr<Decl> currDecl = classDecls[idx];
     if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")
       continue;
-    if (currDecl.get() == exemptDecl.get())
-      continue;
     const atl::shared_ptr<FunDecl> currFunDecl =
         atl::static_pointer_cast<FunDecl>(currDecl);
-    // TODO: Compare the FunDecl with the FunSignature.
+    if (currFunDecl.get() == exemptDecl.get())
+      continue;
+    if (funSignature != currFunDecl->getSignature())
+      continue;
 
     return currFunDecl;
   }
