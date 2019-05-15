@@ -15,9 +15,8 @@ public:
 
   ClassType(const atl::shared_ptr<Identifier> &p_identifier);
 
-  int getBytes() const override;
+  unsigned int getBytes() const override;
 
-  
   bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;
 

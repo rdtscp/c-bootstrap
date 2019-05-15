@@ -583,7 +583,6 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
     expect(TC::CONST);
     funModifiers.insert(FunDecl::FunModifiers::CONST);
   }
-  // TODO: Modifiers for FunDecls
 
   if (acceptBlock() && !isDef) {
     throw ACC::Error(
@@ -644,7 +643,6 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
       params.push_back(parseLitExpr());
     }
     expect(TC::RPAR);
-    // TODO: Create ConstructorCall ASTNode to represent this.
     const atl::shared_ptr<ConstructorCall> constructorCall(
         new ConstructorCall(classType->identifier, params));
     atl::shared_ptr<VarDef> output(
@@ -760,7 +758,6 @@ atl::shared_ptr<For> Parser::parseFor() {
   const atl::shared_ptr<Expr> condition = parseExpr();
   expect(TC::SC);
   const atl::shared_ptr<Expr> endBodyExpr = parseExpr();
-  /* TODO: Check this Stmt is Valid ASTNode Type. */
   if (endBodyExpr->astClass() != "PrefixOp")
     throw ACC::Error("Parser TEMP: For Loops do not support end of body "
                      "expressions other than "
@@ -1060,7 +1057,6 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
         atl::shared_ptr<PrefixOp>(new PrefixOp(operation, variable)));
   }
   if (accept(TC::NEW)) {
-    /* TODO: Parse Heap Allocation. */
     expect(TC::NEW);
     /* Constructor Call */
     if (accept(TC::IDENTIFIER) && accept(TC::LPAR, 1)) {

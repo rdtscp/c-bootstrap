@@ -308,7 +308,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
   return fd.funType->accept(*this);
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Identifier &i) {
-  // TODO?
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(If &i) {

@@ -12,10 +12,9 @@ public:
 
   BaseType(const PrimitiveType p_pType);
 
-  int getBytes() const override;
+  unsigned int getBytes() const override;
 
-  
-  bool operator==(Type &rhs) const override;
+    bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;
 
   bool operator==(const BaseType &rhs) const;

@@ -10,8 +10,8 @@ ArrayType::ArrayType(const atl::shared_ptr<Type> &p_type,
                      const atl::shared_ptr<Expr> &p_size)
     : PointerType(p_type), size(p_size) {}
 
-int ArrayType::getBytes() const {
-  int elementSize = pointedType->getBytes();
+unsigned int ArrayType::getBytes() const {
+  unsigned int elementSize = pointedType->getBytes();
   if (size->astClass() != "IntLiteral")
     throw ACC::Error(
         "Internal Error: Attempted to getBytes() of dynamic ArrayType.");

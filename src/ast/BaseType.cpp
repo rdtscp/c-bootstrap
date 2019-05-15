@@ -5,7 +5,7 @@ using namespace ACC;
 
 BaseType::BaseType(PrimitiveType p_pType) : primitiveType(p_pType) {}
 
-int BaseType::getBytes() const {
+unsigned int BaseType::getBytes() const {
   switch (primitiveType) {
   case PrimitiveType::CHAR:
     return 1;
