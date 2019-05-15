@@ -6,17 +6,6 @@ GenerateX86::GenerateX86(atl::shared_ptr<Program> progAST,
                          const atl::string &outputFile)
     : x86(outputFile), progAST(progAST) {}
 
-void GenerateX86::error(atl::string error) {
-  errorCount++;
-  errors.push_back(error);
-}
-
-void GenerateX86::printErrors() const {
-  printf("FATAL x86 Generation Errors:\n");
-  for (unsigned int idx = 0u; idx < errors.size(); ++idx)
-    printf("\t%s\n", errors[idx].c_str());
-}
-
 void GenerateX86::run() { visit(*progAST); }
 
 void GenerateX86::alloc(const VarDecl &vd) {
@@ -258,7 +247,6 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(Namespace &n) {
   // const unsigned int numDecls = n.namespaceDecls.size();
   return nullptr;
 }
-
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Nullptr &n) {
   return genIntValue(0);
 }
