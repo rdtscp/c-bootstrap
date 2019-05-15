@@ -16,6 +16,8 @@ using namespace ACC;
 // "test/tests/Test_ASTAnalysis/";
 atl::string test_prefix = "../../test/tests/Test_ASTAnalysis/";
 
+// TODO: Test accessing namespace'd classes.
+
 TEST(Test_ASTAnalysis, AmbiguousIdentifier) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "AmbiguousIdentifier/test.cpp");
@@ -113,6 +115,22 @@ TEST(Test_ASTAnalysis, MemberCalls) {
 TEST(Test_ASTAnalysis, NameAnalysis) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "NameAnalysis/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis semanticAnalysis(progAST);
+  semanticAnalysis.run();
+  semanticAnalysis.printErrors();
+  ASSERT_EQ(0, semanticAnalysis.errorCount);
+}
+
+TEST(Test_ASTAnalysis, NamespaceFunction) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "NamespaceFunction/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
