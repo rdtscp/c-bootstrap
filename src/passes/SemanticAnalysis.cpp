@@ -330,7 +330,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(If &i) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(IntLiteral &il) {
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT));
+  if (il.isUnsigned)
+    return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::UINT));
+  else
+    return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
   atl::shared_ptr<Type> objType = ma.object->accept(*this);
