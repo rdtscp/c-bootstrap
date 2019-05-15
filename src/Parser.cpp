@@ -644,6 +644,7 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
       params.push_back(parseLitExpr());
     }
     expect(TC::RPAR);
+    // TODO: Create ConstructorCall ASTNode to represent this.
     const atl::shared_ptr<FunCall> constructorCall(
         new FunCall(classType->identifier, params));
     atl::shared_ptr<VarDef> output(
