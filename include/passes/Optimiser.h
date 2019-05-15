@@ -23,13 +23,12 @@ public:
 private:
   atl::shared_ptr<Program> &progAST;
 
-  atl::shared_ptr<Block> currScope;
+  atl::shared_ptr<Scope> currScope;
 
   /* ---- Visit AST ---- */
 
   atl::shared_ptr<ASTNode> visit(AddressOf &ao) override;
   atl::shared_ptr<ASTNode> visit(Allocation &a) override;
-  atl::shared_ptr<ASTNode> visit(ArrayAccess &aa) override;
   atl::shared_ptr<ASTNode> visit(ArrayType &at) override;
   atl::shared_ptr<ASTNode> visit(Assign &as) override;
   atl::shared_ptr<ASTNode> visit(BaseType &bt) override;
@@ -40,6 +39,7 @@ private:
   atl::shared_ptr<ASTNode> visit(ClassType &ct) override;
   atl::shared_ptr<ASTNode> visit(ClassTypeDecl &ctd) override;
   atl::shared_ptr<ASTNode> visit(ClassTypeDef &ctd) override;
+  atl::shared_ptr<ASTNode> visit(ConstructorCall &cc) override;
   atl::shared_ptr<ASTNode> visit(ConstructorDecl &cd) override;
   atl::shared_ptr<ASTNode> visit(ConstructorDef &cd) override;
   atl::shared_ptr<ASTNode> visit(Deletion &d) override;
@@ -66,6 +66,7 @@ private:
   atl::shared_ptr<ASTNode> visit(Return &r) override;
   atl::shared_ptr<ASTNode> visit(SizeOf &so) override;
   atl::shared_ptr<ASTNode> visit(StringLiteral &sl) override;
+  atl::shared_ptr<ASTNode> visit(SubscriptOp &so) override;
   atl::shared_ptr<ASTNode> visit(TertiaryExpr &t) override;
   atl::shared_ptr<ASTNode> visit(Throw &t) override;
   atl::shared_ptr<ASTNode> visit(TypeCast &tc) override;

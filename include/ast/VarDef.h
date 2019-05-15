@@ -19,7 +19,7 @@ public:
          const atl::shared_ptr<Identifier> &p_varidentifier,
          const atl::shared_ptr<Expr> &p_varValue);
 
-  int getBytes() const;
+  unsigned int getBytes() const;
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
 

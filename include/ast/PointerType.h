@@ -14,11 +14,9 @@ public:
   PointerType(const atl::shared_ptr<Type> &p_pointedType);
   virtual ~PointerType() {}
 
-  virtual int getBytes() const override;
+  virtual unsigned int getBytes() const override;
 
-  atl::string getSignature() const override;
-
-  virtual bool operator==(Type &rhs) const override;
+    virtual bool operator==(Type &rhs) const override;
   virtual bool operator!=(Type &rhs) const override;
 
   bool operator==(const PointerType &rhs) const;

@@ -26,10 +26,6 @@ void Optimiser::run() {
 
 atl::shared_ptr<ASTNode> Optimiser::visit(AddressOf &ao) { return ao.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(Allocation &a) { return a.getptr(); }
-atl::shared_ptr<ASTNode> Optimiser::visit(ArrayAccess &aa) {
-  aa.array = atl::static_pointer_cast<Expr>(aa.array->accept(*this));
-  return aa.getptr();
-}
 atl::shared_ptr<ASTNode> Optimiser::visit(ArrayType &at) { return at.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(Assign &as) {
   as.lhs = as.lhs->accept(*this);
@@ -129,6 +125,12 @@ atl::shared_ptr<ASTNode> Optimiser::visit(ClassTypeDecl &ctd) {
 atl::shared_ptr<ASTNode> Optimiser::visit(ClassTypeDef &ctd) {
   return ctd.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(ConstructorCall &cc) {
+  for (unsigned int idx = 0; idx < cc.constructorArgs.size(); ++idx)
+    cc.constructorArgs[idx] =
+        atl::static_pointer_cast<Expr>(cc.constructorArgs[idx]->accept(*this));
+  return cc.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(ConstructorDecl &cd) {
   return cd.getptr();
 }
@@ -207,11 +209,10 @@ atl::shared_ptr<ASTNode> Optimiser::visit(PointerType &pt) {
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(PrefixOp &po) { return po.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(Program &p) {
-  currScope = atl::make_shared<Block>(Block({}));
+  currScope = p.getptr();
   for (unsigned int idx = 0; idx < p.decls.size(); ++idx)
     p.decls[idx] = atl::static_pointer_cast<Decl>(p.decls[idx]->accept(*this));
 
-  p.globalScope = currScope;
   return nullptr;
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(ReferenceType &rt) {
@@ -225,6 +226,11 @@ atl::shared_ptr<ASTNode> Optimiser::visit(Return &r) {
 atl::shared_ptr<ASTNode> Optimiser::visit(SizeOf &so) { return so.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(StringLiteral &sl) {
   return sl.getptr();
+}
+atl::shared_ptr<ASTNode> Optimiser::visit(SubscriptOp &so) {
+  so.variable = so.variable->accept(*this);
+  so.index = so.index->accept(*this);
+  return so.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(TertiaryExpr &t) {
   return t.getptr();

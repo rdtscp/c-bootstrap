@@ -13,11 +13,9 @@ public:
 
   ReferenceType(const atl::shared_ptr<Type> &p_referencedType);
 
-  int getBytes() const override;
+  unsigned int getBytes() const override;
 
-  atl::string getSignature() const override;
-
-  bool operator==(Type &rhs) const override;
+    bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;
 
   bool operator==(const ReferenceType &rhs) const;

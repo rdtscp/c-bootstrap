@@ -5,7 +5,7 @@ using namespace ACC;
 
 BaseType::BaseType(PrimitiveType p_pType) : primitiveType(p_pType) {}
 
-int BaseType::getBytes() const {
+unsigned int BaseType::getBytes() const {
   switch (primitiveType) {
   case PrimitiveType::CHAR:
     return 1;
@@ -23,27 +23,6 @@ int BaseType::getBytes() const {
     return 4;
   default:
     return 4;
-  }
-}
-
-atl::string BaseType::getSignature() const {
-  switch (primitiveType) {
-  case PrimitiveType::CHAR:
-    return "char";
-  case PrimitiveType::INT:
-    return "int";
-  case PrimitiveType::SHORT:
-    return "short";
-  case PrimitiveType::VOID:
-    return "void";
-  case PrimitiveType::UINT:
-    return "uint";
-  case PrimitiveType::BOOL:
-    return "bool";
-  case PrimitiveType::NULLPTR_T:
-    return "nullptr_t";
-  default:
-    return "nullptr_t";
   }
 }
 

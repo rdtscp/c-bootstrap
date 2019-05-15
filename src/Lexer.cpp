@@ -387,14 +387,10 @@ SourceToken Lexer::nextToken() {
   // Recognise INT_LITERAL Token.
   if (atl::isdigit(c)) {
     atl::string literal(1, c);
-    if (scanner.peek() == 'x') {
+    while (atl::isdigit(scanner.peek()))
       literal += scanner.next();
-      while (atl::isalpha(scanner.peek()) || atl::isdigit(scanner.peek()))
-        literal += scanner.next();
-    } else {
-      while (atl::isdigit(scanner.peek()))
-        literal += scanner.next();
-    }
+    if (scanner.peek() == 'u')
+      literal += scanner.next();
 
     return SourceToken(TC::INT_LITERAL, scanner.getPosition(), literal);
   }

@@ -10,6 +10,7 @@ class Namespace : public Decl,
                   public atl::enable_shared_from_this<Namespace> {
 
 public:
+  unsigned int namespaceDeclsChecked = 0;
   atl::shared_ptr<Identifier> identifier;
   atl::vector<atl::shared_ptr<Decl>> namespaceDecls;
 
@@ -27,6 +28,31 @@ public:
   atl::shared_ptr<Namespace> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "Namespace"; }
+
+  /* Scope Methods */
+  virtual atl::shared_ptr<ClassTypeDecl> findClassDecl(
+      const atl::shared_ptr<Identifier> identifier,
+      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+
+  virtual atl::shared_ptr<ClassTypeDef> findClassDef(
+      const atl::shared_ptr<Identifier> identifier,
+      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+
+  virtual atl::shared_ptr<FunDecl>
+  findFunDecl(const FunSignature &funSignature,
+              const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+
+  virtual atl::shared_ptr<FunDecl> findFunDeclLocal(
+      const FunSignature &funSignature,
+      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+
+  virtual atl::shared_ptr<VarDecl>
+  findVarDecl(const atl::shared_ptr<Identifier> identifier,
+              const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+
+  virtual atl::shared_ptr<VarDecl> findVarDeclLocal(
+      const atl::shared_ptr<Identifier> identifier,
+      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
 
   VISITOR_ACCEPTORS
 };

@@ -32,10 +32,6 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(AddressOf &ao) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Allocation &a) {
   return atl::make_shared<X86::None>();
 }
-atl::shared_ptr<X86::Operand> GenerateX86::visit(ArrayAccess &aa) {
-  aa.array->accept(*this);
-  return atl::make_shared<X86::None>();
-}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ArrayType &at) {
   return atl::make_shared<X86::None>();
 }
@@ -103,6 +99,15 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassTypeDecl &ctd) {
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassTypeDef &ctd) {
   return atl::make_shared<X86::None>();
+}
+atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorCall &cc) {
+  for (int idx = cc.constructorArgs.size() - 1; idx >= 0; --idx) {
+    atl::shared_ptr<X86::Operand> argReg =
+        cc.constructorArgs[idx]->accept(*this);
+    // x86.push(argReg);
+  }
+  x86.call(cc.constructorIdentifier->toString());
+  return X86::eax;
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorDecl &cd) {
   return atl::make_shared<X86::None>();
@@ -268,7 +273,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(PrefixOp &po) {
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
-  currScope = p.globalScope;
+  currScope = p.getptr();
 
   x86.write("SECTION .data");
   for (unsigned int idx = 0; idx < p.globalVars.size(); ++idx) {
@@ -303,6 +308,10 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(SizeOf &so) {
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(StringLiteral &sl) {
+  return atl::make_shared<X86::None>();
+}
+
+atl::shared_ptr<X86::Operand> GenerateX86::visit(SubscriptOp &so) {
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(TertiaryExpr &t) {

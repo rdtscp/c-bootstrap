@@ -25,14 +25,10 @@ private:
   atl::shared_ptr<Program> progAST;
   atl::shared_ptr<Scope> currScope;
 
-  // Too lazy to make MemberFunDecl/MemberFunDef ASTNodes
-  bool inClassTypeDef;
-
   /* ---- Visit AST ---- */
 
   atl::shared_ptr<Type> visit(AddressOf &ao) override;
   atl::shared_ptr<Type> visit(Allocation &a) override;
-  atl::shared_ptr<Type> visit(ArrayAccess &aa) override;
   atl::shared_ptr<Type> visit(ArrayType &at) override;
   atl::shared_ptr<Type> visit(Assign &as) override;
   atl::shared_ptr<Type> visit(BaseType &bt) override;
@@ -43,6 +39,7 @@ private:
   atl::shared_ptr<Type> visit(ClassType &ct) override;
   atl::shared_ptr<Type> visit(ClassTypeDecl &ctd) override;
   atl::shared_ptr<Type> visit(ClassTypeDef &ctd) override;
+  atl::shared_ptr<Type> visit(ConstructorCall &cc) override;
   atl::shared_ptr<Type> visit(ConstructorDecl &cd) override;
   atl::shared_ptr<Type> visit(ConstructorDef &cd) override;
   atl::shared_ptr<Type> visit(Deletion &d) override;
@@ -69,6 +66,7 @@ private:
   atl::shared_ptr<Type> visit(Return &r) override;
   atl::shared_ptr<Type> visit(SizeOf &so) override;
   atl::shared_ptr<Type> visit(StringLiteral &sl) override;
+  atl::shared_ptr<Type> visit(SubscriptOp &so) override;
   atl::shared_ptr<Type> visit(TertiaryExpr &t) override;
   atl::shared_ptr<Type> visit(Throw &t) override;
   atl::shared_ptr<Type> visit(TypeCast &tc) override;
@@ -78,6 +76,10 @@ private:
   atl::shared_ptr<Type> visit(VarDef &vd) override;
   atl::shared_ptr<Type> visit(VarExpr &ve) override;
   atl::shared_ptr<Type> visit(While &w) override;
+
+  /* Helpers */
+  atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type);
+  // TODO: ~Create: Type preventCascade(const Type t);
 };
 
 } // namespace ACC

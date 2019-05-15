@@ -39,18 +39,6 @@ atl::string DotGraph::visit(Allocation &a) {
     return allocationID;
   }
 }
-atl::string DotGraph::visit(ArrayAccess &aa) {
-  const atl::string arrayAccessID = "ArrayAccess" + atl::to_string(++nodeCount);
-  declare(arrayAccessID, "ArrayAccess");
-
-  const atl::string arrayID = aa.array->accept(*this);
-  const atl::string indexID = aa.index->accept(*this);
-
-  join(arrayAccessID, arrayID);
-  join(arrayAccessID, indexID);
-
-  return arrayAccessID;
-}
 atl::string DotGraph::visit(ArrayType &at) {
   const atl::string arrayTypeID = "ArrayType" + atl::to_string(++nodeCount);
   declare(arrayTypeID, at.pointedType->accept(*this) + "[]");
@@ -220,6 +208,15 @@ atl::string DotGraph::visit(ClassTypeDef &ctd) {
 
   classTypeDeclIDs[ctd.classType->identifier->toString().c_str()] = classID;
   return classID;
+}
+atl::string DotGraph::visit(ConstructorCall &cc) {
+  const atl::string funCallID = "ConstructorCall" + atl::to_string(++nodeCount);
+  declare(funCallID, cc.constructorIdentifier->toString() + "()");
+
+  for (unsigned int idx = 0; idx < cc.constructorArgs.size(); ++idx)
+    join(funCallID, cc.constructorArgs[idx]->accept(*this));
+
+  return funCallID;
 }
 atl::string DotGraph::visit(ConstructorDecl &cd) {
   const atl::string constructorID =
@@ -472,6 +469,18 @@ atl::string DotGraph::visit(StringLiteral &sl) {
   declare(strID, "\\\"" + sl.getLiteral() + "\\\"");
   return strID;
 }
+atl::string DotGraph::visit(SubscriptOp &so) {
+  const atl::string subscriptOpID = "SubscriptOp" + atl::to_string(++nodeCount);
+  declare(subscriptOpID, "SubscriptOp");
+
+  const atl::string arrayID = so.variable->accept(*this);
+  const atl::string indexID = so.index->accept(*this);
+
+  join(subscriptOpID, arrayID);
+  join(subscriptOpID, indexID);
+
+  return subscriptOpID;
+}
 atl::string DotGraph::visit(TertiaryExpr &t) {
   const atl::string tertiaryID = "TertiaryExpr" + atl::to_string(++nodeCount);
   const atl::string conditionID = t.tertiaryCondition->accept(*this);
@@ -524,7 +533,7 @@ atl::string DotGraph::visit(VarDef &vd) {
 }
 atl::string DotGraph::visit(VarExpr &ve) {
   const atl::string varID = "VarExpr" + atl::to_string(++nodeCount);
-  declare(varID, ve.varIdentifier->toString().c_str());
+  declare(varID, ve.varIdentifier->toString());
   return varID;
 }
 atl::string DotGraph::visit(While &w) {

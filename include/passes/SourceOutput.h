@@ -27,7 +27,6 @@ private:
 
   atl::string visit(AddressOf &ao) override;
   atl::string visit(Allocation &a) override;
-  atl::string visit(ArrayAccess &aa) override;
   atl::string visit(ArrayType &at) override;
   atl::string visit(Assign &as) override;
   atl::string visit(BaseType &bt) override;
@@ -38,6 +37,7 @@ private:
   atl::string visit(ClassType &ct) override;
   atl::string visit(ClassTypeDecl &ctd) override;
   atl::string visit(ClassTypeDef &ctd) override;
+  atl::string visit(ConstructorCall &cc) override;
   atl::string visit(ConstructorDecl &cd) override;
   atl::string visit(ConstructorDef &cd) override;
   atl::string visit(Deletion &d) override;
@@ -64,6 +64,7 @@ private:
   atl::string visit(Return &r) override;
   atl::string visit(SizeOf &so) override;
   atl::string visit(StringLiteral &sl) override;
+  atl::string visit(SubscriptOp &so) override;
   atl::string visit(TertiaryExpr &t) override;
   atl::string visit(Throw &t) override;
   atl::string visit(TypeCast &tc) override;

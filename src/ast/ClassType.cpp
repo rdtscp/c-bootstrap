@@ -7,15 +7,13 @@ using namespace ACC;
 ClassType::ClassType(const atl::shared_ptr<Identifier> &p_identifier)
     : identifier(p_identifier) {}
 
-int ClassType::getBytes() const {
-  int aggregateBytes = 0;
-  if (typeDefinition == nullptr)
-    return aggregateBytes;
+unsigned int ClassType::getBytes() const {
+  unsigned int aggregateBytes = 0;
 
-  // @TODO: Calculate SUM of VarDecls.
   const unsigned int classDeclsSize = typeDefinition->classDecls.size();
   for (unsigned int i = 0; i < classDeclsSize; ++i) {
-    if (typeDefinition->classDecls[i]->astClass() == "VarDecl") {
+    if (typeDefinition->classDecls[i]->astClass() == "VarDecl" ||
+        typeDefinition->classDecls[i]->astClass() == "VarDef") {
       aggregateBytes +=
           atl::static_pointer_cast<VarDecl>(typeDefinition->classDecls[i])
               ->getBytes();
@@ -24,8 +22,6 @@ int ClassType::getBytes() const {
 
   return aggregateBytes;
 }
-
-atl::string ClassType::getSignature() const { return identifier->toString(); }
 
 bool ClassType::operator==(Type &rhs) const {
   if (rhs.astClass() == "ReferenceType") {

@@ -6,8 +6,6 @@ TypeCast::TypeCast(const atl::shared_ptr<Type> &p_type,
                    const atl::shared_ptr<Expr> &p_expr)
     : type(p_type), expr(p_expr) {}
 
-atl::string TypeCast::getSignature() const { return type->getSignature(); }
-
 bool TypeCast::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<TypeCast *>(&rhs);

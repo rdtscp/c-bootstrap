@@ -5,10 +5,6 @@ using namespace ACC;
 AddressOf::AddressOf(const atl::shared_ptr<Expr> &p_addressOfExpr)
     : addressOfExpr(p_addressOfExpr) {}
 
-atl::string AddressOf::getSignature() const {
-  return addressOfExpr->getSignature() + "*";
-}
-
 bool AddressOf::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<AddressOf *>(&rhs);

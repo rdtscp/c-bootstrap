@@ -8,10 +8,6 @@ TertiaryExpr::TertiaryExpr(const atl::shared_ptr<Expr> &p_tertiaryCondition,
     : tertiaryCondition(p_tertiaryCondition), tertiaryIfBody(p_tertiaryIfBody),
       tertiaryElseBody(p_tertiaryElseBody) {}
 
-atl::string TertiaryExpr::getSignature() const {
-  return tertiaryIfBody->getSignature();
-}
-
 bool TertiaryExpr::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<TertiaryExpr *>(&rhs);

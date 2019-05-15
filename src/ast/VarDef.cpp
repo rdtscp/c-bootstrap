@@ -7,7 +7,7 @@ VarDef::VarDef(const atl::shared_ptr<Type> &p_varType,
                const atl::shared_ptr<Expr> &p_varValue)
     : VarDecl(p_varType, p_varidentifier), varValue(p_varValue) {}
 
-int VarDef::getBytes() const { return type->getBytes(); }
+unsigned int VarDef::getBytes() const { return type->getBytes(); }
 
 atl::shared_ptr<Identifier> VarDef::getIdentifier() const { return identifier; }
 

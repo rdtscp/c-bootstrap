@@ -4,7 +4,6 @@
 
 #include "ast/AddressOf.h"
 #include "ast/Allocation.h"
-#include "ast/ArrayAccess.h"
 #include "ast/ArrayType.h"
 #include "ast/Assign.h"
 #include "ast/BaseType.h"
@@ -15,6 +14,7 @@
 #include "ast/ClassType.h"
 #include "ast/ClassTypeDecl.h"
 #include "ast/ClassTypeDef.h"
+#include "ast/ConstructorCall.h"
 #include "ast/ConstructorDecl.h"
 #include "ast/ConstructorDef.h"
 #include "ast/Decl.h"
@@ -47,6 +47,7 @@
 #include "ast/SizeOf.h"
 #include "ast/Stmt.h"
 #include "ast/StringLiteral.h"
+#include "ast/SubscriptOp.h"
 #include "ast/TertiaryExpr.h"
 #include "ast/Throw.h"
 #include "ast/Type.h"

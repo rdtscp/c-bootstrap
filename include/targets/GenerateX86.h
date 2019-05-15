@@ -26,7 +26,7 @@ private:
   X86::Writer x86;
   atl::shared_ptr<Program> progAST;
 
-  atl::shared_ptr<Block> currScope;
+  atl::shared_ptr<Scope> currScope;
   int blockCount = 0;
   int currFpOffset = 0;
 
@@ -38,7 +38,6 @@ private:
 
   atl::shared_ptr<X86::Operand> visit(AddressOf &ao) override;
   atl::shared_ptr<X86::Operand> visit(Allocation &a) override;
-  atl::shared_ptr<X86::Operand> visit(ArrayAccess &aa) override;
   atl::shared_ptr<X86::Operand> visit(ArrayType &at) override;
   atl::shared_ptr<X86::Operand> visit(Assign &as) override;
   atl::shared_ptr<X86::Operand> visit(BaseType &bt) override;
@@ -49,6 +48,7 @@ private:
   atl::shared_ptr<X86::Operand> visit(ClassType &ct) override;
   atl::shared_ptr<X86::Operand> visit(ClassTypeDecl &ctd) override;
   atl::shared_ptr<X86::Operand> visit(ClassTypeDef &ctd) override;
+  atl::shared_ptr<X86::Operand> visit(ConstructorCall &cc) override;
   atl::shared_ptr<X86::Operand> visit(ConstructorDecl &cd) override;
   atl::shared_ptr<X86::Operand> visit(ConstructorDef &cd) override;
   atl::shared_ptr<X86::Operand> visit(Deletion &d) override;
@@ -75,6 +75,7 @@ private:
   atl::shared_ptr<X86::Operand> visit(Return &r) override;
   atl::shared_ptr<X86::Operand> visit(SizeOf &so) override;
   atl::shared_ptr<X86::Operand> visit(StringLiteral &sl) override;
+  atl::shared_ptr<X86::Operand> visit(SubscriptOp &so) override;
   atl::shared_ptr<X86::Operand> visit(TertiaryExpr &t) override;
   atl::shared_ptr<X86::Operand> visit(Throw &t) override;
   atl::shared_ptr<X86::Operand> visit(TypeCast &tc) override;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Decl.h"
+#include "FunSignature.h"
 #include "Scope.h"
 #include "Type.h"
 #include "VarDecl.h"
@@ -24,7 +25,7 @@ public:
           const atl::shared_ptr<Type> &p_funType);
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
-  atl::string getSignature() const;
+  const FunSignature getSignature() const;
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
@@ -35,6 +36,31 @@ public:
   atl::shared_ptr<FunDecl> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "FunDecl"; }
+
+  /* Scope Methods */
+  virtual atl::shared_ptr<ClassTypeDecl> findClassDecl(
+      const atl::shared_ptr<Identifier> identifier,
+      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+
+  virtual atl::shared_ptr<ClassTypeDef> findClassDef(
+      const atl::shared_ptr<Identifier> identifier,
+      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+
+  virtual atl::shared_ptr<FunDecl>
+  findFunDecl(const FunSignature &funSignature,
+              const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+
+  virtual atl::shared_ptr<FunDecl> findFunDeclLocal(
+      const FunSignature &funSignature,
+      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+
+  virtual atl::shared_ptr<VarDecl>
+  findVarDecl(const atl::shared_ptr<Identifier> identifier,
+              const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+
+  virtual atl::shared_ptr<VarDecl> findVarDeclLocal(
+      const atl::shared_ptr<Identifier> identifier,
+      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
 
   VISITOR_ACCEPTORS
 };

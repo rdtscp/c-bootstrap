@@ -2,7 +2,7 @@ int myGlobalInt;
 
 int ten() {
   int x;
-  x = 2 * (3 + 0x0f);
+  x = 2 * (3 + 15);
   return x;
 }
 

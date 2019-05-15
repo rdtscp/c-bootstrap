@@ -19,7 +19,6 @@ include_directories("${CMAKE_SOURCE_DIR}/include/")
 add_library(AST SHARED
   src/ast/AddressOf.cpp
   src/ast/Allocation.cpp
-  src/ast/ArrayAccess.cpp
   src/ast/ArrayType.cpp
   src/ast/Assign.cpp
   src/ast/BaseType.cpp
@@ -30,6 +29,7 @@ add_library(AST SHARED
   src/ast/ClassType.cpp
   src/ast/ClassTypeDecl.cpp
   src/ast/ClassTypeDef.cpp
+  src/ast/ConstructorCall.cpp
   src/ast/ConstructorDecl.cpp
   src/ast/ConstructorDef.cpp
   src/ast/Deletion.cpp
@@ -54,9 +54,9 @@ add_library(AST SHARED
   src/ast/Program.cpp
   src/ast/ReferenceType.cpp
   src/ast/Return.cpp
-  src/ast/Scope.cpp
   src/ast/SizeOf.cpp
   src/ast/StringLiteral.cpp
+  src/ast/SubscriptOp.cpp
   src/ast/TertiaryExpr.cpp
   src/ast/Throw.cpp
   src/ast/TypeCast.cpp

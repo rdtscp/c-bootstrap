@@ -9,9 +9,10 @@ class Decl : public ASTNode {
 public:
   enum class Visibility { PUBLIC, PRIVATE, PROTECTED, NONE };
 
+  atl::shared_ptr<Decl> outerDecl;
   Visibility visibility;
 
-  Decl() : visibility(Visibility::NONE) {}
+  Decl() : outerDecl(nullptr), visibility(Visibility::NONE) {}
   Decl(const Visibility &p_visibility) : visibility(p_visibility) {}
   virtual ~Decl() {}
   virtual bool operator==(Decl &rhs) const = 0;
