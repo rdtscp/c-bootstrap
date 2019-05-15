@@ -125,7 +125,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(CharLiteral &cl) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ClassType &ct) {
   const atl::shared_ptr<ClassTypeDecl> ctd =
-      currScope->findClassDecl(ct.identifier);
+      currScope->findClassDef(ct.identifier);
 
   if (ctd == nullptr)
     return error("Name Analysis",
@@ -494,22 +494,27 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
         objClassType->typeDefinition;
 
     const atl::shared_ptr<Type> indexType = so.index->accept(*this);
-    // TODO: Create FunSignature for SubscriptOp.
-    // const atl::string operatorSignature =
-    //     objClassType->getSignature() + "::operator[](" +
-    //     objClassType->getSignature() + "*, " + indexType->getSignature() +
-    //     ")";
-    // const atl::shared_ptr<FunDecl> objSubscriptOpDecl =
-    //     objClassTypeDef->findFunDeclLocal(operatorSignature);
-    // if (objSubscriptOpDecl == nullptr) {
-    //   return error("Type Error",
-    //                "No definiton for subscript operator[] for type: " +
-    //                    objClassType->identifier->toString(),
-    //                so.variable);
 
-    // so.operatorDecl = objSubscriptOpDecl;
-    // return objSubscriptOpDecl->funType;
-    return nullptr;
+    // Create FunSignature for SubscriptOp.
+    atl::vector<atl::shared_ptr<Type>> opArgs;
+    opArgs.push_back(
+        atl::shared_ptr<PointerType>(new PointerType(objClassType)));
+    opArgs.push_back(so.index->accept(*this));
+    const atl::shared_ptr<Identifier> opIdentifier(
+        new Identifier("operator[]", objClassType->identifier));
+    const FunSignature opSignature(nullptr, opIdentifier, opArgs);
+
+    const atl::shared_ptr<FunDecl> objSubscriptOpDecl =
+        objClassTypeDef->findFunDeclLocal(opSignature);
+    if (objSubscriptOpDecl == nullptr) {
+      return error("Type Error",
+                   "No definiton for subscript operator[] for type: " +
+                       objClassType->identifier->toString(),
+                   so.variable);
+    }
+
+    so.operatorDecl = objSubscriptOpDecl;
+    return objSubscriptOpDecl->funType;
   } else {
     return error("Type Error",
                  "Cannot perform subscript operator[] on type: " +
@@ -562,16 +567,11 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ValueAt &va) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
   if (vd.type->astClass() == "ClassType") {
-    atl::shared_ptr<ClassType> vdType =
-        atl::static_pointer_cast<ClassType>(vd.type);
-    const atl::shared_ptr<ClassTypeDef> vdTypeDecl =
-        currScope->findClassDef(vdType->identifier);
-
-    if (vdTypeDecl == nullptr)
+    const atl::shared_ptr<ClassType> vdClassType = vd.type->accept(*this);
+    if (vdClassType->typeDefinition == nullptr)
       return error("Type Analysis",
-                   "Attempted to declare variable with undefined class type.",
+                   "Attempted to define variable with undefined class type.",
                    atl::static_pointer_cast<Decl>(vd.getptr()));
-    vdType->typeDefinition = vdTypeDecl;
   }
   if (currScope->findVarDecl(vd.getIdentifier(), vd.getptr()))
     return error("Name Analysis",
@@ -584,10 +584,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
   if (vd.type->astClass() == "ClassType") {
-    const atl::shared_ptr<ClassTypeDef> vdTypeDecl =
-        currScope->findClassDef(vd.getIdentifier());
-
-    if (vdTypeDecl == nullptr)
+    const atl::shared_ptr<ClassType> vdClassType = vd.type->accept(*this);
+    if (vdClassType->typeDefinition == nullptr)
       return error("Type Analysis",
                    "Attempted to define variable with undefined class type.",
                    atl::static_pointer_cast<Decl>(vd.getptr()));
