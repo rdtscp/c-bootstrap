@@ -67,21 +67,43 @@ Program::findFunDecl(const FunSignature &funSignature,
 atl::shared_ptr<FunDecl>
 Program::findFunDeclLocal(const FunSignature &funSignature,
                           const atl::shared_ptr<Decl> exemptDecl) const {
-  for (int idx = decls.size() - 1; idx >= 0; --idx) {
-    const atl::shared_ptr<Decl> currDecl = decls[idx];
-    if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")
-      continue;
-    const atl::shared_ptr<FunDecl> currFunDecl =
-        atl::static_pointer_cast<FunDecl>(currDecl);
-    if (currFunDecl.get() == exemptDecl.get())
-      continue;
-    if (funSignature != currFunDecl->getSignature())
-      continue;
+  if (funSignature.namespaceCount() > 0) {
+    for (int idx = decls.size() - 1; idx >= 0; --idx) {
+      const atl::shared_ptr<Decl> currDecl = decls[idx];
+      if (currDecl->astClass() != "Namespace")
+        continue;
+      const atl::shared_ptr<Namespace> currNamespace =
+          atl::static_pointer_cast<Namespace>(currDecl);
+      if (*currNamespace->identifier != *funSignature.namespaceHead())
+        continue;
 
-    return currFunDecl;
+      const atl::shared_ptr<FunDecl> namespaceFind =
+          currNamespace->findFunDeclLocal(funSignature.lowerNamespace());
+      if (namespaceFind == nullptr)
+        continue;
+
+      return namespaceFind;
+    }
+
+    return nullptr;
+  } else {
+    /* No Namespacing on this FunSignature, search top level. */
+    for (int idx = decls.size() - 1; idx >= 0; --idx) {
+      const atl::shared_ptr<Decl> currDecl = decls[idx];
+      if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")
+        continue;
+      const atl::shared_ptr<FunDecl> currFunDecl =
+          atl::static_pointer_cast<FunDecl>(currDecl);
+      if (currFunDecl.get() == exemptDecl.get())
+        continue;
+      if (funSignature != currFunDecl->getSignature())
+        continue;
+
+      return currFunDecl;
+    }
+
+    return nullptr;
   }
-
-  return nullptr;
 }
 
 atl::shared_ptr<VarDecl>
