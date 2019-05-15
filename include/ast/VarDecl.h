@@ -18,6 +18,8 @@ public:
   atl::shared_ptr<Identifier> identifier;
   atl::shared_ptr<FunDecl> parentFunc;
 
+  int fpOffset = 0;
+
   VarDecl(const atl::shared_ptr<Type> &p_type,
           const atl::shared_ptr<Identifier> &p_identifier);
 
