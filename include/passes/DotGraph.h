@@ -12,7 +12,7 @@ public:
   void print();
 
 private:
-  int nodeCount = 0;
+  unsigned int nodeCount = 0u;
   atl::shared_ptr<Program> progAST;
   atl::unordered_map<atl::string, atl::string> classTypeDeclIDs;
 

@@ -1,6 +1,5 @@
 #include "ast/EnumClassTypeDecl.h"
 
-
 using namespace ACC;
 
 EnumClassTypeDecl::EnumClassTypeDecl(
@@ -8,7 +7,7 @@ EnumClassTypeDecl::EnumClassTypeDecl(
     const atl::unordered_map<atl::string, atl::string> &p_states)
     : identifier(p_identifier), states(p_states) {}
 
-// int EnumClassTypeDecl::getBytes() const { return 4; }
+// unsigned int EnumClassTypeDecl::getBytes() const { return 4u; }
 
 atl::shared_ptr<Identifier> EnumClassTypeDecl::getIdentifier() const {
   return identifier;

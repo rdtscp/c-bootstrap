@@ -8,7 +8,7 @@ namespace ACC {
 class SemanticAnalysis : public ASTVisitor<atl::shared_ptr<Type>> {
 
 public:
-  int errorCount = 0;
+  unsigned int errorCount = 0u;
   atl::vector<atl::string> errors;
 
   SemanticAnalysis(atl::shared_ptr<Program> progAST);

@@ -100,7 +100,7 @@ TEST(Test_Parser, BinOp) {
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
-  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
+  for (unsigned int i = 0u; i < expectedDecls.size(); ++i)
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
@@ -155,7 +155,7 @@ TEST(Test_Parser, FunDecl) {
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
-  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
+  for (unsigned int i = 0u; i < expectedDecls.size(); ++i)
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
@@ -236,7 +236,7 @@ TEST(Test_Parser, VarDecls) {
 
   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
 
-  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
+  for (unsigned int i = 0u; i < expectedDecls.size(); ++i)
     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 

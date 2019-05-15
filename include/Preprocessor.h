@@ -36,7 +36,7 @@ public:
   SourceHandler getSource();
 
   static atl::string formatIncludeDirective(const atl::string &filepath,
-                                            const int lineNum = 0) {
+                                            const unsigned int lineNum = 0u) {
     const atl::string lineNum_s = atl::to_string(lineNum);
     return "# " + lineNum_s + " \"" + filepath + "\"";
   }

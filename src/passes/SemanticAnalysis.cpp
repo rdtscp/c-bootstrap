@@ -19,7 +19,7 @@ SemanticAnalysis::error(const atl::string &errorType, const atl::string &error,
 
 void SemanticAnalysis::printErrors() {
   printf("Semantic Analysis Errors:\n");
-  for (unsigned int idx = 0; idx < errors.size(); ++idx)
+  for (unsigned int idx = 0u; idx < errors.size(); ++idx)
     printf("\t%s\n", errors[idx].c_str());
 }
 
@@ -132,7 +132,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Block &b) {
   b.outerScope = currScope;
   currScope = b.getptr();
 
-  for (unsigned int idx = 0; idx < b.stmts.size(); ++idx)
+  for (unsigned int idx = 0u; idx < b.stmts.size(); ++idx)
     b.stmts[idx]->accept(*this);
 
   currScope = b.outerScope;
@@ -181,10 +181,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
   ctd.outerScope = currScope;
   currScope = ctd.getptr();
 
-  for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx)
+  for (unsigned int idx = 0u; idx < ctd.classDecls.size(); ++idx)
     currScope->insertDecl(ctd.classDecls[idx]);
 
-  for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx)
+  for (unsigned int idx = 0u; idx < ctd.classDecls.size(); ++idx)
     ctd.classDecls[idx]->accept(*this);
 
   currScope = ctd.outerScope;
@@ -196,7 +196,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorDecl &cd) {
   cd.outerScope = currScope;
   currScope = cd.getptr();
 
-  for (unsigned int idx = 0; idx < cd.constructorParams.size(); ++idx)
+  for (unsigned int idx = 0u; idx < cd.constructorParams.size(); ++idx)
     cd.constructorParams[idx]->accept(*this);
 
   currScope = cd.outerScope;
@@ -210,7 +210,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorDef &cd) {
   const bool inClassTypeDef_temp = inClassTypeDef;
   inClassTypeDef = false;
 
-  for (unsigned int idx = 0; idx < cd.constructorParams.size(); ++idx)
+  for (unsigned int idx = 0u; idx < cd.constructorParams.size(); ++idx)
     cd.constructorParams[idx]->accept(*this);
   cd.constructorBlock->accept(*this);
 
@@ -282,7 +282,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(For &f) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
   // Visit all parameters first.
-  for (unsigned int idx = 0; idx < fc.funArgs.size(); ++idx)
+  for (unsigned int idx = 0u; idx < fc.funArgs.size(); ++idx)
     fc.funArgs[idx]->accept(*this);
 
   const atl::shared_ptr<FunDecl> funDecl =
@@ -304,7 +304,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDecl &fd) {
   if (!inClassTypeDef)
     currScope->insertDecl(fd.getptr());
 
-  for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
+  for (unsigned int idx = 0u; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
 
   return fd.funType;
@@ -325,7 +325,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
   const bool inClassTypeDef_temp = inClassTypeDef;
   inClassTypeDef = false;
 
-  for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
+  for (unsigned int idx = 0u; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
   fd.funBlock->accept(*this);
 
@@ -491,7 +491,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
 
   /* Now Manually Visit the Member Call */
   // Visit all parameters first.
-  for (unsigned int idx = 0; idx < mc.funCall->funArgs.size(); ++idx)
+  for (unsigned int idx = 0u; idx < mc.funCall->funArgs.size(); ++idx)
     mc.funCall->funArgs[idx]->accept(*this);
 
   // Check this ClassTypeDef contains the member.
@@ -510,7 +510,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Namespace &n) {
   n.outerScope = currScope;
   currScope = n.getptr();
 
-  for (unsigned int i = 0; i < n.namespaceDecls.size(); ++i)
+  for (unsigned int i = 0u; i < n.namespaceDecls.size(); ++i)
     n.namespaceDecls[i]->accept(*this);
 
   currScope = n.outerScope;
@@ -532,7 +532,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(PrefixOp &po) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(Program &p) {
   currScope = atl::make_shared<Block>(Block({}));
 
-  for (unsigned int idx = 0; idx < p.decls.size(); ++idx)
+  for (unsigned int idx = 0u; idx < p.decls.size(); ++idx)
     p.decls[idx]->accept(*this);
 
   p.globalScope = currScope;

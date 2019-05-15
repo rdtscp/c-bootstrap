@@ -9,18 +9,18 @@ namespace FileSystem {
 static atl::string parentDir(const atl::string &filepath) {
   atl::string output;
 
-  int start_idx = filepath.size() - 1;
+  unsigned int start_idx = filepath.size() - 1u;
   if (filepath[start_idx] == '/')
     --start_idx;
 
   bool foundSlash = false;
-  for (int idx = start_idx; idx >= 0; --idx) {
+  for (unsigned int idx = start_idx; idx >= 0u; --idx) {
     char currChar = filepath[idx];
     if (foundSlash) {
-      output = atl::string(1, currChar) + output;
+      output = atl::string(1u, currChar) + output;
     } else if (currChar == '/') {
       foundSlash = true;
-      output = atl::string(1, '/') + output;
+      output = atl::string(1u, '/') + output;
     }
   }
   return output;
@@ -32,15 +32,15 @@ static atl::string parentDir(const atl::string &filepath) {
 static atl::string resolveRelativePath(atl::string currFilepath,
                                        const atl::string &relativePath) {
   // Already an absolute path, return it.
-  if (relativePath[0] == '/')
+  if (relativePath[0u] == '/')
     return relativePath;
 
   // Strip the file from the path.
-  if (currFilepath[currFilepath.size() - 1] != '/')
+  if (currFilepath[currFilepath.size() - 1u] != '/')
     currFilepath = parentDir(currFilepath);
 
-  unsigned int endIdx = 0;
-  for (unsigned int idx = 0; idx < relativePath.size(); ++idx) {
+  unsigned int endIdx = 0u;
+  for (unsigned int idx = 0u; idx < relativePath.size(); ++idx) {
     if (relativePath[idx] == '.' && relativePath[++idx] == '.' &&
         relativePath[++idx] == '/') {
       currFilepath = parentDir(currFilepath);

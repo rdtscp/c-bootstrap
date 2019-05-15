@@ -65,7 +65,7 @@ int main(int argc, char const *argv[]) {
 
     ACC::SemanticAnalysis semanticAnalysis(progAST);
     semanticAnalysis.run();
-    if (semanticAnalysis.errorCount > 0) {
+    if (semanticAnalysis.errorCount > 0u) {
       semanticAnalysis.printErrors();
       return 1;
     }
@@ -76,7 +76,7 @@ int main(int argc, char const *argv[]) {
       do {
         optimiser.run();
         optimiser.printOptimisations();
-      } while (optimiser.optimisationsCount > 0);
+      } while (optimiser.optimisationsCount > 0u);
     }
 
     if (outputGraph) {

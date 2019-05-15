@@ -11,14 +11,7 @@ namespace ACC {
 class GenerateX86 : public ASTVisitor<atl::shared_ptr<X86::Operand>> {
 
 public:
-  int errorCount = 0;
-  atl::vector<atl::string> errors;
-
   GenerateX86(atl::shared_ptr<Program> progAST, const atl::string &outputFile);
-
-  void error(atl::string error);
-
-  void printErrors() const;
 
   void run();
 
@@ -27,8 +20,8 @@ private:
   atl::shared_ptr<Program> progAST;
 
   atl::shared_ptr<Block> currScope;
-  int blockCount = 0;
-  int currFpOffset = 0;
+  unsigned int blockCount = 0u;
+  unsigned int currFpOffset = 0u;
 
   /* ---- X86 Memory ---- */
 

@@ -135,7 +135,7 @@ SourceHandler Preprocessor::lexInclude() {
   if (fileExists(absoluteIncludePath))
     return SourceHandler(SourceHandler::Type::FILEPATH, absoluteIncludePath);
 
-  for (unsigned int idx = 0; idx < includePaths.size(); ++idx) {
+  for (unsigned int idx = 0u; idx < includePaths.size(); ++idx) {
     const atl::string currIncludePath = includePaths[idx] + relativeIncludePath;
     if (fileExists(currIncludePath))
       return SourceHandler(SourceHandler::Type::FILEPATH, currIncludePath);
@@ -162,9 +162,9 @@ bool Preprocessor::lexPragmaOnce() {
 /* Helpers */
 
 void Preprocessor::lexKeyword(const atl::string &keyword) {
-  atl::string literal(1, keyword[0]);
+  atl::string literal(1u, keyword[0]);
 
-  for (unsigned int i = 1; i < keyword.length(); ++i) {
+  for (unsigned int i = 1u; i < keyword.length(); ++i) {
     if (scanner->peek() != keyword[i])
       throw ACC::Error("Preprocessor: Could not Lex Keyword",
                        scanner->getPosition());
@@ -211,7 +211,7 @@ bool Preprocessor::checkVisited(const atl::string &filepath) const {
   if (parentPreprocessor != nullptr) {
     return parentPreprocessor->checkVisited(filepath);
   } else {
-    for (unsigned int idx = 0; idx < filesPreprocessed.size(); ++idx)
+    for (unsigned int idx = 0u; idx < filesPreprocessed.size(); ++idx)
       if (filesPreprocessed[idx] == filepath)
         return true;
 

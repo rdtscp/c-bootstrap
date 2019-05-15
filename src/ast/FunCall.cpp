@@ -8,10 +8,10 @@ FunCall::FunCall(const atl::shared_ptr<Identifier> &p_funIdentifier,
 
 atl::string FunCall::getSignature() const {
   atl::string output = funIdentifier->toString() + "(";
-  const int numArgs = funArgs.size();
-  for (int idx = 0; idx < numArgs; ++idx) {
+  const unsigned int numArgs = funArgs.size();
+  for (unsigned int idx = 0u; idx < numArgs; ++idx) {
     output += funArgs[idx]->getSignature();
-    if (idx < numArgs - 1)
+    if (idx < numArgs - 1u)
       output += ", ";
   }
   output += ")";
@@ -33,7 +33,7 @@ bool FunCall::operator==(const FunCall &rhs) const {
   if (funArgs.size() != rhs.funArgs.size())
     return false;
 
-  for (unsigned int i = 0; i < funArgs.size(); ++i) {
+  for (unsigned int i = 0u; i < funArgs.size(); ++i) {
     if (*funArgs[i] != *rhs.funArgs[i])
       return false;
   }

@@ -25,7 +25,7 @@ bool Parser::accept(TC expected, int offset) {
 }
 
 bool Parser::accept(atl::vector<TC> expected, int offset) {
-  for (unsigned int idx = 0; idx < expected.size(); ++idx) {
+  for (unsigned int idx = 0u; idx < expected.size(); ++idx) {
     if (accept(expected[idx], offset))
       return true;
   }
@@ -45,7 +45,7 @@ SourceToken Parser::expect(TC expected) {
 }
 
 SourceToken Parser::expect(atl::vector<TC> expected) {
-  for (unsigned int idx = 0; idx < expected.size(); ++idx) {
+  for (unsigned int idx = 0u; idx < expected.size(); ++idx) {
     if (expected[idx] == currToken.tokenClass) {
       SourceToken output = currToken;
       prevPosition = currToken.position;

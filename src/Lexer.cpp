@@ -555,7 +555,7 @@ atl::pair<bool, atl::string> Lexer::tryLexKeyword(const atl::string &keyword) {
   bool keywordMatch = false;
   atl::string literal(1, keyword[0]);
 
-  for (unsigned int i = 1; i < keyword.length(); ++i) {
+  for (unsigned int i = 1u; i < keyword.length(); ++i) {
     if (scanner.peek() != keyword[i])
       return atl::pair<bool, atl::string>(false, literal);
 

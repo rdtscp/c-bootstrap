@@ -7,7 +7,7 @@ using namespace ACC;
 PointerType::PointerType(const atl::shared_ptr<Type> &p_pointedType)
     : pointedType(p_pointedType) {}
 
-int PointerType::getBytes() const { return 4; }
+unsigned int PointerType::getBytes() const { return 4u; }
 
 atl::string PointerType::getSignature() const {
   return pointedType->getSignature() + "*";

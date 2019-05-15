@@ -8,7 +8,7 @@ namespace ACC {
 class Optimiser : public ASTVisitor<atl::shared_ptr<ASTNode>> {
 
 public:
-  int optimisationsCount = 0;
+  unsigned int optimisationsCount = 0u;
   atl::vector<atl::string> optimisations;
 
   Optimiser(atl::shared_ptr<Program> &progAST);

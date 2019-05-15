@@ -12,7 +12,7 @@ void Optimiser::optimised(const atl::string &message,
 }
 
 void Optimiser::printOptimisations() {
-  for (unsigned int idx = 0; idx < optimisations.size(); ++idx)
+  for (unsigned int idx = 0u; idx < optimisations.size(); ++idx)
     printf("\t%s\n", optimisations[idx].c_str());
 }
 
@@ -111,7 +111,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(Block &b) {
     b.outerScope = currScope;
     currScope = b.getptr();
   }
-  for (unsigned int idx = 0; idx < b.stmts.size(); ++idx)
+  for (unsigned int idx = 0u; idx < b.stmts.size(); ++idx)
     b.stmts[idx] = atl::static_pointer_cast<Stmt>(b.stmts[idx]->accept(*this));
   currScope = b.outerScope;
   return b.getptr();
@@ -148,7 +148,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(EnumClassTypeDecl &ectd) {
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(For &f) { return f.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(FunCall &fc) {
-  for (unsigned int idx = 0; idx < fc.funArgs.size(); ++idx)
+  for (unsigned int idx = 0u; idx < fc.funArgs.size(); ++idx)
     fc.funArgs[idx] =
         atl::static_pointer_cast<Expr>(fc.funArgs[idx]->accept(*this));
   return fc.getptr();
@@ -191,7 +191,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(MemberCall &mc) {
   return mc.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(Namespace &n) {
-  for (unsigned int i = 0; i < n.namespaceDecls.size(); ++i) {
+  for (unsigned int i = 0u; i < n.namespaceDecls.size(); ++i) {
     n.namespaceDecls[i] =
         atl::static_pointer_cast<Decl>(n.namespaceDecls[i]->accept(*this));
   }
@@ -208,7 +208,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(PointerType &pt) {
 atl::shared_ptr<ASTNode> Optimiser::visit(PrefixOp &po) { return po.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(Program &p) {
   currScope = atl::make_shared<Block>(Block({}));
-  for (unsigned int idx = 0; idx < p.decls.size(); ++idx)
+  for (unsigned int idx = 0u; idx < p.decls.size(); ++idx)
     p.decls[idx] = atl::static_pointer_cast<Decl>(p.decls[idx]->accept(*this));
 
   p.globalScope = currScope;

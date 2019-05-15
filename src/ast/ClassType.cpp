@@ -7,14 +7,14 @@ using namespace ACC;
 ClassType::ClassType(const atl::shared_ptr<Identifier> &p_identifier)
     : identifier(p_identifier) {}
 
-int ClassType::getBytes() const {
-  int aggregateBytes = 0;
+unsigned int ClassType::getBytes() const {
+  unsigned int aggregateBytes = 0u;
   if (typeDefinition == nullptr)
     return aggregateBytes;
 
   // @TODO: Calculate SUM of VarDecls.
   const unsigned int classDeclsSize = typeDefinition->classDecls.size();
-  for (unsigned int i = 0; i < classDeclsSize; ++i) {
+  for (unsigned int i = 0u; i < classDeclsSize; ++i) {
     if (typeDefinition->classDecls[i]->astClass() == "VarDecl") {
       aggregateBytes +=
           atl::static_pointer_cast<VarDecl>(typeDefinition->classDecls[i])

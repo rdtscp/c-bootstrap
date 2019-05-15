@@ -8,7 +8,7 @@ ValueAt::ValueAt(const atl::shared_ptr<Expr> &p_derefExpr)
 atl::string ValueAt::getSignature() const {
   const atl::string derefExprSig = derefExpr->getSignature();
   atl::string output;
-  for (int idx = 0; idx < derefExprSig.length() - 1; ++idx)
+  for (unsigned int idx = 0u; idx < derefExprSig.length() - 1u; ++idx)
     output += derefExprSig[idx];
 
   return output;

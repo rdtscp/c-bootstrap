@@ -9,7 +9,7 @@ bool Block::operator==(const Block &rhs) const {
   if (stmts.size() != rhs.stmts.size())
     return false;
 
-  for (unsigned int i = 0; i < stmts.size(); ++i)
+  for (unsigned int i = 0u; i < stmts.size(); ++i)
     /* @TODO Implement comparitors for Stmts. */
     if (stmts[i]->astClass() != rhs.stmts[i]->astClass())
       return false;

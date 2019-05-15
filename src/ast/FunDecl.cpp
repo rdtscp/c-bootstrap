@@ -18,9 +18,9 @@ atl::string FunDecl::getSignature() const {
 
   output += "(";
 
-  for (unsigned int idx = 0; idx < funParams.size(); ++idx) {
+  for (unsigned int idx = 0u; idx < funParams.size(); ++idx) {
     output += funParams[idx]->type->getSignature();
-    if (idx != funParams.size() - 1) {
+    if (idx != funParams.size() - 1u) {
       output += ", ";
     }
   }
@@ -29,7 +29,6 @@ atl::string FunDecl::getSignature() const {
 
   return output;
 }
-
 
 bool FunDecl::operator==(Decl &rhs) const {
   if (rhs.astClass() == astClass())
@@ -52,7 +51,7 @@ bool FunDecl::operator==(const FunDecl &rhs) const {
   if (funParams.size() != rhs.funParams.size())
     return false;
 
-  for (unsigned int i = 0; i < funParams.size(); ++i)
+  for (unsigned int i = 0u; i < funParams.size(); ++i)
     if (*funParams[i]->type != *rhs.funParams[i]->type)
       return false;
 
