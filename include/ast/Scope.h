@@ -9,6 +9,11 @@ class Scope {
 public:
   atl::shared_ptr<Scope> outerScope;
 
+  /*
+   * TODO: Ensure when searching backwards through Decls/Stmts that we don't
+   * search ahead of where we are currently analysing.
+   */
+
   Scope() : outerScope(nullptr) {}
   virtual ~Scope() {}
 
