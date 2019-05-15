@@ -68,9 +68,9 @@ ConstructorDef::findFunDecl(const FunSignature &funSignature,
   return outerScope->findFunDecl(funSignature, exemptDecl);
 }
 
-atl::shared_ptr<FunDecl>
-ConstructorDef::findFunDeclLocal(const FunSignature &funSignature,
-                                 const atl::shared_ptr<Decl> &exemptDecl) const {
+atl::shared_ptr<FunDecl> ConstructorDef::findFunDeclLocal(
+    const FunSignature &funSignature,
+    const atl::shared_ptr<Decl> &exemptDecl) const {
   return nullptr;
 }
 
@@ -87,16 +87,14 @@ ConstructorDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
     return nullptr;
 }
 
-atl::shared_ptr<VarDecl>
-ConstructorDef::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
-                                 const atl::shared_ptr<Decl> &exemptDecl) const {
+atl::shared_ptr<VarDecl> ConstructorDef::findVarDeclLocal(
+    const atl::shared_ptr<Identifier> identifier,
+    const atl::shared_ptr<Decl> &exemptDecl) const {
   for (int idx = 0; idx < constructorParams.size(); ++idx) {
     const atl::shared_ptr<VarDecl> currParam = constructorParams[idx];
-    if (currParam->astClass() != "VarDecl" && currParam->astClass() != "VarDef")
-      continue;
     if (currParam.get() == exemptDecl.get())
       continue;
-    if (*currParam->getIdentifier() == *identifier)
+    if (*currParam->getIdentifier() != *identifier)
       continue;
 
     return currParam;
