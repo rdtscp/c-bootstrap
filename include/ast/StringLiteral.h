@@ -11,8 +11,7 @@ class StringLiteral : public Literal,
 public:
   StringLiteral(const atl::string &p_literal);
 
-  atl::string getSignature() const override;
-
+  
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

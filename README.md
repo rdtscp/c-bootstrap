@@ -107,6 +107,7 @@ Progressively changing to adopt new features of the language(s).
                   | "new" type [ "(" litExpr ("," litExpr)* ")" ] ";"
                   | "&" objExpr
                   | "!" objExpr
+                  | objExpr "[" expr "]
                   | objExpr
 
     objExpr      -> funCall (objExprOp)*
@@ -131,8 +132,8 @@ Progressively changing to adopt new features of the language(s).
                   | STRING_LITERAL
                   | "true"
                   | "false"
-                  | "(" exp ")"
-                  | exp
+                  | "(" expr ")"
+                  | expr
 
 * * *
 

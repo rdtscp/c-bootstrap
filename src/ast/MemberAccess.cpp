@@ -8,8 +8,6 @@ MemberAccess::MemberAccess(const atl::shared_ptr<Expr> &p_object,
     : accessType(p_accessType), object(p_object),
       fieldVariable(p_fieldVariable) {}
 
-atl::string MemberAccess::getSignature() const { return "TODO"; }
-
 bool MemberAccess::operator==(Expr &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<MemberAccess *>(&rhs);

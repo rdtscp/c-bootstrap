@@ -1,20 +1,18 @@
-class Base {
+class ClassOne {
 public:
-  int b_func() { return 1; }
+  int one_func() { return 1; }
 };
 
-class Derived {
+class ClassTwo {
 public:
-  char m_int;
-
-  Base d_func() {
-    Base b;
-    const int unused = this->m_int;
-    return b;
+  ClassOne two_func() {
+    ClassOne obj;
+    return obj;
   }
 };
 
 int main() {
-  Derived myDerived;
-  int m_int = myDerived.d_func().b_func();
+  ClassTwo myObj;
+  int val = myObj.two_func().one_func();
+  return val;
 }

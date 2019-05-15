@@ -21,7 +21,7 @@ public:
   VarDecl(const atl::shared_ptr<Type> &p_type,
           const atl::shared_ptr<Identifier> &p_identifier);
 
-  int getBytes() const;
+  unsigned int getBytes() const;
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
 

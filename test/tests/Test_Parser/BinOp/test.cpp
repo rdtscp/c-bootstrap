@@ -5,6 +5,6 @@ static bool isalpha(const char c) {
 int main() {
   int y = 5;
   int x;
-  x = 1 + 0x2;
+  x = 1 + 2;
   return x;
 }

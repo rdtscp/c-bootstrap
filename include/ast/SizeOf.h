@@ -12,8 +12,7 @@ public:
 
   SizeOf(const atl::shared_ptr<Type> &p_type);
 
-  atl::string getSignature() const override;
-
+  
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 

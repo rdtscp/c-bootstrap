@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 
+#include "AST.h"
 #include "Error.h"
 #include "Parser.h"
 #include "Preprocessor.h"
@@ -9,7 +10,8 @@
 using namespace ACC;
 
 // atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_Parser/";
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
+//   "test/tests/Test_Parser/";
 atl::string test_prefix = "../../test/tests/Test_Parser/";
 
 TEST(Test_Parser, BinOp) {
@@ -178,6 +180,55 @@ TEST(Test_Parser, InvalidSignatureFunDef) {
   }
   printf("Expected a ACC::Error, but no exception was thrown.\n");
   ASSERT_TRUE(false);
+}
+
+TEST(Test_Parser, SubscriptOp) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "SubscriptOp/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> actual = parser.getAST();
+
+  //   atl::set<FunDecl::FunModifiers> mainModifiers;
+  //   atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
+  //       atl::shared_ptr<FunDef>(new FunDef(
+  //           mainModifiers, atl::shared_ptr<Identifier>(new
+  //           Identifier("main")),
+  //           {}, atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+  //           atl::shared_ptr<Block>(new Block(
+  //               {atl::shared_ptr<VarDef>(new VarDef(
+  //                    atl::shared_ptr<PointerType>(
+  //                        new PointerType(atl::shared_ptr<BaseType>(
+  //                            new BaseType(PrimitiveType::INT)))),
+  //                    atl::shared_ptr<Identifier>(new Identifier("x")),
+  //                    atl::shared_ptr<Allocation>(
+  //                        new Allocation(atl::shared_ptr<Type>(
+  //                            new ArrayType(atl::shared_ptr<BaseType>(
+  //                                              new
+  //                                              BaseType(PrimitiveType::INT)),
+  //                                          atl::shared_ptr<IntLiteral>(
+  //                                              new IntLiteral("5")))))))),
+  //                atl::shared_ptr<VarDef>(new VarDef(
+  //                    atl::shared_ptr<PointerType>(
+  //                        new PointerType(atl::shared_ptr<BaseType>(
+  //                            new BaseType(PrimitiveType::INT)))),
+  //                    atl::shared_ptr<Identifier>(new Identifier("y")),
+  //                    atl::shared_ptr<SubscriptOp>(new SubscriptOp(
+  //                        atl::shared_ptr<VarExpr>(new VarExpr(
+  //                            atl::shared_ptr<Identifier>(new
+  //                            Identifier("x")))),
+  //                        atl::shared_ptr<IntLiteral>(new
+  //                        IntLiteral("4")))))),
+  //                atl::shared_ptr<Return>(new Return(
+  //                    atl::shared_ptr<IntLiteral>(new
+  //                    IntLiteral("1"))))}))))};
+
+  //   ASSERT_EQ(actual->decls.size(), expectedDecls.size());
+
+  //   for (unsigned int i = 0; i < expectedDecls.size(); ++i)
+  //     ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]);
 }
 
 TEST(Test_Parser, VarDecls) {

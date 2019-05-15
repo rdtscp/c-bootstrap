@@ -6,7 +6,7 @@ VarDecl::VarDecl(const atl::shared_ptr<Type> &p_type,
                  const atl::shared_ptr<Identifier> &p_identifier)
     : type(p_type), identifier(p_identifier) {}
 
-int VarDecl::getBytes() const { return type->getBytes(); }
+unsigned int VarDecl::getBytes() const { return type->getBytes(); }
 
 atl::shared_ptr<Identifier> VarDecl::getIdentifier() const {
   return identifier;

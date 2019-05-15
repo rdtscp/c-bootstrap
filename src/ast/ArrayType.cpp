@@ -10,8 +10,8 @@ ArrayType::ArrayType(const atl::shared_ptr<Type> &p_type,
                      const atl::shared_ptr<Expr> &p_size)
     : PointerType(p_type), size(p_size) {}
 
-int ArrayType::getBytes() const {
-  int elementSize = pointedType->getBytes();
+unsigned int ArrayType::getBytes() const {
+  unsigned int elementSize = pointedType->getBytes();
   if (size->astClass() != "IntLiteral")
     throw ACC::Error(
         "Internal Error: Attempted to getBytes() of dynamic ArrayType.");
@@ -19,10 +19,6 @@ int ArrayType::getBytes() const {
   const atl::shared_ptr<IntLiteral> sizeIntLiteral =
       atl::static_pointer_cast<IntLiteral>(size);
   return atl::stoi(sizeIntLiteral->getLiteral()) * elementSize;
-}
-
-atl::string ArrayType::getSignature() const {
-  return pointedType->getSignature() + "[]";
 }
 
 bool ArrayType::operator==(Type &rhs) const {

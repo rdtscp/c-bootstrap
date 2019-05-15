@@ -326,7 +326,9 @@ atl::shared_ptr<Identifier> Parser::parseIdentifier() {
             new Identifier(parseOperatorOverload())));
         break;
       }
-      identifier = parseIdentifier();
+      const atl::string identData = expect(TC::IDENTIFIER).data;
+      identifier =
+          createNode<Identifier>(new Identifier(identData, identifier));
     }
   }
   return identifier;
@@ -494,7 +496,7 @@ atl::shared_ptr<Deletion> Parser::parseDeletion() {
 
   const atl::shared_ptr<VarExpr> deletionVar = parseObjExpr();
   return createNode<Deletion>(
-      atl::make_shared<Deletion>(Deletion(deletionType, deletionVar)));
+      atl::shared_ptr<Deletion>(new Deletion(deletionType, deletionVar)));
 }
 atl::shared_ptr<DestructorDecl> Parser::parseDestructor() {
   expect(TC::DESTRUCTOR);
@@ -541,8 +543,8 @@ atl::shared_ptr<EnumClassTypeDecl> Parser::parseEnumClassTypeDecl() {
       moreStates = false;
   } while (moreStates);
   expect(TC::RBRA);
-  return createNode<EnumClassTypeDecl>(atl::make_shared<EnumClassTypeDecl>(
-      EnumClassTypeDecl(enumIdentifier, states)));
+  return createNode<EnumClassTypeDecl>(atl::shared_ptr<EnumClassTypeDecl>(
+      new EnumClassTypeDecl(enumIdentifier, states)));
 }
 atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
   atl::set<FunDecl::FunModifiers> funModifiers;
@@ -581,7 +583,6 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
     expect(TC::CONST);
     funModifiers.insert(FunDecl::FunModifiers::CONST);
   }
-  // TODO: Modifiers for FunDecls
 
   if (acceptBlock() && !isDef) {
     throw ACC::Error(
@@ -602,7 +603,7 @@ atl::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
   atl::shared_ptr<Type> aliasedType = parseType();
   const atl::shared_ptr<Identifier> typeAlias = parseIdentifier();
   return createNode<TypeDefDecl>(
-      atl::make_shared<TypeDefDecl>(TypeDefDecl(aliasedType, typeAlias)));
+      atl::shared_ptr<TypeDefDecl>(new TypeDefDecl(aliasedType, typeAlias)));
 }
 atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
   if (accept(TC::STATIC))
@@ -642,8 +643,8 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
       params.push_back(parseLitExpr());
     }
     expect(TC::RPAR);
-    const atl::shared_ptr<FunCall> constructorCall(
-        new FunCall(classType->identifier, params));
+    const atl::shared_ptr<ConstructorCall> constructorCall(
+        new ConstructorCall(classType->identifier, params));
     atl::shared_ptr<VarDef> output(
         new VarDef(varType, varIdentifier, constructorCall));
     output->Decl::position = prevPosition;
@@ -666,7 +667,7 @@ atl::shared_ptr<Type> Parser::parseType() {
   if (acceptClassType()) {
     const atl::shared_ptr<Identifier> classIdentifier = parseIdentifier();
     type = createNode<ClassType>(
-        atl::make_shared<ClassType>(ClassType(classIdentifier)));
+        atl::shared_ptr<ClassType>(new ClassType(classIdentifier)));
   } else {
     const TC baseType =
         expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT, TC::UINT, TC::BOOL})
@@ -723,7 +724,7 @@ atl::shared_ptr<Assign> Parser::parseAssign() {
   atl::shared_ptr<Expr> lhs = parseExpr();
   expect(TC::ASSIGN);
   atl::shared_ptr<Expr> rhs = parseExpr();
-  return createNode<Assign>(atl::make_shared<Assign>(Assign(lhs, rhs)));
+  return createNode<Assign>(atl::shared_ptr<Assign>(new Assign(lhs, rhs)));
 }
 atl::shared_ptr<Block> Parser::parseBlock() {
   expect(TC::LBRA);
@@ -735,7 +736,7 @@ atl::shared_ptr<Block> Parser::parseBlock() {
   }
 
   expect(TC::RBRA);
-  return createNode<Block>(atl::make_shared<Block>(Block(blockStmts)));
+  return createNode<Block>(atl::shared_ptr<Block>(new Block(blockStmts)));
 }
 atl::shared_ptr<DoWhile> Parser::parseDoWhile() {
   expect(TC::DO);
@@ -747,7 +748,7 @@ atl::shared_ptr<DoWhile> Parser::parseDoWhile() {
   expect(TC::SC);
 
   return createNode<DoWhile>(
-      atl::make_shared<DoWhile>(DoWhile(whileBody, whileCondition)));
+      atl::shared_ptr<DoWhile>(new DoWhile(whileBody, whileCondition)));
 }
 atl::shared_ptr<For> Parser::parseFor() {
   expect(TC::FOR);
@@ -757,7 +758,6 @@ atl::shared_ptr<For> Parser::parseFor() {
   const atl::shared_ptr<Expr> condition = parseExpr();
   expect(TC::SC);
   const atl::shared_ptr<Expr> endBodyExpr = parseExpr();
-  /* TODO: Check this Stmt is Valid ASTNode Type. */
   if (endBodyExpr->astClass() != "PrefixOp")
     throw ACC::Error("Parser TEMP: For Loops do not support end of body "
                      "expressions other than "
@@ -765,8 +765,8 @@ atl::shared_ptr<For> Parser::parseFor() {
                      currToken.position);
   expect(TC::RPAR);
   const atl::shared_ptr<Stmt> body = parseStmt();
-  return createNode<For>(
-      atl::make_shared<For>(For(initialVarDecl, condition, endBodyExpr, body)));
+  return createNode<For>(atl::shared_ptr<For>(
+      new For(initialVarDecl, condition, endBodyExpr, body)));
 }
 atl::shared_ptr<If> Parser::parseIf() {
   expect(TC::IF);
@@ -778,9 +778,9 @@ atl::shared_ptr<If> Parser::parseIf() {
     expect(TC::ELSE);
     atl::shared_ptr<Stmt> elseBody = parseStmt();
     return createNode<If>(
-        atl::make_shared<If>(If(ifCondition, ifBody, elseBody)));
+        atl::shared_ptr<If>(new If(ifCondition, ifBody, elseBody)));
   } else {
-    return createNode<If>(atl::make_shared<If>(If(ifCondition, ifBody)));
+    return createNode<If>(atl::shared_ptr<If>(new If(ifCondition, ifBody)));
   }
 }
 atl::shared_ptr<Namespace> Parser::parseNamespace() {
@@ -797,18 +797,18 @@ atl::shared_ptr<Namespace> Parser::parseNamespace() {
       namespaceDecls.push_back(parseNamespace());
   }
   expect(TC::RBRA);
-  return createNode<Namespace>(
-      atl::make_shared<Namespace>(Namespace(namespaceIdent, namespaceDecls)));
+  return createNode<Namespace>(atl::shared_ptr<Namespace>(
+      new Namespace(namespaceIdent, namespaceDecls)));
 }
 atl::shared_ptr<Return> Parser::parseReturn() {
   expect(TC::RETURN);
   if (acceptExpr()) {
     atl::shared_ptr<Expr> returnExpr = parseExpr();
     expect(TC::SC);
-    return createNode<Return>(atl::make_shared<Return>(Return(returnExpr)));
+    return createNode<Return>(atl::shared_ptr<Return>(new Return(returnExpr)));
   } else {
     expect(TC::SC);
-    return createNode<Return>(atl::make_shared<Return>(Return()));
+    return createNode<Return>(atl::shared_ptr<Return>(new Return()));
   }
 }
 atl::shared_ptr<Stmt> Parser::parseStmt() {
@@ -851,7 +851,7 @@ atl::shared_ptr<Stmt> Parser::parseStmt() {
     expect(TC::ASSIGN);
     atl::shared_ptr<Expr> rhs = parseExpr();
     expect(TC::SC);
-    return createNode<Assign>(atl::make_shared<Assign>(Assign(expr, rhs)));
+    return createNode<Assign>(atl::shared_ptr<Assign>(new Assign(expr, rhs)));
   }
 
   expect(TC::SC);
@@ -861,8 +861,8 @@ atl::shared_ptr<Throw> Parser::parseThrow() {
   expect(TC::THROW);
   const atl::string stringLiteral = expect(TC::STRING_LITERAL).data;
   expect(TC::SC);
-  return createNode<Throw>(atl::make_shared<Throw>(
-      Throw(atl::make_shared<StringLiteral>(StringLiteral(stringLiteral)))));
+  return createNode<Throw>(atl::shared_ptr<Throw>(new Throw(
+      atl::shared_ptr<StringLiteral>(new StringLiteral(stringLiteral)))));
 }
 atl::shared_ptr<While> Parser::parseWhile() {
   expect(TC::WHILE);
@@ -872,7 +872,7 @@ atl::shared_ptr<While> Parser::parseWhile() {
   atl::shared_ptr<Stmt> whileBody = parseStmt();
 
   return createNode<While>(
-      atl::make_shared<While>(While(whileBody, whileCondition)));
+      atl::shared_ptr<While>(new While(whileBody, whileCondition)));
 }
 
 /* -- Exprs -- */
@@ -885,14 +885,15 @@ atl::shared_ptr<Expr> Parser::parseExpr() {
       const atl::shared_ptr<Expr> tertiaryIfBody = parseBoolExpr();
       expect(TC::COLON);
       const atl::shared_ptr<Expr> tertiaryElseBody = parseBoolExpr();
-      output = createNode<TertiaryExpr>(atl::make_shared<TertiaryExpr>(
-          TertiaryExpr(tertiaryCondition, tertiaryIfBody, tertiaryElseBody)));
+      output = createNode<TertiaryExpr>(
+          atl::shared_ptr<TertiaryExpr>(new TertiaryExpr(
+              tertiaryCondition, tertiaryIfBody, tertiaryElseBody)));
     } else {
       const atl::shared_ptr<Expr> &lhs = output;
       expect(TC::ASSIGNADD);
       const atl::shared_ptr<Expr> rhs = parseBoolExpr();
       output = createNode<BinOp>(
-          atl::make_shared<BinOp>(BinOp(lhs, Op::ASSIGNADD, rhs)));
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::ASSIGNADD, rhs)));
     }
   }
   return output;
@@ -904,13 +905,14 @@ atl::shared_ptr<Expr> Parser::parseBoolExpr() {
     if (accept(TC::AND)) {
       expect(TC::AND);
       rhs = parseEqualExpr();
-      lhs =
-          createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::AND, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::AND, rhs)));
     }
     if (accept(TC::OR)) {
       expect(TC::OR);
       rhs = parseEqualExpr();
-      lhs = createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::OR, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::OR, rhs)));
     }
   }
   return lhs;
@@ -922,12 +924,14 @@ atl::shared_ptr<Expr> Parser::parseEqualExpr() {
     if (accept(TC::EQ)) {
       expect(TC::EQ);
       rhs = parseCompExpr();
-      lhs = createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::EQ, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::EQ, rhs)));
     }
     if (accept(TC::NE)) {
       expect(TC::NE);
       rhs = parseCompExpr();
-      lhs = createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::NE, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::NE, rhs)));
     }
   }
   return lhs;
@@ -939,22 +943,26 @@ atl::shared_ptr<Expr> Parser::parseCompExpr() {
     if (accept(TC::LE)) {
       expect(TC::LE);
       rhs = parseAddExpr();
-      lhs = createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::LE, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::LE, rhs)));
     }
     if (accept(TC::LT)) {
       expect(TC::LT);
       rhs = parseAddExpr();
-      lhs = createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::LT, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::LT, rhs)));
     }
     if (accept(TC::GE)) {
       expect(TC::GE);
       rhs = parseAddExpr();
-      lhs = createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::GE, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::GE, rhs)));
     }
     if (accept(TC::GT)) {
       expect(TC::GT);
       rhs = parseAddExpr();
-      lhs = createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::GT, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::GT, rhs)));
     }
   }
   return lhs;
@@ -966,14 +974,14 @@ atl::shared_ptr<Expr> Parser::parseAddExpr() {
     if (accept(TC::MINUS)) {
       expect(TC::MINUS);
       rhs = parseMulExpr();
-      lhs =
-          createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::SUB, rhs)));
     }
     if (accept(TC::PLUS)) {
       expect(TC::PLUS);
       rhs = parseMulExpr();
-      lhs =
-          createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::ADD, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::ADD, rhs)));
     }
   }
   return lhs;
@@ -985,20 +993,20 @@ atl::shared_ptr<Expr> Parser::parseMulExpr() {
     if (accept(TC::ASTERIX)) {
       expect(TC::ASTERIX);
       rhs = parseUnaryExpr();
-      lhs =
-          createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::MUL, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::MUL, rhs)));
     }
     if (accept(TC::DIV)) {
       expect(TC::DIV);
       rhs = parseUnaryExpr();
-      lhs =
-          createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::DIV, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::DIV, rhs)));
     }
     if (accept(TC::REM)) {
       expect(TC::REM);
       rhs = parseUnaryExpr();
-      lhs =
-          createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::MOD, rhs)));
+      lhs = createNode<BinOp>(
+          atl::shared_ptr<BinOp>(new BinOp(lhs, Op::MOD, rhs)));
     }
   }
   return lhs;
@@ -1009,12 +1017,12 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     expect(TC::LPAR);
     atl::shared_ptr<Type> type = parseType();
     expect(TC::RPAR);
-    return createNode<SizeOf>(atl::make_shared<SizeOf>(SizeOf(type)));
+    return createNode<SizeOf>(atl::shared_ptr<SizeOf>(new SizeOf(type)));
   }
   if (accept(TC::ASTERIX)) {
     expect(TC::ASTERIX);
     atl::shared_ptr<Expr> rhs = parseObjExpr();
-    return createNode<ValueAt>(atl::make_shared<ValueAt>(ValueAt(rhs)));
+    return createNode<ValueAt>(atl::shared_ptr<ValueAt>(new ValueAt(rhs)));
   }
   if (accept(TC::LPAR) && (acceptType(1) && !accept(TC::IDENTIFIER, 1))) {
     expect(TC::LPAR);
@@ -1022,13 +1030,14 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     expect(TC::RPAR);
     atl::shared_ptr<Expr> expToCast = parseObjExpr();
     return createNode<TypeCast>(
-        atl::make_shared<TypeCast>(TypeCast(castType, expToCast)));
+        atl::shared_ptr<TypeCast>(new TypeCast(castType, expToCast)));
   }
   if (accept(TC::MINUS)) {
     expect(TC::MINUS);
     atl::shared_ptr<IntLiteral> lhs(new IntLiteral("0"));
     atl::shared_ptr<Expr> rhs = parseObjExpr();
-    return createNode<BinOp>(atl::make_shared<BinOp>(BinOp(lhs, Op::SUB, rhs)));
+    return createNode<BinOp>(
+        atl::shared_ptr<BinOp>(new BinOp(lhs, Op::SUB, rhs)));
   }
   if (accept({TC::PREFIXINC, TC::PREFIXDEC})) {
     TC operatorToken = expect({TC::PREFIXINC, TC::PREFIXDEC}).tokenClass;
@@ -1045,18 +1054,17 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     const atl::shared_ptr<VarExpr> variable =
         atl::static_pointer_cast<VarExpr>(incrementExpr);
     return createNode<PrefixOp>(
-        atl::make_shared<PrefixOp>(PrefixOp(operation, variable)));
+        atl::shared_ptr<PrefixOp>(new PrefixOp(operation, variable)));
   }
   if (accept(TC::NEW)) {
-    /* TODO: Parse Heap Allocation. */
     expect(TC::NEW);
     /* Constructor Call */
     if (accept(TC::IDENTIFIER) && accept(TC::LPAR, 1)) {
       atl::shared_ptr<Expr> funCall = parseObjExpr();
       if (funCall->astClass() != "FunCall")
         throw ACC::Error("Parser: Expected FunCall", currToken.position);
-      return createNode<Allocation>(atl::make_shared<Allocation>(
-          Allocation(atl::static_pointer_cast<FunCall>(funCall))));
+      return createNode<Allocation>(atl::shared_ptr<Allocation>(
+          new Allocation(atl::static_pointer_cast<FunCall>(funCall))));
     } else {
       atl::shared_ptr<Type> allocatedType = parseType();
       if (accept(TC::LSBR)) {
@@ -1066,7 +1074,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
         allocatedType =
             atl::shared_ptr<ArrayType>(new ArrayType(allocatedType, arraySize));
         return createNode<Allocation>(
-            atl::make_shared<Allocation>(Allocation(allocatedType)));
+            atl::shared_ptr<Allocation>(new Allocation(allocatedType)));
       }
     }
   }
@@ -1074,14 +1082,20 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     expect(TC::REF);
     const atl::shared_ptr<Expr> addrOfExpr = parseObjExpr();
     return createNode<AddressOf>(
-        atl::make_shared<AddressOf>(AddressOf(addrOfExpr)));
+        atl::shared_ptr<AddressOf>(new AddressOf(addrOfExpr)));
   }
   if (accept(TC::NOT)) {
     expect(TC::NOT);
     // Parse NOT Node.
   }
 
-  return parseObjExpr();
+  atl::shared_ptr<Expr> objExpr = parseObjExpr();
+
+  if (accept(TC::LSBR)) {
+    expect(TC::LSBR);
+  }
+
+  return objExpr;
 }
 atl::shared_ptr<Expr> Parser::parseObjExpr() {
   if (accept(TC::IDENTIFIER)) {
@@ -1099,9 +1113,10 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
 
       expect(TC::RPAR);
       objExpr = createNode<FunCall>(
-          atl::make_shared<FunCall>(FunCall(ident, params)));
+          atl::shared_ptr<FunCall>(new FunCall(ident, params)));
     } else {
-      objExpr = createNode<VarExpr>(atl::make_shared<VarExpr>(VarExpr(ident)));
+      objExpr =
+          createNode<VarExpr>(atl::shared_ptr<VarExpr>(new VarExpr(ident)));
     }
 
     while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
@@ -1110,21 +1125,21 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
             expect({TC::DOT, TC::PTRDOT}).tokenClass;
         if (accept(TC::LPAR, 1)) {
           atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
-          objExpr = createNode<MemberCall>(atl::make_shared<MemberCall>(
-              MemberCall(objExpr, memberFunCall, accessType)));
+          objExpr = createNode<MemberCall>(atl::shared_ptr<MemberCall>(
+              new MemberCall(objExpr, memberFunCall, accessType)));
         } else {
           const atl::shared_ptr<Identifier> fieldIdentifier = parseIdentifier();
           const atl::shared_ptr<VarExpr> fieldVarExpr = createNode<VarExpr>(
               atl::shared_ptr<VarExpr>(new VarExpr(fieldIdentifier)));
-          objExpr = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
-              MemberAccess(objExpr, fieldVarExpr, accessType)));
+          objExpr = createNode<MemberAccess>(atl::shared_ptr<MemberAccess>(
+              new MemberAccess(objExpr, fieldVarExpr, accessType)));
         }
       } else {
         expect(TC::LSBR);
-        atl::shared_ptr<Expr> arrayIndexExpr = parseObjExpr();
+        atl::shared_ptr<Expr> indexExpr = parseObjExpr();
         expect(TC::RSBR);
-        objExpr = createNode<ArrayAccess>(atl::make_shared<ArrayAccess>(
-            ArrayAccess(objExpr, arrayIndexExpr)));
+        objExpr = createNode<SubscriptOp>(
+            atl::shared_ptr<SubscriptOp>(new SubscriptOp(objExpr, indexExpr)));
       }
     }
     return objExpr;
@@ -1132,7 +1147,7 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
   if (accept(TC::THIS)) {
     expect(TC::THIS);
     atl::shared_ptr<Expr> output = createNode<VarExpr>(
-        atl::make_shared<VarExpr>(VarExpr(createNode<Identifier>(
+        atl::shared_ptr<VarExpr>(new VarExpr(createNode<Identifier>(
             atl::shared_ptr<Identifier>(new Identifier("this"))))));
     while (accept({TC::DOT, TC::PTRDOT, TC::LSBR})) {
       if (accept({TC::DOT, TC::PTRDOT})) {
@@ -1140,21 +1155,21 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
             expect({TC::DOT, TC::PTRDOT}).tokenClass;
         if (accept(TC::LPAR, 1)) {
           atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
-          output = createNode<MemberCall>(atl::make_shared<MemberCall>(
-              MemberCall(output, memberFunCall, accessType)));
+          output = createNode<MemberCall>(atl::shared_ptr<MemberCall>(
+              new MemberCall(output, memberFunCall, accessType)));
         } else {
           const atl::shared_ptr<Identifier> fieldIdentifier = parseIdentifier();
           const atl::shared_ptr<VarExpr> fieldVarExpr = createNode<VarExpr>(
               atl::shared_ptr<VarExpr>(new VarExpr(fieldIdentifier)));
-          output = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
-              MemberAccess(output, fieldVarExpr, accessType)));
+          output = createNode<MemberAccess>(atl::shared_ptr<MemberAccess>(
+              new MemberAccess(output, fieldVarExpr, accessType)));
         }
       } else {
         expect(TC::LSBR);
-        atl::shared_ptr<Expr> arrayIndexExpr = parseObjExpr();
+        atl::shared_ptr<Expr> indexExpr = parseObjExpr();
         expect(TC::RSBR);
-        output = createNode<ArrayAccess>(
-            atl::make_shared<ArrayAccess>(ArrayAccess(output, arrayIndexExpr)));
+        output = createNode<SubscriptOp>(
+            atl::shared_ptr<SubscriptOp>(new SubscriptOp(output, indexExpr)));
       }
     }
     return output;
@@ -1167,21 +1182,21 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
           expect({TC::DOT, TC::PTRDOT}).tokenClass;
       if (accept(TC::LPAR, 1)) {
         atl::shared_ptr<FunCall> memberFunCall = parseFunCall();
-        output = createNode<MemberCall>(atl::make_shared<MemberCall>(
-            MemberCall(output, memberFunCall, accessType)));
+        output = createNode<MemberCall>(atl::shared_ptr<MemberCall>(
+            new MemberCall(output, memberFunCall, accessType)));
       } else {
         const atl::shared_ptr<Identifier> fieldIdentifier = parseIdentifier();
         const atl::shared_ptr<VarExpr> fieldVarExpr = createNode<VarExpr>(
             atl::shared_ptr<VarExpr>(new VarExpr(fieldIdentifier)));
-        output = createNode<MemberAccess>(atl::make_shared<MemberAccess>(
-            MemberAccess(output, fieldVarExpr, accessType)));
+        output = createNode<MemberAccess>(atl::shared_ptr<MemberAccess>(
+            new MemberAccess(output, fieldVarExpr, accessType)));
       }
     } else {
       expect(TC::LSBR);
-      atl::shared_ptr<Expr> arrayIndexExpr = parseObjExpr();
+      atl::shared_ptr<Expr> indexExpr = parseObjExpr();
       expect(TC::RSBR);
-      output = createNode<ArrayAccess>(
-          atl::make_shared<ArrayAccess>(ArrayAccess(output, arrayIndexExpr)));
+      output = createNode<SubscriptOp>(
+          atl::shared_ptr<SubscriptOp>(new SubscriptOp(output, indexExpr)));
     }
   }
   return output;
@@ -1198,41 +1213,42 @@ atl::shared_ptr<FunCall> Parser::parseFunCall() {
   }
 
   expect(TC::RPAR);
-  return createNode<FunCall>(atl::make_shared<FunCall>(FunCall(ident, params)));
+  return createNode<FunCall>(
+      atl::shared_ptr<FunCall>(new FunCall(ident, params)));
 }
 atl::shared_ptr<Expr> Parser::parseLitExpr() {
   if (accept(TC::INT_LITERAL)) {
-    return createNode<IntLiteral>(
-        atl::make_shared<IntLiteral>(IntLiteral(expect(TC::INT_LITERAL).data)));
+    return createNode<IntLiteral>(atl::shared_ptr<IntLiteral>(
+        new IntLiteral(expect(TC::INT_LITERAL).data)));
   }
   if (accept(TC::CHAR_LITERAL)) {
-    return createNode<CharLiteral>(atl::make_shared<CharLiteral>(
-        CharLiteral(expect(TC::CHAR_LITERAL).data)));
+    return createNode<CharLiteral>(atl::shared_ptr<CharLiteral>(
+        new CharLiteral(expect(TC::CHAR_LITERAL).data)));
   }
   if (accept(TC::STRING_LITERAL)) {
-    return createNode<StringLiteral>(atl::make_shared<StringLiteral>(
-        StringLiteral(expect(TC::STRING_LITERAL).data)));
+    return createNode<StringLiteral>(atl::shared_ptr<StringLiteral>(
+        new StringLiteral(expect(TC::STRING_LITERAL).data)));
   }
   if (accept(TC::TRUE_VAL)) {
     expect(TC::TRUE_VAL);
     return createNode<BoolLiteral>(
-        atl::make_shared<BoolLiteral>(BoolLiteral("true")));
+        atl::shared_ptr<BoolLiteral>(new BoolLiteral("true")));
   }
   if (accept(TC::FALSE_VAL)) {
     expect(TC::FALSE_VAL);
     return createNode<BoolLiteral>(
-        atl::make_shared<BoolLiteral>(BoolLiteral("false")));
+        atl::shared_ptr<BoolLiteral>(new BoolLiteral("false")));
   }
   if (accept(TC::NULLPTR)) {
     expect(TC::NULLPTR);
-    return createNode<Nullptr>(atl::make_shared<Nullptr>(Nullptr()));
+    return createNode<Nullptr>(atl::shared_ptr<Nullptr>(new Nullptr()));
   }
   if (accept(TC::LPAR) && (!acceptType(1) || accept(TC::IDENTIFIER, 1))) {
     expect(TC::LPAR);
     atl::shared_ptr<Expr> innerExpr = parseExpr();
     expect(TC::RPAR);
     return createNode<ParenthExpr>(
-        atl::make_shared<ParenthExpr>(ParenthExpr(innerExpr)));
+        atl::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr)));
   }
   if (acceptExpr())
     return parseExpr();
@@ -1262,19 +1278,19 @@ atl::shared_ptr<BaseType> Parser::tokenToType(const TC &tc) {
   switch (tc) {
   case TC::INT:
     return createNode<BaseType>(
-        atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)));
+        atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)));
   case TC::CHAR:
     return createNode<BaseType>(
-        atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)));
+        atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)));
   case TC::SHORT:
     return createNode<BaseType>(
-        atl::make_shared<BaseType>(BaseType(PrimitiveType::SHORT)));
+        atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::SHORT)));
   case TC::VOID:
     return createNode<BaseType>(
-        atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID)));
+        atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)));
   case TC::BOOL:
     return createNode<BaseType>(
-        atl::make_shared<BaseType>(BaseType(PrimitiveType::BOOL)));
+        atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::BOOL)));
   default:
     throw ACC::Error("Parser: Cannot resolve Token " + tokToStr(tc) +
                          "  to a type.",

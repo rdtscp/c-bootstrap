@@ -4,7 +4,6 @@ namespace ACC {
 
 class AddressOf;
 class Allocation;
-class ArrayAccess;
 class ArrayType;
 class Assign;
 class BaseType;
@@ -15,6 +14,7 @@ class CharLiteral;
 class ClassType;
 class ClassTypeDecl;
 class ClassTypeDef;
+class ConstructorCall;
 class ConstructorDecl;
 class ConstructorDef;
 class Deletion;
@@ -41,6 +41,7 @@ class ReferenceType;
 class Return;
 class SizeOf;
 class StringLiteral;
+class SubscriptOp;
 class TertiaryExpr;
 class Throw;
 class TypeCast;
@@ -58,7 +59,6 @@ public:
 
   virtual T visit(AddressOf &ao) = 0;
   virtual T visit(Allocation &a) = 0;
-  virtual T visit(ArrayAccess &aa) = 0;
   virtual T visit(ArrayType &at) = 0;
   virtual T visit(Assign &as) = 0;
   virtual T visit(BaseType &bt) = 0;
@@ -69,6 +69,7 @@ public:
   virtual T visit(ClassType &ct) = 0;
   virtual T visit(ClassTypeDecl &ctd) = 0;
   virtual T visit(ClassTypeDef &ctd) = 0;
+  virtual T visit(ConstructorCall &cc) = 0;
   virtual T visit(ConstructorDecl &cd) = 0;
   virtual T visit(ConstructorDef &cd) = 0;
   virtual T visit(Deletion &d) = 0;
@@ -95,6 +96,7 @@ public:
   virtual T visit(Return &r) = 0;
   virtual T visit(SizeOf &so) = 0;
   virtual T visit(StringLiteral &sl) = 0;
+  virtual T visit(SubscriptOp &so) = 0;
   virtual T visit(TertiaryExpr &t) = 0;
   virtual T visit(Throw &t) = 0;
   virtual T visit(TypeCast &tc) = 0;

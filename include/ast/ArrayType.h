@@ -13,11 +13,9 @@ public:
   ArrayType(const atl::shared_ptr<Type> &p_type,
             const atl::shared_ptr<Expr> &p_size);
 
-  int getBytes() const override;
+  unsigned int getBytes() const override;
 
-  atl::string getSignature() const override;
-
-  bool operator==(Type &rhs) const override;
+    bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;
 
   bool operator==(const ArrayType &rhs) const;

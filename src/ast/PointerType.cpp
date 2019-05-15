@@ -9,10 +9,6 @@ PointerType::PointerType(const atl::shared_ptr<Type> &p_pointedType)
 
 unsigned int PointerType::getBytes() const { return 4u; }
 
-atl::string PointerType::getSignature() const {
-  return pointedType->getSignature() + "*";
-}
-
 bool PointerType::operator==(Type &rhs) const {
   if (rhs.astClass() == "ArrayType") {
     const ArrayType &at = *static_cast<ArrayType *>(&rhs);

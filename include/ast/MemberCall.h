@@ -19,8 +19,7 @@ public:
              const atl::shared_ptr<FunCall> &p_funCall,
              const SourceToken::Class &p_accessType);
 
-  atl::string getSignature() const override;
-
+  
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 
