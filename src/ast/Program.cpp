@@ -12,7 +12,7 @@ Program::Program(const atl::vector<atl::shared_ptr<Decl>> &p_decls)
 atl::shared_ptr<ClassTypeDecl>
 Program::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                        const atl::shared_ptr<Decl> &exemptDecl) const {
-  for (int idx = decls.size() - 1; idx >= 0; --idx) {
+  for (int idx = declsChecked - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = decls[idx];
     if (currDecl->astClass() != "ClassTypeDecl" &&
         currDecl->astClass() != "ClassTypeDef")
@@ -33,7 +33,7 @@ Program::findClassDecl(const atl::shared_ptr<Identifier> identifier,
 atl::shared_ptr<ClassTypeDef>
 Program::findClassDef(const atl::shared_ptr<Identifier> identifier,
                       const atl::shared_ptr<Decl> &exemptDecl) const {
-  for (int idx = decls.size() - 1; idx >= 0; --idx) {
+  for (int idx = declsChecked - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = decls[idx];
     if (currDecl->astClass() != "ClassTypeDecl" &&
         currDecl->astClass() != "ClassTypeDef")
