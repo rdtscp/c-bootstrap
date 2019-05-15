@@ -168,6 +168,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
   const atl::shared_ptr<ClassTypeDef> ctorClassTypeDef =
       currScope->findClassDef(cc.constructorIdentifier);
 
+  if (ctorClassTypeDef == nullptr)
+    return error(
+        "Name/Type Analysis",
+        "Attempted to call a constructor, but could not resolve the class",
+        cc.getptr());
+
   atl::vector<atl::shared_ptr<Type>> constructorCallArgTypes;
   constructorCallArgTypes.push_back(atl::shared_ptr<PointerType>(
       new PointerType(ctorClassTypeDef->classType)));

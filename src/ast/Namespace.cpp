@@ -36,6 +36,10 @@ bool Namespace::operator!=(const Namespace &rhs) const {
 atl::shared_ptr<ClassTypeDecl>
 Namespace::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                          const atl::shared_ptr<Decl> &exemptDecl) const {
+  // TODO: If a Program/Namespace contains a ClassTypeDef and within said CTD,
+  // its members refer to its own type, we won't have finished checking the CTD
+  // and so `namespaceDeclsChecked` will not be incremented, and so we won't
+  // search our own class.
   for (int idx = namespaceDeclsChecked - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = namespaceDecls[idx];
     if (currDecl->astClass() != "ClassTypeDecl" &&
