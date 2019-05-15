@@ -35,8 +35,8 @@ bool Namespace::operator!=(const Namespace &rhs) const {
 
 atl::shared_ptr<ClassTypeDecl>
 Namespace::findClassDecl(const atl::shared_ptr<Identifier> identifier,
-                         const atl::shared_ptr<Decl> exemptDecl) const {
-  for (int idx = namespaceDecls.size() - 1; idx >= 0; --idx) {
+                         const atl::shared_ptr<Decl> &exemptDecl) const {
+  for (int idx = namespaceDeclsChecked - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = namespaceDecls[idx];
     if (currDecl->astClass() != "ClassTypeDecl" &&
         currDecl->astClass() != "ClassTypeDef")
@@ -56,8 +56,8 @@ Namespace::findClassDecl(const atl::shared_ptr<Identifier> identifier,
 
 atl::shared_ptr<ClassTypeDef>
 Namespace::findClassDef(const atl::shared_ptr<Identifier> identifier,
-                        const atl::shared_ptr<Decl> exemptDecl) const {
-  for (int idx = namespaceDecls.size() - 1; idx >= 0; --idx) {
+                        const atl::shared_ptr<Decl> &exemptDecl) const {
+  for (int idx = namespaceDeclsChecked - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = namespaceDecls[idx];
     if (currDecl->astClass() != "ClassTypeDecl" &&
         currDecl->astClass() != "ClassTypeDef")
@@ -77,7 +77,7 @@ Namespace::findClassDef(const atl::shared_ptr<Identifier> identifier,
 
 atl::shared_ptr<FunDecl>
 Namespace::findFunDecl(const FunSignature &funSignature,
-                       const atl::shared_ptr<Decl> exemptDecl) const {
+                       const atl::shared_ptr<Decl> &exemptDecl) const {
   const atl::shared_ptr<FunDecl> localFind =
       findFunDeclLocal(funSignature, exemptDecl);
   if (localFind != nullptr)
@@ -90,9 +90,9 @@ Namespace::findFunDecl(const FunSignature &funSignature,
 
 atl::shared_ptr<FunDecl>
 Namespace::findFunDeclLocal(const FunSignature &funSignature,
-                            const atl::shared_ptr<Decl> exemptDecl) const {
+                            const atl::shared_ptr<Decl> &exemptDecl) const {
   if (funSignature.namespaceCount() > 0) {
-    for (int idx = namespaceDecls.size() - 1; idx >= 0; --idx) {
+    for (int idx = namespaceDeclsChecked - 1; idx >= 0; --idx) {
       const atl::shared_ptr<Decl> currDecl = namespaceDecls[idx];
       if (currDecl->astClass() != "Namespace")
         continue;
@@ -112,7 +112,7 @@ Namespace::findFunDeclLocal(const FunSignature &funSignature,
     return nullptr;
   } else {
     /* No Namespacing on this FunSignature, search top level. */
-    for (int idx = namespaceDecls.size() - 1; idx >= 0; --idx) {
+    for (int idx = namespaceDeclsChecked - 1; idx >= 0; --idx) {
       const atl::shared_ptr<Decl> currDecl = namespaceDecls[idx];
       if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")
         continue;
@@ -132,7 +132,7 @@ Namespace::findFunDeclLocal(const FunSignature &funSignature,
 
 atl::shared_ptr<VarDecl>
 Namespace::findVarDecl(const atl::shared_ptr<Identifier> identifier,
-                       const atl::shared_ptr<Decl> exemptDecl) const {
+                       const atl::shared_ptr<Decl> &exemptDecl) const {
   const atl::shared_ptr<VarDecl> localFind =
       findVarDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
@@ -145,8 +145,8 @@ Namespace::findVarDecl(const atl::shared_ptr<Identifier> identifier,
 
 atl::shared_ptr<VarDecl>
 Namespace::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
-                            const atl::shared_ptr<Decl> exemptDecl) const {
-  for (int idx = namespaceDecls.size() - 1; idx >= 0; --idx) {
+                            const atl::shared_ptr<Decl> &exemptDecl) const {
+  for (int idx = namespaceDeclsChecked - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = namespaceDecls[idx];
     if (currDecl->astClass() != "VarDecl" && currDecl->astClass() != "VarDef")
       continue;

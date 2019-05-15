@@ -224,6 +224,22 @@ TEST(Test_ASTAnalysis, UndefinedVariable) {
   ASSERT_NE(0, semanticAnalysis.errorCount);
 }
 
+TEST(Test_ASTAnalysis, UseBeforeDecl) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "UseBeforeDecl/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis semanticAnalysis(progAST);
+  semanticAnalysis.run();
+  semanticAnalysis.printErrors();
+  ASSERT_NE(0, semanticAnalysis.errorCount);
+}
+
 // The fixture for testing class Project1. From google test primer.
 class Test_ASTAnalysis : public ::testing::Test {
 protected:

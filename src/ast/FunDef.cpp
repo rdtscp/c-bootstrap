@@ -76,31 +76,31 @@ bool FunDef::operator!=(const FunDef &rhs) const { return !(*this == rhs); }
 
 atl::shared_ptr<ClassTypeDecl>
 FunDef::findClassDecl(const atl::shared_ptr<Identifier> identifier,
-                      const atl::shared_ptr<Decl> exemptDecl) const {
+                      const atl::shared_ptr<Decl> &exemptDecl) const {
   return outerScope->findClassDecl(identifier, exemptDecl);
 }
 
 atl::shared_ptr<ClassTypeDef>
 FunDef::findClassDef(const atl::shared_ptr<Identifier> identifier,
-                     const atl::shared_ptr<Decl> exemptDecl) const {
+                     const atl::shared_ptr<Decl> &exemptDecl) const {
   return outerScope->findClassDef(identifier, exemptDecl);
 }
 
 atl::shared_ptr<FunDecl>
 FunDef::findFunDecl(const FunSignature &funSignature,
-                    const atl::shared_ptr<Decl> exemptDecl) const {
+                    const atl::shared_ptr<Decl> &exemptDecl) const {
   return outerScope->findFunDecl(funSignature, exemptDecl);
 }
 
 atl::shared_ptr<FunDecl>
 FunDef::findFunDeclLocal(const FunSignature &funSignature,
-                         const atl::shared_ptr<Decl> exemptDecl) const {
+                         const atl::shared_ptr<Decl> &exemptDecl) const {
   return nullptr;
 }
 
 atl::shared_ptr<VarDecl>
 FunDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
-                    const atl::shared_ptr<Decl> exemptDecl) const {
+                    const atl::shared_ptr<Decl> &exemptDecl) const {
   const atl::shared_ptr<VarDecl> localFind =
       findVarDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
@@ -113,7 +113,7 @@ FunDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
 
 atl::shared_ptr<VarDecl>
 FunDef::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
-                         const atl::shared_ptr<Decl> exemptDecl) const {
+                         const atl::shared_ptr<Decl> &exemptDecl) const {
   const int numParams = funParams.size();
   for (int idx = 0; idx < numParams; ++idx) {
     const atl::shared_ptr<VarDecl> currParam = funParams[idx];

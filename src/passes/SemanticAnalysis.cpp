@@ -109,8 +109,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Block &b) {
   b.outerScope = currScope;
   currScope = b.getptr();
 
-  for (unsigned int idx = 0; idx < b.stmts.size(); ++idx)
+  for (unsigned int idx = 0; idx < b.stmts.size(); ++idx) {
     b.stmts[idx]->accept(*this);
+    ++b.stmtsChecked;
+  }
 
   currScope = b.outerScope;
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
@@ -428,8 +430,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Namespace &n) {
   n.outerScope = currScope;
   currScope = n.getptr();
 
-  for (unsigned int i = 0; i < n.namespaceDecls.size(); ++i)
+  for (unsigned int i = 0; i < n.namespaceDecls.size(); ++i) {
     n.namespaceDecls[i]->accept(*this);
+    ++n.namespaceDeclsChecked;
+  }
 
   currScope = n.outerScope;
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
@@ -450,8 +454,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(PrefixOp &po) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(Program &p) {
   currScope = p.getptr();
 
-  for (unsigned int idx = 0; idx < p.decls.size(); ++idx)
+  for (unsigned int idx = 0; idx < p.decls.size(); ++idx) {
     p.decls[idx]->accept(*this);
+    ++p.declsChecked;
+  }
 
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
