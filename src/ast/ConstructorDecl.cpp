@@ -15,6 +15,14 @@ atl::shared_ptr<Identifier> ConstructorDecl::getIdentifier() const {
   return classType->identifier;
 }
 
+const FunSignature ConstructorDecl::getSignature() const {
+  atl::vector<atl::shared_ptr<Type>> paramTypes;
+  for (int idx = 0; idx < constructorParams.size(); ++idx)
+    paramTypes.push_back(constructorParams[idx]->type);
+
+  return FunSignature(classType, classType->identifier, paramTypes);
+}
+
 bool ConstructorDecl::operator==(Decl &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<FunDecl *>(&rhs);

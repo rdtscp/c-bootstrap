@@ -39,6 +39,7 @@ private:
   atl::shared_ptr<ASTNode> visit(ClassType &ct) override;
   atl::shared_ptr<ASTNode> visit(ClassTypeDecl &ctd) override;
   atl::shared_ptr<ASTNode> visit(ClassTypeDef &ctd) override;
+  atl::shared_ptr<ASTNode> visit(ConstructorCall &cc) override;
   atl::shared_ptr<ASTNode> visit(ConstructorDecl &cd) override;
   atl::shared_ptr<ASTNode> visit(ConstructorDef &cd) override;
   atl::shared_ptr<ASTNode> visit(Deletion &d) override;

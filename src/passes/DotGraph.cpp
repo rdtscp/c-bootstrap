@@ -209,6 +209,15 @@ atl::string DotGraph::visit(ClassTypeDef &ctd) {
   classTypeDeclIDs[ctd.classType->identifier->toString().c_str()] = classID;
   return classID;
 }
+atl::string DotGraph::visit(ConstructorCall &cc) {
+  const atl::string funCallID = "ConstructorCall" + atl::to_string(++nodeCount);
+  declare(funCallID, cc.constructorIdentifier->toString() + "()");
+
+  for (unsigned int idx = 0; idx < cc.constructorArgs.size(); ++idx)
+    join(funCallID, cc.constructorArgs[idx]->accept(*this));
+
+  return funCallID;
+}
 atl::string DotGraph::visit(ConstructorDecl &cd) {
   const atl::string constructorID =
       "ConstructorDecl" + atl::to_string(++nodeCount);

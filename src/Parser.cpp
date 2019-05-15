@@ -645,8 +645,8 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
     }
     expect(TC::RPAR);
     // TODO: Create ConstructorCall ASTNode to represent this.
-    const atl::shared_ptr<FunCall> constructorCall(
-        new FunCall(classType->identifier, params));
+    const atl::shared_ptr<ConstructorCall> constructorCall(
+        new ConstructorCall(classType->identifier, params));
     atl::shared_ptr<VarDef> output(
         new VarDef(varType, varIdentifier, constructorCall));
     output->Decl::position = prevPosition;

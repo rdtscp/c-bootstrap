@@ -29,6 +29,7 @@ add_library(AST SHARED
   src/ast/ClassType.cpp
   src/ast/ClassTypeDecl.cpp
   src/ast/ClassTypeDef.cpp
+  src/ast/ConstructorCall.cpp
   src/ast/ConstructorDecl.cpp
   src/ast/ConstructorDef.cpp
   src/ast/Deletion.cpp

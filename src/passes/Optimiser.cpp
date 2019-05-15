@@ -125,6 +125,12 @@ atl::shared_ptr<ASTNode> Optimiser::visit(ClassTypeDecl &ctd) {
 atl::shared_ptr<ASTNode> Optimiser::visit(ClassTypeDef &ctd) {
   return ctd.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(ConstructorCall &cc) {
+  for (unsigned int idx = 0; idx < cc.constructorArgs.size(); ++idx)
+    cc.constructorArgs[idx] =
+        atl::static_pointer_cast<Expr>(cc.constructorArgs[idx]->accept(*this));
+  return cc.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(ConstructorDecl &cd) {
   return cd.getptr();
 }

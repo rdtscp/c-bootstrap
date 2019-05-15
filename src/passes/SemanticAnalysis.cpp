@@ -164,6 +164,27 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
 
   return ctd.classType;
 }
+atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
+  const atl::shared_ptr<ClassTypeDef> ctorClassTypeDef =
+      currScope->findClassDef(cc.constructorIdentifier);
+
+  atl::vector<atl::shared_ptr<Type>> constructorCallArgTypes;
+  constructorCallArgTypes.push_back(atl::shared_ptr<PointerType>(
+      new PointerType(ctorClassTypeDef->classType)));
+  for (unsigned int idx = 0; idx < cc.constructorArgs.size(); ++idx)
+    constructorCallArgTypes.push_back(cc.constructorArgs[idx]->accept(*this));
+
+  const FunSignature ctorCallSignature(nullptr, cc.constructorIdentifier,
+                                       constructorCallArgTypes);
+  const atl::shared_ptr<ConstructorDecl> ctorDecl =
+      ctorClassTypeDef->findConstructorDecl(ctorCallSignature);
+  if (ctorDecl == nullptr)
+    return error("Type Analysis", "Attempted to call undeclared constructor.",
+                 cc.getptr());
+
+  cc.constructorDecl = ctorDecl;
+  return cc.constructorDecl->classType;
+}
 atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorDecl &cd) {
   cd.outerScope = currScope;
   currScope = cd.getptr();
@@ -504,8 +525,11 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
         new Identifier("operator[]", objClassType->identifier));
     const FunSignature opSignature(nullptr, opIdentifier, opArgs);
 
+    // TODO: Consider if this should search all the scope, or just the scope for
+    // the ClassTypeDef already resolved above. The former would allow us to use
+    // out of class definitions.
     const atl::shared_ptr<FunDecl> objSubscriptOpDecl =
-        objClassTypeDef->findFunDeclLocal(opSignature);
+        currScope->findFunDecl(opSignature);
     if (objSubscriptOpDecl == nullptr) {
       return error("Type Error",
                    "No definiton for subscript operator[] for type: " +

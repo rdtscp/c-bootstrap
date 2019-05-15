@@ -48,6 +48,7 @@ private:
   atl::shared_ptr<X86::Operand> visit(ClassType &ct) override;
   atl::shared_ptr<X86::Operand> visit(ClassTypeDecl &ctd) override;
   atl::shared_ptr<X86::Operand> visit(ClassTypeDef &ctd) override;
+  atl::shared_ptr<X86::Operand> visit(ConstructorCall &cc) override;
   atl::shared_ptr<X86::Operand> visit(ConstructorDecl &cd) override;
   atl::shared_ptr<X86::Operand> visit(ConstructorDef &cd) override;
   atl::shared_ptr<X86::Operand> visit(Deletion &d) override;

@@ -14,6 +14,7 @@
 #include "ast/ClassType.h"
 #include "ast/ClassTypeDecl.h"
 #include "ast/ClassTypeDef.h"
+#include "ast/ConstructorCall.h"
 #include "ast/ConstructorDecl.h"
 #include "ast/ConstructorDef.h"
 #include "ast/Decl.h"

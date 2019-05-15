@@ -100,6 +100,15 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassTypeDecl &ctd) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassTypeDef &ctd) {
   return atl::make_shared<X86::None>();
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorCall &cc) {
+  for (int idx = cc.constructorArgs.size() - 1; idx >= 0; --idx) {
+    atl::shared_ptr<X86::Operand> argReg =
+        cc.constructorArgs[idx]->accept(*this);
+    // x86.push(argReg);
+  }
+  x86.call(cc.constructorIdentifier->toString());
+  return X86::eax;
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorDecl &cd) {
   return atl::make_shared<X86::None>();
 }

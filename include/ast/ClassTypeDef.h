@@ -35,6 +35,10 @@ public:
       const atl::shared_ptr<Identifier> identifier,
       const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
 
+  atl::shared_ptr<ConstructorDecl>
+  findConstructorDecl(const FunSignature &ctorSignature,
+                      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const;
+
   virtual atl::shared_ptr<FunDecl>
   findFunDecl(const FunSignature &funSignature,
               const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;

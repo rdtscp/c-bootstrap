@@ -168,6 +168,17 @@ atl::string SourceOutput::visit(ClassTypeDef &ctd) {
   output += "\n};";
   return output;
 }
+atl::string SourceOutput::visit(ConstructorCall &cc) {
+  atl::string output = cc.constructorIdentifier->toString() + "(";
+  for (unsigned int i = 0; i < cc.constructorArgs.size(); ++i) {
+    atl::string currParam = cc.constructorArgs[i]->accept(*this);
+    if (i != (cc.constructorArgs.size() - 1))
+      currParam += ", ";
+    output += currParam;
+  }
+  output += ")";
+  return output;
+}
 atl::string SourceOutput::visit(ConstructorDecl &cd) {
   atl::string output = cd.classType->accept(*this);
   output += "(";

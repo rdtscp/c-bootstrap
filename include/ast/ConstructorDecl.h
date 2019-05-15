@@ -22,6 +22,7 @@ public:
   virtual ~ConstructorDecl() {}
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
+  const FunSignature getSignature() const;
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
