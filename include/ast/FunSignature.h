@@ -16,6 +16,18 @@ public:
       : funReturnType(p_funReturnType), funIdentifier(p_funIdentifier),
         funArgs(p_funArgs) {}
 
+  const unsigned int namespaceCount() const {
+    return funIdentifier->namespaceCount();
+  }
+  
+  const atl::shared_ptr<Identifier> namespaceHead() const {
+    return funIdentifier->namespaceHead();
+  }
+
+  const FunSignature lowerNamespace() const {
+    return FunSignature(funReturnType, funIdentifier->namespaceTail(), funArgs);
+  }
+
   bool operator==(const FunSignature &rhs) const {
     // TODO: Incorporate return type?
 
