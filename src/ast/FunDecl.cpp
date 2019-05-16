@@ -19,7 +19,7 @@ atl::shared_ptr<Identifier> FunDecl::getIdentifier() const {
 
 const FunSignature FunDecl::getSignature() const {
   atl::vector<atl::shared_ptr<Type>> paramTypes;
-  for (int idx = 0; idx < funParams.size(); ++idx)
+  for (unsigned int idx = 0u; idx < funParams.size(); ++idx)
     paramTypes.push_back(funParams[idx]->type);
 
   return FunSignature(funType, funIdentifier, paramTypes);
@@ -46,7 +46,7 @@ bool FunDecl::operator==(const FunDecl &rhs) const {
   if (funParams.size() != rhs.funParams.size())
     return false;
 
-  for (unsigned int i = 0; i < funParams.size(); ++i)
+  for (unsigned int i = 0u; i < funParams.size(); ++i)
     if (*funParams[i]->type != *rhs.funParams[i]->type)
       return false;
 
