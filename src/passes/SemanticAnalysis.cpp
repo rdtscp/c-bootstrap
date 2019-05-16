@@ -14,6 +14,10 @@ SemanticAnalysis::error(const atl::string &errorType, const atl::string &error,
   errorCount++;
   errors.push_back(errorType + " Error at: " + node->position.toString() +
                    "\n\t" + error);
+  if (errorCount == 9) {
+    printErrors();
+    throw Error("9 Semantic Errors: Exiting Prematurely");
+  }
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 
