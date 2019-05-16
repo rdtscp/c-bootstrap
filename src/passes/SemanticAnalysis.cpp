@@ -14,6 +14,10 @@ SemanticAnalysis::error(const atl::string &errorType, const atl::string &error,
   errorCount++;
   errors.push_back(errorType + " Error at: " + node->position.toString() +
                    "\n\t" + error);
+  if (errorCount == 9) {
+    printErrors();
+    throw Error("9 Semantic Errors: Exiting Prematurely");
+  }
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 
@@ -167,6 +171,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
   const atl::shared_ptr<ClassTypeDef> ctorClassTypeDef =
       currScope->findClassDef(cc.constructorIdentifier);
+
+  if (ctorClassTypeDef == nullptr)
+    return error(
+        "Name/Type Analysis",
+        "Attempted to call a constructor, but could not resolve the class",
+        cc.getptr());
 
   atl::vector<atl::shared_ptr<Type>> constructorCallArgTypes;
   constructorCallArgTypes.push_back(atl::shared_ptr<PointerType>(

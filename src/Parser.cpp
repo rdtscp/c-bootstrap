@@ -643,8 +643,9 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
       params.push_back(parseLitExpr());
     }
     expect(TC::RPAR);
-    const atl::shared_ptr<ConstructorCall> constructorCall(
-        new ConstructorCall(classType->identifier, params));
+    const atl::shared_ptr<ConstructorCall> constructorCall =
+        createNode<ConstructorCall>(atl::shared_ptr<ConstructorCall>(
+            new ConstructorCall(classType->identifier, params)));
     atl::shared_ptr<VarDef> output(
         new VarDef(varType, varIdentifier, constructorCall));
     output->Decl::position = prevPosition;

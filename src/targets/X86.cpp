@@ -1,6 +1,8 @@
 
 #include "targets/X86.h"
 
+#include "Error.h"
+
 using namespace ACC::X86;
 
 /* ---- X86::Register --- */
@@ -49,7 +51,7 @@ atl::string None::toString() const { return "None::INTERNAL_ERROR"; }
 
 Writer::Writer(const atl::string &filename) : x86Output(filename) {
   if (!x86Output.good())
-    throw "Not good!";
+    throw Error("Not good!");
 }
 
 void Writer::add(const atl::shared_ptr<X86::Operand> &op1,

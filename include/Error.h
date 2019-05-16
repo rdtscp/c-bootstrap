@@ -8,8 +8,9 @@ namespace ACC {
 class Error {
 public:
   Error(const atl::string &message, const Position &position = Position()) {
-    printf("\nerror in file: %s\n%s\n\n", position.toString().c_str(),
-           message.c_str());
+    if (position.file != "")
+      printf("\nError in file: %s", position.toString().c_str());
+    printf("\n%s\n\n", message.c_str());
   }
 };
 
