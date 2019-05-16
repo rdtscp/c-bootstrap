@@ -19,7 +19,7 @@ public:
   const unsigned int namespaceCount() const {
     return funIdentifier->namespaceCount();
   }
-  
+
   const atl::shared_ptr<Identifier> namespaceHead() const {
     return funIdentifier->namespaceHead();
   }
@@ -32,7 +32,7 @@ public:
     // TODO: Incorporate return type?
 
     // Check args match.
-    for (int idx = 0; idx < funArgs.size(); ++idx)
+    for (unsigned int idx = 0u; idx < funArgs.size(); ++idx)
       if (*funArgs[idx] != *rhs.funArgs[idx])
         return false;
 

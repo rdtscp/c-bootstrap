@@ -35,7 +35,7 @@ bool ConstructorDef::operator==(const ConstructorDef &rhs) const {
   if (constructorParams.size() != rhs.constructorParams.size())
     return false;
 
-  for (unsigned int i = 0; i < constructorParams.size(); ++i)
+  for (unsigned int i = 0u; i < constructorParams.size(); ++i)
     if (*constructorParams[i] != *rhs.constructorParams[i])
       return false;
 
@@ -90,7 +90,7 @@ ConstructorDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
 atl::shared_ptr<VarDecl> ConstructorDef::findVarDeclLocal(
     const atl::shared_ptr<Identifier> identifier,
     const atl::shared_ptr<Decl> &exemptDecl) const {
-  for (int idx = 0; idx < constructorParams.size(); ++idx) {
+  for (unsigned int idx = 0u; idx < constructorParams.size(); ++idx) {
     const atl::shared_ptr<VarDecl> currParam = constructorParams[idx];
     if (currParam.get() == exemptDecl.get())
       continue;

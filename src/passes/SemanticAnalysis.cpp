@@ -79,14 +79,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
                  bo.getptr());
 
   switch (bo.operation) {
-  case Op::ADD:
-    return lhsType;
-  case Op::SUB:
-    return lhsType;
-  case Op::MUL:
-    return lhsType;
-  case Op::DIV:
-    return lhsType;
   case Op::MOD:
     return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::UINT));
   case Op::GT:
@@ -105,7 +97,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
     return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::BOOL));
   case Op::AND:
     return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::BOOL));
-  case Op::ASSIGNADD:
+  default:
     return lhsType;
   }
 }

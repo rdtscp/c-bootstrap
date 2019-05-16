@@ -17,7 +17,7 @@ atl::shared_ptr<Identifier> ConstructorDecl::getIdentifier() const {
 
 const FunSignature ConstructorDecl::getSignature() const {
   atl::vector<atl::shared_ptr<Type>> paramTypes;
-  for (int idx = 0; idx < constructorParams.size(); ++idx)
+  for (unsigned int idx = 0u; idx < constructorParams.size(); ++idx)
     paramTypes.push_back(constructorParams[idx]->type);
 
   return FunSignature(classType, classType->identifier, paramTypes);
@@ -38,7 +38,7 @@ bool ConstructorDecl::operator==(const ConstructorDecl &rhs) const {
   if (constructorParams.size() != rhs.constructorParams.size())
     return false;
 
-  for (unsigned int i = 0; i < constructorParams.size(); ++i)
+  for (unsigned int i = 0u; i < constructorParams.size(); ++i)
     if (*constructorParams[i] != *rhs.constructorParams[i])
       return false;
 
