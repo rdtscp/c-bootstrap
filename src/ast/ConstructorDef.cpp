@@ -52,31 +52,31 @@ bool ConstructorDef::operator!=(const ConstructorDef &rhs) const {
 
 atl::shared_ptr<ClassTypeDecl>
 ConstructorDef::findClassDecl(const atl::shared_ptr<Identifier> identifier,
-                              const atl::shared_ptr<Decl> &exemptDecl) const {
+                              const atl::shared_ptr<Decl> &exemptDecl) {
   return outerScope->findClassDecl(identifier, exemptDecl);
 }
 
 atl::shared_ptr<ClassTypeDef>
 ConstructorDef::findClassDef(const atl::shared_ptr<Identifier> identifier,
-                             const atl::shared_ptr<Decl> &exemptDecl) const {
+                             const atl::shared_ptr<Decl> &exemptDecl) {
   return outerScope->findClassDef(identifier, exemptDecl);
 }
 
 atl::shared_ptr<FunDecl>
 ConstructorDef::findFunDecl(const FunSignature &funSignature,
-                            const atl::shared_ptr<Decl> &exemptDecl) const {
+                            const atl::shared_ptr<Decl> &exemptDecl) {
   return outerScope->findFunDecl(funSignature, exemptDecl);
 }
 
-atl::shared_ptr<FunDecl> ConstructorDef::findFunDeclLocal(
-    const FunSignature &funSignature,
-    const atl::shared_ptr<Decl> &exemptDecl) const {
+atl::shared_ptr<FunDecl>
+ConstructorDef::findFunDeclLocal(const FunSignature &funSignature,
+                                 const atl::shared_ptr<Decl> &exemptDecl) {
   return nullptr;
 }
 
 atl::shared_ptr<VarDecl>
 ConstructorDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
-                            const atl::shared_ptr<Decl> &exemptDecl) const {
+                            const atl::shared_ptr<Decl> &exemptDecl) {
   const atl::shared_ptr<VarDecl> localFind =
       findVarDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
@@ -87,9 +87,9 @@ ConstructorDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
     return nullptr;
 }
 
-atl::shared_ptr<VarDecl> ConstructorDef::findVarDeclLocal(
-    const atl::shared_ptr<Identifier> identifier,
-    const atl::shared_ptr<Decl> &exemptDecl) const {
+atl::shared_ptr<VarDecl>
+ConstructorDef::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
+                                 const atl::shared_ptr<Decl> &exemptDecl) {
   for (unsigned int idx = 0u; idx < constructorParams.size(); ++idx) {
     const atl::shared_ptr<VarDecl> currParam = constructorParams[idx];
     if (currParam.get() == exemptDecl.get())
