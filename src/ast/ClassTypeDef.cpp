@@ -84,6 +84,10 @@ ClassTypeDef::ClassTypeDef(
       atl::shared_ptr<FunDecl> newFunDecl =
           atl::static_pointer_cast<FunDecl>(currDecl);
 
+      // We don't add the self parameter for static methods.
+      if (newFunDecl->funModifiers.find(FunDecl::FunModifiers::STATIC))
+        continue;
+
       // Create a new vector of the params.
       atl::vector<atl::shared_ptr<VarDecl>> newFunParams;
 
@@ -114,6 +118,10 @@ ClassTypeDef::ClassTypeDef(
       // Create a new FunDef as a copy of the original.
       atl::shared_ptr<FunDef> newFunDef =
           atl::static_pointer_cast<FunDef>(currDecl);
+
+      // We don't add the self parameter for static methods.
+      if (newFunDef->funModifiers.find(FunDecl::FunModifiers::STATIC))
+        continue;
 
       // Create a new vector of the params.
       atl::vector<atl::shared_ptr<VarDecl>> newFunParams;
