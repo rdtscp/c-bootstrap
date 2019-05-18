@@ -594,11 +594,15 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ValueAt &va) {
   return atl::static_pointer_cast<PointerType>(exprType)->pointedType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
-  if (vd.type->astClass() == "ClassType") {
-    const atl::shared_ptr<ClassType> vdClassType = vd.type->accept(*this);
+  atl::shared_ptr<Type> varType = vd.type->accept(*this);
+  varType = collapseReferenceTypes(varType);
+  if (varType->astClass() == "ClassType") {
+    const atl::shared_ptr<ClassType> vdClassType =
+        atl::static_pointer_cast<ClassType>(varType);
     if (vdClassType->typeDefinition == nullptr)
       return error("Type Analysis",
-                   "Attempted to define variable with undefined class type.",
+                   "Attempted to define variable "
+                   "with undefined class type.",
                    atl::static_pointer_cast<Decl>(vd.getptr()));
   }
   if (currScope->findVarDecl(vd.getIdentifier(), vd.getptr()))
@@ -611,11 +615,15 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
-  if (vd.type->astClass() == "ClassType") {
-    const atl::shared_ptr<ClassType> vdClassType = vd.type->accept(*this);
+  atl::shared_ptr<Type> varType = vd.type->accept(*this);
+  varType = collapseReferenceTypes(varType);
+  if (varType->astClass() == "ClassType") {
+    const atl::shared_ptr<ClassType> vdClassType =
+        atl::static_pointer_cast<ClassType>(varType);
     if (vdClassType->typeDefinition == nullptr)
       return error("Type Analysis",
-                   "Attempted to define variable with undefined class type.",
+                   "Attempted to define variable "
+                   "with undefined class type.",
                    atl::static_pointer_cast<Decl>(vd.getptr()));
   }
   if (currScope->findVarDecl(vd.getIdentifier(), vd.getptr()))

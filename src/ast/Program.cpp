@@ -11,7 +11,7 @@ Program::Program(const atl::vector<atl::shared_ptr<Decl>> &p_decls)
 
 atl::shared_ptr<ClassTypeDecl>
 Program::findClassDecl(const atl::shared_ptr<Identifier> identifier,
-                       const atl::shared_ptr<Decl> &exemptDecl) const {
+                       const atl::shared_ptr<Decl> &exemptDecl) {
   for (int idx = declsChecked - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = decls[idx];
     if (currDecl->astClass() != "ClassTypeDecl" &&
@@ -32,7 +32,7 @@ Program::findClassDecl(const atl::shared_ptr<Identifier> identifier,
 
 atl::shared_ptr<ClassTypeDef>
 Program::findClassDef(const atl::shared_ptr<Identifier> identifier,
-                      const atl::shared_ptr<Decl> &exemptDecl) const {
+                      const atl::shared_ptr<Decl> &exemptDecl) {
   for (int idx = declsChecked - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = decls[idx];
     if (currDecl->astClass() != "ClassTypeDecl" &&
@@ -53,7 +53,7 @@ Program::findClassDef(const atl::shared_ptr<Identifier> identifier,
 
 atl::shared_ptr<FunDecl>
 Program::findFunDecl(const FunSignature &funSignature,
-                     const atl::shared_ptr<Decl> &exemptDecl) const {
+                     const atl::shared_ptr<Decl> &exemptDecl) {
   const atl::shared_ptr<FunDecl> localFind =
       findFunDeclLocal(funSignature, exemptDecl);
   if (localFind != nullptr)
@@ -66,7 +66,7 @@ Program::findFunDecl(const FunSignature &funSignature,
 
 atl::shared_ptr<FunDecl>
 Program::findFunDeclLocal(const FunSignature &funSignature,
-                          const atl::shared_ptr<Decl> &exemptDecl) const {
+                          const atl::shared_ptr<Decl> &exemptDecl) {
   if (funSignature.namespaceCount() > 0) {
     for (int idx = declsChecked - 1; idx >= 0; --idx) {
       const atl::shared_ptr<Decl> currDecl = decls[idx];
@@ -123,7 +123,7 @@ Program::findFunDeclLocal(const FunSignature &funSignature,
 
 atl::shared_ptr<VarDecl>
 Program::findVarDecl(const atl::shared_ptr<Identifier> identifier,
-                     const atl::shared_ptr<Decl> &exemptDecl) const {
+                     const atl::shared_ptr<Decl> &exemptDecl) {
   const atl::shared_ptr<VarDecl> localFind =
       findVarDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
@@ -136,7 +136,7 @@ Program::findVarDecl(const atl::shared_ptr<Identifier> identifier,
 
 atl::shared_ptr<VarDecl>
 Program::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
-                          const atl::shared_ptr<Decl> &exemptDecl) const {
+                          const atl::shared_ptr<Decl> &exemptDecl) {
   for (int idx = declsChecked - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = decls[idx];
     if (currDecl->astClass() != "VarDecl" && currDecl->astClass() != "VarDef")

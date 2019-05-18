@@ -27,33 +27,33 @@ public:
   atl::string astClass() const override { return "ClassTypeDef"; }
 
   /* Scope Methods */
-  virtual atl::shared_ptr<ClassTypeDecl> findClassDecl(
-      const atl::shared_ptr<Identifier> identifier,
-      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+  virtual atl::shared_ptr<ClassTypeDecl>
+  findClassDecl(const atl::shared_ptr<Identifier> identifier,
+                const atl::shared_ptr<Decl> &exemptDecl = nullptr) override;
 
-  virtual atl::shared_ptr<ClassTypeDef> findClassDef(
-      const atl::shared_ptr<Identifier> identifier,
-      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+  virtual atl::shared_ptr<ClassTypeDef>
+  findClassDef(const atl::shared_ptr<Identifier> identifier,
+               const atl::shared_ptr<Decl> &exemptDecl = nullptr) override;
 
   atl::shared_ptr<ConstructorDecl>
   findConstructorDecl(const FunSignature &ctorSignature,
-                      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const;
+                      const atl::shared_ptr<Decl> &exemptDecl = nullptr);
 
   virtual atl::shared_ptr<FunDecl>
   findFunDecl(const FunSignature &funSignature,
-              const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+              const atl::shared_ptr<Decl> &exemptDecl = nullptr) override;
 
-  virtual atl::shared_ptr<FunDecl> findFunDeclLocal(
-      const FunSignature &funSignature,
-      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+  virtual atl::shared_ptr<FunDecl>
+  findFunDeclLocal(const FunSignature &funSignature,
+                   const atl::shared_ptr<Decl> &exemptDecl = nullptr) override;
 
   virtual atl::shared_ptr<VarDecl>
   findVarDecl(const atl::shared_ptr<Identifier> identifier,
-              const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+              const atl::shared_ptr<Decl> &exemptDecl = nullptr) override;
 
-  virtual atl::shared_ptr<VarDecl> findVarDeclLocal(
-      const atl::shared_ptr<Identifier> identifier,
-      const atl::shared_ptr<Decl> &exemptDecl = nullptr) const override;
+  virtual atl::shared_ptr<VarDecl>
+  findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
+                   const atl::shared_ptr<Decl> &exemptDecl = nullptr) override;
 
   VISITOR_ACCEPTORS
 };

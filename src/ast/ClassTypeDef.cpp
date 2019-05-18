@@ -176,13 +176,17 @@ bool ClassTypeDef::operator!=(const ClassTypeDef &rhs) const {
 
 atl::shared_ptr<ClassTypeDecl>
 ClassTypeDef::findClassDecl(const atl::shared_ptr<Identifier> identifier,
-                            const atl::shared_ptr<Decl> &exemptDecl) const {
+                            const atl::shared_ptr<Decl> &exemptDecl) {
   return outerScope->findClassDecl(identifier);
 }
 
 atl::shared_ptr<ClassTypeDef>
 ClassTypeDef::findClassDef(const atl::shared_ptr<Identifier> identifier,
-                           const atl::shared_ptr<Decl> &exemptDecl) const {
+                           const atl::shared_ptr<Decl> &exemptDecl) {
+  // A variable in a ClassTypeDef can refer to its own class.
+  if (*getIdentifier() == *identifier)
+    return getptr();
+
   for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = classDecls[idx];
     if (currDecl->astClass() != "ClassTypeDecl" &&
@@ -201,9 +205,9 @@ ClassTypeDef::findClassDef(const atl::shared_ptr<Identifier> identifier,
   return nullptr;
 }
 
-atl::shared_ptr<ConstructorDecl> ClassTypeDef::findConstructorDecl(
-    const FunSignature &ctorSignature,
-    const atl::shared_ptr<Decl> &exemptDecl) const {
+atl::shared_ptr<ConstructorDecl>
+ClassTypeDef::findConstructorDecl(const FunSignature &ctorSignature,
+                                  const atl::shared_ptr<Decl> &exemptDecl) {
   for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = classDecls[idx];
     if (currDecl->astClass() != "ConstructorDecl" &&
@@ -224,7 +228,7 @@ atl::shared_ptr<ConstructorDecl> ClassTypeDef::findConstructorDecl(
 
 atl::shared_ptr<FunDecl>
 ClassTypeDef::findFunDecl(const FunSignature &funSignature,
-                          const atl::shared_ptr<Decl> &exemptDecl) const {
+                          const atl::shared_ptr<Decl> &exemptDecl) {
   const atl::shared_ptr<FunDecl> localFind =
       findFunDeclLocal(funSignature, exemptDecl);
   if (localFind != nullptr)
@@ -237,7 +241,7 @@ ClassTypeDef::findFunDecl(const FunSignature &funSignature,
 
 atl::shared_ptr<FunDecl>
 ClassTypeDef::findFunDeclLocal(const FunSignature &funSignature,
-                               const atl::shared_ptr<Decl> &exemptDecl) const {
+                               const atl::shared_ptr<Decl> &exemptDecl) {
   if (funSignature.namespaceCount() > 0) {
     return nullptr;
   } else {
@@ -262,7 +266,7 @@ ClassTypeDef::findFunDeclLocal(const FunSignature &funSignature,
 
 atl::shared_ptr<VarDecl>
 ClassTypeDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
-                          const atl::shared_ptr<Decl> &exemptDecl) const {
+                          const atl::shared_ptr<Decl> &exemptDecl) {
   const atl::shared_ptr<VarDecl> localFind =
       findVarDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
@@ -275,7 +279,7 @@ ClassTypeDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
 
 atl::shared_ptr<VarDecl>
 ClassTypeDef::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
-                               const atl::shared_ptr<Decl> &exemptDecl) const {
+                               const atl::shared_ptr<Decl> &exemptDecl) {
   for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = classDecls[idx];
     if (currDecl->astClass() != "VarDecl" && currDecl->astClass() != "VarDef")
