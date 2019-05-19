@@ -31,6 +31,9 @@ public:
   bool operator==(const FunSignature &rhs) const {
     // TODO: Incorporate return type?
 
+    if (funArgs.size() != rhs.funArgs.size())
+      return false;
+
     // Check args match.
     for (unsigned int idx = 0u; idx < funArgs.size(); ++idx)
       if (*funArgs[idx] != *rhs.funArgs[idx])
