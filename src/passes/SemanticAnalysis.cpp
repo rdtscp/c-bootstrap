@@ -522,9 +522,11 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
 
     // Create FunSignature for SubscriptOp.
     atl::vector<atl::shared_ptr<Type>> opArgs;
-    opArgs.push_back(
-        atl::shared_ptr<PointerType>(new PointerType(objClassType)));
-    opArgs.push_back(so.index->accept(*this));
+    opArgs.push_back(atl::shared_ptr<PointerType>(
+        new PointerType(objClassTypeDef->classType)));
+    opArgs.push_back(indexType);
+    // const atl::shared_ptr<Identifier> opIdentifier(
+    //     new Identifier("operator[]"));
     const atl::shared_ptr<Identifier> opIdentifier(
         new Identifier("operator[]", objClassType->identifier));
     const FunSignature opSignature(nullptr, opIdentifier, opArgs);

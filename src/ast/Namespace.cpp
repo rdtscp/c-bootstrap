@@ -68,7 +68,7 @@ Namespace::findClassDef(const atl::shared_ptr<Identifier> identifier,
       continue;
     if (currDecl.get() == exemptDecl.get())
       continue;
-    if (*currDecl->getIdentifier() == *identifier)
+    if (*currDecl->getIdentifier() != *identifier)
       continue;
 
     return atl::static_pointer_cast<ClassTypeDecl>(currDecl);
@@ -98,19 +98,31 @@ Namespace::findFunDeclLocal(const FunSignature &funSignature,
   if (funSignature.namespaceCount() > 0) {
     for (int idx = namespaceDeclsChecked - 1; idx >= 0; --idx) {
       const atl::shared_ptr<Decl> currDecl = namespaceDecls[idx];
-      if (currDecl->astClass() != "Namespace")
-        continue;
-      const atl::shared_ptr<Namespace> currNamespace =
-          atl::static_pointer_cast<Namespace>(currDecl);
-      if (*currNamespace->identifier != *funSignature.namespaceHead())
-        continue;
+      if (currDecl->astClass() == "ClassTypeDef") {
+        const atl::shared_ptr<ClassTypeDef> currClassTypeDef =
+            atl::static_pointer_cast<ClassTypeDef>(currDecl);
+        if (*currClassTypeDef->getIdentifier() != *funSignature.namespaceHead())
+          continue;
 
-      const atl::shared_ptr<FunDecl> namespaceFind =
-          currNamespace->findFunDeclLocal(funSignature.lowerNamespace());
-      if (namespaceFind == nullptr)
-        continue;
+        const atl::shared_ptr<FunDecl> classTypeDefFind =
+            currClassTypeDef->findFunDeclLocal(funSignature.lowerNamespace());
+        if (classTypeDefFind == nullptr)
+          continue;
 
-      return namespaceFind;
+        return classTypeDefFind;
+      } else if (currDecl->astClass() == "Namespace") {
+        const atl::shared_ptr<Namespace> currNamespace =
+            atl::static_pointer_cast<Namespace>(currDecl);
+        if (*currNamespace->identifier != *funSignature.namespaceHead())
+          continue;
+
+        const atl::shared_ptr<FunDecl> namespaceFind =
+            currNamespace->findFunDeclLocal(funSignature.lowerNamespace());
+        if (namespaceFind == nullptr)
+          continue;
+
+        return namespaceFind;
+      }
     }
 
     return nullptr;
