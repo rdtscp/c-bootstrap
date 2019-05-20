@@ -24,15 +24,9 @@ unsigned int ClassType::getBytes() const {
 }
 
 bool ClassType::operator==(Type &rhs) const {
-  if (rhs.astClass() == "ReferenceType") {
-    const atl::shared_ptr<ReferenceType> rhsRefType(
-        static_cast<ReferenceType *>(&rhs));
-    return *this == *rhsRefType->referencedType;
-  } else {
-    if (rhs.astClass() == astClass())
-      return *this == *static_cast<ClassType *>(&rhs);
-    return false;
-  }
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<ClassType *>(&rhs);
+  return false;
 }
 
 bool ClassType::operator!=(Type &rhs) const { return !(*this == rhs); }

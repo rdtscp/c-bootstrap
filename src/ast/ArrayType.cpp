@@ -22,10 +22,6 @@ unsigned int ArrayType::getBytes() const {
 }
 
 bool ArrayType::operator==(Type &rhs) const {
-  if (rhs.astClass() == "PointerType") {
-    const PointerType &pt = *static_cast<PointerType *>(&rhs);
-    return pointedType->astClass() == pt.pointedType->astClass();
-  }
   if (rhs.astClass() == astClass())
     return *this == *static_cast<ArrayType *>(&rhs);
   return false;
