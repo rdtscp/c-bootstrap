@@ -423,34 +423,38 @@ atl::shared_ptr<ConstructorDecl> Parser::parseConstructor() {
     expect(TC::COLON);
     atl::vector<atl::shared_ptr<Assign>> initialiserList;
     {
-      const atl::shared_ptr<VarExpr> initialiserMember(
-          new VarExpr(parseIdentifier()));
+      const atl::shared_ptr<VarExpr> initialiserMember = createNode<VarExpr>(
+          atl::shared_ptr<VarExpr>(new VarExpr(parseIdentifier())));
       expect(TC::LPAR);
       const atl::shared_ptr<Expr> initialiseValue = parseExpr();
       expect(TC::RPAR);
-      const atl::shared_ptr<Assign> intialiserStmt(
-          new Assign(initialiserMember, initialiseValue));
+      const atl::shared_ptr<Assign> intialiserStmt =
+          createNode<Assign>(atl::shared_ptr<Assign>(
+              new Assign(initialiserMember, initialiseValue)));
       initialiserList.push_back(intialiserStmt);
     }
     while (accept(TC::COMMA)) {
       expect(TC::COMMA);
-      const atl::shared_ptr<Identifier> identifier = parseIdentifier();
-      const atl::shared_ptr<VarExpr> initialiserMember(new VarExpr(identifier));
+      const atl::shared_ptr<VarExpr> initialiserMember = createNode<VarExpr>(
+          atl::shared_ptr<VarExpr>(new VarExpr(parseIdentifier())));
       expect(TC::LPAR);
       const atl::shared_ptr<Expr> initialiseValue = parseExpr();
       expect(TC::RPAR);
-      const atl::shared_ptr<Assign> intialiserStmt(
-          new Assign(initialiserMember, initialiseValue));
+      const atl::shared_ptr<Assign> intialiserStmt =
+          createNode<Assign>(atl::shared_ptr<Assign>(
+              new Assign(initialiserMember, initialiseValue)));
       initialiserList.push_back(intialiserStmt);
     }
     atl::shared_ptr<Block> constructorBlock = parseBlock();
-    atl::shared_ptr<ConstructorDef> cd(new ConstructorDef(
-        classType, constructorParams, initialiserList, constructorBlock));
+    atl::shared_ptr<ConstructorDef> cd = createNode<ConstructorDef>(
+        atl::shared_ptr<ConstructorDef>(new ConstructorDef(
+            classType, constructorParams, initialiserList, constructorBlock)));
     return cd;
   } else {
     expect(TC::SC);
-    atl::shared_ptr<ConstructorDecl> cd(
-        new ConstructorDecl(classType, constructorParams));
+    atl::shared_ptr<ConstructorDecl> cd =
+        createNode<ConstructorDecl>(atl::shared_ptr<ConstructorDecl>(
+            new ConstructorDecl(classType, constructorParams)));
     return cd;
   }
 }
