@@ -77,7 +77,7 @@ TEST(Test_ASTAnalysis, DuplicateFunction) {
   SemanticAnalysis semanticAnalysis(progAST);
   semanticAnalysis.run();
   semanticAnalysis.printErrors();
-  ASSERT_EQ(0, semanticAnalysis.errorCount);
+  ASSERT_NE(0, semanticAnalysis.errorCount);
 }
 
 TEST(Test_ASTAnalysis, DuplicateVariable) {

@@ -294,7 +294,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDecl &fd) {
   return fd.funType->accept(*this);
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
-  if (currScope->findVarDecl(fd.getIdentifier(), fd.getptr()))
+  if (currScope->findFunDecl(fd.getSignature(), fd.getptr()) ||
+      currScope->findVarDecl(fd.getIdentifier(), fd.getptr()))
     return error("Name Analysis",
                  "FunDef Identifier already in use: " +
                      fd.getIdentifier()->toString(),
@@ -307,7 +308,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
     fd.funParams[idx]->accept(*this);
   fd.funBlock->accept(*this);
 
-  return fd.funType->accept(*this);
+  const atl::shared_ptr<Type> funType = fd.funType->accept(*this);
+  currScope = fd.outerScope;
+  return funType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Identifier &i) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));

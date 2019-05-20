@@ -12,6 +12,8 @@ namespace Foo {
 class Example2 {
 public:
   int operator[](const int input) { return input + 1; }
+
+  int m_func(Example2 foo) { return foo[0]; }
 };
 } // namespace Foo
 
