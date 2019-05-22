@@ -14,8 +14,9 @@ public:
             const atl::shared_ptr<Expr> &p_size);
 
   unsigned int getBytes() const override;
+  virtual bool equivalentTo(Type &rhs) const override;
 
-    bool operator==(Type &rhs) const override;
+  bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;
 
   bool operator==(const ArrayType &rhs) const;

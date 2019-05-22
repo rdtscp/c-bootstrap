@@ -15,8 +15,9 @@ public:
   virtual ~PointerType() {}
 
   virtual unsigned int getBytes() const override;
+  virtual bool equivalentTo(Type &rhs) const override;
 
-    virtual bool operator==(Type &rhs) const override;
+  virtual bool operator==(Type &rhs) const override;
   virtual bool operator!=(Type &rhs) const override;
 
   bool operator==(const PointerType &rhs) const;

@@ -6,6 +6,9 @@ ReferenceType::ReferenceType(const atl::shared_ptr<Type> &p_referencedType)
     : referencedType(p_referencedType) {}
 
 unsigned int ReferenceType::getBytes() const { return 4; }
+bool ReferenceType::equivalentTo(Type &rhs) const {
+  return referencedType->equivalentTo(rhs);
+}
 
 bool ReferenceType::operator==(Type &rhs) const {
   if (rhs.astClass() == astClass())

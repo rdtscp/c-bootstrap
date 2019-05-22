@@ -63,7 +63,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ArrayType &at) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
   const atl::shared_ptr<Type> lhsType = as.lhs->accept(*this);
   const atl::shared_ptr<Type> rhsType = as.rhs->accept(*this);
-  if (*lhsType != *rhsType)
+  if (!lhsType->equivalentTo(*rhsType))
     return error("Type Analysis", "Assignation has mismatched types.",
                  as.getptr());
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
@@ -74,7 +74,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BaseType &bt) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
   const atl::shared_ptr<Type> lhsType = bo.lhs->accept(*this);
   const atl::shared_ptr<Type> rhsType = bo.rhs->accept(*this);
-  if (*lhsType != *rhsType)
+  if (!lhsType->equivalentTo(*rhsType))
     return error("Type Analysis", "Binary operation has mismatched types.",
                  bo.getptr());
 
@@ -673,6 +673,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(While &w) {
   w.body->accept(*this);
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
+
 atl::shared_ptr<Type>
 SemanticAnalysis::collapseReferenceTypes(atl::shared_ptr<Type> type) {
   if (type->astClass() == "ReferenceType") {

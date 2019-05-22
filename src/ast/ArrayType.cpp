@@ -21,6 +21,14 @@ unsigned int ArrayType::getBytes() const {
   return atl::stoi(sizeIntLiteral->getLiteral()) * elementSize;
 }
 
+bool ArrayType::equivalentTo(Type &rhs) const {
+  if (rhs.astClass() == "PointerType") {
+    const PointerType &pt = *static_cast<PointerType *>(&rhs);
+    return *pointedType == *pt.pointedType;
+  }
+  return *this == rhs;
+}
+
 bool ArrayType::operator==(Type &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<ArrayType *>(&rhs);
