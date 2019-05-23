@@ -28,6 +28,7 @@
 #include "ast/FunCall.h"
 #include "ast/FunDecl.h"
 #include "ast/FunDef.h"
+#include "ast/FunSignature.h"
 #include "ast/Identifier.h"
 #include "ast/If.h"
 #include "ast/IntLiteral.h"
