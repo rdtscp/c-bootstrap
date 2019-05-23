@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Decl.h"
-#include "FunSignature.h"
 
 namespace ACC {
+
+class FunSignature;
 
 class Scope {
 public:

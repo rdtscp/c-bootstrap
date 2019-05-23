@@ -177,7 +177,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
     constructorCallArgTypes.push_back(cc.constructorArgs[idx]->accept(*this));
 
   const FunSignature ctorCallSignature(nullptr, cc.constructorIdentifier,
-                                       constructorCallArgTypes);
+                                       constructorCallArgTypes,
+                                       atl::set<FunDecl::FunModifiers>());
   const atl::shared_ptr<ConstructorDecl> ctorDecl =
       ctorClassTypeDef->findConstructorDecl(ctorCallSignature);
   if (ctorDecl == nullptr)
@@ -271,7 +272,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
     funCallArgTypes.push_back(fc.funArgs[idx]->accept(*this));
 
   const FunSignature funCallSignature(nullptr, fc.funIdentifier,
-                                      funCallArgTypes);
+                                      funCallArgTypes,
+                                      atl::set<FunDecl::FunModifiers>());
   const atl::shared_ptr<FunDecl> funDecl =
       currScope->findFunDecl(funCallSignature);
   if (funDecl == nullptr)
@@ -282,7 +284,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
   return fc.funDecl->funType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(FunDecl &fd) {
-  if (currScope->findVarDecl(fd.getIdentifier(), fd.getptr()))
+  if (currScope->findFunDecl(fd.getSignature(), fd.getptr()) ||
+      currScope->findVarDecl(fd.getIdentifier(), fd.getptr()))
     return error("Name Analysis",
                  "FunDecl Identifier already in use: " +
                      fd.getIdentifier()->toString(),
@@ -434,6 +437,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
                  "no definition.",
                  mc.object);
 
+  const bool objIsConst =
+      objClassType->typeModifiers.find(Type::Modifiers::CONST);
   /* Now Manually Visit the Member Call */
   // Visit all parameters first.
   atl::vector<atl::shared_ptr<Type>> funCallArgTypes;
@@ -442,10 +447,17 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
   for (unsigned int idx = 0; idx < mc.funCall->funArgs.size(); ++idx)
     funCallArgTypes.push_back(mc.funCall->funArgs[idx]->accept(*this));
 
-  const FunSignature funCallSignature(nullptr, mc.funCall->funIdentifier,
-                                      funCallArgTypes);
-  const atl::shared_ptr<FunDecl> memberFunDecl =
-      objClassTypeDef->findFunDeclLocal(funCallSignature);
+  atl::shared_ptr<FunDecl> memberFunDecl = objClassTypeDef->findFunDeclLocal(
+      FunSignature(nullptr, mc.funCall->funIdentifier, funCallArgTypes,
+                   funModifiers(true)));
+
+  // If the object is not const, try to find  non-const version.
+  if (memberFunDecl == nullptr && !objIsConst) {
+    memberFunDecl = objClassTypeDef->findFunDeclLocal(
+        FunSignature(nullptr, mc.funCall->funIdentifier, funCallArgTypes,
+                     funModifiers(false)));
+  }
+
   if (memberFunDecl == nullptr)
     return error("Type Error",
                  "Attempted to call a member function that does "
@@ -528,11 +540,13 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
     opArgs.push_back(atl::shared_ptr<PointerType>(
         new PointerType(objClassTypeDef->classType)));
     opArgs.push_back(indexType);
-    // const atl::shared_ptr<Identifier> opIdentifier(
-    //     new Identifier("operator[]"));
+    atl::set<FunDecl::FunModifiers> objTypeModifiers;
+    if (objClassType->typeModifiers.find(Type::Modifiers::CONST))
+      objTypeModifiers.insert(FunDecl::FunModifiers::CONST);
     const atl::shared_ptr<Identifier> opIdentifier(
         new Identifier("operator[]", objClassType->identifier));
-    const FunSignature opSignature(nullptr, opIdentifier, opArgs);
+    const FunSignature opSignature(nullptr, opIdentifier, opArgs,
+                                   objTypeModifiers);
 
     // TODO: Consider if this should search all the scope, or just the scope for
     // the ClassTypeDef already resolved above. The former would allow us to use
@@ -682,4 +696,10 @@ SemanticAnalysis::collapseReferenceTypes(atl::shared_ptr<Type> type) {
       type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
   }
   return type;
+}
+atl::set<FunDecl::FunModifiers> SemanticAnalysis::funModifiers(bool isConst) {
+  atl::set<FunDecl::FunModifiers> output;
+  if (isConst)
+    output.insert(FunDecl::FunModifiers::CONST);
+  return output;
 }

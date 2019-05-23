@@ -2,6 +2,7 @@
 #include "ast/ClassType.h"
 #include "ast/ConstructorDef.h"
 #include "ast/FunDef.h"
+#include "ast/FunSignature.h"
 #include "ast/PointerType.h"
 #include "ast/VarDecl.h"
 

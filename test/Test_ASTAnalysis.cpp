@@ -11,10 +11,9 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
-// "test/tests/Test_ASTAnalysis/";
-atl::string test_prefix = "../../test/tests/Test_ASTAnalysis/";
+atl::string test_prefix = "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
+                          "test/tests/Test_ASTAnalysis/";
+// atl::string test_prefix = "../../test/tests/Test_ASTAnalysis/";
 
 // TODO: Test accessing namespace'd classes.
 
@@ -78,6 +77,22 @@ TEST(Test_ASTAnalysis, DuplicateFunction) {
   semanticAnalysis.run();
   semanticAnalysis.printErrors();
   ASSERT_NE(0, semanticAnalysis.errorCount);
+}
+
+TEST(Test_ASTAnalysis, FunModifiers) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "FunModifiers/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis semanticAnalysis(progAST);
+  semanticAnalysis.run();
+  semanticAnalysis.printErrors();
+  ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
 TEST(Test_ASTAnalysis, DuplicateVariable) {

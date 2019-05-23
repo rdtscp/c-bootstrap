@@ -2,6 +2,7 @@
 #include "ast/ClassType.h"
 #include "ast/ClassTypeDef.h"
 #include "ast/FunDef.h"
+#include "ast/FunSignature.h"
 #include "ast/VarDef.h"
 
 using namespace ACC;

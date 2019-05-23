@@ -2,6 +2,7 @@
 #include "ast/ClassType.h"
 #include "ast/ClassTypeDef.h"
 #include "ast/FunDef.h"
+#include "ast/FunSignature.h"
 #include "ast/VarDef.h"
 
 using namespace ACC;
@@ -22,7 +23,7 @@ const FunSignature FunDecl::getSignature() const {
   for (unsigned int idx = 0u; idx < funParams.size(); ++idx)
     paramTypes.push_back(funParams[idx]->type);
 
-  return FunSignature(funType, funIdentifier, paramTypes);
+  return FunSignature(funType, funIdentifier, paramTypes, funModifiers);
 }
 
 bool FunDecl::operator==(Decl &rhs) const {

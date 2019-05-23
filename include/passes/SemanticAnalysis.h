@@ -79,6 +79,7 @@ private:
 
   /* Helpers */
   atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type);
+  atl::set<FunDecl::FunModifiers> funModifiers(bool isConst);
 };
 
 } // namespace ACC

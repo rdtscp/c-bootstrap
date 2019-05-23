@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Decl.h"
-#include "FunSignature.h"
 #include "Scope.h"
 #include "Type.h"
 #include "VarDecl.h"
 
 namespace ACC {
+
+class FunSignature;
 
 class FunDecl : public Decl,
                 public Scope,
