@@ -22,25 +22,33 @@ enum class Op {
 static atl::string opToStr(Op op) {
   switch (op) {
   case Op::ADD:
-    return  "+";
+    return "+";
   case Op::SUB:
-    return  "-";
+    return "-";
+  case Op::MUL:
+    return "*";
+  case Op::DIV:
+    return "/";
+  case Op::MOD:
+    return "%";
   case Op::GT:
-    return  ">";
+    return ">";
   case Op::LT:
-    return  "<";
+    return "<";
   case Op::GE:
-    return  ">=";
+    return ">=";
   case Op::LE:
-    return  "<=";
+    return "<=";
   case Op::EQ:
-    return  "==";
+    return "==";
   case Op::NE:
-    return  "!=";
+    return "!=";
+  case Op::OR:
+    return "||";
+  case Op::AND:
+    return "&&";
   case Op::ASSIGNADD:
-    return  "+=";
-  default:
-    return "TODO";
+    return "+=";
   }
 } // namespace ACC
 
