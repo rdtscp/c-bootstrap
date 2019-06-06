@@ -10,6 +10,8 @@ PointerType::PointerType(const atl::shared_ptr<Type> &p_pointedType)
 
 unsigned int PointerType::getBytes() const { return 4; }
 
+bool PointerType::canCastTo(Type &rhs) const { return false; }
+
 bool PointerType::equivalentTo(Type &rhs) const {
   if (rhs.astClass() == "ArrayType") {
     const ArrayType &at = *static_cast<ArrayType *>(&rhs);

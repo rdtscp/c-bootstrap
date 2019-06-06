@@ -15,6 +15,7 @@ public:
 
   ClassType(const atl::shared_ptr<Identifier> &p_identifier);
 
+  virtual bool canCastTo(Type &rhs) const override;
   unsigned int getBytes() const override;
 
   bool operator==(Type &rhs) const override;

@@ -14,6 +14,7 @@ public:
   PointerType(const atl::shared_ptr<Type> &p_pointedType);
   virtual ~PointerType() {}
 
+  virtual bool canCastTo(Type &rhs) const override;
   virtual unsigned int getBytes() const override;
   virtual bool equivalentTo(Type &rhs) const override;
 

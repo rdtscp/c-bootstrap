@@ -5,6 +5,14 @@ using namespace ACC;
 
 BaseType::BaseType(PrimitiveType p_pType) : primitiveType(p_pType) {}
 
+bool BaseType::canCastTo(Type &rhs) const {
+  if (primitiveType == PrimitiveType::NULLPTR_T &&
+      rhs.astClass() == "PointerType")
+    return true;
+
+  return false;
+}
+
 unsigned int BaseType::getBytes() const {
   switch (primitiveType) {
   case PrimitiveType::CHAR:

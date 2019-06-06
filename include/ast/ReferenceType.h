@@ -13,6 +13,7 @@ public:
 
   ReferenceType(const atl::shared_ptr<Type> &p_referencedType);
 
+  virtual bool canCastTo(Type &rhs) const override;
   unsigned int getBytes() const override;
   virtual bool equivalentTo(Type &rhs) const override;
 
