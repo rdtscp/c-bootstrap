@@ -22,6 +22,8 @@ public:
 
   const FunSignature lowerNamespace() const;
 
+  bool canCall(const FunSignature &rhs) const;
+
   bool operator==(const FunSignature &rhs) const;
   bool operator!=(const FunSignature &rhs) const;
 

@@ -22,6 +22,34 @@ const FunSignature FunSignature::lowerNamespace() const {
                       funModifiers);
 }
 
+bool FunSignature::canCall(const FunSignature &rhs) const {
+  // TODO: Incorporate return type?
+
+  // TODO: Handle when default args are provided.
+  if (funArgs.size() != rhs.funArgs.size())
+    return false;
+
+  // Check args match.
+  for (unsigned int idx = 0u; idx < funArgs.size(); ++idx) {
+    const atl::shared_ptr<Type> lhsType = funArgs[idx];
+    const atl::shared_ptr<Type> rhsType = rhs.funArgs[idx];
+    if (*lhsType != *rhsType && !lhsType->canCastTo(*rhsType))
+      return false;
+  }
+
+  // Check identifier.
+  if (*funIdentifier != *rhs.funIdentifier)
+    return false;
+
+  // Check Relevant Modifiers
+  const bool lhsConst = funModifiers.find(FunDecl::FunModifiers::CONST);
+  const bool rhsConst = rhs.funModifiers.find(FunDecl::FunModifiers::CONST);
+  if (rhsConst && !lhsConst)
+    return false;
+
+  return true;
+}
+
 bool FunSignature::operator==(const FunSignature &rhs) const {
   // TODO: Incorporate return type?
 
