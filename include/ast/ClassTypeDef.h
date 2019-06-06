@@ -26,6 +26,10 @@ public:
 
   atl::string astClass() const override { return "ClassTypeDef"; }
 
+  atl::shared_ptr<ConstructorDecl>
+  resolveConstructorCall(const FunSignature &ctorSignature,
+                         const atl::shared_ptr<Decl> &exemptDecl = nullptr);
+
   /* Scope Methods */
   virtual atl::shared_ptr<ClassTypeDecl>
   findClassDecl(const atl::shared_ptr<Identifier> identifier,

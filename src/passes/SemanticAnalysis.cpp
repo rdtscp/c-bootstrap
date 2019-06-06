@@ -180,7 +180,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
                                        constructorCallArgTypes,
                                        atl::set<FunDecl::FunModifiers>());
   const atl::shared_ptr<ConstructorDecl> ctorDecl =
-      ctorClassTypeDef->findConstructorDecl(ctorCallSignature);
+      ctorClassTypeDef->resolveConstructorCall(ctorCallSignature);
   if (ctorDecl == nullptr)
     return error("Type Analysis", "Attempted to call undeclared constructor.",
                  cc.getptr());
@@ -413,7 +413,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
                    "Attempted to access member variable of class type without "
                    "using `.` operator.",
                    mc.object);
-    objType = atl::static_pointer_cast<PointerType>(objType)->pointedType;
+    objType =
+        atl::static_pointer_cast<PointerType>(objType)->pointedType->accept(
+            *this);
     // Get ClassType
     if (objType->astClass() != "ClassType")
       return error("Type Analysis",

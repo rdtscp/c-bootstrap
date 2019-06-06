@@ -183,6 +183,28 @@ bool ClassTypeDef::operator!=(const ClassTypeDef &rhs) const {
   return !(*this == rhs);
 }
 
+atl::shared_ptr<ConstructorDecl>
+ClassTypeDef::resolveConstructorCall(const FunSignature &ctorSignature,
+                                     const atl::shared_ptr<Decl> &exemptDecl) {
+  for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
+    const atl::shared_ptr<Decl> currDecl = classDecls[idx];
+    if (currDecl->astClass() != "ConstructorDecl" &&
+        currDecl->astClass() != "ConstructorDef")
+      continue;
+    const atl::shared_ptr<ConstructorDecl> currCtorDecl =
+        atl::static_pointer_cast<ConstructorDecl>(currDecl);
+    if (currCtorDecl.get() == exemptDecl.get())
+      continue;
+
+    if (!ctorSignature.canCall(currCtorDecl->getSignature()))
+      continue;
+
+    return currCtorDecl;
+  }
+
+  return nullptr;
+}
+
 atl::shared_ptr<ClassTypeDecl>
 ClassTypeDef::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                             const atl::shared_ptr<Decl> &exemptDecl) {
