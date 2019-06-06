@@ -74,6 +74,59 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BaseType &bt) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
   const atl::shared_ptr<Type> lhsType = bo.lhs->accept(*this);
   const atl::shared_ptr<Type> rhsType = bo.rhs->accept(*this);
+
+  if (collapseReferenceTypes(lhsType)->astClass() == "ClassType") {
+    const atl::shared_ptr<ClassType> lhsClassType =
+        atl::static_pointer_cast<ClassType>(collapseReferenceTypes(lhsType));
+
+    /*  Precedence for operator overloading:
+     *    1) Class definitions
+     *    2) Freestanding Functions
+     */
+    const atl::shared_ptr<ClassTypeDef> lhsClassTypeDef =
+        lhsClassType->typeDefinition;
+
+    /* Create a FunSignature for Operator Overload Call. */
+    // Create the arguments.
+    atl::vector<atl::shared_ptr<Type>> opOverloadCallArgTypes;
+    opOverloadCallArgTypes.push_back(atl::shared_ptr<PointerType>(
+        new PointerType(lhsClassTypeDef->classType)));
+    opOverloadCallArgTypes.push_back(rhsType);
+
+    // Create the modifiers.
+    atl::set<FunDecl::FunModifiers> lhsModifiers;
+    if (lhsType->typeModifiers.find(Type::Modifiers::CONST) ||
+        lhsClassType->typeModifiers.find(Type::Modifiers::CONST))
+      lhsModifiers.insert(FunDecl::FunModifiers::CONST);
+
+    // Create the Identifier
+    const atl::string opOverloadStr = "operator" + opToStr(bo.operation);
+    const atl::shared_ptr<Identifier> opOverloadIdentifier(
+        new Identifier(opOverloadStr));
+
+    // Construct the Signature.
+    const FunSignature opOverloadCallSignature(
+        nullptr, opOverloadIdentifier, opOverloadCallArgTypes, lhsModifiers);
+
+    // Try resolve it.
+    const atl::shared_ptr<FunDecl> opOverloadClassFunc =
+        lhsClassTypeDef->findFunDeclLocal(opOverloadCallSignature);
+
+    if (opOverloadClassFunc)
+      return opOverloadClassFunc->funType;
+
+    const atl::shared_ptr<FunDecl> opOverloadScopeFunc =
+        currScope->findFunDecl(opOverloadCallSignature);
+
+    if (opOverloadScopeFunc)
+      return opOverloadScopeFunc->funType;
+
+    return error("Type Analysis",
+                 "No definition for " + opOverloadStr + "(" +
+                     lhsType->astClass() + ", " + rhsType->astClass() + ")",
+                 bo.getptr());
+  }
+
   if (!lhsType->equivalentTo(*rhsType))
     return error("Type Analysis", "Binary operation has mismatched types.",
                  bo.getptr());
