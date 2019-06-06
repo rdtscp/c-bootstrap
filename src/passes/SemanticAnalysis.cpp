@@ -110,14 +110,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
 
     // Try resolve it.
     const atl::shared_ptr<FunDecl> opOverloadClassFunc =
-        lhsClassTypeDef->findFunDeclLocal(opOverloadCallSignature);
-
+        lhsClassTypeDef->resolveFunCall(opOverloadCallSignature);
     if (opOverloadClassFunc)
       return opOverloadClassFunc->funType;
 
     const atl::shared_ptr<FunDecl> opOverloadScopeFunc =
         currScope->findFunDecl(opOverloadCallSignature);
-
     if (opOverloadScopeFunc)
       return opOverloadScopeFunc->funType;
 
@@ -320,21 +318,48 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(For &f) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
-  atl::vector<atl::shared_ptr<Type>> funCallArgTypes;
-  for (unsigned int idx = 0; idx < fc.funArgs.size(); ++idx)
-    funCallArgTypes.push_back(fc.funArgs[idx]->accept(*this));
+  // Check to make sure this isn't a Constructor for a temporary.
+  const atl::shared_ptr<ClassTypeDef> classTypeDef =
+      currScope->findClassDef(fc.funIdentifier);
+  if (classTypeDef != nullptr) {
+    atl::vector<atl::shared_ptr<Type>> constructorCallArgTypes;
+    constructorCallArgTypes.push_back(
+        atl::shared_ptr<PointerType>(new PointerType(classTypeDef->classType)));
+    for (unsigned int idx = 0; idx < fc.funArgs.size(); ++idx)
+      constructorCallArgTypes.push_back(fc.funArgs[idx]->accept(*this));
 
-  const FunSignature funCallSignature(nullptr, fc.funIdentifier,
-                                      funCallArgTypes,
-                                      atl::set<FunDecl::FunModifiers>());
-  const atl::shared_ptr<FunDecl> funDecl =
-      currScope->findFunDecl(funCallSignature);
-  if (funDecl == nullptr)
-    return error("Type Analysis", "Attempted to call undeclared function.",
-                 fc.getptr());
+    const FunSignature ctorCallSignature(nullptr, fc.funIdentifier,
+                                         constructorCallArgTypes,
+                                         atl::set<FunDecl::FunModifiers>());
+    const atl::shared_ptr<ConstructorDecl> ctorDecl =
+        classTypeDef->resolveConstructorCall(ctorCallSignature);
+    if (ctorDecl == nullptr)
+      return error("Type Analysis", "Attempted to call undeclared constructor.",
+                   fc.getptr());
 
-  fc.funDecl = funDecl;
-  return fc.funDecl->funType;
+    // Return RVAL Ref to this object.
+    return atl::shared_ptr<ReferenceType>(
+        new ReferenceType(atl::shared_ptr<ReferenceType>(
+            new ReferenceType(classTypeDef->classType))));
+  } else {
+    atl::vector<atl::shared_ptr<Type>> funCallArgTypes;
+    for (unsigned int idx = 0; idx < fc.funArgs.size(); ++idx)
+      funCallArgTypes.push_back(fc.funArgs[idx]->accept(*this));
+
+    const FunSignature funCallSignature(nullptr, fc.funIdentifier,
+                                        funCallArgTypes,
+                                        atl::set<FunDecl::FunModifiers>());
+    const atl::shared_ptr<FunDecl> funDecl =
+        currScope->findFunDecl(funCallSignature);
+    if (funDecl == nullptr)
+      return error("Type Analysis",
+                   "Attempted to call undeclared function: " +
+                       fc.funIdentifier->toString(),
+                   fc.getptr());
+
+    fc.funDecl = funDecl;
+    return fc.funDecl->funType;
+  }
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(FunDecl &fd) {
   if (currScope->findFunDecl(fd.getSignature(), fd.getptr()) ||
@@ -709,7 +734,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
 
   // Visit the value initialised.
   const atl::shared_ptr<Type> valueType = vd.varValue->accept(*this);
-  if (*valueType != *vd.type)
+  if (!valueType->equivalentTo(*vd.type))
     return error("Type Analysis", "VarDef has mismatched types.",
                  atl::static_pointer_cast<Decl>(vd.getptr()));
 
