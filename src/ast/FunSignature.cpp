@@ -44,7 +44,7 @@ bool FunSignature::canCall(const FunSignature &rhs) const {
   // Check Relevant Modifiers
   const bool lhsConst = funModifiers.find(FunDecl::FunModifiers::CONST);
   const bool rhsConst = rhs.funModifiers.find(FunDecl::FunModifiers::CONST);
-  if (rhsConst && !lhsConst)
+  if (lhsConst && !rhsConst)
     return false;
 
   return true;
