@@ -30,6 +30,10 @@ public:
   resolveConstructorCall(const FunSignature &ctorSignature,
                          const atl::shared_ptr<Decl> &exemptDecl = nullptr);
 
+  atl::shared_ptr<FunDecl>
+  resolveFunCall(const FunSignature &funSignature,
+                 const atl::shared_ptr<Decl> &exemptDecl = nullptr);
+
   /* Scope Methods */
   virtual atl::shared_ptr<ClassTypeDecl>
   findClassDecl(const atl::shared_ptr<Identifier> identifier,
