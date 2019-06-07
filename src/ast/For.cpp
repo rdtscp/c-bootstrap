@@ -37,6 +37,18 @@ For::findFunDeclLocal(const FunSignature &funSignature,
   return nullptr;
 }
 
+atl::shared_ptr<TypeDefDecl>
+For::findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
+                     const atl::shared_ptr<Decl> &exemptDecl) {
+  return outerScope->findTypeDefDecl(identifier, exemptDecl);
+}
+
+atl::shared_ptr<TypeDefDecl>
+For::findTypeDefDeclLocal(const atl::shared_ptr<Identifier> identifier,
+                          const atl::shared_ptr<Decl> &exemptDecl) {
+  return nullptr;
+}
+
 atl::shared_ptr<VarDecl>
 For::findVarDecl(const atl::shared_ptr<Identifier> identifier,
                  const atl::shared_ptr<Decl> &exemptDecl) {

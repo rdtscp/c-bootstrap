@@ -144,6 +144,37 @@ Program::findFunDeclLocal(const FunSignature &funSignature,
   }
 }
 
+atl::shared_ptr<TypeDefDecl>
+Program::findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
+                         const atl::shared_ptr<Decl> &exemptDecl) {
+  const atl::shared_ptr<TypeDefDecl> localFind =
+      findTypeDefDeclLocal(identifier, exemptDecl);
+  if (localFind != nullptr)
+    return localFind;
+  else if (outerScope != nullptr)
+    return outerScope->findTypeDefDecl(identifier, exemptDecl);
+  else
+    return nullptr;
+}
+
+atl::shared_ptr<TypeDefDecl>
+Program::findTypeDefDeclLocal(const atl::shared_ptr<Identifier> identifier,
+                              const atl::shared_ptr<Decl> &exemptDecl) {
+  for (int idx = declsChecked - 1; idx >= 0; --idx) {
+    const atl::shared_ptr<Decl> currDecl = decls[idx];
+    if (currDecl->astClass() != "TypeDefDecl")
+      continue;
+    if (currDecl.get() == exemptDecl.get())
+      continue;
+    if (*currDecl->getIdentifier() != *identifier)
+      continue;
+
+    return atl::static_pointer_cast<TypeDefDecl>(currDecl);
+  }
+
+  return nullptr;
+}
+
 atl::shared_ptr<VarDecl>
 Program::findVarDecl(const atl::shared_ptr<Identifier> identifier,
                      const atl::shared_ptr<Decl> &exemptDecl) {

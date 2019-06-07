@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Decl.h"
+#include "TypeDefDecl.h"
 
 namespace ACC {
 
@@ -28,6 +29,14 @@ public:
   virtual atl::shared_ptr<FunDecl>
   findFunDeclLocal(const FunSignature &funSignature,
                    const atl::shared_ptr<Decl> &exemptDecl = nullptr) = 0;
+
+  virtual atl::shared_ptr<TypeDefDecl>
+  findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
+                  const atl::shared_ptr<Decl> &exemptDecl = nullptr) = 0;
+
+  virtual atl::shared_ptr<TypeDefDecl>
+  findTypeDefDeclLocal(const atl::shared_ptr<Identifier> identifier,
+                       const atl::shared_ptr<Decl> &exemptDecl = nullptr) = 0;
 
   virtual atl::shared_ptr<VarDecl>
   findVarDecl(const atl::shared_ptr<Identifier> identifier,
