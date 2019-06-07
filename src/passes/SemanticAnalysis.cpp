@@ -34,11 +34,6 @@ void SemanticAnalysis::run() { visit(*progAST); }
 /* ---- Visit AST ---- */
 
 atl::shared_ptr<Type> SemanticAnalysis::visit(AddressOf &ao) {
-  // Make sure its the address of a named variable.
-  if (ao.addressOfExpr->astClass() != "VarExpr") {
-    return error("Type Error", "Cannot take the address of non LVALUE",
-                 ao.getptr());
-  }
   // Make sure the named variable is not a T&&.
   const atl::shared_ptr<Type> exprType = ao.addressOfExpr->accept(*this);
   if (exprType->astClass() == "ReferenceType") {
@@ -171,17 +166,25 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(CharLiteral &cl) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ClassType &ct) {
+  // Try find a TypeDefDecl for this "ClassType".
+  const atl::shared_ptr<TypeDefDecl> tdd =
+      currScope->findTypeDefDecl(ct.identifier);
+  if (tdd != nullptr) {
+    return tdd->type->accept(*this);
+  }
+
+  // Try find a ClassTypeDecl for this ClassType.
   const atl::shared_ptr<ClassTypeDecl> ctd =
       currScope->findClassDef(ct.identifier);
+  if (ctd != nullptr) {
+    ct.typeDefinition = ctd;
+    return ct.getptr();
+  }
 
-  if (ctd == nullptr)
-    return error("Name Analysis",
-                 "Attempted to use a Class that was not declared: " +
-                     ct.identifier->toString(),
-                 ct.getptr());
-
-  ct.typeDefinition = ctd;
-  return ct.getptr();
+  return error("Name Analysis",
+               "Attempted to use a Class that was not declared: " +
+                   ct.identifier->toString(),
+               ct.getptr());
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDecl &ctd) {
   if (currScope->findClassDef(ctd.getIdentifier(), ctd.getptr()))
