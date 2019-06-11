@@ -369,6 +369,13 @@ atl::string SourceOutput::visit(SizeOf &so) {
   output += ")";
   return output;
 }
+atl::string SourceOutput::visit(StaticCast &sc) {
+  atl::string output = "(";
+  output += sc.type->accept(*this);
+  output += ")";
+  output += sc.expr->accept(*this);
+  return output;
+}
 atl::string SourceOutput::visit(StringLiteral &sl) { return sl.getLiteral(); }
 atl::string SourceOutput::visit(SubscriptOp &so) {
   return so.variable->accept(*this) + "[" + so.index->accept(*this) + "]";
@@ -387,13 +394,6 @@ atl::string SourceOutput::visit(Throw &t) {
   atl::string output = "throw \"";
   output += t.exceptionText->accept(*this);
   output += "\"";
-  return output;
-}
-atl::string SourceOutput::visit(TypeCast &tc) {
-  atl::string output = "(";
-  output += tc.type->accept(*this);
-  output += ")";
-  output += tc.expr->accept(*this);
   return output;
 }
 atl::string SourceOutput::visit(TypeDefDecl &td) { return ""; }

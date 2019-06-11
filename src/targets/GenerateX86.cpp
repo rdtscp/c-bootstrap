@@ -307,10 +307,12 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(Return &r) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(SizeOf &so) {
   return atl::make_shared<X86::None>();
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(StaticCast &sc) {
+  return sc.expr->accept(*this);
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(StringLiteral &sl) {
   return atl::make_shared<X86::None>();
 }
-
 atl::shared_ptr<X86::Operand> GenerateX86::visit(SubscriptOp &so) {
   return atl::make_shared<X86::None>();
 }
@@ -319,9 +321,6 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(TertiaryExpr &t) {
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Throw &t) {
   return atl::make_shared<X86::None>();
-}
-atl::shared_ptr<X86::Operand> GenerateX86::visit(TypeCast &tc) {
-  return tc.expr->accept(*this);
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(TypeDefDecl &td) {
   return atl::make_shared<X86::None>();

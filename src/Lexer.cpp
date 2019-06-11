@@ -274,13 +274,19 @@ SourceToken Lexer::nextToken() {
       if (lexResult.first)
         return SourceToken(TC::SIZEOF, scanner.getPosition());
     }
-    // Check for STATIC Token.
+    // Check for STATIC or STATIC_CAST Token.
     else if (c == 's' && scanner.peek() == 't') {
       atl::pair<bool, atl::string> lexResult = tryLexKeyword("static");
       literal = lexResult.second;
 
-      if (lexResult.first)
+      if (literal == "static" && scanner.peek() == '_') {
+        scanner.next();
+        const atl::pair<bool, atl::string> lexResult = tryLexKeyword("_cast");
+        if (lexResult.first)
+          return SourceToken(TC::STATIC_CAST, scanner.getPosition());
+      } else if (lexResult.first) {
         return SourceToken(TC::STATIC, scanner.getPosition());
+      }
     }
     // Check for TEMPLATE
     else if (c == 't' && scanner.peek() == 'e') {

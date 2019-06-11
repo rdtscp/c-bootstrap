@@ -273,7 +273,7 @@ bool Parser::acceptExpr(int offset) {
   return accept({TC::LPAR, TC::SIZEOF, TC::ASTERIX, TC::MINUS, TC::IDENTIFIER,
                  TC::INT_LITERAL, TC::CHAR_LITERAL, TC::STRING_LITERAL, TC::NEW,
                  TC::PREFIXINC, TC::TRUE_VAL, TC::FALSE_VAL, TC::NOT, TC::REF,
-                 TC::THIS},
+                 TC::THIS, TC::STATIC_CAST},
                 offset);
 }
 bool Parser::acceptObjExpr(int offset) {
@@ -641,7 +641,7 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
     /* Parse Params */
     atl::vector<atl::shared_ptr<Expr>> params;
     if (acceptExpr())
-      params.push_back(parseLitExpr());
+      params.push_back(parseExpr());
     while (accept(TC::COMMA)) {
       expect(TC::COMMA);
       params.push_back(parseLitExpr());
@@ -1029,14 +1029,6 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     atl::shared_ptr<Expr> rhs = parseObjExpr();
     return createNode<ValueAt>(atl::shared_ptr<ValueAt>(new ValueAt(rhs)));
   }
-  if (accept(TC::LPAR) && (acceptType(1) && !accept(TC::IDENTIFIER, 1))) {
-    expect(TC::LPAR);
-    atl::shared_ptr<Type> castType = parseType();
-    expect(TC::RPAR);
-    atl::shared_ptr<Expr> expToCast = parseObjExpr();
-    return createNode<TypeCast>(
-        atl::shared_ptr<TypeCast>(new TypeCast(castType, expToCast)));
-  }
   if (accept(TC::MINUS)) {
     expect(TC::MINUS);
     atl::shared_ptr<IntLiteral> lhs(new IntLiteral("0"));
@@ -1091,7 +1083,18 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
   }
   if (accept(TC::NOT)) {
     expect(TC::NOT);
-    // Parse NOT Node.
+    // TODO: Parse NOT Node.
+  }
+  if (accept(TC::STATIC_CAST)) {
+    expect(TC::STATIC_CAST);
+    expect(TC::LT);
+    const atl::shared_ptr<Type> castType = parseType();
+    expect(TC::GT);
+    expect(TC::LPAR);
+    const atl::shared_ptr<Expr> castExpr = parseObjExpr();
+    expect(TC::RPAR);
+    return createNode<StaticCast>(
+        atl::shared_ptr<StaticCast>(new StaticCast(castType, castExpr)));
   }
 
   atl::shared_ptr<Expr> objExpr = parseObjExpr();
@@ -1255,8 +1258,8 @@ atl::shared_ptr<Expr> Parser::parseLitExpr() {
     return createNode<ParenthExpr>(
         atl::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr)));
   }
-  if (acceptExpr())
-    return parseExpr();
+  // if (acceptExpr())
+  //   return parseExpr();
 
   throw ACC::Error("Parser: Expected a Literal Expression.",
                    currToken.position);

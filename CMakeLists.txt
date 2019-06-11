@@ -56,11 +56,11 @@ add_library(AST SHARED
   src/ast/ReferenceType.cpp
   src/ast/Return.cpp
   src/ast/SizeOf.cpp
+  src/ast/StaticCast.cpp
   src/ast/StringLiteral.cpp
   src/ast/SubscriptOp.cpp
   src/ast/TertiaryExpr.cpp
   src/ast/Throw.cpp
-  src/ast/TypeCast.cpp
   src/ast/TypeDefDecl.cpp
   src/ast/ValueAt.cpp
   src/ast/VarDef.cpp

@@ -464,6 +464,12 @@ atl::string DotGraph::visit(SizeOf &so) {
 
   return returnID;
 }
+atl::string DotGraph::visit(StaticCast &sc) {
+  const atl::string typecastID = "StaticCast" + atl::to_string(++nodeCount);
+  declare(typecastID, "(" + sc.type->accept(*this) + ")");
+  join(typecastID, sc.expr->accept(*this));
+  return typecastID;
+}
 atl::string DotGraph::visit(StringLiteral &sl) {
   const atl::string strID = "StringLiteral" + atl::to_string(++nodeCount);
   declare(strID, "\\\"" + sl.getLiteral() + "\\\"");
@@ -497,12 +503,6 @@ atl::string DotGraph::visit(Throw &t) {
   declare(throwID, "throw");
   join(throwID, t.exceptionText->accept(*this));
   return throwID;
-}
-atl::string DotGraph::visit(TypeCast &tc) {
-  const atl::string typecastID = "TypeCast" + atl::to_string(++nodeCount);
-  declare(typecastID, "(" + tc.type->accept(*this) + ")");
-  join(typecastID, tc.expr->accept(*this));
-  return typecastID;
 }
 atl::string DotGraph::visit(TypeDefDecl &td) {
   const atl::string typeDefDeclID = "TypeDefDecl" + atl::to_string(++nodeCount);

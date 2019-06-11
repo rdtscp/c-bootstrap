@@ -597,6 +597,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Return &r) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(SizeOf &so) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT));
 }
+atl::shared_ptr<Type> SemanticAnalysis::visit(StaticCast &sc) {
+  sc.expr->accept(*this);
+  return sc.type;
+}
 atl::shared_ptr<Type> SemanticAnalysis::visit(StringLiteral &sl) {
   return atl::shared_ptr<PointerType>(new PointerType(
       atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR))));
@@ -678,10 +682,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(TertiaryExpr &t) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(Throw &t) {
   // TODO
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
-}
-atl::shared_ptr<Type> SemanticAnalysis::visit(TypeCast &tc) {
-  tc.expr->accept(*this);
-  return tc.type;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(TypeDefDecl &tdd) {
   // TODO:
