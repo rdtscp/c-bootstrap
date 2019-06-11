@@ -1017,6 +1017,13 @@ atl::shared_ptr<Expr> Parser::parseMulExpr() {
   return lhs;
 }
 atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
+  if (accept(TC::LPAR)) {
+    expect(TC::LPAR);
+    const atl::shared_ptr<Expr> innerExpr = parseExpr();
+    expect(TC::RPAR);
+    return createNode<ParenthExpr>(
+        atl::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr)));
+  }
   if (accept(TC::SIZEOF)) {
     expect(TC::SIZEOF);
     expect(TC::LPAR);
@@ -1026,13 +1033,13 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
   }
   if (accept(TC::ASTERIX)) {
     expect(TC::ASTERIX);
-    atl::shared_ptr<Expr> rhs = parseExpr();
+    atl::shared_ptr<Expr> rhs = parseObjExpr();
     return createNode<ValueAt>(atl::shared_ptr<ValueAt>(new ValueAt(rhs)));
   }
   if (accept(TC::MINUS)) {
     expect(TC::MINUS);
     atl::shared_ptr<IntLiteral> lhs(new IntLiteral("0"));
-    atl::shared_ptr<Expr> rhs = parseExpr();
+    atl::shared_ptr<Expr> rhs = parseObjExpr();
     return createNode<BinOp>(
         atl::shared_ptr<BinOp>(new BinOp(lhs, Op::SUB, rhs)));
   }
@@ -1043,7 +1050,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
       operation = PrefixOp::Op::INC;
     if (operatorToken == TC::PREFIXDEC)
       operation = PrefixOp::Op::DEC;
-    atl::shared_ptr<Expr> incrementExpr = parseExpr();
+    atl::shared_ptr<Expr> incrementExpr = parseObjExpr();
     if (incrementExpr->astClass() != "VarExpr")
       throw ACC::Error(
           "Parser: Attempted operator++ on Expr that was not a VarExpr",
@@ -1077,7 +1084,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
   }
   if (accept(TC::REF)) {
     expect(TC::REF);
-    const atl::shared_ptr<Expr> addrOfExpr = parseExpr();
+    const atl::shared_ptr<Expr> addrOfExpr = parseObjExpr();
     return createNode<AddressOf>(
         atl::shared_ptr<AddressOf>(new AddressOf(addrOfExpr)));
   }
@@ -1091,7 +1098,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     const atl::shared_ptr<Type> castType = parseType();
     expect(TC::GT);
     expect(TC::LPAR);
-    const atl::shared_ptr<Expr> castExpr = parseExpr();
+    const atl::shared_ptr<Expr> castExpr = parseObjExpr();
     expect(TC::RPAR);
     return createNode<StaticCast>(
         atl::shared_ptr<StaticCast>(new StaticCast(castType, castExpr)));
@@ -1106,6 +1113,13 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
   return objExpr;
 }
 atl::shared_ptr<Expr> Parser::parseObjExpr() {
+  if (accept(TC::LPAR)) {
+    expect(TC::LPAR);
+    const atl::shared_ptr<Expr> innerExpr = parseExpr();
+    expect(TC::RPAR);
+    return createNode<ParenthExpr>(
+        atl::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr)));
+  }
   if (accept(TC::IDENTIFIER)) {
     const atl::shared_ptr<Identifier> ident = parseIdentifier();
     atl::shared_ptr<Expr> objExpr;
@@ -1144,7 +1158,7 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
         }
       } else {
         expect(TC::LSBR);
-        atl::shared_ptr<Expr> indexExpr = parseExpr();
+        atl::shared_ptr<Expr> indexExpr = parseObjExpr();
         expect(TC::RSBR);
         objExpr = createNode<SubscriptOp>(
             atl::shared_ptr<SubscriptOp>(new SubscriptOp(objExpr, indexExpr)));
@@ -1174,7 +1188,7 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
         }
       } else {
         expect(TC::LSBR);
-        atl::shared_ptr<Expr> indexExpr = parseExpr();
+        atl::shared_ptr<Expr> indexExpr = parseObjExpr();
         expect(TC::RSBR);
         output = createNode<SubscriptOp>(
             atl::shared_ptr<SubscriptOp>(new SubscriptOp(output, indexExpr)));
@@ -1201,7 +1215,7 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
       }
     } else {
       expect(TC::LSBR);
-      atl::shared_ptr<Expr> indexExpr = parseExpr();
+      atl::shared_ptr<Expr> indexExpr = parseObjExpr();
       expect(TC::RSBR);
       output = createNode<SubscriptOp>(
           atl::shared_ptr<SubscriptOp>(new SubscriptOp(output, indexExpr)));
@@ -1225,6 +1239,13 @@ atl::shared_ptr<FunCall> Parser::parseFunCall() {
       atl::shared_ptr<FunCall>(new FunCall(ident, params)));
 }
 atl::shared_ptr<Expr> Parser::parseLitExpr() {
+  if (accept(TC::LPAR)) {
+    expect(TC::LPAR);
+    const atl::shared_ptr<Expr> innerExpr = parseExpr();
+    expect(TC::RPAR);
+    return createNode<ParenthExpr>(
+        atl::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr)));
+  }
   if (accept(TC::INT_LITERAL)) {
     return createNode<IntLiteral>(atl::shared_ptr<IntLiteral>(
         new IntLiteral(expect(TC::INT_LITERAL).data)));
@@ -1250,13 +1271,6 @@ atl::shared_ptr<Expr> Parser::parseLitExpr() {
   if (accept(TC::NULLPTR)) {
     expect(TC::NULLPTR);
     return createNode<Nullptr>(atl::shared_ptr<Nullptr>(new Nullptr()));
-  }
-  if (accept(TC::LPAR)) {
-    expect(TC::LPAR);
-    atl::shared_ptr<Expr> innerExpr = parseExpr();
-    expect(TC::RPAR);
-    return createNode<ParenthExpr>(
-        atl::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr)));
   }
   // if (acceptExpr())
   //   return parseExpr();
