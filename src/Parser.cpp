@@ -673,6 +673,7 @@ atl::shared_ptr<Type> Parser::parseType() {
     const atl::shared_ptr<Identifier> classIdentifier = parseIdentifier();
     type = createNode<ClassType>(
         atl::shared_ptr<ClassType>(new ClassType(classIdentifier)));
+    type->typeModifiers = typeModifiers;
   } else {
     const TC baseType =
         expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT, TC::UINT, TC::BOOL})
@@ -707,20 +708,31 @@ atl::shared_ptr<Type> Parser::parseType() {
     while (accept(TC::ASTERIX)) {
       expect(TC::ASTERIX);
       type = createNode<PointerType>(new PointerType(type));
+      if (accept(TC::CONST)) {
+        expect(TC::CONST);
+        type->typeModifiers.insert(Type::Modifiers::CONST);
+      }
     }
   } else if (accept(TC::REF)) {
     expect(TC::REF);
     type = createNode<ReferenceType>(
         atl::shared_ptr<ReferenceType>(new ReferenceType(type)));
+    if (accept(TC::CONST)) {
+      expect(TC::CONST);
+      type->typeModifiers.insert(Type::Modifiers::CONST);
+    }
   } else if (accept(TC::AND)) {
     expect(TC::AND);
     type = createNode<ReferenceType>(
         atl::shared_ptr<ReferenceType>(new ReferenceType(type)));
     type = createNode<ReferenceType>(
         atl::shared_ptr<ReferenceType>(new ReferenceType(type)));
+    if (accept(TC::CONST)) {
+      expect(TC::CONST);
+      type->typeModifiers.insert(Type::Modifiers::CONST);
+    }
   }
 
-  type->typeModifiers = typeModifiers;
   return type;
 }
 
