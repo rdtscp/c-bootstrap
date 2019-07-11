@@ -1098,7 +1098,7 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     const atl::shared_ptr<Type> castType = parseType();
     expect(TC::GT);
     expect(TC::LPAR);
-    const atl::shared_ptr<Expr> castExpr = parseObjExpr();
+    const atl::shared_ptr<Expr> castExpr = parseExpr();
     expect(TC::RPAR);
     return createNode<StaticCast>(
         atl::shared_ptr<StaticCast>(new StaticCast(castType, castExpr)));
