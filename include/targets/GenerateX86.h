@@ -77,6 +77,7 @@ private:
   atl::shared_ptr<X86::Operand> visit(StaticCast &sc) override;
   atl::shared_ptr<X86::Operand> visit(StringLiteral &sl) override;
   atl::shared_ptr<X86::Operand> visit(SubscriptOp &so) override;
+  atl::shared_ptr<X86::Operand> visit(TemplateDef &td) override;
   atl::shared_ptr<X86::Operand> visit(TertiaryExpr &t) override;
   atl::shared_ptr<X86::Operand> visit(Throw &t) override;
   atl::shared_ptr<X86::Operand> visit(TypeDefDecl &td) override;

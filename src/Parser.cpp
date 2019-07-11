@@ -97,6 +97,9 @@ bool Parser::acceptConstructor(int offset) {
   return true;
 }
 bool Parser::acceptDecl(int offset) {
+  if (acceptTemplateDef(offset))
+    return true;
+
   if (acceptClassTypeDecl(offset))
     return true;
 
@@ -156,6 +159,7 @@ bool Parser::acceptOpOverload(int offset) {
                  TC::OPGE, TC::OPGT, TC::OPLE, TC::OPLT, TC::OPNE},
                 offset);
 }
+bool Parser::acceptTemplateDef(int offset) { return accept(TC::TEMPLATE); }
 bool Parser::acceptTypeDefDecl(int offset) { return accept(TC::TYPEDEF); }
 bool Parser::acceptVarDecl(int offset) {
   if (accept(TC::STATIC))
@@ -459,6 +463,12 @@ atl::shared_ptr<ConstructorDecl> Parser::parseConstructor() {
   }
 }
 atl::shared_ptr<Decl> Parser::parseDecl() {
+  if (acceptTemplateDef()) {
+    atl::shared_ptr<TemplateDef> td = parseTemplateDef();
+    expect(TC::SC);
+    return td;
+  }
+
   if (acceptClassTypeDecl()) {
     atl::shared_ptr<ClassTypeDecl> ctd = parseClassTypeDecl();
     expect(TC::SC);
@@ -602,6 +612,7 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
         new FunDecl(funModifiers, funIdentifier, funParams, funType)));
   }
 }
+atl::shared_ptr<TemplateDef> Parser::parseTemplateDef() { return nullptr; }
 atl::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
   expect(TC::TYPEDEF);
   atl::shared_ptr<Type> aliasedType = parseType();

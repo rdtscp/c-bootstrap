@@ -487,6 +487,7 @@ atl::string DotGraph::visit(SubscriptOp &so) {
 
   return subscriptOpID;
 }
+atl::string DotGraph::visit(TemplateDef &td) { return ""; }
 atl::string DotGraph::visit(TertiaryExpr &t) {
   const atl::string tertiaryID = "TertiaryExpr" + atl::to_string(++nodeCount);
   const atl::string conditionID = t.tertiaryCondition->accept(*this);

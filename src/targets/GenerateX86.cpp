@@ -316,6 +316,9 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(StringLiteral &sl) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(SubscriptOp &so) {
   return atl::make_shared<X86::None>();
 }
+atl::shared_ptr<X86::Operand> GenerateX86::visit(TemplateDef &td) {
+  return atl::make_shared<X86::None>();
+}
 atl::shared_ptr<X86::Operand> GenerateX86::visit(TertiaryExpr &t) {
   return atl::make_shared<X86::None>();
 }

@@ -236,6 +236,9 @@ atl::shared_ptr<ASTNode> Optimiser::visit(SubscriptOp &so) {
   so.index = so.index->accept(*this);
   return so.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(TemplateDef &td) {
+  return td.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(TertiaryExpr &t) {
   return t.getptr();
 }

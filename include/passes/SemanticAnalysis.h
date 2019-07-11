@@ -68,6 +68,7 @@ private:
   atl::shared_ptr<Type> visit(StaticCast &sc) override;
   atl::shared_ptr<Type> visit(StringLiteral &sl) override;
   atl::shared_ptr<Type> visit(SubscriptOp &so) override;
+  atl::shared_ptr<Type> visit(TemplateDef &td) override;
   atl::shared_ptr<Type> visit(TertiaryExpr &t) override;
   atl::shared_ptr<Type> visit(Throw &t) override;
   atl::shared_ptr<Type> visit(TypeDefDecl &td) override;

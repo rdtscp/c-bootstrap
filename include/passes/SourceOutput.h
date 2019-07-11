@@ -66,6 +66,7 @@ private:
   atl::string visit(StaticCast &sc) override;
   atl::string visit(StringLiteral &sl) override;
   atl::string visit(SubscriptOp &so) override;
+  atl::string visit(TemplateDef &td) override;
   atl::string visit(TertiaryExpr &t) override;
   atl::string visit(Throw &t) override;
   atl::string visit(TypeDefDecl &td) override;
