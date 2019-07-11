@@ -43,6 +43,14 @@ public:
   findFunDeclLocal(const FunSignature &funSignature,
                    const atl::shared_ptr<Decl> &exemptDecl = nullptr) override;
 
+  virtual atl::shared_ptr<TypeDefDecl>
+  findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
+                  const atl::shared_ptr<Decl> &exemptDecl = nullptr) override;
+
+  virtual atl::shared_ptr<TypeDefDecl> findTypeDefDeclLocal(
+      const atl::shared_ptr<Identifier> identifier,
+      const atl::shared_ptr<Decl> &exemptDecl = nullptr) override;
+
   virtual atl::shared_ptr<VarDecl>
   findVarDecl(const atl::shared_ptr<Identifier> identifier,
               const atl::shared_ptr<Decl> &exemptDecl = nullptr) override;

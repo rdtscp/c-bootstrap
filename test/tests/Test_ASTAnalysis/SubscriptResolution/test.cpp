@@ -1,7 +1,6 @@
-
-class SubscriptExample {
+class Example1 {
 public:
-  SubscriptExample(int x) : m_val(x) {}
+  Example1(int x) : m_val(x) {}
 
   int operator[](const int y) { return m_val + y; }
 
@@ -9,8 +8,21 @@ private:
   int m_val;
 };
 
+namespace Foo {
+class Example2 {
+public:
+  int operator[](const int input) { return input + 1; }
+
+  int m_func(Example2 foo) { return foo[0]; }
+};
+} // namespace Foo
+
 int main(int argc, char **argv) {
-  SubscriptExample se(5);
-  int foo = se[1];
+  Example1 e1(5);
+  int foo = e1[1];
+
+  Foo::Example2 e2;
+  int bar = e2[1];
+
   return 1;
 }

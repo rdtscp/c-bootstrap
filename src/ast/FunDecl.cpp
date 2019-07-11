@@ -2,6 +2,7 @@
 #include "ast/ClassType.h"
 #include "ast/ClassTypeDef.h"
 #include "ast/FunDef.h"
+#include "ast/FunSignature.h"
 #include "ast/VarDef.h"
 
 using namespace ACC;
@@ -22,7 +23,7 @@ const FunSignature FunDecl::getSignature() const {
   for (unsigned int idx = 0u; idx < funParams.size(); ++idx)
     paramTypes.push_back(funParams[idx]->type);
 
-  return FunSignature(funType, funIdentifier, paramTypes);
+  return FunSignature(funType, funIdentifier, paramTypes, funModifiers);
 }
 
 bool FunDecl::operator==(Decl &rhs) const {
@@ -76,6 +77,18 @@ FunDecl::findFunDecl(const FunSignature &funSignature,
 atl::shared_ptr<FunDecl>
 FunDecl::findFunDeclLocal(const FunSignature &funSignature,
                           const atl::shared_ptr<Decl> &exemptDecl) {
+  return nullptr;
+}
+
+atl::shared_ptr<TypeDefDecl>
+FunDecl::findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
+                         const atl::shared_ptr<Decl> &exemptDecl) {
+  return outerScope->findTypeDefDecl(identifier, exemptDecl);
+}
+
+atl::shared_ptr<TypeDefDecl>
+FunDecl::findTypeDefDeclLocal(const atl::shared_ptr<Identifier> identifier,
+                              const atl::shared_ptr<Decl> &exemptDecl) {
   return nullptr;
 }
 

@@ -2,6 +2,7 @@
 #include "ast/ClassType.h"
 #include "ast/ClassTypeDef.h"
 #include "ast/FunDef.h"
+#include "ast/FunSignature.h"
 #include "ast/VarDef.h"
 
 using namespace ACC;
@@ -33,22 +34,43 @@ Program::findClassDecl(const atl::shared_ptr<Identifier> identifier,
 atl::shared_ptr<ClassTypeDef>
 Program::findClassDef(const atl::shared_ptr<Identifier> identifier,
                       const atl::shared_ptr<Decl> &exemptDecl) {
-  for (int idx = declsChecked - 1; idx >= 0; --idx) {
-    const atl::shared_ptr<Decl> currDecl = decls[idx];
-    if (currDecl->astClass() != "ClassTypeDecl" &&
-        currDecl->astClass() != "ClassTypeDef")
-      continue;
-    if (currDecl.get() == exemptDecl.get())
-      continue;
-    if (*currDecl->getIdentifier() != *identifier)
-      continue;
+  if (identifier->namespaceCount() > 0) {
+    for (int idx = declsChecked - 1; idx >= 0; --idx) {
+      const atl::shared_ptr<Decl> currDecl = decls[idx];
+      if (currDecl->astClass() == "Namespace") {
+        const atl::shared_ptr<Namespace> currNamespace =
+            atl::static_pointer_cast<Namespace>(currDecl);
+        if (*currNamespace->identifier != *identifier->namespaceHead())
+          continue;
 
-    return atl::static_pointer_cast<ClassTypeDecl>(currDecl);
+        const atl::shared_ptr<ClassTypeDef> namespaceFind =
+            currNamespace->findClassDef(identifier->namespaceTail(),
+                                        exemptDecl);
+        if (namespaceFind == nullptr)
+          continue;
+
+        return namespaceFind;
+      }
+    }
+
+    return nullptr;
+  } else {
+    for (int idx = declsChecked - 1; idx >= 0; --idx) {
+      const atl::shared_ptr<Decl> currDecl = decls[idx];
+      if (currDecl->astClass() != "ClassTypeDef")
+        continue;
+      if (currDecl.get() == exemptDecl.get())
+        continue;
+      if (*currDecl->getIdentifier() != *identifier)
+        continue;
+
+      return atl::static_pointer_cast<ClassTypeDecl>(currDecl);
+    }
+    if (outerScope != nullptr)
+      return outerScope->findClassDef(identifier, exemptDecl);
+
+    return nullptr;
   }
-  if (outerScope != nullptr)
-    return outerScope->findClassDef(identifier, exemptDecl);
-
-  return nullptr;
 }
 
 atl::shared_ptr<FunDecl>
@@ -92,7 +114,8 @@ Program::findFunDeclLocal(const FunSignature &funSignature,
           continue;
 
         const atl::shared_ptr<FunDecl> namespaceFind =
-            currNamespace->findFunDeclLocal(funSignature.lowerNamespace());
+            currNamespace->findFunDeclLocal(funSignature.lowerNamespace(),
+                                            exemptDecl);
         if (namespaceFind == nullptr)
           continue;
 
@@ -119,6 +142,37 @@ Program::findFunDeclLocal(const FunSignature &funSignature,
 
     return nullptr;
   }
+}
+
+atl::shared_ptr<TypeDefDecl>
+Program::findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
+                         const atl::shared_ptr<Decl> &exemptDecl) {
+  const atl::shared_ptr<TypeDefDecl> localFind =
+      findTypeDefDeclLocal(identifier, exemptDecl);
+  if (localFind != nullptr)
+    return localFind;
+  else if (outerScope != nullptr)
+    return outerScope->findTypeDefDecl(identifier, exemptDecl);
+  else
+    return nullptr;
+}
+
+atl::shared_ptr<TypeDefDecl>
+Program::findTypeDefDeclLocal(const atl::shared_ptr<Identifier> identifier,
+                              const atl::shared_ptr<Decl> &exemptDecl) {
+  for (int idx = declsChecked - 1; idx >= 0; --idx) {
+    const atl::shared_ptr<Decl> currDecl = decls[idx];
+    if (currDecl->astClass() != "TypeDefDecl")
+      continue;
+    if (currDecl.get() == exemptDecl.get())
+      continue;
+    if (*currDecl->getIdentifier() != *identifier)
+      continue;
+
+    return atl::static_pointer_cast<TypeDefDecl>(currDecl);
+  }
+
+  return nullptr;
 }
 
 atl::shared_ptr<VarDecl>

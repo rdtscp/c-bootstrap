@@ -11,6 +11,8 @@ public:
   atl::set<Modifiers> typeModifiers;
   virtual ~Type() {}
   virtual unsigned int getBytes() const = 0;
+  virtual bool canCastTo(Type &rhs) const = 0;
+  virtual bool equivalentTo(Type &rhs) const { return *this == rhs; }
   virtual bool operator==(Type &rhs) const = 0;
   virtual bool operator!=(Type &rhs) const = 0;
 };

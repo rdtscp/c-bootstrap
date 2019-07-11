@@ -2,6 +2,7 @@
 #include "ast/ClassType.h"
 #include "ast/ConstructorDef.h"
 #include "ast/FunDef.h"
+#include "ast/FunSignature.h"
 #include "ast/PointerType.h"
 #include "ast/VarDecl.h"
 
@@ -182,6 +183,49 @@ bool ClassTypeDef::operator!=(const ClassTypeDef &rhs) const {
   return !(*this == rhs);
 }
 
+atl::shared_ptr<ConstructorDecl>
+ClassTypeDef::resolveConstructorCall(const FunSignature &ctorSignature,
+                                     const atl::shared_ptr<Decl> &exemptDecl) {
+  for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
+    const atl::shared_ptr<Decl> currDecl = classDecls[idx];
+    if (currDecl->astClass() != "ConstructorDecl" &&
+        currDecl->astClass() != "ConstructorDef")
+      continue;
+    const atl::shared_ptr<ConstructorDecl> currCtorDecl =
+        atl::static_pointer_cast<ConstructorDecl>(currDecl);
+    if (currCtorDecl.get() == exemptDecl.get())
+      continue;
+
+    if (!ctorSignature.canCall(currCtorDecl->getSignature()))
+      continue;
+
+    return currCtorDecl;
+  }
+
+  return nullptr;
+}
+
+atl::shared_ptr<FunDecl>
+ClassTypeDef::resolveFunCall(const FunSignature &funSignature,
+                             const atl::shared_ptr<Decl> &exemptDecl) {
+  for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
+    const atl::shared_ptr<Decl> currDecl = classDecls[idx];
+    if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")
+      continue;
+    const atl::shared_ptr<FunDecl> currFunDecl =
+        atl::static_pointer_cast<FunDecl>(currDecl);
+    if (currFunDecl.get() == exemptDecl.get())
+      continue;
+
+    if (!funSignature.canCall(currFunDecl->getSignature()))
+      continue;
+
+    return currFunDecl;
+  }
+
+  return nullptr;
+}
+
 atl::shared_ptr<ClassTypeDecl>
 ClassTypeDef::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                             const atl::shared_ptr<Decl> &exemptDecl) {
@@ -250,6 +294,23 @@ ClassTypeDef::findFunDecl(const FunSignature &funSignature,
 atl::shared_ptr<FunDecl>
 ClassTypeDef::findFunDeclLocal(const FunSignature &funSignature,
                                const atl::shared_ptr<Decl> &exemptDecl) {
+  if (funSignature.namespaceCount() == 1 &&
+      *getIdentifier() == *funSignature.namespaceHead()) {
+    for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
+      const atl::shared_ptr<Decl> currDecl = classDecls[idx];
+      if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")
+        continue;
+      const atl::shared_ptr<FunDecl> currFunDecl =
+          atl::static_pointer_cast<FunDecl>(currDecl);
+      if (currFunDecl.get() == exemptDecl.get())
+        continue;
+      if (funSignature.lowerNamespace() != currFunDecl->getSignature())
+        continue;
+
+      return currFunDecl;
+    }
+  }
+
   if (funSignature.namespaceCount() > 0) {
     return nullptr;
   } else {
@@ -270,6 +331,37 @@ ClassTypeDef::findFunDeclLocal(const FunSignature &funSignature,
 
     return nullptr;
   }
+}
+
+atl::shared_ptr<TypeDefDecl>
+ClassTypeDef::findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
+                              const atl::shared_ptr<Decl> &exemptDecl) {
+  const atl::shared_ptr<TypeDefDecl> localFind =
+      findTypeDefDeclLocal(identifier, exemptDecl);
+  if (localFind != nullptr)
+    return localFind;
+  else if (outerScope != nullptr)
+    return outerScope->findTypeDefDecl(identifier, exemptDecl);
+  else
+    return nullptr;
+}
+
+atl::shared_ptr<TypeDefDecl>
+ClassTypeDef::findTypeDefDeclLocal(const atl::shared_ptr<Identifier> identifier,
+                                   const atl::shared_ptr<Decl> &exemptDecl) {
+  for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
+    const atl::shared_ptr<Decl> currDecl = classDecls[idx];
+    if (currDecl->astClass() != "TypeDefDecl")
+      continue;
+    if (currDecl.get() == exemptDecl.get())
+      continue;
+    if (*currDecl->getIdentifier() != *identifier)
+      continue;
+
+    return atl::static_pointer_cast<TypeDefDecl>(currDecl);
+  }
+
+  return nullptr;
 }
 
 atl::shared_ptr<VarDecl>

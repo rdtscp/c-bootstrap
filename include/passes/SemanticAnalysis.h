@@ -65,11 +65,12 @@ private:
   atl::shared_ptr<Type> visit(ReferenceType &rt) override;
   atl::shared_ptr<Type> visit(Return &r) override;
   atl::shared_ptr<Type> visit(SizeOf &so) override;
+  atl::shared_ptr<Type> visit(StaticCast &sc) override;
   atl::shared_ptr<Type> visit(StringLiteral &sl) override;
   atl::shared_ptr<Type> visit(SubscriptOp &so) override;
+  atl::shared_ptr<Type> visit(TemplateDef &td) override;
   atl::shared_ptr<Type> visit(TertiaryExpr &t) override;
   atl::shared_ptr<Type> visit(Throw &t) override;
-  atl::shared_ptr<Type> visit(TypeCast &tc) override;
   atl::shared_ptr<Type> visit(TypeDefDecl &td) override;
   atl::shared_ptr<Type> visit(ValueAt &va) override;
   atl::shared_ptr<Type> visit(VarDecl &vd) override;
@@ -79,6 +80,7 @@ private:
 
   /* Helpers */
   atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type);
+  atl::set<FunDecl::FunModifiers> funModifiers(bool isConst);
 };
 
 } // namespace ACC

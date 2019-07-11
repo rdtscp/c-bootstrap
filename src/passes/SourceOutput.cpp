@@ -36,7 +36,7 @@ atl::string SourceOutput::visit(Allocation &a) {
 atl::string SourceOutput::visit(ArrayType &at) {
   atl::string output = at.pointedType->accept(*this);
   output += "[";
-  output += at.size;
+  output += at.size->accept(*this);
   output += "]";
   return output;
 }
@@ -48,22 +48,34 @@ atl::string SourceOutput::visit(Assign &as) {
   return output;
 }
 atl::string SourceOutput::visit(BaseType &bt) {
+  atl::string output;
   switch (bt.primitiveType) {
   case PrimitiveType::CHAR:
-    return "char";
+    output = "char";
+    break;
   case PrimitiveType::INT:
-    return "int";
+    output = "int";
+    break;
   case PrimitiveType::SHORT:
-    return "short";
+    output = "short";
+    break;
   case PrimitiveType::VOID:
-    return "void";
+    output = "void";
+    break;
   case PrimitiveType::UINT:
-    return "unsigned int";
+    output = "unsigned int";
+    break;
   case PrimitiveType::BOOL:
-    return "bool";
+    output = "bool";
+    break;
   default:
-    return "";
+    output = "";
+    break;
   }
+  if (bt.typeModifiers.find(Type::Modifiers::CONST))
+    output += " const";
+
+  return output;
 }
 atl::string SourceOutput::visit(BinOp &bo) {
   atl::string output = bo.lhs->accept(*this);
@@ -113,6 +125,8 @@ atl::string SourceOutput::visit(BinOp &bo) {
     break;
   }
   output += bo.rhs->accept(*this);
+  if (bo.operation == Op::ASSIGNADD)
+    output += ";";
   return output;
 }
 atl::string SourceOutput::visit(Block &b) {
@@ -123,17 +137,16 @@ atl::string SourceOutput::visit(Block &b) {
   output += "\n}";
   return output;
 }
-
-atl::string SourceOutput::visit(BoolLiteral &bl) {
-  atl::string output = "'";
-  return output + bl.getLiteral() + "'";
-}
+atl::string SourceOutput::visit(BoolLiteral &bl) { return bl.getLiteral(); }
 atl::string SourceOutput::visit(CharLiteral &cl) {
   atl::string output = "'";
   return output + cl.getLiteral() + "'";
 }
 atl::string SourceOutput::visit(ClassType &ct) {
-  return ct.identifier->toString();
+  atl::string output = ct.identifier->toString();
+  if (ct.typeModifiers.find(Type::Modifiers::CONST))
+    output += " const";
+  return output;
 }
 atl::string SourceOutput::visit(ClassTypeDecl &ctd) {
   atl::string output = "class " + ctd.getIdentifier()->accept(*this) + ";";
@@ -197,10 +210,10 @@ atl::string SourceOutput::visit(ConstructorDecl &cd) {
 atl::string SourceOutput::visit(ConstructorDef &cd) {
   atl::string output = cd.classType->accept(*this);
   output += "(";
-  for (unsigned int i = 0; i < cd.constructorParams.size(); ++i) {
-    atl::string currParam =
-        cd.constructorParams[i]->type->accept(*this) + " " +
-        cd.constructorParams[i]->getIdentifier()->accept(*this);
+  for (unsigned int i = 1u; i < cd.constructorParams.size(); ++i) {
+    atl::string currParam = cd.constructorParams[i]->type->accept(*this) + " ";
+
+    currParam += cd.constructorParams[i]->getIdentifier()->accept(*this);
     if (i != (cd.constructorParams.size() - 1))
       currParam += ", ";
     output += currParam;
@@ -212,7 +225,7 @@ atl::string SourceOutput::visit(ConstructorDef &cd) {
     for (unsigned int idx = 0; idx < initialiserListSize; ++idx) {
       output += cd.initialiserList[idx]->lhs->accept(*this);
       output += "(";
-      output += cd.initialiserList[idx]->lhs->accept(*this);
+      output += cd.initialiserList[idx]->rhs->accept(*this);
       output += ")";
       if (idx < (initialiserListSize - 1))
         output += ", ";
@@ -257,7 +270,16 @@ atl::string SourceOutput::visit(EnumClassTypeDecl &ectd) {
   output += "};";
   return output;
 }
-atl::string SourceOutput::visit(For &f) { return ""; }
+atl::string SourceOutput::visit(For &f) {
+  atl::string output = "for (";
+  output += f.initialVarDecl->accept(*this);
+  output += " " + f.condition->accept(*this) + "; ";
+  atl::string endBodyExpr = f.endBodyExpr->accept(*this);
+  for (unsigned int i = 0; i < endBodyExpr.size() - 1u; ++i)
+    output += endBodyExpr[i];
+  output += ") " + f.body->accept(*this);
+  return output;
+}
 atl::string SourceOutput::visit(FunCall &fc) {
   atl::string output = fc.funIdentifier->toString() + "(";
   for (unsigned int i = 0; i < fc.funArgs.size(); ++i) {
@@ -284,19 +306,31 @@ atl::string SourceOutput::visit(FunDecl &fd) {
   return output;
 }
 atl::string SourceOutput::visit(FunDef &fd) {
-  atl::string output = fd.funType->accept(*this) + " ";
+  atl::string output = "\n";
+  if (fd.funModifiers.find(FunDecl::FunModifiers::STATIC))
+    output += "static ";
+  output += fd.funType->accept(*this) + " ";
   output += fd.getIdentifier()->accept(*this) + "(";
   for (unsigned int i = 0; i < fd.funParams.size(); ++i) {
-    atl::string currParam = fd.funParams[i]->type->accept(*this) + " " +
-                            fd.funParams[i]->getIdentifier()->accept(*this);
+    if (fd.funParams[i]->getIdentifier()->accept(*this) == "this")
+      continue;
+
+    atl::string currParam = fd.funParams[i]->type->accept(*this) + " ";
+    if (fd.funParams[i]->type->typeModifiers.find(Type::Modifiers::CONST))
+      currParam += "const ";
+    currParam += fd.funParams[i]->getIdentifier()->accept(*this);
     if (i != (fd.funParams.size() - 1))
       currParam += ", ";
     output += currParam;
   }
   output += ")";
+
+  if (fd.funModifiers.find(FunDecl::FunModifiers::CONST))
+    output += " const ";
+
   output += fd.funBlock->accept(*this);
 
-  return output;
+  return output + "\n";
 }
 atl::string SourceOutput::visit(Identifier &i) { return i.toString(); }
 atl::string SourceOutput::visit(If &i) {
@@ -311,8 +345,24 @@ atl::string SourceOutput::visit(If &i) {
   return output;
 }
 atl::string SourceOutput::visit(IntLiteral &il) { return il.getLiteral(); }
-atl::string SourceOutput::visit(MemberAccess &ma) { return ""; }
-atl::string SourceOutput::visit(MemberCall &mc) { return ""; }
+atl::string SourceOutput::visit(MemberAccess &ma) {
+  atl::string output = ma.object->accept(*this);
+  if (ma.accessType == SourceToken::Class::PTRDOT)
+    output += "->";
+  else
+    output += ".";
+
+  return output + ma.fieldVariable->accept(*this);
+}
+atl::string SourceOutput::visit(MemberCall &mc) {
+  atl::string output = mc.object->accept(*this);
+  if (mc.accessType == SourceToken::Class::PTRDOT)
+    output += "->";
+  else
+    output += ".";
+
+  return output + mc.funCall->accept(*this);
+}
 atl::string SourceOutput::visit(Namespace &n) {
   atl::string output = "namespace ";
   output += n.getIdentifier()->accept(*this);
@@ -333,7 +383,10 @@ atl::string SourceOutput::visit(ParenthExpr &pe) {
   return output;
 }
 atl::string SourceOutput::visit(PointerType &pt) {
-  return pt.pointedType->accept(*this) + "*";
+  atl::string output = pt.pointedType->accept(*this);
+  if (pt.typeModifiers.find(Type::Modifiers::CONST))
+    output += " const";
+  return output + " *";
 }
 atl::string SourceOutput::visit(PrefixOp &po) {
   atl::string output;
@@ -341,7 +394,7 @@ atl::string SourceOutput::visit(PrefixOp &po) {
     output += "++";
   if (po.operation == PrefixOp::Op::DEC)
     output += "--";
-  output += po.variable->accept(*this);
+  output += po.variable->accept(*this) + ";";
   return output;
 }
 atl::string SourceOutput::visit(Program &p) {
@@ -352,7 +405,10 @@ atl::string SourceOutput::visit(Program &p) {
   return output;
 }
 atl::string SourceOutput::visit(ReferenceType &rt) {
-  return rt.referencedType->accept(*this) + " &";
+  atl::string output = rt.referencedType->accept(*this);
+  if (rt.typeModifiers.find(Type::Modifiers::CONST))
+    output += " const";
+  return output + " &";
 }
 atl::string SourceOutput::visit(Return &r) {
   atl::string output = "return";
@@ -369,9 +425,20 @@ atl::string SourceOutput::visit(SizeOf &so) {
   output += ")";
   return output;
 }
+atl::string SourceOutput::visit(StaticCast &sc) {
+  atl::string output = "static_cast<";
+  output += sc.type->accept(*this);
+  output += ">(";
+  output += sc.expr->accept(*this);
+  return output + ")";
+}
 atl::string SourceOutput::visit(StringLiteral &sl) { return sl.getLiteral(); }
 atl::string SourceOutput::visit(SubscriptOp &so) {
   return so.variable->accept(*this) + "[" + so.index->accept(*this) + "]";
+}
+atl::string SourceOutput::visit(TemplateDef &td) {
+  atl::string output;
+  return output;
 }
 atl::string SourceOutput::visit(TertiaryExpr &t) {
   atl::string output;
@@ -386,17 +453,13 @@ atl::string SourceOutput::visit(TertiaryExpr &t) {
 atl::string SourceOutput::visit(Throw &t) {
   atl::string output = "throw \"";
   output += t.exceptionText->accept(*this);
-  output += "\"";
+  output += "\";";
   return output;
 }
-atl::string SourceOutput::visit(TypeCast &tc) {
-  atl::string output = "(";
-  output += tc.type->accept(*this);
-  output += ")";
-  output += tc.expr->accept(*this);
-  return output;
+atl::string SourceOutput::visit(TypeDefDecl &td) {
+  return "typedef " + td.type->accept(*this) + " " +
+         td.identifier->accept(*this) + ";";
 }
-atl::string SourceOutput::visit(TypeDefDecl &td) { return ""; }
 atl::string SourceOutput::visit(ValueAt &va) {
   atl::string output = "*";
   output += va.derefExpr->accept(*this);

@@ -97,6 +97,9 @@ bool Parser::acceptConstructor(int offset) {
   return true;
 }
 bool Parser::acceptDecl(int offset) {
+  if (acceptTemplateDef(offset))
+    return true;
+
   if (acceptClassTypeDecl(offset))
     return true;
 
@@ -156,6 +159,7 @@ bool Parser::acceptOpOverload(int offset) {
                  TC::OPGE, TC::OPGT, TC::OPLE, TC::OPLT, TC::OPNE},
                 offset);
 }
+bool Parser::acceptTemplateDef(int offset) { return accept(TC::TEMPLATE); }
 bool Parser::acceptTypeDefDecl(int offset) { return accept(TC::TYPEDEF); }
 bool Parser::acceptVarDecl(int offset) {
   if (accept(TC::STATIC))
@@ -273,7 +277,7 @@ bool Parser::acceptExpr(int offset) {
   return accept({TC::LPAR, TC::SIZEOF, TC::ASTERIX, TC::MINUS, TC::IDENTIFIER,
                  TC::INT_LITERAL, TC::CHAR_LITERAL, TC::STRING_LITERAL, TC::NEW,
                  TC::PREFIXINC, TC::TRUE_VAL, TC::FALSE_VAL, TC::NOT, TC::REF,
-                 TC::THIS},
+                 TC::THIS, TC::STATIC_CAST},
                 offset);
 }
 bool Parser::acceptObjExpr(int offset) {
@@ -423,38 +427,48 @@ atl::shared_ptr<ConstructorDecl> Parser::parseConstructor() {
     expect(TC::COLON);
     atl::vector<atl::shared_ptr<Assign>> initialiserList;
     {
-      const atl::shared_ptr<VarExpr> initialiserMember(
-          new VarExpr(parseIdentifier()));
+      const atl::shared_ptr<VarExpr> initialiserMember = createNode<VarExpr>(
+          atl::shared_ptr<VarExpr>(new VarExpr(parseIdentifier())));
       expect(TC::LPAR);
       const atl::shared_ptr<Expr> initialiseValue = parseExpr();
       expect(TC::RPAR);
-      const atl::shared_ptr<Assign> intialiserStmt(
-          new Assign(initialiserMember, initialiseValue));
+      const atl::shared_ptr<Assign> intialiserStmt =
+          createNode<Assign>(atl::shared_ptr<Assign>(
+              new Assign(initialiserMember, initialiseValue)));
       initialiserList.push_back(intialiserStmt);
     }
     while (accept(TC::COMMA)) {
       expect(TC::COMMA);
-      const atl::shared_ptr<Identifier> identifier = parseIdentifier();
-      const atl::shared_ptr<VarExpr> initialiserMember(new VarExpr(identifier));
+      const atl::shared_ptr<VarExpr> initialiserMember = createNode<VarExpr>(
+          atl::shared_ptr<VarExpr>(new VarExpr(parseIdentifier())));
       expect(TC::LPAR);
       const atl::shared_ptr<Expr> initialiseValue = parseExpr();
       expect(TC::RPAR);
-      const atl::shared_ptr<Assign> intialiserStmt(
-          new Assign(initialiserMember, initialiseValue));
+      const atl::shared_ptr<Assign> intialiserStmt =
+          createNode<Assign>(atl::shared_ptr<Assign>(
+              new Assign(initialiserMember, initialiseValue)));
       initialiserList.push_back(intialiserStmt);
     }
     atl::shared_ptr<Block> constructorBlock = parseBlock();
-    atl::shared_ptr<ConstructorDef> cd(new ConstructorDef(
-        classType, constructorParams, initialiserList, constructorBlock));
+    atl::shared_ptr<ConstructorDef> cd = createNode<ConstructorDef>(
+        atl::shared_ptr<ConstructorDef>(new ConstructorDef(
+            classType, constructorParams, initialiserList, constructorBlock)));
     return cd;
   } else {
     expect(TC::SC);
-    atl::shared_ptr<ConstructorDecl> cd(
-        new ConstructorDecl(classType, constructorParams));
+    atl::shared_ptr<ConstructorDecl> cd =
+        createNode<ConstructorDecl>(atl::shared_ptr<ConstructorDecl>(
+            new ConstructorDecl(classType, constructorParams)));
     return cd;
   }
 }
 atl::shared_ptr<Decl> Parser::parseDecl() {
+  if (acceptTemplateDef()) {
+    atl::shared_ptr<TemplateDef> td = parseTemplateDef();
+    expect(TC::SC);
+    return td;
+  }
+
   if (acceptClassTypeDecl()) {
     atl::shared_ptr<ClassTypeDecl> ctd = parseClassTypeDecl();
     expect(TC::SC);
@@ -598,6 +612,7 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
         new FunDecl(funModifiers, funIdentifier, funParams, funType)));
   }
 }
+atl::shared_ptr<TemplateDef> Parser::parseTemplateDef() { return nullptr; }
 atl::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
   expect(TC::TYPEDEF);
   atl::shared_ptr<Type> aliasedType = parseType();
@@ -637,7 +652,7 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
     /* Parse Params */
     atl::vector<atl::shared_ptr<Expr>> params;
     if (acceptExpr())
-      params.push_back(parseLitExpr());
+      params.push_back(parseExpr());
     while (accept(TC::COMMA)) {
       expect(TC::COMMA);
       params.push_back(parseLitExpr());
@@ -669,6 +684,7 @@ atl::shared_ptr<Type> Parser::parseType() {
     const atl::shared_ptr<Identifier> classIdentifier = parseIdentifier();
     type = createNode<ClassType>(
         atl::shared_ptr<ClassType>(new ClassType(classIdentifier)));
+    type->typeModifiers = typeModifiers;
   } else {
     const TC baseType =
         expect({TC::INT, TC::CHAR, TC::VOID, TC::SHORT, TC::UINT, TC::BOOL})
@@ -703,20 +719,31 @@ atl::shared_ptr<Type> Parser::parseType() {
     while (accept(TC::ASTERIX)) {
       expect(TC::ASTERIX);
       type = createNode<PointerType>(new PointerType(type));
+      if (accept(TC::CONST)) {
+        expect(TC::CONST);
+        type->typeModifiers.insert(Type::Modifiers::CONST);
+      }
     }
   } else if (accept(TC::REF)) {
     expect(TC::REF);
     type = createNode<ReferenceType>(
         atl::shared_ptr<ReferenceType>(new ReferenceType(type)));
+    if (accept(TC::CONST)) {
+      expect(TC::CONST);
+      type->typeModifiers.insert(Type::Modifiers::CONST);
+    }
   } else if (accept(TC::AND)) {
     expect(TC::AND);
     type = createNode<ReferenceType>(
         atl::shared_ptr<ReferenceType>(new ReferenceType(type)));
     type = createNode<ReferenceType>(
         atl::shared_ptr<ReferenceType>(new ReferenceType(type)));
+    if (accept(TC::CONST)) {
+      expect(TC::CONST);
+      type->typeModifiers.insert(Type::Modifiers::CONST);
+    }
   }
 
-  type->typeModifiers = typeModifiers;
   return type;
 }
 
@@ -1013,6 +1040,13 @@ atl::shared_ptr<Expr> Parser::parseMulExpr() {
   return lhs;
 }
 atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
+  if (accept(TC::LPAR)) {
+    expect(TC::LPAR);
+    const atl::shared_ptr<Expr> innerExpr = parseExpr();
+    expect(TC::RPAR);
+    return createNode<ParenthExpr>(
+        atl::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr)));
+  }
   if (accept(TC::SIZEOF)) {
     expect(TC::SIZEOF);
     expect(TC::LPAR);
@@ -1024,14 +1058,6 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
     expect(TC::ASTERIX);
     atl::shared_ptr<Expr> rhs = parseObjExpr();
     return createNode<ValueAt>(atl::shared_ptr<ValueAt>(new ValueAt(rhs)));
-  }
-  if (accept(TC::LPAR) && (acceptType(1) && !accept(TC::IDENTIFIER, 1))) {
-    expect(TC::LPAR);
-    atl::shared_ptr<Type> castType = parseType();
-    expect(TC::RPAR);
-    atl::shared_ptr<Expr> expToCast = parseObjExpr();
-    return createNode<TypeCast>(
-        atl::shared_ptr<TypeCast>(new TypeCast(castType, expToCast)));
   }
   if (accept(TC::MINUS)) {
     expect(TC::MINUS);
@@ -1087,18 +1113,36 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
   }
   if (accept(TC::NOT)) {
     expect(TC::NOT);
-    // Parse NOT Node.
+    // TODO: Parse NOT Node.
+  }
+  if (accept(TC::STATIC_CAST)) {
+    expect(TC::STATIC_CAST);
+    expect(TC::LT);
+    const atl::shared_ptr<Type> castType = parseType();
+    expect(TC::GT);
+    expect(TC::LPAR);
+    const atl::shared_ptr<Expr> castExpr = parseExpr();
+    expect(TC::RPAR);
+    return createNode<StaticCast>(
+        atl::shared_ptr<StaticCast>(new StaticCast(castType, castExpr)));
   }
 
   atl::shared_ptr<Expr> objExpr = parseObjExpr();
 
-  if (accept(TC::LSBR)) {
-    expect(TC::LSBR);
-  }
+  // if (accept(TC::LSBR)) {
+  //   expect(TC::LSBR);
+  // }
 
   return objExpr;
 }
 atl::shared_ptr<Expr> Parser::parseObjExpr() {
+  if (accept(TC::LPAR)) {
+    expect(TC::LPAR);
+    const atl::shared_ptr<Expr> innerExpr = parseExpr();
+    expect(TC::RPAR);
+    return createNode<ParenthExpr>(
+        atl::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr)));
+  }
   if (accept(TC::IDENTIFIER)) {
     const atl::shared_ptr<Identifier> ident = parseIdentifier();
     atl::shared_ptr<Expr> objExpr;
@@ -1106,10 +1150,10 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
       expect(TC::LPAR);
       atl::vector<atl::shared_ptr<Expr>> params;
       if (acceptExpr())
-        params.push_back(parseLitExpr());
+        params.push_back(parseExpr());
       while (accept(TC::COMMA)) {
         expect(TC::COMMA);
-        params.push_back(parseLitExpr());
+        params.push_back(parseExpr());
       }
 
       expect(TC::RPAR);
@@ -1207,10 +1251,10 @@ atl::shared_ptr<FunCall> Parser::parseFunCall() {
   expect(TC::LPAR);
   atl::vector<atl::shared_ptr<Expr>> params;
   if (acceptExpr())
-    params.push_back(parseLitExpr());
+    params.push_back(parseExpr());
   while (accept(TC::COMMA)) {
     expect(TC::COMMA);
-    params.push_back(parseLitExpr());
+    params.push_back(parseExpr());
   }
 
   expect(TC::RPAR);
@@ -1218,6 +1262,13 @@ atl::shared_ptr<FunCall> Parser::parseFunCall() {
       atl::shared_ptr<FunCall>(new FunCall(ident, params)));
 }
 atl::shared_ptr<Expr> Parser::parseLitExpr() {
+  if (accept(TC::LPAR)) {
+    expect(TC::LPAR);
+    const atl::shared_ptr<Expr> innerExpr = parseExpr();
+    expect(TC::RPAR);
+    return createNode<ParenthExpr>(
+        atl::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr)));
+  }
   if (accept(TC::INT_LITERAL)) {
     return createNode<IntLiteral>(atl::shared_ptr<IntLiteral>(
         new IntLiteral(expect(TC::INT_LITERAL).data)));
@@ -1244,15 +1295,8 @@ atl::shared_ptr<Expr> Parser::parseLitExpr() {
     expect(TC::NULLPTR);
     return createNode<Nullptr>(atl::shared_ptr<Nullptr>(new Nullptr()));
   }
-  if (accept(TC::LPAR) && (!acceptType(1) || accept(TC::IDENTIFIER, 1))) {
-    expect(TC::LPAR);
-    atl::shared_ptr<Expr> innerExpr = parseExpr();
-    expect(TC::RPAR);
-    return createNode<ParenthExpr>(
-        atl::shared_ptr<ParenthExpr>(new ParenthExpr(innerExpr)));
-  }
-  if (acceptExpr())
-    return parseExpr();
+  // if (acceptExpr())
+  //   return parseExpr();
 
   throw ACC::Error("Parser: Expected a Literal Expression.",
                    currToken.position);

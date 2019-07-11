@@ -5,16 +5,22 @@ using namespace ACC;
 ReferenceType::ReferenceType(const atl::shared_ptr<Type> &p_referencedType)
     : referencedType(p_referencedType) {}
 
+bool ReferenceType::canCastTo(Type &rhs) const {
+  if (*this == rhs)
+    return true;
+
+  return this->referencedType->canCastTo(rhs);
+}
+
 unsigned int ReferenceType::getBytes() const { return 4; }
+bool ReferenceType::equivalentTo(Type &rhs) const {
+  return referencedType->equivalentTo(rhs);
+}
 
 bool ReferenceType::operator==(Type &rhs) const {
-  if (referencedType->astClass() == rhs.astClass()) {
-    return *referencedType == rhs;
-  } else {
-    if (rhs.astClass() == astClass())
-      return *this == *static_cast<ReferenceType *>(&rhs);
-    return false;
-  }
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<ReferenceType *>(&rhs);
+  return false;
 }
 
 bool ReferenceType::operator!=(Type &t) const { return !(*this == t); }

@@ -224,6 +224,10 @@ atl::shared_ptr<ASTNode> Optimiser::visit(Return &r) {
   return r.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(SizeOf &so) { return so.getptr(); }
+atl::shared_ptr<ASTNode> Optimiser::visit(StaticCast &sc) {
+  sc.expr = atl::static_pointer_cast<Expr>(sc.expr->accept(*this));
+  return sc.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(StringLiteral &sl) {
   return sl.getptr();
 }
@@ -232,14 +236,13 @@ atl::shared_ptr<ASTNode> Optimiser::visit(SubscriptOp &so) {
   so.index = so.index->accept(*this);
   return so.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(TemplateDef &td) {
+  return td.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(TertiaryExpr &t) {
   return t.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(Throw &t) { return t.getptr(); }
-atl::shared_ptr<ASTNode> Optimiser::visit(TypeCast &tc) {
-  tc.expr = atl::static_pointer_cast<Expr>(tc.expr->accept(*this));
-  return tc.getptr();
-}
 atl::shared_ptr<ASTNode> Optimiser::visit(TypeDefDecl &td) {
   return td.getptr();
 }
