@@ -39,8 +39,7 @@
       "program": "${workspaceFolder}/build/acc",
       "args": [
         "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/main.cpp",
-        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main.s",
-        "x86"
+        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main.s"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
