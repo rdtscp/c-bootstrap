@@ -31,6 +31,13 @@ bool PointerType::equivalentTo(Type &rhs) const {
   return *this == rhs;
 }
 
+atl::string PointerType::mangle() const {
+  atl::string output = pointedType->mangle() + "_ptr";
+  if (typeModifiers.find(Type::Modifiers::CONST))
+    output += "_const";
+  return output;
+}
+
 bool PointerType::operator==(Type &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<PointerType *>(&rhs);
