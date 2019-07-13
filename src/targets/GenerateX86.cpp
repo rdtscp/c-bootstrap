@@ -98,6 +98,10 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassTypeDecl &ctd) {
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassTypeDef &ctd) {
+  for (unsigned int idx = 0u; idx < ctd.classDecls.size(); ++idx) {
+    ctd.classDecls[idx]->accept(*this);
+  }
+
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorCall &cc) {
@@ -113,6 +117,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorDecl &cd) {
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorDef &cd) {
+  x86.block("CtorDecl_" + cd.getSignature().mangle());
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Deletion &d) {
@@ -178,7 +183,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(FunDecl &fd) {
 atl::shared_ptr<X86::Operand> GenerateX86::visit(FunDef &fd) {
   currScope = fd.funBlock;
 
-  x86.block(fd.getIdentifier()->toString() + "FunDecl");
+  x86.block("FunDecl_" + fd.getSignature().mangle());
 
   /* ---- Callee Prologue ---- */
   x86.push(X86::ebp);
@@ -189,7 +194,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(FunDef &fd) {
 
   /* ---- Execute Function ---- */
   x86.comment(" ---- Function Body ----");
-  fd.funBlock->accept(*this);
+  // fd.funBlock->accept(*this);
   x86.comment(" -----------------------");
 
   /* -------------------------- */
@@ -255,7 +260,9 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(MemberCall &mc) {
   return atl::make_shared<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Namespace &n) {
-  // const unsigned int numDecls = n.namespaceDecls.size();
+  for (unsigned int idx = 0; idx < n.namespaceDecls.size(); ++idx)
+    n.namespaceDecls[idx]->accept(*this);
+
   return nullptr;
 }
 
@@ -286,11 +293,14 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   x86.write("global _main");
 
   x86.block("_main");
-  x86.call("main");
+  x86.call("main_int__char_ptr_ptr_");
   x86.ret();
 
-  for (unsigned int idx = 0; idx < p.funDecls.size(); ++idx)
-    p.funDecls[idx]->accept(*this);
+  for (unsigned int idx = 0u; idx < p.decls.size(); ++idx) {
+    x86.write("\n\n");
+    p.decls[idx]->accept(*this);
+    x86.write("\n\n");
+  }
 
   return atl::make_shared<X86::None>();
 }
