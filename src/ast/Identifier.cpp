@@ -34,6 +34,47 @@ const atl::shared_ptr<Identifier> Identifier::namespaceTail() const {
   return deepCopyIdentifier(numNamespaces - 1);
 }
 
+atl::string Identifier::mangle() const {
+  atl::string output;
+  for (unsigned int idx = 0u; idx < value.size(); ++idx) {
+    const char c = value[idx];
+
+    switch (c) {
+    case '<':
+      output += "LT";
+      break;
+    case '>':
+      output += "GT";
+      break;
+    case '=':
+      output += "EQ";
+      break;
+    case '!':
+      output += "NOT";
+      break;
+    case '[':
+      output += "LSBR";
+      break;
+    case ']':
+      output += "RSBR";
+      break;
+    case '~':
+      output += "_des_";
+      break;
+    case '+':
+      output += "PLUS";
+      break;
+    default:
+      output += c;
+      break;
+    }
+  }
+  if (parentIdentifier) {
+    output = parentIdentifier->mangle() + "COLONCOLON" + output;
+  }
+  return output;
+}
+
 atl::string Identifier::toString() const {
   atl::string output = value;
   if (parentIdentifier) {
@@ -71,8 +112,7 @@ Identifier::deepCopyIdentifier(const unsigned int depth) const {
 
   for (unsigned int idx = 0; idx < depth; ++idx) {
     // Create a new parent using the original Identifier.
-    atl::shared_ptr<Identifier> newParent(
-        new Identifier(thisParent->value));
+    atl::shared_ptr<Identifier> newParent(new Identifier(thisParent->value));
     // Set the parent of the curr copy to be the new parent.
     currCopy->parentIdentifier = newParent;
 

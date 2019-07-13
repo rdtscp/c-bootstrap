@@ -38,7 +38,7 @@ bool FunSignature::canCall(const FunSignature &rhs) const {
   }
 
   // Check identifier.
-  if (*funIdentifier != *rhs.funIdentifier)
+  if (funIdentifier->value != rhs.funIdentifier->value)
     return false;
 
   // Check Relevant Modifiers
@@ -48,6 +48,17 @@ bool FunSignature::canCall(const FunSignature &rhs) const {
     return false;
 
   return true;
+}
+
+atl::string FunSignature::mangle() const {
+  atl::string output = funIdentifier->mangle();
+  for (unsigned int idx = 0u; idx < funArgs.size(); ++idx) {
+    output += "_" + funArgs[idx]->mangle() + "_";
+  }
+  if (funModifiers.find(FunDecl::FunModifiers::CONST))
+    output += "_const";
+
+  return output;
 }
 
 bool FunSignature::operator==(const FunSignature &rhs) const {

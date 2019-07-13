@@ -24,6 +24,8 @@ public:
 
   bool canCall(const FunSignature &rhs) const;
 
+  atl::string mangle() const;
+
   bool operator==(const FunSignature &rhs) const;
   bool operator!=(const FunSignature &rhs) const;
 
