@@ -1,4 +1,3 @@
-
 #include "targets/X86.h"
 
 #include "Error.h"
@@ -69,7 +68,7 @@ void Writer::block(atl::string blockName, const atl::string &comment) {
 }
 
 void Writer::call(const atl::string &ident, const atl::string &comment) {
-  write("call " + ident + "FunDecl");
+  write("call FunDecl_" + ident);
 }
 
 void Writer::cmp(const atl::shared_ptr<X86::Operand> &op, const int value,
@@ -140,4 +139,4 @@ void Writer::sub(const atl::shared_ptr<X86::Operand> &op, const int value,
         comment);
 }
 
-void Writer::write(const atl::string &str) { x86Output.write(str); }
+void Writer::write(const atl::string &str) { x86Output.write(str + "\n"); }
