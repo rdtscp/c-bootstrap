@@ -1,10 +1,10 @@
-#include "targets/X86.h"
+#include "targets/X64.h"
 
 #include "Error.h"
 
-using namespace ACC::X86;
+using namespace ACC::X64;
 
-/* ---- X86::Register --- */
+/* ---- X64::Register --- */
 
 Register::Register(const int bits, const atl::string &name)
     : bits(bits), name(name) {}
@@ -17,7 +17,7 @@ atl::string Register::opType() const { return "Register"; }
 
 atl::string Register::toString() const { return name; }
 
-/* ---- X86::GlobalVariable --- */
+/* ---- X64::GlobalVariable --- */
 
 GlobalVariable::GlobalVariable(const atl::string &name, int size)
     : name(name), size(size) {}
@@ -30,7 +30,7 @@ atl::string GlobalVariable::opType() const { return "GlobalVariable"; }
 
 atl::string GlobalVariable::toString() const { return name; }
 
-/* ---- X86::IntValue --- */
+/* ---- X64::IntValue --- */
 
 IntValue::IntValue(const atl::string &val) : val(val) {}
 
@@ -40,21 +40,21 @@ atl::string IntValue::opType() const { return "IntValue"; }
 
 atl::string IntValue::toString() const { return val; }
 
-/* ---- X86::None --- */
+/* ---- X64::None --- */
 
 atl::string None::opType() const { return "None"; }
 
 atl::string None::toString() const { return "None::INTERNAL_ERROR"; }
 
-/* ---- X86::Writer ---- */
+/* ---- X64::Writer ---- */
 
 Writer::Writer(const atl::string &filename) : x86Output(filename) {
   if (!x86Output.good())
     throw Error("Not good!");
 }
 
-void Writer::add(const atl::shared_ptr<X86::Operand> &op1,
-                 const atl::shared_ptr<X86::Operand> &op2,
+void Writer::add(const atl::shared_ptr<X64::Operand> &op1,
+                 const atl::shared_ptr<X64::Operand> &op2,
                  const atl::string &comment) {
   atl::string output = "add " + op1->toString() + ", " + op2->toString() +
                        "\t; eax = " + op1->toString() + " + " + op2->toString();
@@ -71,15 +71,15 @@ void Writer::call(const atl::string &ident, const atl::string &comment) {
   write("call FunDecl_" + ident);
 }
 
-void Writer::cmp(const atl::shared_ptr<X86::Operand> &op, const int value,
+void Writer::cmp(const atl::shared_ptr<X64::Operand> &op, const int value,
                  const atl::string &comment) {
   write("cmp " + op->toString() + ", " + atl::to_string(value));
 }
 
 void Writer::comment(const atl::string &comment) { write(";" + comment); }
 
-void Writer::imul(const atl::shared_ptr<X86::Operand> &op1,
-                  const atl::shared_ptr<X86::Operand> &op2,
+void Writer::imul(const atl::shared_ptr<X64::Operand> &op1,
+                  const atl::shared_ptr<X64::Operand> &op2,
                   const atl::string &comment) {
   atl::string output = "imul " + op1->toString() + ", " + op2->toString() +
                        "\t; eax = " + op1->toString() + " * " + op2->toString();
@@ -96,8 +96,8 @@ void Writer::jmp(const atl::string &label, const atl::string &comment) {
   write("jmp " + label);
 }
 
-void Writer::mov(const atl::shared_ptr<X86::Operand> &dst,
-                 const atl::shared_ptr<X86::Operand> &src,
+void Writer::mov(const atl::shared_ptr<X64::Operand> &dst,
+                 const atl::shared_ptr<X64::Operand> &src,
                  const atl::string &comment) {
   if (dst == src)
     return;
@@ -115,7 +115,7 @@ void Writer::mov(const atl::shared_ptr<X86::Operand> &dst,
   write(output);
 }
 
-void Writer::pop(const atl::shared_ptr<X86::Operand> &op,
+void Writer::pop(const atl::shared_ptr<X64::Operand> &op,
                  const atl::string &comment) {
   atl::string output = "pop dword " + op->toString();
   if (comment != "")
@@ -123,7 +123,7 @@ void Writer::pop(const atl::shared_ptr<X86::Operand> &op,
   write(output);
 }
 
-void Writer::push(const atl::shared_ptr<X86::Operand> &op,
+void Writer::push(const atl::shared_ptr<X64::Operand> &op,
                   const atl::string &comment) {
   atl::string output = "push dword " + op->toString();
   if (comment != "")
@@ -133,7 +133,7 @@ void Writer::push(const atl::shared_ptr<X86::Operand> &op,
 
 void Writer::ret(const atl::string &comment) { write("ret"); }
 
-void Writer::sub(const atl::shared_ptr<X86::Operand> &op, const int value,
+void Writer::sub(const atl::shared_ptr<X64::Operand> &op, const int value,
                  const atl::string &comment) {
   write("sub " + op->toString() + ", " + atl::to_string(value) + "\t; " +
         comment);

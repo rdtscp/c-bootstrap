@@ -9,7 +9,7 @@
 #include "Parser.h"
 #include "Preprocessor.h"
 #include "Scanner.h"
-#include "targets/GenerateX86.h"
+#include "targets/GenerateX64.h"
 
 using namespace ACC;
 
@@ -17,9 +17,9 @@ using namespace ACC;
 // "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_CodeGeneration/";
 atl::string test_prefix = "../../test/tests/Test_CodeGeneration/";
 
-TEST(Test_CodeGeneration, X86_SimpleFuncs) {
+TEST(Test_CodeGeneration, X64_SimpleFuncs) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "X86_SimpleFuncs/test.cpp");
+                          test_prefix + "X64_SimpleFuncs/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -30,7 +30,7 @@ TEST(Test_CodeGeneration, X86_SimpleFuncs) {
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
-  GenerateX86 x86Generator(progAST, "./fibonacci_x86.s");
+  GenerateX64 x86Generator(progAST, "./fibonacci_x86.s");
   x86Generator.run();
 }
 

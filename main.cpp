@@ -7,7 +7,7 @@
 #include "include/passes/Optimiser.h"
 #include "include/passes/SemanticAnalysis.h"
 #include "include/passes/SourceOutput.h"
-#include "include/targets/GenerateX86.h"
+#include "include/targets/GenerateX64.h"
 
 int main(int argc, char const *argv[]) {
   if (argc < 3) {
@@ -83,7 +83,7 @@ int main(int argc, char const *argv[]) {
       sourceOutput.print();
     }
 
-    ACC::GenerateX86 x86Generator(progAST, outFilename);
+    ACC::GenerateX64 x86Generator(progAST, outFilename);
     x86Generator.run();
 
     return 0;

@@ -6,7 +6,7 @@
 
 namespace ACC {
 
-namespace X86 {
+namespace X64 {
 
 class Operand {
 public:
@@ -59,28 +59,28 @@ public:
   Writer(const atl::string &filename);
   Writer(const Writer &) = delete;
 
-  void add(const atl::shared_ptr<X86::Operand> &op1,
-           const atl::shared_ptr<X86::Operand> &op2,
+  void add(const atl::shared_ptr<X64::Operand> &op1,
+           const atl::shared_ptr<X64::Operand> &op2,
            const atl::string &comment = "");
   void block(atl::string blockName, const atl::string &comment = "");
   void call(const atl::string &ident, const atl::string &comment = "");
-  void cmp(const atl::shared_ptr<X86::Operand> &reg, const int value,
+  void cmp(const atl::shared_ptr<X64::Operand> &reg, const int value,
            const atl::string &comment = "");
   void comment(const atl::string &comment);
-  void imul(const atl::shared_ptr<X86::Operand> &dst,
-            const atl::shared_ptr<X86::Operand> &src,
+  void imul(const atl::shared_ptr<X64::Operand> &dst,
+            const atl::shared_ptr<X64::Operand> &src,
             const atl::string &comment = "");
   void jeq(const atl::string &label, const atl::string &comment = "");
   void jmp(const atl::string &label, const atl::string &comment = "");
-  void mov(const atl::shared_ptr<X86::Operand> &dst,
-           const atl::shared_ptr<X86::Operand> &src,
+  void mov(const atl::shared_ptr<X64::Operand> &dst,
+           const atl::shared_ptr<X64::Operand> &src,
            const atl::string &comment = "");
-  void pop(const atl::shared_ptr<X86::Operand> &reg,
+  void pop(const atl::shared_ptr<X64::Operand> &reg,
            const atl::string &comment = "");
-  void push(const atl::shared_ptr<X86::Operand> &op,
+  void push(const atl::shared_ptr<X64::Operand> &op,
             const atl::string &comment = "");
   void ret(const atl::string &comment = "");
-  void sub(const atl::shared_ptr<X86::Operand> &reg, const int value,
+  void sub(const atl::shared_ptr<X64::Operand> &reg, const int value,
            const atl::string &comment = "");
   void write(const atl::string &str);
 
@@ -97,6 +97,6 @@ static atl::shared_ptr<Register> edi(new Register(32, "edi"));
 static atl::shared_ptr<Register> esp(new Register(32, "esp"));
 static atl::shared_ptr<Register> ebp(new Register(32, "ebp"));
 
-} // namespace X86
+} // namespace X64
 
 } // namespace ACC

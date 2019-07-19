@@ -69,7 +69,7 @@ add_library(AST SHARED
   src/ast/While.cpp
 )
 add_library(DotGraph SHARED src/passes/DotGraph.cpp)
-add_library(GenerateX86 SHARED src/targets/GenerateX86.cpp)
+add_library(GenerateX64 SHARED src/targets/GenerateX64.cpp)
 add_library(Lexer SHARED src/Lexer.cpp)
 add_library(Optimiser SHARED src/passes/Optimiser.cpp)
 add_library(Parser SHARED src/Parser.cpp)
@@ -77,21 +77,21 @@ add_library(Preprocessor SHARED src/Preprocessor.cpp)
 add_library(SemanticAnalysis SHARED src/passes/SemanticAnalysis.cpp)
 add_library(SourceOutput SHARED src/passes/SourceOutput.cpp)
 add_library(Scanner SHARED src/Scanner.cpp)
-add_library(X86 SHARED src/targets/X86.cpp)
+add_library(X64 SHARED src/targets/X64.cpp)
 
 add_dependencies(AST atl)
-add_dependencies(GenerateX86 atl)
+add_dependencies(GenerateX64 atl)
 add_dependencies(Lexer atl)
 add_dependencies(Optimiser atl)
 add_dependencies(Parser atl)
 add_dependencies(Preprocessor atl)
 add_dependencies(Scanner atl)
 add_dependencies(SemanticAnalysis atl)
-add_dependencies(X86 atl)
+add_dependencies(X64 atl)
 
-target_link_libraries(AST X86)
+target_link_libraries(AST X64)
 target_link_libraries(DotGraph AST)
-target_link_libraries(GenerateX86  AST X86)
+target_link_libraries(GenerateX64  AST X64)
 target_link_libraries(Lexer Scanner)
 target_link_libraries(Optimiser AST)
 target_link_libraries(Parser AST Lexer)
@@ -102,7 +102,7 @@ target_link_libraries(SourceOutput AST)
 install(
   TARGETS AST
           DotGraph
-          GenerateX86
+          GenerateX64
           Lexer
           Optimiser
           Parser
@@ -110,7 +110,7 @@ install(
           Scanner
           SemanticAnalysis
           SourceOutput
-          X86
+          X64
   DESTINATION lib
 )
 
@@ -166,4 +166,4 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 add_executable(acc main.cpp)
 add_dependencies(acc atl)
-target_link_libraries(acc AST DotGraph GenerateX86 Optimiser Parser Preprocessor Scanner SemanticAnalysis SourceOutput)
+target_link_libraries(acc AST DotGraph GenerateX64 Optimiser Parser Preprocessor Scanner SemanticAnalysis SourceOutput)
