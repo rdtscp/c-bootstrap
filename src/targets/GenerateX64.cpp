@@ -56,26 +56,26 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
   atl::shared_ptr<X64::Operand> rhsOperand = bo.rhs->accept(*this);
 
   if (rhsOperand->opType() != "GlobalVariable")
-    x86.pop(X64::ecx, "Restore LHS from Stack");
+    x86.pop(X64::rcx, "Restore LHS from Stack");
   else
-    x86.mov(X64::ecx, rhsOperand,
+    x86.mov(X64::rcx, rhsOperand,
             "Restore LHS from GlobalVariable: " + rhsOperand->toString());
 
   /* Perform BinOp */
   switch (bo.operation) {
   case Op::ADD: {
-    x86.add(X64::eax, X64::ecx);
+    x86.add(X64::rax, X64::rcx);
     break;
   }
   case Op::MUL: {
-    x86.imul(X64::eax, X64::ecx);
+    x86.imul(X64::rax, X64::rcx);
     break;
   }
   default:
     x86.comment("Not Implemented this BinOp Yet");
     break;
   }
-  return X64::eax;
+  return X64::rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Block &b) {
   currScope = b.getptr();
@@ -111,7 +111,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorCall &cc) {
     // x86.push(argReg);
   }
   x86.call(cc.constructorIdentifier->toString());
-  return X64::eax;
+  return X64::rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorDecl &cd) {
   return atl::make_shared<X64::None>();
@@ -146,7 +146,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunCall &fc) {
     // x86.push(argReg);
   }
   x86.call(fc.funIdentifier->toString());
-  return X64::eax;
+  return X64::rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDecl &fd) {
   // currScope = fd.funBlock;
@@ -154,11 +154,11 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDecl &fd) {
   // x86.block(fd.getIdentifier() + "FunDecl");
 
   // /* ---- Callee Prologue ---- */
-  // x86.push(X64::ebp);
-  // x86.mov(X64::ebp, X64::esp);
-  // x86.push(X64::ebx);
-  // x86.push(X64::edi);
-  // x86.push(X64::esi);
+  // x86.push(X64::rbp);
+  // x86.mov(X64::rbp, X64::rsp);
+  // x86.push(X64::rbx);
+  // x86.push(X64::rdi);
+  // x86.push(X64::rsi);
 
   // /* ---- Execute Function ---- */
   // x86.comment(" ---- Function Body ----");
@@ -168,11 +168,11 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDecl &fd) {
   // /* -------------------------- */
 
   // /* ---- Callee Epilogue ---- */
-  // x86.pop(X64::esi);
-  // x86.pop(X64::edi);
-  // x86.pop(X64::ebx);
-  // x86.mov(X64::esp, X64::ebp);
-  // x86.pop(X64::ebp);
+  // x86.pop(X64::rsi);
+  // x86.pop(X64::rdi);
+  // x86.pop(X64::rbx);
+  // x86.mov(X64::rsp, X64::rbp);
+  // x86.pop(X64::rbp);
   // x86.ret();
   // x86.write("");
 
@@ -186,11 +186,11 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
   x86.block("FunDecl_" + fd.getSignature().mangle());
 
   /* ---- Callee Prologue ---- */
-  x86.push(X64::ebp);
-  x86.mov(X64::ebp, X64::esp);
-  x86.push(X64::ebx);
-  x86.push(X64::edi);
-  x86.push(X64::esi);
+  x86.push(X64::rbp);
+  x86.mov(X64::rbp, X64::rsp);
+  x86.push(X64::rbx);
+  x86.push(X64::rdi);
+  x86.push(X64::rsi);
 
   /* ---- Execute Function ---- */
   x86.comment(" ---- Function Body ----");
@@ -200,11 +200,11 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
   /* -------------------------- */
 
   /* ---- Callee Epilogue ---- */
-  x86.pop(X64::esi);
-  x86.pop(X64::edi);
-  x86.pop(X64::ebx);
-  x86.mov(X64::esp, X64::ebp);
-  x86.pop(X64::ebp);
+  x86.pop(X64::rsi);
+  x86.pop(X64::rdi);
+  x86.pop(X64::rbx);
+  x86.mov(X64::rsp, X64::rbp);
+  x86.pop(X64::rbp);
   x86.ret();
   x86.write("");
 
@@ -247,9 +247,9 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(If &i) {
   return atl::make_shared<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(IntLiteral &il) {
-  x86.mov(X64::eax,
+  x86.mov(X64::rax,
           atl::make_shared<X64::IntValue>(X64::IntValue(il.getLiteral())));
-  return X64::eax;
+  return X64::rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberAccess &ma) {
   ma.object->accept(*this);
@@ -310,7 +310,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ReferenceType &rt) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Return &r) {
   if (r.returnExpr) {
     atl::shared_ptr<X64::Operand> rVal = r.returnExpr->accept(*this);
-    x86.mov(X64::eax, rVal);
+    x86.mov(X64::rax, rVal);
   }
   return atl::make_shared<X64::None>();
 }
@@ -351,7 +351,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDecl &vd) {
                               "B for VarDecl: " + vd.getIdentifier() +
                               " @ [ebp" + atl::to_string(currFpOffset) + "]";
 
-  x86.sub(X64::esp, bytesRequired, comment);
+  x86.sub(X64::rsp, bytesRequired, comment);
   return atl::make_shared<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
@@ -363,7 +363,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
                               "B for VarDef: " + vd.getIdentifier() +
                               " @ [ebp" + atl::to_string(currFpOffset) + "]";
 
-  x86.sub(X64::esp, bytesRequired, comment);
+  x86.sub(X64::rsp, bytesRequired, comment);
   return atl::make_shared<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarExpr &ve) {
