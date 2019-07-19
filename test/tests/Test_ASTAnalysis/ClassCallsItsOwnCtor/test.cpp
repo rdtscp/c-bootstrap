@@ -16,7 +16,7 @@ public:
 
   string operator+(const string &rhs) {
     // Calculate the new size.
-    const unsigned int lhs_len = size();
+    const unsigned int lhs_len = this->size();
     const unsigned int rhs_len = rhs.size();
     const unsigned int string_length = lhs_len + rhs_len;
 

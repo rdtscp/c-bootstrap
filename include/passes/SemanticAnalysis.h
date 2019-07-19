@@ -24,6 +24,7 @@ public:
 private:
   atl::shared_ptr<Program> progAST;
   atl::shared_ptr<Scope> currScope;
+  atl::shared_ptr<FunDef> currFunDef;
 
   /* ---- Visit AST ---- */
 
