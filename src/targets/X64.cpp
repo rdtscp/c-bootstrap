@@ -117,7 +117,7 @@ void Writer::mov(const atl::shared_ptr<X64::Operand> &dst,
 
 void Writer::pop(const atl::shared_ptr<X64::Operand> &op,
                  const atl::string &comment) {
-  atl::string output = "pop dword " + op->toString();
+  atl::string output = "pop " + op->toString();
   if (comment != "")
     output += "\t; " + comment;
   write(output);
@@ -125,7 +125,7 @@ void Writer::pop(const atl::shared_ptr<X64::Operand> &op,
 
 void Writer::push(const atl::shared_ptr<X64::Operand> &op,
                   const atl::string &comment) {
-  atl::string output = "push dword " + op->toString();
+  atl::string output = "push " + op->toString();
   if (comment != "")
     output += "\t; " + comment;
   write(output);
