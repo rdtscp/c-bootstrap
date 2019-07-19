@@ -88,14 +88,14 @@ private:
   atl::ofstream x86Output;
 };
 
-static atl::shared_ptr<Register> eax(new Register(32, "eax"));
-static atl::shared_ptr<Register> ebx(new Register(32, "ebx"));
-static atl::shared_ptr<Register> ecx(new Register(32, "ecx"));
-static atl::shared_ptr<Register> edx(new Register(32, "edx"));
-static atl::shared_ptr<Register> esi(new Register(32, "esi"));
-static atl::shared_ptr<Register> edi(new Register(32, "edi"));
-static atl::shared_ptr<Register> esp(new Register(32, "esp"));
-static atl::shared_ptr<Register> ebp(new Register(32, "ebp"));
+static atl::shared_ptr<Register> rax(new Register(32, "rax"));
+static atl::shared_ptr<Register> rbx(new Register(32, "rbx"));
+static atl::shared_ptr<Register> rcx(new Register(32, "rcx"));
+static atl::shared_ptr<Register> rdx(new Register(32, "rdx"));
+static atl::shared_ptr<Register> rsi(new Register(32, "rsi"));
+static atl::shared_ptr<Register> rdi(new Register(32, "rdi"));
+static atl::shared_ptr<Register> rsp(new Register(32, "rsp"));
+static atl::shared_ptr<Register> rbp(new Register(32, "rbp"));
 
 } // namespace X64
 
