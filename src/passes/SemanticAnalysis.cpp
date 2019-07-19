@@ -18,8 +18,8 @@ SemanticAnalysis::error(const atl::string &errorType, const atl::string &error,
     printErrors();
     throw Error("9 Semantic Errors: Exiting Prematurely");
   }
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
-}
+  return nullptr;
+  }
 
 void SemanticAnalysis::printErrors() {
   const unsigned int num_errors = errors.size();
@@ -57,7 +57,11 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ArrayType &at) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
   const atl::shared_ptr<Type> lhsType = as.lhs->accept(*this);
+  if (lhsType == nullptr)
+    return error("Type Analysis", "Assignation LHS has undefined type.", as.getptr());
   const atl::shared_ptr<Type> rhsType = as.rhs->accept(*this);
+  if (lhsType == nullptr)
+    return error("Type Analysis", "Assignation RHS has undefined type.", as.getptr());
   if (!lhsType->equivalentTo(*rhsType))
     return error("Type Analysis", "Assignation has mismatched types.",
                  as.getptr());
@@ -385,6 +389,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
                      fd.getIdentifier()->toString(),
                  fd.getIdentifier());
 
+  currFunDef = fd.getptr();
   fd.outerScope = currScope;
   currScope = fd.getptr();
 
@@ -394,6 +399,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
 
   const atl::shared_ptr<Type> funType = fd.funType->accept(*this);
   currScope = fd.outerScope;
+  currFunDef = nullptr;
   return funType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Identifier &i) {
@@ -699,7 +705,13 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ValueAt &va) {
   return atl::static_pointer_cast<PointerType>(exprType)->pointedType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
+
   atl::shared_ptr<Type> varType = vd.type->accept(*this);
+  if (varType == nullptr)
+    return error("Type Analysis",
+                 "Attempted to define variable "
+                 "with undefined class type.",
+                 atl::static_pointer_cast<Decl>(vd.getptr()));
   varType = collapseReferenceTypes(varType);
   if (varType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> vdClassType =
@@ -717,10 +729,17 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
                      vd.getIdentifier()->toString(),
                  atl::static_pointer_cast<Decl>(vd.getptr()));
 
+  if (currFunDef)
+    currFunDef->localVarBytes += vd.getBytes();
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
   atl::shared_ptr<Type> varType = vd.type->accept(*this);
+  if (varType == nullptr)
+    return error("Type Analysis",
+                 "Attempted to define variable "
+                 "with undefined class type.",
+                 atl::static_pointer_cast<Decl>(vd.getptr()));
   varType = collapseReferenceTypes(varType);
   if (varType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> vdClassType =
@@ -744,6 +763,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
     return error("Type Analysis", "VarDef has mismatched types.",
                  atl::static_pointer_cast<Decl>(vd.getptr()));
 
+  if (currFunDef)
+    currFunDef->localVarBytes += vd.getBytes();
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarExpr &ve) {
