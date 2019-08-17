@@ -11,7 +11,7 @@
 
 int main(int argc, char const *argv[]) {
   if (argc < 3) {
-    printf("Usage: acc <input> <output> [ --graph |  --opt | --preprocess, "
+    printf("Usage: acc <input> <output> [ --graph |  --opt | --preprocess | "
            "--source ]\n");
     return 1;
   }
@@ -23,7 +23,7 @@ int main(int argc, char const *argv[]) {
   bool preprocess = false;
   bool source = false;
   if (argc > 3) {
-    for (int i = 4; i < argc; ++i) {
+    for (int i = 3; i < argc; ++i) {
       const atl::string flag(argv[i]);
       if (flag == "--graph")
         outputGraph = true;
