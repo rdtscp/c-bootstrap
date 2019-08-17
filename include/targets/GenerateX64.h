@@ -23,12 +23,15 @@ public:
   void run();
 
 private:
-  X64::Writer x86;
+  X64::Writer x64;
   atl::shared_ptr<Program> progAST;
 
   atl::shared_ptr<Scope> currScope;
+  atl::shared_ptr<VarExpr> currObject;
+
   int blockCount = 0;
   int currFpOffset = 0;
+  int stringCount = 0;
 
   /* ---- X64 Memory ---- */
 
@@ -88,6 +91,8 @@ private:
   atl::shared_ptr<X64::Operand> visit(While &w) override;
 
   /* ---- Helpers ---- */
-  atl::shared_ptr<X64::Operand> genIntValue(int value);
+  atl::shared_ptr<X64::IntValue> genIntValue(int value);
+  atl::shared_ptr<X64::AddrOffset>
+  addrOffset(const atl::shared_ptr<X64::Operand> addrOperand, const int offset);
 };
 } // namespace ACC

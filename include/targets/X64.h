@@ -3,6 +3,7 @@
 #include "atl/include/ofstream.h"
 #include "atl/include/shared_ptr.h"
 #include "atl/include/string.h"
+#include "atl/include/vector.h"
 
 namespace ACC {
 
@@ -14,6 +15,18 @@ public:
 
   virtual atl::string opType() const = 0;
   virtual atl::string toString() const = 0;
+};
+
+class AddrOffset : public Operand {
+public:
+  const atl::shared_ptr<X64::Operand> addrOperand;
+  const int offset;
+
+  AddrOffset(const atl::shared_ptr<X64::Operand> p_addrOperand,
+             const int p_offset);
+
+  atl::string opType() const override;
+  atl::string toString() const override;
 };
 
 class Register : public Operand {
@@ -54,10 +67,21 @@ public:
   atl::string toString() const override;
 };
 
+class StringLiteral : public Operand {
+public:
+  const atl::string strName;
+  const atl::string strVal;
+
+  StringLiteral(const atl::string &p_strName, const atl::string &p_strVal);
+  atl::string opType() const override;
+  atl::string toString() const override;
+};
+
 class Writer final {
 public:
   Writer(const atl::string &filename);
   Writer(const Writer &) = delete;
+  ~Writer();
 
   void add(const atl::shared_ptr<X64::Operand> &op1,
            const atl::shared_ptr<X64::Operand> &op2,
@@ -72,6 +96,8 @@ public:
             const atl::string &comment = "");
   void jeq(const atl::string &label, const atl::string &comment = "");
   void jmp(const atl::string &label, const atl::string &comment = "");
+  void lea(const atl::shared_ptr<X64::Operand> &dst,
+           const atl::shared_ptr<X64::Operand> &src);
   void mov(const atl::shared_ptr<X64::Operand> &dst,
            const atl::shared_ptr<X64::Operand> &src,
            const atl::string &comment = "");
@@ -80,12 +106,14 @@ public:
   void push(const atl::shared_ptr<X64::Operand> &op,
             const atl::string &comment = "");
   void ret(const atl::string &comment = "");
+  void string_literal(const atl::string &strName, const atl::string &strValue);
   void sub(const atl::shared_ptr<X64::Operand> &reg, const int value,
            const atl::string &comment = "");
   void write(const atl::string &str);
 
 private:
   atl::ofstream x86Output;
+  atl::string stringLiterals;
 };
 
 static atl::shared_ptr<Register> rax(new Register(32, "rax"));
@@ -96,6 +124,8 @@ static atl::shared_ptr<Register> rsi(new Register(32, "rsi"));
 static atl::shared_ptr<Register> rdi(new Register(32, "rdi"));
 static atl::shared_ptr<Register> rsp(new Register(32, "rsp"));
 static atl::shared_ptr<Register> rbp(new Register(32, "rbp"));
+
+static atl::vector<atl::string> externFunDecls = {"printf"};
 
 } // namespace X64
 
