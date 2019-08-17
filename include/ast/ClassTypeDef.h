@@ -5,7 +5,6 @@
 namespace ACC {
 
 class ClassTypeDef : public ClassTypeDecl {
-
 public:
   atl::vector<atl::shared_ptr<Decl>> classDecls;
 
@@ -72,6 +71,9 @@ public:
                    const atl::shared_ptr<Decl> &exemptDecl = nullptr) override;
 
   VISITOR_ACCEPTORS
+
+private:
+  void rvalRefWrap(atl::shared_ptr<ConstructorDecl> ctorDecl);
 };
 
 } // namespace ACC
