@@ -154,7 +154,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunCall &fc) {
     else
       x64.push(argReg);
   }
-  x64.call(fc.funIdentifier->mangle());
+  x64.call(fc.funDecl->getSignature().mangle());
   return X64::rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDecl &fd) {
@@ -314,7 +314,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Program &p) {
   x64.call("main_int__char_ptr_ptr_");
   x64.ret();
 
-  x64.block("FunDecl_printf");
+  x64.block("FunDecl_printf_char_ptr__char_ptr_");
   // x64.call("_printf");
   x64.write("call _printf");
   x64.ret();
