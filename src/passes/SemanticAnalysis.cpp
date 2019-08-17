@@ -19,7 +19,7 @@ SemanticAnalysis::error(const atl::string &errorType, const atl::string &error,
     throw Error("9 Semantic Errors: Exiting Prematurely");
   }
   return nullptr;
-  }
+}
 
 void SemanticAnalysis::printErrors() {
   const unsigned int num_errors = errors.size();
@@ -58,10 +58,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ArrayType &at) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
   const atl::shared_ptr<Type> lhsType = as.lhs->accept(*this);
   if (lhsType == nullptr)
-    return error("Type Analysis", "Assignation LHS has undefined type.", as.getptr());
+    return error("Type Analysis", "Assignation LHS has undefined type.",
+                 as.getptr());
   const atl::shared_ptr<Type> rhsType = as.rhs->accept(*this);
   if (lhsType == nullptr)
-    return error("Type Analysis", "Assignation RHS has undefined type.", as.getptr());
+    return error("Type Analysis", "Assignation RHS has undefined type.",
+                 as.getptr());
   if (!lhsType->equivalentTo(*rhsType))
     return error("Type Analysis", "Assignation has mismatched types.",
                  as.getptr());
@@ -768,6 +770,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarExpr &ve) {
+  // Compiler may generate VarExpr's and link them.
+  if (ve.varDecl != nullptr)
+    return ve.varDecl->type;
   const atl::shared_ptr<VarDecl> varDecl =
       currScope->findVarDecl(ve.varIdentifier);
   if (varDecl == nullptr)
