@@ -29,6 +29,9 @@ void SemanticAnalysis::printErrors() {
     printf("\t%s\n", errors[idx].c_str());
 }
 
+/* TODO: Link up namespaces in such a way that looking at any given FunDecl or
+ * FunDef will have its Identifier be global and correct. */
+
 void SemanticAnalysis::run() { visit(*progAST); }
 
 /* ---- Visit AST ---- */
