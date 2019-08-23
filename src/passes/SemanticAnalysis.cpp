@@ -12,10 +12,10 @@ atl::shared_ptr<Type>
 SemanticAnalysis::error(const atl::string &errorType, const atl::string &error,
                         const atl::shared_ptr<ASTNode> &node) {
   errorCount++;
-  errors.push_back(errorType + " Error at: " + node->position.toString() +
-                   "\n\t" + error);
+  const atl::string errorOut = errorType + " Error at: " + node->position.toString() +
+                   "\n\t" + error;
+  printf("%s\n", errorOut.c_str());
   if (errorCount == 9) {
-    printErrors();
     throw Error("9 Semantic Errors: Exiting Prematurely");
   }
   return nullptr;
@@ -187,6 +187,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassType &ct) {
       currScope->findClassDef(ct.identifier);
   if (ctd != nullptr) {
     ct.typeDefinition = ctd;
+    ct.identifier = ctd->classType->identifier;
+
     return ct.getptr();
   }
 
@@ -215,17 +217,26 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
 
   ctd.outerScope = currScope;
   currScope = ctd.getptr();
+  parentIdentifiers.push_back(ctd.getIdentifier());
 
   for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx)
     ctd.classDecls[idx]->accept(*this);
 
+  parentIdentifiers.pop_back();
+  ctd.getIdentifier()->parentIdentifier = parentIdentifiers.top();
   currScope = ctd.outerScope;
 
   return ctd.classType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
+  const atl::shared_ptr<Type> ctorObjectType = cc.objectToConstruct->type;
+  if (ctorObjectType->astClass() != "ClassType")
+    return error("Name/Type Analysis",
+                 "Attempted to call a constructor for non-class type object.",
+                 cc.getptr());
+
   const atl::shared_ptr<ClassTypeDef> ctorClassTypeDef =
-      currScope->findClassDef(cc.constructorIdentifier);
+      atl::static_pointer_cast<ClassType>(ctorObjectType)->typeDefinition;
 
   if (ctorClassTypeDef == nullptr)
     return error(
@@ -505,9 +516,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
                    "Attempted to access member variable of class type without "
                    "using `.` operator.",
                    mc.object);
-    objType =
-        atl::static_pointer_cast<PointerType>(objType)->pointedType->accept(
-            *this);
+    objType = atl::static_pointer_cast<PointerType>(objType)->pointedType;
     // Get ClassType
     if (objType->astClass() != "ClassType")
       return error("Type Analysis",
@@ -563,11 +572,16 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(Namespace &n) {
   n.outerScope = currScope;
   currScope = n.getptr();
+  parentIdentifiers.push_back(n.getIdentifier());
 
   for (unsigned int i = 0; i < n.namespaceDecls.size(); ++i) {
     n.namespaceDecls[i]->accept(*this);
     ++n.namespaceDeclsChecked;
   }
+  ++n.namespaceDeclsChecked;
+
+  parentIdentifiers.pop_back();
+  n.getIdentifier()->parentIdentifier = parentIdentifiers.top();
 
   currScope = n.outerScope;
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
@@ -587,6 +601,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(PrefixOp &po) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Program &p) {
   currScope = p.getptr();
+
+  parentIdentifiers.push_front(nullptr);
 
   for (unsigned int idx = 0; idx < p.decls.size(); ++idx) {
     p.decls[idx]->accept(*this);
@@ -626,10 +642,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
     so.operatorDecl = arrayPointerSubscriptOpDef;
     return atl::static_pointer_cast<PointerType>(objType)->pointedType;
   } else if (objType->astClass() == "ClassType") {
-    const atl::shared_ptr<ClassType> objClassType =
-        atl::static_pointer_cast<ClassType>(objType);
     const atl::shared_ptr<ClassTypeDef> objClassTypeDef =
-        objClassType->typeDefinition;
+        atl::static_pointer_cast<ClassType>(objType)->typeDefinition;
 
     const atl::shared_ptr<Type> indexType = so.index->accept(*this);
 
@@ -639,10 +653,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
         new PointerType(objClassTypeDef->classType)));
     opArgs.push_back(indexType);
     atl::set<FunDecl::FunModifiers> objTypeModifiers;
-    if (objClassType->typeModifiers.find(Type::Modifiers::CONST))
+    if (objType->typeModifiers.find(Type::Modifiers::CONST))
       objTypeModifiers.insert(FunDecl::FunModifiers::CONST);
     const atl::shared_ptr<Identifier> opIdentifier(
-        new Identifier("operator[]", objClassType->identifier));
+        new Identifier("operator[]", objClassTypeDef->classType->identifier));
     const FunSignature opSignature(nullptr, opIdentifier, opArgs,
                                    objTypeModifiers);
 
@@ -654,7 +668,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
     if (objSubscriptOpDecl == nullptr) {
       return error("Type Error",
                    "No definiton for subscript operator[] for type: " +
-                       objClassType->identifier->toString(),
+                       objClassTypeDef->classType->identifier->toString(),
                    so.variable);
     }
 
@@ -710,7 +724,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ValueAt &va) {
   return atl::static_pointer_cast<PointerType>(exprType)->pointedType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
-
   atl::shared_ptr<Type> varType = vd.type->accept(*this);
   if (varType == nullptr)
     return error("Type Analysis",

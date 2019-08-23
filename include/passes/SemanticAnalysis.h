@@ -3,6 +3,8 @@
 #include "AST.h"
 #include "ASTVisitor.h"
 
+#include "atl/include/stack.h"
+
 namespace ACC {
 
 class SemanticAnalysis : public ASTVisitor<atl::shared_ptr<Type>> {
@@ -25,6 +27,7 @@ private:
   atl::shared_ptr<Program> progAST;
   atl::shared_ptr<Scope> currScope;
   atl::shared_ptr<FunDef> currFunDef;
+  atl::stack<atl::shared_ptr<Identifier>> parentIdentifiers;
 
   /* ---- Visit AST ---- */
 
