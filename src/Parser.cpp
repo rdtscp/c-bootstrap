@@ -390,8 +390,10 @@ atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
   }
 
   expect(TC::RBRA);
-  return createNode<ClassTypeDef>(
+  atl::shared_ptr<ClassTypeDecl> output = createNode<ClassTypeDef>(
       atl::shared_ptr<ClassTypeDef>(new ClassTypeDef(classType, classDecls)));
+  classType->typeDefinition = output;
+  return output;
 }
 atl::shared_ptr<ConstructorDecl> Parser::parseConstructor() {
   const atl::shared_ptr<Identifier> constructorIdentifier = parseIdentifier();
