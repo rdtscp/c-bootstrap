@@ -12,8 +12,8 @@ atl::shared_ptr<Type>
 SemanticAnalysis::error(const atl::string &errorType, const atl::string &error,
                         const atl::shared_ptr<ASTNode> &node) {
   errorCount++;
-  const atl::string errorOut = errorType + " Error at: " + node->position.toString() +
-                   "\n\t" + error;
+  const atl::string errorOut =
+      errorType + " Error at: " + node->position.toString() + "\n\t" + error;
   printf("%s\n", errorOut.c_str());
   if (errorCount == 9) {
     throw Error("9 Semantic Errors: Exiting Prematurely");
@@ -578,7 +578,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Namespace &n) {
     n.namespaceDecls[i]->accept(*this);
     ++n.namespaceDeclsChecked;
   }
-  ++n.namespaceDeclsChecked;
 
   parentIdentifiers.pop_back();
   n.getIdentifier()->parentIdentifier = parentIdentifiers.top();
