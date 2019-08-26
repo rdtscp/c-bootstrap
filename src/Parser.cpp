@@ -890,10 +890,15 @@ atl::shared_ptr<Stmt> Parser::parseStmt() {
 }
 atl::shared_ptr<Throw> Parser::parseThrow() {
   expect(TC::THROW);
-  const atl::string stringLiteral = expect(TC::STRING_LITERAL).data;
-  expect(TC::SC);
-  return createNode<Throw>(atl::shared_ptr<Throw>(new Throw(
-      atl::shared_ptr<StringLiteral>(new StringLiteral(stringLiteral)))));
+  if (accept(TC::STRING_LITERAL)) {
+    const atl::string stringLiteral = expect(TC::STRING_LITERAL).data;
+    expect(TC::SC);
+    return createNode<Throw>(atl::shared_ptr<Throw>(new Throw(
+        atl::shared_ptr<StringLiteral>(new StringLiteral(stringLiteral)))));
+  } else {
+    expect(TC::SC);
+    return createNode<Throw>(atl::shared_ptr<Throw>(new Throw()));
+  }
 }
 atl::shared_ptr<While> Parser::parseWhile() {
   expect(TC::WHILE);
