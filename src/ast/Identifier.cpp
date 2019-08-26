@@ -91,9 +91,6 @@ bool Identifier::operator==(const Identifier &rhs) const {
     if (*parentIdentifier != *rhs.parentIdentifier)
       return false;
 
-  if (parentIdentifier || rhs.parentIdentifier)
-    return false;
-
   return true;
 }
 
