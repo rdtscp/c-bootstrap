@@ -633,6 +633,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(StringLiteral &sl) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
   atl::shared_ptr<Type> objType = so.variable->accept(*this);
+  if (objType == nullptr)
+    return error("Name/Type Error",
+                 "Could not resolve type for object: " +
+                     so.variable->varIdentifier->toString(),
+                 so.variable);
+
   objType = collapseReferenceTypes(objType);
   if (objType->astClass() == "ArrayType" ||
       objType->astClass() == "PointerType") {
@@ -655,7 +661,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
     if (objType->typeModifiers.find(Type::Modifiers::CONST))
       objTypeModifiers.insert(FunDecl::FunModifiers::CONST);
     const atl::shared_ptr<Identifier> opIdentifier(
-        new Identifier("operator[]", objClassTypeDef->classType->identifier));
+        new Identifier("operator[]", objClassTypeDef->getIdentifier()));
     const FunSignature opSignature(nullptr, opIdentifier, opArgs,
                                    objTypeModifiers);
 
@@ -726,8 +732,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
   atl::shared_ptr<Type> varType = vd.type->accept(*this);
   if (varType == nullptr)
     return error("Type Analysis",
-                 "Attempted to define variable "
-                 "with undefined class type.",
+                 "Attempted to declare variable " +
+                     vd.getIdentifier()->toString() + " with undefined type.",
                  atl::static_pointer_cast<Decl>(vd.getptr()));
   varType = collapseReferenceTypes(varType);
   if (varType->astClass() == "ClassType") {
@@ -735,8 +741,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
         atl::static_pointer_cast<ClassType>(varType);
     if (vdClassType->typeDefinition == nullptr)
       return error("Type Analysis",
-                   "Attempted to define variable "
-                   "with undefined class type.",
+                   "Attempted to declare variable " +
+                       vd.getIdentifier()->toString() +
+                       " with undefined class type: " +
+                       vdClassType->identifier->toString(),
                    atl::static_pointer_cast<Decl>(vd.getptr()));
   }
   if (currScope->findVarDecl(vd.getIdentifier(), vd.getptr()))
@@ -753,9 +761,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
   atl::shared_ptr<Type> varType = vd.type->accept(*this);
   if (varType == nullptr)
+
     return error("Type Analysis",
-                 "Attempted to define variable "
-                 "with undefined class type.",
+                 "Attempted to define variable " +
+                     vd.getIdentifier()->toString() + " with undefined type.",
                  atl::static_pointer_cast<Decl>(vd.getptr()));
   varType = collapseReferenceTypes(varType);
   if (varType->astClass() == "ClassType") {
@@ -763,8 +772,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
         atl::static_pointer_cast<ClassType>(varType);
     if (vdClassType->typeDefinition == nullptr)
       return error("Type Analysis",
-                   "Attempted to define variable "
-                   "with undefined class type.",
+                   "Attempted to define variable " +
+                       vd.getIdentifier()->toString() +
+                       " with undefined class type: " +
+                       vdClassType->identifier->toString(),
                    atl::static_pointer_cast<Decl>(vd.getptr()));
   }
   if (currScope->findVarDecl(vd.getIdentifier(), vd.getptr()))
