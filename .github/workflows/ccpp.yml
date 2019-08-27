@@ -3,7 +3,17 @@ name: C/C++ CI
 on: [push]
 
 jobs:
-  build:
+  debug-build:
+
+    runs-on: macOS-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - run: mkdir build
+    - run: cmake -DCMAKE_BUILD_TYPE=Debug -S . -B ./build
+    - run: make --directory ./build -j
+    
+  test:
 
     runs-on: macOS-latest
     
@@ -13,6 +23,13 @@ jobs:
     - run: cmake -DCMAKE_BUILD_TYPE=Debug -S . -B ./build
     - run: make --directory ./build -j
     - run: make test -C ./build ARGS='--output-on-failure'
-    - run: make clean --directory ./build -j
+
+  release-build:
+
+    runs-on: macOS-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - run: mkdir build
     - run: cmake -DCMAKE_BUILD_TYPE=Release -S . -B ./build
     - run: make --directory ./build -j
