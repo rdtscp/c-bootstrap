@@ -9,6 +9,10 @@ FunSignature::FunSignature(const atl::shared_ptr<Type> p_funReturnType,
     : funReturnType(p_funReturnType), funIdentifier(p_funIdentifier),
       funArgs(p_funArgs), funModifiers(p_funModifiers) {}
 
+const atl::shared_ptr<Identifier> FunSignature::getIdentifier() const {
+  return funIdentifier;
+}
+
 const unsigned int FunSignature::namespaceCount() const {
   return funIdentifier->namespaceCount();
 }
