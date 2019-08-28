@@ -1,7 +1,7 @@
 # c-bootstrap
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c18ee2ef41274532a7baa1969fe843b7)](https://app.codacy.com/app/rdtscp/c-bootstrap?utm_source=github.com&utm_medium=referral&utm_content=rdtscp/c-bootstrap&utm_campaign=Badge_Grade_Dashboard)
-[![Build Status](https://travis-ci.com/rdtscp/c-bootstrap.svg?branch=master)](https://travis-ci.com/rdtscp/c-bootstrap)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Frdtscp%2Fc-bootstrap%2Fbadge&style=flat)](https://actions-badge.atrox.dev/rdtscp/c-bootstrap/goto)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)
 
 -   Bootstrapping a simple C based compiler written in C++.
