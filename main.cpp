@@ -10,28 +10,19 @@
 #include "include/targets/GenerateX86.h"
 
 int main(int argc, char const *argv[]) {
-  if (argc < 4) {
-    printf("Usage: acc <input> <output> { x86 } [ --graph |  --opt | "
+  if (argc < 3) {
+    printf("Usage: acc <input> <output> [ --graph |  --opt | "
            "--preprocess ]\n");
     return 1;
   }
   const atl::string inFilename(argv[1]);
   const atl::string outFilename(argv[2]);
-  const atl::string target(argv[3]);
-
-  bool outputX86 = false;
-  if (target == "x86")
-    outputX86 = true;
-  else {
-    printf("Invalid Target Arch, Must be 'x86'\n");
-    return 1;
-  }
 
   bool outputGraph = false;
   bool optimise = false;
   bool preprocess = false;
-  if (argc > 3) {
-    for (int i = 4; i < argc; ++i) {
+  if (argc > 2) {
+    for (int i = 3; i < argc; ++i) {
       const atl::string flag(argv[i]);
       if (flag == "--graph")
         outputGraph = true;
@@ -80,18 +71,12 @@ int main(int argc, char const *argv[]) {
     }
 
     if (outputGraph) {
-      ACC::DotGraph dotGraph(progAST);
+      ACC::DotGraph dotGraph(progAST, outFilename);
       dotGraph.print();
-    }
-
-    if (outputX86) {
+    } else {
       ACC::GenerateX86 x86Generator(progAST, outFilename);
       x86Generator.run();
     }
-
-    printf("\n\n\n");
-    ACC::SourceOutput sourceOutput(progAST);
-    sourceOutput.print();
 
     return 0;
   }
