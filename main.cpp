@@ -30,8 +30,6 @@ int main(int argc, char const *argv[]) {
         optimise = true;
       if (flag == "--preprocess")
         preprocess = true;
-      if (flag == "--source")
-        source = true;
     }
   }
 
@@ -76,8 +74,8 @@ int main(int argc, char const *argv[]) {
       ACC::DotGraph dotGraph(progAST, outFilename);
       dotGraph.print();
     } else {
-      ACC::GenerateX86 x86Generator(progAST, outFilename);
-      x86Generator.run();
+      ACC::GenerateX64 x64Generator(progAST, outFilename);
+      x64Generator.run();
     }
 
     return 0;
