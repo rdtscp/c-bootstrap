@@ -7,7 +7,24 @@ private:
 public:
   className() {}
   className(int a, char b) {}
+
+  className operator+(const int c) {
+    return className(privateInt + c, 'b');
+  }
 };
+
+namespace outer {
+  class Inner {
+  public:
+    Inner(int foo) {}
+
+    outer::Inner operator+(const int c) {
+      Inner output(c);
+      return output;
+    }
+
+  };
+}
 
 int randInt() {
   const int foo = 10;
