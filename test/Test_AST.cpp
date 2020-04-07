@@ -4,6 +4,21 @@
 
 using namespace ACC;
 
+TEST(ASTTest, AddressOfComparisons) {
+  const atl::shared_ptr<VarExpr> varExpr1(new VarExpr(
+      atl::shared_ptr<Identifier>(new Identifier("foo"))
+  ));
+  const atl::shared_ptr<VarExpr> varExpr2(new VarExpr(
+      atl::shared_ptr<Identifier>(new Identifier("bar"))
+  ));
+  AddressOf addrOf1(varExpr1);
+  AddressOf addrOf2(varExpr1);
+  AddressOf addrOf3(varExpr2);
+
+  ASSERT_EQ(addrOf1, addrOf2);
+  ASSERT_NE(addrOf2, addrOf3);
+}
+
 TEST(ASTTest, BaseTypeComparisons) {
   BaseType charType(PrimitiveType::CHAR);
   BaseType intType(PrimitiveType::INT);
