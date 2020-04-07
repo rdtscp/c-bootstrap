@@ -137,6 +137,10 @@ bool Parser::acceptFunDecl(int offset) {
     if (accept(TC::CONST))
       ++offset;
     ++offset;
+
+    while (accept(TC::NAMESPACEACCESS, offset) && accept(TC::IDENTIFIER, offset + 1))
+      offset += 2;
+
     if (accept(TC::ASTERIX, offset) && !accept(TC::REF, offset))
       while (accept(TC::ASTERIX, offset))
         ++offset;
