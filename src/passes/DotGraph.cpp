@@ -2,19 +2,20 @@
 
 using namespace ACC;
 
-DotGraph::DotGraph(atl::shared_ptr<Program> progAST) : progAST(progAST) {}
+DotGraph::DotGraph(atl::shared_ptr<Program> progAST, const atl::string &outputFilename) :
+  outputFile(outputFilename), progAST(progAST) {}
 void DotGraph::print() { visit(*progAST); }
 
 void DotGraph::declare(const atl::string &nodeID, const atl::string &label) {
-  put(nodeID + " [label=\"" + label + "\"];");
+  write(nodeID + " [label=\"" + label + "\"];");
 }
 
 void DotGraph::join(const atl::string &lhs, const atl::string &rhs) {
   atl::string output = lhs + " -> " + rhs;
-  printf("%s\n", output.c_str());
+  write(output);
 }
 
-void DotGraph::put(const atl::string &str) { printf("%s\n", str.c_str()); }
+void DotGraph::write(const atl::string &str) { outputFile.write(str + "\n"); }
 
 /* ---- Visit AST ---- */
 
@@ -434,11 +435,11 @@ atl::string DotGraph::visit(PrefixOp &po) {
   return preficIncID;
 }
 atl::string DotGraph::visit(Program &p) {
-  printf("digraph prog {\n");
+  write("digraph prog {\n");
   for (unsigned int idx = 0; idx < p.decls.size(); ++idx) {
     p.decls[idx]->accept(*this);
   }
-  printf("}\n");
+  write("}\n");
   return "Node0";
 }
 atl::string DotGraph::visit(ReferenceType &rt) {

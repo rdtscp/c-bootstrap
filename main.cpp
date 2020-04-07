@@ -11,8 +11,8 @@
 
 int main(int argc, char const *argv[]) {
   if (argc < 3) {
-    printf("Usage: acc <input> <output> [ --graph |  --opt | --preprocess | "
-           "--source ]\n");
+    printf("Usage: acc <input> <output> [ --graph |  --opt | "
+           "--preprocess ]\n");
     return 1;
   }
   const atl::string inFilename(argv[1]);
@@ -21,8 +21,7 @@ int main(int argc, char const *argv[]) {
   bool outputGraph = false;
   bool optimise = false;
   bool preprocess = false;
-  bool source = false;
-  if (argc > 3) {
+  if (argc > 2) {
     for (int i = 3; i < argc; ++i) {
       const atl::string flag(argv[i]);
       if (flag == "--graph")
@@ -74,17 +73,12 @@ int main(int argc, char const *argv[]) {
     }
 
     if (outputGraph) {
-      ACC::DotGraph dotGraph(progAST);
+      ACC::DotGraph dotGraph(progAST, outFilename);
       dotGraph.print();
+    } else {
+      ACC::GenerateX86 x86Generator(progAST, outFilename);
+      x86Generator.run();
     }
-
-    if (source) {
-      ACC::SourceOutput sourceOutput(progAST);
-      sourceOutput.print();
-    }
-
-    ACC::GenerateX64 x86Generator(progAST, outFilename);
-    x86Generator.run();
 
     return 0;
   }

@@ -60,7 +60,7 @@ TEST(Test_ASTAnalysis, DotGraph) {
 
   atl::shared_ptr<Program> progAST = parser.getAST();
 
-  DotGraph dotGraph(progAST);
+  DotGraph dotGraph(progAST, "/dev/null");
   dotGraph.print();
 }
 
