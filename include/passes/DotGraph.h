@@ -8,11 +8,12 @@ namespace ACC {
 class DotGraph : public ASTVisitor<atl::string> {
 
 public:
-  DotGraph(atl::shared_ptr<Program> progAST);
+  DotGraph(atl::shared_ptr<Program> progAST, const atl::string &outputFilename);
   void print();
 
 private:
   int nodeCount = 0;
+  atl::ofstream outputFile;
   atl::shared_ptr<Program> progAST;
   atl::unordered_map<atl::string, atl::string> classTypeDeclIDs;
 
@@ -20,7 +21,7 @@ private:
 
   void join(const atl::string &lhs, const atl::string &rhs);
 
-  void put(const atl::string &str);
+  void write(const atl::string &str);
 
   /* ---- Visit AST ---- */
 
