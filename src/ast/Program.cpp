@@ -10,6 +10,22 @@ using namespace ACC;
 Program::Program(const atl::vector<atl::shared_ptr<Decl>> &p_decls)
     : decls(p_decls) {}
 
+bool Program::operator==(const Program &rhs) const {
+  if (decls.size() != rhs.decls.size())
+    return false;
+
+  for (unsigned int i = 0; i < decls.size(); ++i) {
+    if (*decls[i] != *rhs.decls[i])
+      return false;
+  }
+
+  return true;
+}
+
+bool Program::operator!=(const Program &rhs) const {
+  return !(*this == rhs);
+}
+
 atl::shared_ptr<ClassTypeDecl>
 Program::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                        const atl::shared_ptr<Decl> &exemptDecl) {

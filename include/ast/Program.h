@@ -22,6 +22,9 @@ public:
 
   Program(const atl::vector<atl::shared_ptr<Decl>> &p_decls);
 
+  bool operator==(const Program &rhs) const;
+  bool operator!=(const Program &rhs) const;
+
   atl::shared_ptr<Program> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "Program"; }
