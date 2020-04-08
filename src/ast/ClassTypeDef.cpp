@@ -155,7 +155,7 @@ atl::shared_ptr<FunDecl>
 ClassTypeDef::findFunDeclLocal(const FunSignature &funSignature,
                                const atl::shared_ptr<Decl> &exemptDecl) {
   if (funSignature.namespaceCount() == 1 &&
-      *getIdentifier() == *funSignature.namespaceHead()) {
+      getIdentifier()->head() == funSignature.namespaceHead()) {
     for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
       const atl::shared_ptr<Decl> currDecl = classDecls[idx];
       if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")

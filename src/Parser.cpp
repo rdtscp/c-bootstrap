@@ -320,24 +320,19 @@ atl::shared_ptr<Program> Parser::parseProgram() {
 }
 
 atl::shared_ptr<Identifier> Parser::parseIdentifier() {
-  atl::shared_ptr<Identifier> identifier;
+  
   if (acceptOperatorOverload()) {
-    identifier = createNode<Identifier>(
-        atl::shared_ptr<Identifier>(new Identifier(parseOperatorOverload())));
-  } else {
-    identifier = createNode<Identifier>(atl::shared_ptr<Identifier>(
-        new Identifier(expect(TC::IDENTIFIER).data)));
-    while (accept(TC::NAMESPACEACCESS)) {
-      expect(TC::NAMESPACEACCESS);
-      if (acceptOperatorOverload()) {
-        identifier = createNode<Identifier>(atl::shared_ptr<Identifier>(
-            new Identifier(parseOperatorOverload())));
-        break;
-      }
-      const atl::string identData = expect(TC::IDENTIFIER).data;
-      identifier =
-          createNode<Identifier>(new Identifier(identData, identifier));
+    return createNode<Identifier>(atl::shared_ptr<Identifier>(new Identifier(parseOperatorOverload())));
+  }
+  atl::shared_ptr<Identifier> identifier = createNode<Identifier>(atl::shared_ptr<Identifier>(new Identifier(expect(TC::IDENTIFIER).data)));
+  while (accept(TC::NAMESPACEACCESS)) {
+    expect(TC::NAMESPACEACCESS);
+    if (acceptOperatorOverload()) {
+      identifier->insert(createNode<Identifier>(atl::shared_ptr<Identifier>(new Identifier(parseOperatorOverload()))));
+      break;
     }
+    const atl::string identData = expect(TC::IDENTIFIER).data;
+    identifier->insert(createNode<Identifier>(new Identifier(identData)));
   }
   return identifier;
 }

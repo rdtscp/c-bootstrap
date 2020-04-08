@@ -2,42 +2,49 @@
 
 using namespace ACC;
 
-Identifier::Identifier() : value(""), parentIdentifier(nullptr) {}
-
 Identifier::Identifier(const atl::string &p_value)
-    : value(p_value), parentIdentifier(nullptr) {}
+    : value(p_value), tailIdentifier(nullptr) {}
 
-Identifier::Identifier(const atl::string &p_value,
-                       const atl::shared_ptr<Identifier> &p_parentIdentifier)
-    : value(p_value), parentIdentifier(p_parentIdentifier) {}
-
-const unsigned int Identifier::namespaceCount() const {
-  unsigned int output = 0;
-  atl::shared_ptr<Identifier> currParent = parentIdentifier;
-  while (currParent != nullptr) {
-    ++output;
-    currParent = currParent->parentIdentifier;
+atl::shared_ptr<Identifier> Identifier::clone() const {
+  atl::shared_ptr<Identifier> output(new Identifier(value));
+  atl::shared_ptr<Identifier> tail = tailIdentifier;
+  while (tail) {
+    output->insert(atl::shared_ptr<Identifier>(new Identifier(tail->value)));
+    tail = tail->tailIdentifier;
   }
   return output;
 }
 
-const atl::shared_ptr<Identifier> Identifier::namespaceHead() const {
-  atl::shared_ptr<Identifier> parentIdent = parentIdentifier;
-  while (parentIdent->parentIdentifier != nullptr) {
-    parentIdent = parentIdent->parentIdentifier;
+void Identifier::insert(const atl::shared_ptr<Identifier> &p_tailIdentifier) {
+  if (tailIdentifier) {
+    tailIdentifier->insert(p_tailIdentifier);
+  } else {
+    tailIdentifier = p_tailIdentifier;
   }
-  return parentIdent;
 }
 
-const atl::shared_ptr<Identifier> Identifier::namespaceTail() const {
-  const unsigned int numNamespaces = namespaceCount();
-  return deepCopyIdentifier(numNamespaces - 1);
+const atl::string Identifier::head() const {
+  return value;
+}
+
+const atl::shared_ptr<Identifier> Identifier::tail() const {
+  return tailIdentifier;
+}
+
+const unsigned int Identifier::size() const {
+  unsigned int output = 1;
+  atl::shared_ptr<Identifier> currTail = tailIdentifier;
+  while (currTail != nullptr) {
+    ++output;
+    currTail = currTail->tailIdentifier;
+  }
+  return output;
 }
 
 atl::string Identifier::toString() const {
   atl::string output = value;
-  if (parentIdentifier) {
-    output = parentIdentifier->toString() + "::" + output;
+  if (tailIdentifier) {
+    output += "::" + tailIdentifier->toString();
   }
   return output;
 }
@@ -46,11 +53,11 @@ bool Identifier::operator==(const Identifier &rhs) const {
   if (value != rhs.value)
     return false;
 
-  if (parentIdentifier && rhs.parentIdentifier)
-    if (*parentIdentifier != *rhs.parentIdentifier)
+  if (tailIdentifier && rhs.tailIdentifier)
+    if (*tailIdentifier != *rhs.tailIdentifier)
       return false;
 
-  if (parentIdentifier || rhs.parentIdentifier)
+  if (tailIdentifier || rhs.tailIdentifier)
     return false;
 
   return true;
@@ -58,28 +65,4 @@ bool Identifier::operator==(const Identifier &rhs) const {
 
 bool Identifier::operator!=(const Identifier &rhs) const {
   return !(*this == rhs);
-}
-
-const atl::shared_ptr<Identifier>
-Identifier::deepCopyIdentifier(const unsigned int depth) const {
-  // Create the new 'root' identifier.
-  atl::shared_ptr<Identifier> output(new Identifier(value));
-
-  // Alias the new Identifier.
-  atl::shared_ptr<Identifier> currCopy = output;
-  atl::shared_ptr<Identifier> thisParent = parentIdentifier;
-
-  for (unsigned int idx = 0; idx < depth; ++idx) {
-    // Create a new parent using the original Identifier.
-    atl::shared_ptr<Identifier> newParent(
-        new Identifier(thisParent->value));
-    // Set the parent of the curr copy to be the new parent.
-    currCopy->parentIdentifier = newParent;
-
-    // Point the copy/original alias to their parents.
-    currCopy = currCopy->parentIdentifier;
-    thisParent = thisParent->parentIdentifier;
-  }
-
-  return output;
 }
