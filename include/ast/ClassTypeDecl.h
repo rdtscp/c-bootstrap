@@ -5,16 +5,14 @@
 
 namespace ACC {
 
-class ClassType;
-
 class ClassTypeDecl : public Decl,
                       public Scope,
                       public atl::enable_shared_from_this<ClassTypeDecl> {
 
 public:
-  atl::shared_ptr<ClassType> classType;
+  atl::shared_ptr<Identifier> classIdentifier;
 
-  ClassTypeDecl(const atl::shared_ptr<ClassType> &p_classType);
+  ClassTypeDecl(const atl::shared_ptr<Identifier> &p_classIdentifier);
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
 

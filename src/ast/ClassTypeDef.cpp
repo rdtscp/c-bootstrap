@@ -9,152 +9,12 @@
 using namespace ACC;
 
 ClassTypeDef::ClassTypeDef(
-    const atl::shared_ptr<ClassType> &p_classType,
+    const atl::shared_ptr<Identifier> &p_classIdentifier,
     const atl::vector<atl::shared_ptr<Decl>> &p_classDecls)
-    : ClassTypeDecl(p_classType), classDecls(p_classDecls) {
-  /* Add `this` parameter to all FunDecls. */
-  for (unsigned int declIdx = 0; declIdx < classDecls.size(); ++declIdx) {
-    const atl::shared_ptr<Decl> currDecl = classDecls[declIdx];
-    if (currDecl->astClass() == "ConstructorDecl") {
-      // Create a new ConstructorDecl as a copy of the original.
-      atl::shared_ptr<ConstructorDecl> newConstructorDecl =
-          atl::static_pointer_cast<ConstructorDecl>(currDecl);
-
-      // Create a new vector of the params.
-      atl::vector<atl::shared_ptr<VarDecl>> newConstructorParams;
-
-      // Append a hardcoded "this" parameter.
-      const Position &thisPosition = newConstructorDecl->position;
-      const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
-      thisType->position = thisPosition;
-      const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
-      thisType->position = thisPosition;
-      const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(thisType, thisIdent));
-      thisParam->Decl::position = thisPosition;
-      newConstructorParams.push_back(thisParam);
-
-      // Append all the other params.
-      for (unsigned int paramIdx = 0;
-           paramIdx < newConstructorDecl->constructorParams.size();
-           ++paramIdx) {
-        newConstructorParams.push_back(
-            newConstructorDecl->constructorParams[paramIdx]);
-      }
-
-      // Replace the params.
-      newConstructorDecl->constructorParams = newConstructorParams;
-
-      // Save to this ClassTypeDef.
-      classDecls[declIdx] = newConstructorDecl;
-    }
-    if (currDecl->astClass() == "ConstructorDef") {
-      // Create a new ConstructorDef as a copy of the original.
-      atl::shared_ptr<ConstructorDef> newConstructorDef =
-          atl::static_pointer_cast<ConstructorDef>(currDecl);
-
-      // Create a new vector of the params.
-      atl::vector<atl::shared_ptr<VarDecl>> newConstructorParams;
-
-      // Append a hardcoded "this" parameter.
-      const Position &thisPosition = newConstructorDef->position;
-      const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
-      thisType->position = thisPosition;
-      const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
-      thisType->position = thisPosition;
-      const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(thisType, thisIdent));
-      thisParam->Decl::position = thisPosition;
-      newConstructorParams.push_back(thisParam);
-
-      // Append all the other params.
-      for (unsigned int paramIdx = 0;
-           paramIdx < newConstructorDef->constructorParams.size(); ++paramIdx) {
-        newConstructorParams.push_back(
-            newConstructorDef->constructorParams[paramIdx]);
-      }
-
-      // Replace the params.
-      newConstructorDef->constructorParams = newConstructorParams;
-
-      // Save to this ClassTypeDecl.
-      classDecls[declIdx] = newConstructorDef;
-    }
-    if (currDecl->astClass() == "FunDecl") {
-      // Create a new FunDecl as a copy of the original.
-      atl::shared_ptr<FunDecl> newFunDecl =
-          atl::static_pointer_cast<FunDecl>(currDecl);
-
-      // We don't add the self parameter for static methods.
-      if (newFunDecl->funModifiers.find(FunDecl::FunModifiers::STATIC))
-        continue;
-
-      // Create a new vector of the params.
-      atl::vector<atl::shared_ptr<VarDecl>> newFunParams;
-
-      // Append a hardcoded "this" parameter.
-      const Position &thisPosition = newFunDecl->position;
-      const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
-      thisType->position = thisPosition;
-      const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
-      thisType->position = thisPosition;
-      const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(thisType, thisIdent));
-      thisParam->Decl::position = thisPosition;
-      newFunParams.push_back(thisParam);
-
-      // Append all the other params.
-      for (unsigned int paramIdx = 0; paramIdx < newFunDecl->funParams.size();
-           ++paramIdx) {
-        newFunParams.push_back(newFunDecl->funParams[paramIdx]);
-      }
-
-      // Replace the params.
-      newFunDecl->funParams = newFunParams;
-
-      // Save to this ClassTypeDecl.
-      classDecls[declIdx] = newFunDecl;
-    }
-    if (currDecl->astClass() == "FunDef") {
-      // Create a new FunDef as a copy of the original.
-      atl::shared_ptr<FunDef> newFunDef =
-          atl::static_pointer_cast<FunDef>(currDecl);
-
-      // We don't add the self parameter for static methods.
-      if (newFunDef->funModifiers.find(FunDecl::FunModifiers::STATIC))
-        continue;
-
-      // Create a new vector of the params.
-      atl::vector<atl::shared_ptr<VarDecl>> newFunParams;
-
-      // Append a hardcoded "this" parameter.
-      const Position &thisPosition = newFunDef->position;
-      const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
-      thisType->position = thisPosition;
-      const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
-      thisType->position = thisPosition;
-      const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(thisType, thisIdent));
-      thisParam->Decl::position = thisPosition;
-      newFunParams.push_back(thisParam);
-
-      // Append all the other params.
-      for (unsigned int paramIdx = 0; paramIdx < newFunDef->funParams.size();
-           ++paramIdx) {
-        newFunParams.push_back(newFunDef->funParams[paramIdx]);
-      }
-
-      // Replace the params.
-      newFunDef->funParams = newFunParams;
-
-      // Save to this ClassTypeDef.
-      classDecls[declIdx] = newFunDef;
-    }
-  }
-}
+    : ClassTypeDecl(p_classIdentifier), classDecls(p_classDecls) {}
 
 atl::shared_ptr<Identifier> ClassTypeDef::getIdentifier() const {
-  return classType->identifier;
+  return classIdentifier;
 }
 
 bool ClassTypeDef::operator==(Decl &rhs) const {
@@ -166,7 +26,7 @@ bool ClassTypeDef::operator==(Decl &rhs) const {
 bool ClassTypeDef::operator!=(Decl &rhs) const { return !(*this == rhs); }
 
 bool ClassTypeDef::operator==(const ClassTypeDef &rhs) const {
-  if (*classType != *rhs.classType)
+  if (*classIdentifier != *rhs.classIdentifier)
     return false;
 
   if (classDecls.size() != rhs.classDecls.size())
@@ -393,4 +253,16 @@ ClassTypeDef::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
   }
 
   return nullptr;
+}
+
+atl::shared_ptr<VarDecl> ClassTypeDef::createThisParam(const Position &thisPosition) const {
+  const atl::shared_ptr<ClassType> classType(new ClassType(classIdentifier));
+  classType->position = thisPosition;
+  const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
+  thisType->position = thisPosition;
+  const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
+  thisType->position = thisPosition;
+  const atl::shared_ptr<VarDecl> thisParam(new VarDecl(thisType, thisIdent));
+  thisParam->Decl::position = thisPosition;
+  return thisParam;
 }

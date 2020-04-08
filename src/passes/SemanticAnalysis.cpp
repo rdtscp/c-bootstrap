@@ -18,7 +18,7 @@ SemanticAnalysis::error(const atl::string &errorType, const atl::string &error,
     printErrors();
     throw Error("9 Semantic Errors: Exiting Prematurely");
   }
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 
 void SemanticAnalysis::printErrors() {
@@ -61,7 +61,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
   if (!lhsType->equivalentTo(*rhsType))
     return error("Type Analysis", "Assignation has mismatched types.",
                  as.getptr());
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(BaseType &bt) {
   return bt.getptr();
@@ -85,7 +85,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
     // Create the arguments.
     atl::vector<atl::shared_ptr<Type>> opOverloadCallArgTypes;
     opOverloadCallArgTypes.push_back(atl::shared_ptr<PointerType>(
-        new PointerType(lhsClassTypeDef->classType)));
+        new PointerType(lhsClassType)));
     opOverloadCallArgTypes.push_back(rhsType);
 
     // Create the modifiers.
@@ -157,7 +157,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Block &b) {
   }
 
   currScope = b.outerScope;
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(BoolLiteral &bl) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::BOOL));
@@ -194,7 +194,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDecl &ctd) {
                      ctd.getIdentifier()->toString(),
                  ctd.getptr());
 
-  return ctd.classType;
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
   if (currScope->findClassDef(ctd.getIdentifier(), ctd.getptr()))
@@ -212,9 +212,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
 
   currScope = ctd.outerScope;
 
-  return ctd.classType;
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
+  // TODO: This should probably resolve the Constructor signature and just search for it.
   const atl::shared_ptr<ClassTypeDef> ctorClassTypeDef =
       currScope->findClassDef(cc.constructorIdentifier);
 
@@ -225,8 +226,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
         cc.getptr());
 
   atl::vector<atl::shared_ptr<Type>> constructorCallArgTypes;
-  constructorCallArgTypes.push_back(atl::shared_ptr<PointerType>(
-      new PointerType(ctorClassTypeDef->classType)));
   for (unsigned int idx = 0; idx < cc.constructorArgs.size(); ++idx)
     constructorCallArgTypes.push_back(cc.constructorArgs[idx]->accept(*this));
 
@@ -257,6 +256,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorDef &cd) {
   cd.outerScope = currScope;
   currScope = cd.getptr();
 
+  cd.classType->accept(*this);
+
   for (unsigned int idx = 0; idx < cd.constructorParams.size(); ++idx)
     cd.constructorParams[idx]->accept(*this);
   cd.constructorBlock->accept(*this);
@@ -267,15 +268,15 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorDef &cd) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Deletion &d) {
   d.deletionVar->accept(*this);
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(DestructorDecl &dd) {
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(DestructorDef &dd) {
   dd.destructorBlock->accept(*this);
 
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(DoWhile &dw) {
   const atl::shared_ptr<Type> conditionType = dw.condition->accept(*this);
@@ -291,11 +292,11 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(DoWhile &dw) {
                  "Type of If condition is not BOOL, INT or UINT.",
                  dw.condition);
   dw.body->accept(*this);
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(EnumClassTypeDecl &ectd) {
   // TODO:
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(For &f) {
   f.outerScope = currScope;
@@ -318,7 +319,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(For &f) {
   f.body->accept(*this);
 
   currScope = f.outerScope;
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
   // Check to make sure this isn't a Constructor for a temporary.
@@ -326,8 +327,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
       currScope->findClassDef(fc.funIdentifier);
   if (classTypeDef != nullptr) {
     atl::vector<atl::shared_ptr<Type>> constructorCallArgTypes;
-    constructorCallArgTypes.push_back(
-        atl::shared_ptr<PointerType>(new PointerType(classTypeDef->classType)));
     for (unsigned int idx = 0; idx < fc.funArgs.size(); ++idx)
       constructorCallArgTypes.push_back(fc.funArgs[idx]->accept(*this));
 
@@ -343,7 +342,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
     // Return RVAL Ref to this object.
     return atl::shared_ptr<ReferenceType>(
         new ReferenceType(atl::shared_ptr<ReferenceType>(
-            new ReferenceType(classTypeDef->classType))));
+            new ReferenceType(ctorDecl->classType))));
   } else {
     atl::vector<atl::shared_ptr<Type>> funCallArgTypes;
     for (unsigned int idx = 0; idx < fc.funArgs.size(); ++idx)
@@ -397,7 +396,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
   return funType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Identifier &i) {
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(If &i) {
   const atl::shared_ptr<Type> conditionType = i.ifCondition->accept(*this);
@@ -416,7 +415,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(If &i) {
   if (i.elseBody)
     i.elseBody->accept(*this);
 
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(IntLiteral &il) {
   if (il.isUnsigned)
@@ -525,8 +524,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
   /* Now Manually Visit the Member Call */
   // Visit all parameters first.
   atl::vector<atl::shared_ptr<Type>> funCallArgTypes;
-  funCallArgTypes.push_back(atl::shared_ptr<PointerType>(
-      new PointerType(objClassTypeDef->classType)));
   for (unsigned int idx = 0; idx < mc.funCall->funArgs.size(); ++idx)
     funCallArgTypes.push_back(mc.funCall->funArgs[idx]->accept(*this));
 
@@ -559,10 +556,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Namespace &n) {
   }
 
   currScope = n.outerScope;
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Nullptr &n) {
-
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ParenthExpr &pe) {
@@ -582,7 +578,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Program &p) {
     ++p.declsChecked;
   }
 
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ReferenceType &rt) {
   rt.referencedType->accept(*this);
@@ -624,8 +620,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
 
     // Create FunSignature for SubscriptOp.
     atl::vector<atl::shared_ptr<Type>> opArgs;
-    opArgs.push_back(atl::shared_ptr<PointerType>(
-        new PointerType(objClassTypeDef->classType)));
     opArgs.push_back(indexType);
     atl::set<FunDecl::FunModifiers> objTypeModifiers;
     if (objClassType->typeModifiers.find(Type::Modifiers::CONST))
@@ -684,11 +678,11 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(TertiaryExpr &t) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Throw &t) {
   // TODO
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(TypeDefDecl &tdd) {
   // TODO:
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ValueAt &va) {
   const atl::shared_ptr<Type> exprType = va.derefExpr->accept(*this);
@@ -717,7 +711,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
                      vd.getIdentifier()->toString(),
                  atl::static_pointer_cast<Decl>(vd.getptr()));
 
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
   atl::shared_ptr<Type> varType = vd.type->accept(*this);
@@ -744,7 +738,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
     return error("Type Analysis", "VarDef has mismatched types.",
                  atl::static_pointer_cast<Decl>(vd.getptr()));
 
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarExpr &ve) {
   const atl::shared_ptr<VarDecl> varDecl =
@@ -771,7 +765,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(While &w) {
                  "Type of While condition is not BOOL, INT or UINT.",
                  w.condition);
   w.body->accept(*this);
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
+  return noType();
 }
 
 atl::shared_ptr<Type>
@@ -783,9 +777,14 @@ SemanticAnalysis::collapseReferenceTypes(atl::shared_ptr<Type> type) {
   }
   return type;
 }
-atl::set<FunDecl::FunModifiers> SemanticAnalysis::funModifiers(bool isConst) {
+atl::set<FunDecl::FunModifiers> SemanticAnalysis::funModifiers(bool isConst) const {
   atl::set<FunDecl::FunModifiers> output;
   if (isConst)
     output.insert(FunDecl::FunModifiers::CONST);
   return output;
+}
+
+
+atl::shared_ptr<BaseType> SemanticAnalysis::noType() const {
+  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }

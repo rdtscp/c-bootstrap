@@ -346,11 +346,9 @@ atl::shared_ptr<Identifier> Parser::parseIdentifier() {
 atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
   expect(TC::CLASS);
   const atl::shared_ptr<Identifier> classIdentifier = parseIdentifier();
-  atl::shared_ptr<ClassType> classType = createNode<ClassType>(
-      atl::shared_ptr<ClassType>(new ClassType(classIdentifier)));
   if (accept(TC::SC)) {
     return createNode<ClassTypeDecl>(
-        atl::shared_ptr<ClassTypeDecl>(new ClassTypeDecl(classType)));
+        atl::shared_ptr<ClassTypeDecl>(new ClassTypeDecl(classIdentifier)));
   }
 
   // TODO: Parse Inheritance
@@ -395,7 +393,7 @@ atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
 
   expect(TC::RBRA);
   return createNode<ClassTypeDef>(
-      atl::shared_ptr<ClassTypeDef>(new ClassTypeDef(classType, classDecls)));
+      atl::shared_ptr<ClassTypeDef>(new ClassTypeDef(classIdentifier, classDecls)));
 }
 atl::shared_ptr<ConstructorDecl> Parser::parseConstructor() {
   const atl::shared_ptr<Identifier> constructorIdentifier = parseIdentifier();
