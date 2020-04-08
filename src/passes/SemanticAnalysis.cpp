@@ -624,8 +624,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
     atl::set<FunDecl::FunModifiers> objTypeModifiers;
     if (objClassType->typeModifiers.find(Type::Modifiers::CONST))
       objTypeModifiers.insert(FunDecl::FunModifiers::CONST);
-    const atl::shared_ptr<Identifier> opIdentifier(
-        new Identifier("operator[]", objClassType->identifier));
+    const atl::shared_ptr<Identifier> opIdentifier(new Identifier("operator[]"));
     const FunSignature opSignature(nullptr, opIdentifier, opArgs,
                                    objTypeModifiers);
 
@@ -633,7 +632,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
     // the ClassTypeDef already resolved above. The former would allow us to use
     // out of class definitions.
     const atl::shared_ptr<FunDecl> objSubscriptOpDecl =
-        currScope->findFunDecl(opSignature);
+        objClassTypeDef->findFunDecl(opSignature);
     if (objSubscriptOpDecl == nullptr) {
       return error("Type Error",
                    "No definiton for subscript operator[] for type: " +
