@@ -332,7 +332,7 @@ atl::shared_ptr<Identifier> Parser::parseIdentifier() {
       break;
     }
     const atl::string identData = expect(TC::IDENTIFIER).data;
-    identifier->insert(createNode<Identifier>(new Identifier(identData)));
+    identifier->insert(createNode<Identifier>(atl::shared_ptr<Identifier>(new Identifier(identData))));
   }
   return identifier;
 }
@@ -715,7 +715,7 @@ atl::shared_ptr<Type> Parser::parseType() {
   if (accept(TC::ASTERIX)) {
     while (accept(TC::ASTERIX)) {
       expect(TC::ASTERIX);
-      type = createNode<PointerType>(new PointerType(type));
+      type = createNode<PointerType>(atl::shared_ptr<PointerType>(new PointerType(type)));
       if (accept(TC::CONST)) {
         expect(TC::CONST);
         type->typeModifiers.insert(Type::Modifiers::CONST);

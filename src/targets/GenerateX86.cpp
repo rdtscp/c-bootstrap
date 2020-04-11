@@ -27,22 +27,22 @@ void GenerateX86::alloc(const VarDecl &vd) {
 /* ---- Visit AST ---- */
 
 atl::shared_ptr<X86::Operand> GenerateX86::visit(AddressOf &ao) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Allocation &a) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ArrayType &at) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Assign &as) {
   atl::shared_ptr<X86::Operand> lhsRegRes = as.lhs->accept(*this);
   atl::shared_ptr<X86::Operand> rhsResReg = as.rhs->accept(*this);
   x86.mov(lhsRegRes, rhsResReg);
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(BaseType &bt) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(BinOp &bo) {
   /* Evaluate LHS and Store to Stack */
@@ -83,22 +83,22 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(Block &b) {
     b.stmts[idx]->accept(*this);
 
   currScope = b.outerScope;
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(BoolLiteral &bl) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(CharLiteral &cl) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassType &ct) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassTypeDecl &ctd) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ClassTypeDef &ctd) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorCall &cc) {
   for (int idx = cc.constructorArgs.size() - 1; idx >= 0; --idx) {
@@ -110,30 +110,30 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorCall &cc) {
   return X86::eax;
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorDecl &cd) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ConstructorDef &cd) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Deletion &d) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(DestructorDecl &dd) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(DestructorDef &dd) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(DoWhile &dw) {
   dw.body->accept(*this);
   dw.condition->accept(*this);
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(EnumClassTypeDecl &ectd) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(For &f) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(FunCall &fc) {
   for (int idx = fc.funArgs.size() - 1; idx >= 0; --idx) {
@@ -173,7 +173,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(FunDecl &fd) {
 
   // currFpOffset = 0;
   // currScope = fd.funBlock->outerBlock;
-  return atl::make_shared<X86::None>(X86::None());
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(FunDef &fd) {
   currScope = fd.funBlock;
@@ -205,10 +205,10 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(FunDef &fd) {
 
   currFpOffset = 0;
   currScope = fd.funBlock->outerScope;
-  return atl::make_shared<X86::None>(X86::None());
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Identifier &i) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(If &i) {
   /* Calculate Names for Blocks */
@@ -239,20 +239,20 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(If &i) {
 
   /* Handle after the If statement. */
   x86.block(endBlockName);
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(IntLiteral &il) {
   x86.mov(X86::eax,
-          atl::make_shared<X86::IntValue>(X86::IntValue(il.getLiteral())));
+          atl::shared_ptr<X86::IntValue>(new X86::IntValue(il.getLiteral())));
   return X86::eax;
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(MemberAccess &ma) {
   ma.object->accept(*this);
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(MemberCall &mc) {
   mc.object->accept(*this);
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Namespace &n) {
   // const unsigned int numDecls = n.namespaceDecls.size();
@@ -266,11 +266,11 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(PointerType &pt) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(PrefixOp &po) {
   // TODO
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   currScope = p.getptr();
@@ -292,45 +292,45 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(Program &p) {
   for (unsigned int idx = 0; idx < p.funDecls.size(); ++idx)
     p.funDecls[idx]->accept(*this);
 
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ReferenceType &rt) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Return &r) {
   if (r.returnExpr) {
     atl::shared_ptr<X86::Operand> rVal = r.returnExpr->accept(*this);
     x86.mov(X86::eax, rVal);
   }
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(SizeOf &so) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(StaticCast &sc) {
   return sc.expr->accept(*this);
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(StringLiteral &sl) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(SubscriptOp &so) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(TemplateDef &td) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(TertiaryExpr &t) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(Throw &t) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(TypeDefDecl &td) {
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(ValueAt &va) {
   va.derefExpr->accept(*this);
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(VarDecl &vd) {
   int bytesRequired = vd.getBytes();
@@ -342,7 +342,7 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(VarDecl &vd) {
                               " @ [ebp" + atl::to_string(currFpOffset) + "]";
 
   x86.sub(X86::esp, bytesRequired, comment);
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(VarDef &vd) {
   int bytesRequired = vd.getBytes();
@@ -354,30 +354,30 @@ atl::shared_ptr<X86::Operand> GenerateX86::visit(VarDef &vd) {
                               " @ [ebp" + atl::to_string(currFpOffset) + "]";
 
   x86.sub(X86::esp, bytesRequired, comment);
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
   const int fpOffset = ve.varDecl->fpOffset;
   if (fpOffset == 0)
-    return atl::make_shared<X86::GlobalVariable>(X86::GlobalVariable(
+    return atl::shared_ptr<X86::GlobalVariable>(new X86::GlobalVariable(
         ve.varDecl->getIdentifier()->toString(), ve.varDecl->getBytes()));
 
   if (fpOffset > 0)
-    return atl::make_shared<X86::Register>(
+    return atl::shared_ptr<X86::Register>(new 
         X86::Register(0, "[ebp+" + atl::to_string(fpOffset) + "]"));
   else
-    return atl::make_shared<X86::Register>(
+    return atl::shared_ptr<X86::Register>(new 
         X86::Register(0, "[ebp" + atl::to_string(fpOffset) + "]"));
 }
 atl::shared_ptr<X86::Operand> GenerateX86::visit(While &w) {
   w.condition->accept(*this);
   w.body->accept(*this);
-  return atl::make_shared<X86::None>();
+  return atl::shared_ptr<X86::None>();
 }
 
 /* ---- Helpers ---- */
 
 atl::shared_ptr<X86::Operand> GenerateX86::genIntValue(int value) {
-  return atl::make_shared<X86::IntValue>(X86::IntValue(atl::to_string(value)));
+  return atl::shared_ptr<X86::IntValue>(new X86::IntValue(atl::to_string(value)));
 }

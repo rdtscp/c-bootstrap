@@ -57,43 +57,43 @@ atl::shared_ptr<ASTNode> Optimiser::visit(BinOp &bo) {
     switch (bo.operation) {
     case Op::ADD:
       newVal = lhsVal + rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::AND:
       newVal = lhsVal && rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::DIV:
       newVal = lhsVal / rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::EQ:
       newVal = lhsVal == rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::GE:
       newVal = lhsVal >= rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::GT:
       newVal = lhsVal > rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::LE:
       newVal = lhsVal <= rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::LT:
       newVal = lhsVal < rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::MOD:
       newVal = lhsVal % rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::MUL:
       newVal = lhsVal * rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::NE:
       newVal = lhsVal != rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::OR:
       newVal = lhsVal || rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::SUB:
       newVal = lhsVal - rhsVal;
-      return atl::make_shared<IntLiteral>(IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
     case Op::ASSIGNADD:
       return bo.getptr();
     }

@@ -43,7 +43,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(AddressOf &ao) {
       return error("Type Error", "Cannot take the address of non LVALUE.",
                    ao.getptr());
   }
-  return atl::make_shared<PointerType>(PointerType(exprType));
+  return atl::shared_ptr<PointerType>(new PointerType(exprType));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Allocation &a) {
   if (a.varType != nullptr)
