@@ -48,7 +48,7 @@ public:
 private:
   const atl::vector<atl::string> includePaths;
   const SourceHandler &src;
-  // TODO: Use `weak_ptr` instead of raw pointer here.
+  // TODO: Use `observer_ptr` instead of raw pointer here.
   Preprocessor* parentPreprocessor;
   atl::shared_ptr<PPScanner> scanner;
   atl::vector<atl::string> filesPreprocessed;
