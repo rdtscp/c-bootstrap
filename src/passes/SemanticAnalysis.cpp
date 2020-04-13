@@ -185,7 +185,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassType &ct) {
       currScope->findClassDef(ct.identifier);
   if (ctd != nullptr) {
     ct.typeDefinition = ctd;
-    ct.identifier = ctd->classType->identifier;
+    ct.identifier = ctd->classIdentifier;
 
     return ct.getptr();
   }
@@ -221,7 +221,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
     ctd.classDecls[idx]->accept(*this);
 
   parentIdentifiers.pop_back();
-  ctd.getIdentifier()->parentIdentifier = parentIdentifiers.top();
+  // ctd.getIdentifier()->tailIdentifier = parentIdentifiers.top();
   currScope = ctd.outerScope;
 
   return noType();
@@ -229,7 +229,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
   // TODO: This should probably resolve the Constructor signature and just search for it.
   const atl::shared_ptr<ClassTypeDef> ctorClassTypeDef =
-      atl::static_pointer_cast<ClassType>(ctorObjectType)->typeDefinition;
+      currScope->findClassDef(cc.constructorIdentifier);
 
   if (ctorClassTypeDef == nullptr) {
     return error(
@@ -575,7 +575,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Namespace &n) {
   }
 
   parentIdentifiers.pop_back();
-  n.getIdentifier()->parentIdentifier = parentIdentifiers.top();
+  // n.getIdentifier()->parentIdentifier = parentIdentifiers.top();
 
   currScope = n.outerScope;
   return noType();
@@ -664,7 +664,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
     if (objSubscriptOpDecl == nullptr) {
       return error("Type Error",
                    "No definiton for subscript operator[] for type: " +
-                       objClassTypeDef->classType->identifier->toString(),
+                       objClassTypeDef->classIdentifier->toString(),
                    so.variable);
     }
 

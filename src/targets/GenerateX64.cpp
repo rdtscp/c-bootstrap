@@ -12,7 +12,7 @@ void GenerateX64::error(atl::string error) {
 }
 
 void GenerateX64::printErrors() const {
-  printf("FATAL x86 Generation Errors:\n");
+  printf("FATAL X64 Generation Errors:\n");
   for (unsigned int idx = 0; idx < errors.size(); ++idx)
     printf("\t%s\n", errors[idx].c_str());
 }
@@ -27,22 +27,22 @@ void GenerateX64::alloc(const VarDecl &vd) {
 /* ---- Visit AST ---- */
 
 atl::shared_ptr<X64::Operand> GenerateX64::visit(AddressOf &ao) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Allocation &a) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ArrayType &at) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Assign &as) {
   atl::shared_ptr<X64::Operand> lhsRegRes = as.lhs->accept(*this);
   atl::shared_ptr<X64::Operand> rhsResReg = as.rhs->accept(*this);
   x64.mov(lhsRegRes, rhsResReg);
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BaseType &bt) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
   /* Evaluate LHS and Store to Stack */
@@ -83,26 +83,26 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Block &b) {
     b.stmts[idx]->accept(*this);
 
   currScope = b.outerScope;
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BoolLiteral &bl) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(CharLiteral &cl) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassType &ct) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassTypeDecl &ctd) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassTypeDef &ctd) {
   for (unsigned int idx = 0u; idx < ctd.classDecls.size(); ++idx) {
     ctd.classDecls[idx]->accept(*this);
   }
 
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorCall &cc) {
   // TODO: Allocate for the type we are about to construct.
@@ -115,31 +115,31 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorCall &cc) {
   return X64::rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorDecl &cd) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorDef &cd) {
   x64.block("CtorDecl_" + cd.getSignature().mangle());
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Deletion &d) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(DestructorDecl &dd) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(DestructorDef &dd) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(DoWhile &dw) {
   dw.body->accept(*this);
   dw.condition->accept(*this);
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(EnumClassTypeDecl &ectd) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(For &f) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(FunCall &fc) {
   const atl::vector<atl::shared_ptr<X64::Register>> argRegisters = {
@@ -187,7 +187,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDecl &fd) {
 
   // currFpOffset = 0;
   // currScope = fd.funBlock->outerBlock;
-  return atl::make_shared<X64::None>(X64::None());
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
   currScope = fd.funBlock;
@@ -224,10 +224,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
 
   currFpOffset = 0;
   currScope = fd.funBlock->outerScope;
-  return atl::make_shared<X64::None>(X64::None());
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Identifier &i) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(If &i) {
   /* Calculate Names for Blocks */
@@ -258,20 +258,20 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(If &i) {
 
   /* Handle after the If statement. */
   x64.block(endBlockName);
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(IntLiteral &il) {
   x64.mov(X64::rax,
-          atl::make_shared<X64::IntValue>(X64::IntValue(il.getLiteral())));
+          atl::shared_ptr<X64::IntValue>(new X64::IntValue(il.getLiteral())));
   return X64::rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberAccess &ma) {
   ma.object->accept(*this);
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberCall &mc) {
   mc.object->accept(*this);
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Namespace &n) {
   for (unsigned int idx = 0; idx < n.namespaceDecls.size(); ++idx)
@@ -287,11 +287,11 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(PointerType &pt) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(PrefixOp &po) {
   // TODO
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Program &p) {
   currScope = p.getptr();
@@ -325,20 +325,20 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Program &p) {
     x64.write("\n\n");
   }
 
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ReferenceType &rt) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Return &r) {
   if (r.returnExpr) {
     atl::shared_ptr<X64::Operand> rVal = r.returnExpr->accept(*this);
     x64.mov(X64::rax, rVal);
   }
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(SizeOf &so) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(StaticCast &sc) {
   return sc.expr->accept(*this);
@@ -351,23 +351,23 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(StringLiteral &sl) {
       new X64::StringLiteral(strName, strVal));
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(SubscriptOp &so) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(TemplateDef &td) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(TertiaryExpr &t) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Throw &t) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(TypeDefDecl &td) {
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ValueAt &va) {
   va.derefExpr->accept(*this);
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDecl &vd) {
   int bytesRequired = vd.getBytes();
@@ -382,7 +382,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDecl &vd) {
       " @ [rbp" + atl::to_string(currFpOffset) + "]";
 
   x64.sub(X64::rsp, bytesRequired, comment);
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
   const atl::string vdIdent = vd.getIdentifier()->toString();
@@ -412,13 +412,13 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
           "Move " + vdIdent +
               "'s temp register into its stack allocated space.");
 
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
   const int fpOffset = ve.varDecl->fpOffset;
   if (fpOffset == 0)
-    return atl::make_shared<X64::GlobalVariable>(X64::GlobalVariable(
+    return atl::shared_ptr<X64::GlobalVariable>(new X64::GlobalVariable(
         ve.varDecl->getIdentifier()->toString(), ve.varDecl->getBytes()));
 
   return addrOffset(X64::rbp, fpOffset);
@@ -426,13 +426,13 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarExpr &ve) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(While &w) {
   w.condition->accept(*this);
   w.body->accept(*this);
-  return atl::make_shared<X64::None>();
+  return atl::shared_ptr<X64::None>();
 }
 
 /* ---- Helpers ---- */
 
 atl::shared_ptr<X64::IntValue> GenerateX64::genIntValue(int value) {
-  return atl::make_shared<X64::IntValue>(X64::IntValue(atl::to_string(value)));
+  return atl::shared_ptr<X64::IntValue>(new X64::IntValue(atl::to_string(value)));
 }
 
 atl::shared_ptr<X64::AddrOffset>

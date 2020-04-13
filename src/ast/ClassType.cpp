@@ -46,16 +46,6 @@ unsigned int ClassType::getBytes() const {
   return aggregateBytes;
 }
 
-bool ClassType::equivalentTo(Type &rhs) const {
-  if (rhs.astClass() == astClass())
-    return this->equivalentTo(*static_cast<ClassType *>(&rhs));
-  return false;
-}
-
-bool ClassType::equivalentTo(ClassType &rhs) const {
-  return identifier->value == rhs.identifier->value;
-}
-
 atl::string ClassType::mangle() const {
   atl::string output = identifier->mangle();
 

@@ -76,8 +76,8 @@ atl::string Identifier::mangle() const {
       break;
     }
   }
-  if (parentIdentifier) {
-    output = parentIdentifier->mangle() + "COLONCOLON" + output;
+  if (tailIdentifier) {
+    output += "COLONCOLON" + tail()->mangle();
   }
   return output;
 }
@@ -107,6 +107,3 @@ bool Identifier::operator==(const Identifier &rhs) const {
 bool Identifier::operator!=(const Identifier &rhs) const {
   return !(*this == rhs);
 }
-<<<<<<< HEAD
-
-const atl::shared_ptr<Identifier>
