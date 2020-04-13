@@ -320,24 +320,19 @@ atl::shared_ptr<Program> Parser::parseProgram() {
 }
 
 atl::shared_ptr<Identifier> Parser::parseIdentifier() {
-  atl::shared_ptr<Identifier> identifier;
+  
   if (acceptOperatorOverload()) {
-    identifier = createNode<Identifier>(
-        atl::shared_ptr<Identifier>(new Identifier(parseOperatorOverload())));
-  } else {
-    identifier = createNode<Identifier>(atl::shared_ptr<Identifier>(
-        new Identifier(expect(TC::IDENTIFIER).data)));
-    while (accept(TC::NAMESPACEACCESS)) {
-      expect(TC::NAMESPACEACCESS);
-      if (acceptOperatorOverload()) {
-        identifier = createNode<Identifier>(atl::shared_ptr<Identifier>(
-            new Identifier(parseOperatorOverload())));
-        break;
-      }
-      const atl::string identData = expect(TC::IDENTIFIER).data;
-      identifier =
-          createNode<Identifier>(new Identifier(identData, identifier));
+    return createNode<Identifier>(atl::shared_ptr<Identifier>(new Identifier(parseOperatorOverload())));
+  }
+  atl::shared_ptr<Identifier> identifier = createNode<Identifier>(atl::shared_ptr<Identifier>(new Identifier(expect(TC::IDENTIFIER).data)));
+  while (accept(TC::NAMESPACEACCESS)) {
+    expect(TC::NAMESPACEACCESS);
+    if (acceptOperatorOverload()) {
+      identifier->insert(createNode<Identifier>(atl::shared_ptr<Identifier>(new Identifier(parseOperatorOverload()))));
+      break;
     }
+    const atl::string identData = expect(TC::IDENTIFIER).data;
+    identifier->insert(createNode<Identifier>(atl::shared_ptr<Identifier>(new Identifier(identData))));
   }
   return identifier;
 }
@@ -346,11 +341,9 @@ atl::shared_ptr<Identifier> Parser::parseIdentifier() {
 atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
   expect(TC::CLASS);
   const atl::shared_ptr<Identifier> classIdentifier = parseIdentifier();
-  atl::shared_ptr<ClassType> classType = createNode<ClassType>(
-      atl::shared_ptr<ClassType>(new ClassType(classIdentifier)));
   if (accept(TC::SC)) {
     return createNode<ClassTypeDecl>(
-        atl::shared_ptr<ClassTypeDecl>(new ClassTypeDecl(classType)));
+        atl::shared_ptr<ClassTypeDecl>(new ClassTypeDecl(classIdentifier)));
   }
 
   // TODO: Parse Inheritance
@@ -395,7 +388,7 @@ atl::shared_ptr<ClassTypeDecl> Parser::parseClassTypeDecl() {
 
   expect(TC::RBRA);
   return createNode<ClassTypeDef>(
-      atl::shared_ptr<ClassTypeDef>(new ClassTypeDef(classType, classDecls)));
+      atl::shared_ptr<ClassTypeDef>(new ClassTypeDef(classIdentifier, classDecls)));
 }
 atl::shared_ptr<ConstructorDecl> Parser::parseConstructor() {
   const atl::shared_ptr<Identifier> constructorIdentifier = parseIdentifier();
@@ -722,7 +715,7 @@ atl::shared_ptr<Type> Parser::parseType() {
   if (accept(TC::ASTERIX)) {
     while (accept(TC::ASTERIX)) {
       expect(TC::ASTERIX);
-      type = createNode<PointerType>(new PointerType(type));
+      type = createNode<PointerType>(atl::shared_ptr<PointerType>(new PointerType(type)));
       if (accept(TC::CONST)) {
         expect(TC::CONST);
         type->typeModifiers.insert(Type::Modifiers::CONST);

@@ -112,16 +112,12 @@ TEST(ASTTest, ClassTypeComparison) {
 
 TEST(ASTTest, ClassTypeDeclComparisons) {
   const atl::shared_ptr<Identifier> classOneIdent(new Identifier("ClassOne"));
-  const atl::shared_ptr<ClassType> classOneType(new ClassType(classOneIdent));
-
-  const ClassTypeDef classOne(classOneType, {});
+  const ClassTypeDef classOne(classOneIdent, {});
 
   ASSERT_EQ(classOne, ClassTypeDef(classOne));
 
   const atl::shared_ptr<Identifier> classTwoIdent(new Identifier("ClassTwo"));
-  const atl::shared_ptr<ClassType> classTwoType(new ClassType(classTwoIdent));
-
-  const ClassTypeDef classTwo(classTwoType, {});
+  const ClassTypeDef classTwo(classTwoIdent, {});
 
   ASSERT_NE(classOne, classTwo);
 }
@@ -344,11 +340,11 @@ TEST(ASTTest, Scope_resolveFunCall_innerScope) {
   //   const atl::shared_ptr<FunDecl> funDeclOne(new FunDecl(
   //       atl::set<FunDecl::FunModifiers>(),
   //       atl::shared_ptr<Identifier>(new Identifier("myFunc")),
-  //       {atl::make_shared<VarDecl>(
-  //           VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::CHAR)),
+  //       {atl::shared_ptr<VarDecl>(
+  //           new VarDecl(atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR)),
   //                   atl::shared_ptr<Identifier>(new
   //                   Identifier("paramOne"))))},
-  //       atl::make_shared<BaseType>(BaseType(PrimitiveType::VOID))));
+  //       atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID))));
 
   //   currScope->insertDecl(funDeclOne);
 
@@ -362,10 +358,9 @@ TEST(ASTTest, Scope_resolveFunCall_innerScope) {
 TEST(ASTTest, ClassTypeDef_resolveVarExpr) {
   /* Store a class with a member variable in the current scope. */
   const atl::shared_ptr<ClassTypeDef> classTypeDef(new ClassTypeDef(
-      atl::make_shared<ClassType>(
-          ClassType(atl::shared_ptr<Identifier>(new Identifier("MyClass")))),
-      {atl::make_shared<VarDecl>(
-          VarDecl(atl::make_shared<BaseType>(BaseType(PrimitiveType::INT)),
+      atl::shared_ptr<Identifier>(new Identifier("MyClass")),
+      {atl::shared_ptr<VarDecl>(new
+          VarDecl(atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
                   atl::shared_ptr<Identifier>(new Identifier("memberVar"))))}));
 
   /* Resolve it */
