@@ -75,8 +75,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
         atl::static_pointer_cast<ClassType>(collapseReferenceTypes(lhsType));
 
     /*  Precedence for operator overloading:
-     *    1) Class definitions
-     *    2) Freestanding Functions
+     *    1) Freestanding Functions
      */
     const atl::shared_ptr<ClassTypeDef> lhsClassTypeDef =
         lhsClassType->typeDefinition;
@@ -84,8 +83,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
     /* Create a FunSignature for Operator Overload Call. */
     // Create the arguments.
     atl::vector<atl::shared_ptr<Type>> opOverloadCallArgTypes;
-    opOverloadCallArgTypes.push_back(atl::shared_ptr<PointerType>(
-        new PointerType(lhsClassType)));
+    opOverloadCallArgTypes.push_back(lhsClassType);
     opOverloadCallArgTypes.push_back(rhsType);
 
     // Create the modifiers.
@@ -104,10 +102,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
         nullptr, opOverloadIdentifier, opOverloadCallArgTypes, lhsModifiers);
 
     // Try resolve it.
-    const atl::shared_ptr<FunDecl> opOverloadClassFunc =
-        lhsClassTypeDef->resolveFunCall(opOverloadCallSignature);
-    if (opOverloadClassFunc)
-      return opOverloadClassFunc->funType;
+    // const atl::shared_ptr<FunDecl> opOverloadClassFunc =
+    //     lhsClassTypeDef->resolveFunCall(opOverloadCallSignature);
+    // if (opOverloadClassFunc)
+    //   return opOverloadClassFunc->funType;
 
     const atl::shared_ptr<FunDecl> opOverloadScopeFunc =
         currScope->findFunDecl(opOverloadCallSignature);
@@ -219,17 +217,23 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
   const atl::shared_ptr<ClassTypeDef> ctorClassTypeDef =
       currScope->findClassDef(cc.constructorIdentifier);
 
-  if (ctorClassTypeDef == nullptr)
+  if (ctorClassTypeDef == nullptr) {
     return error(
         "Name/Type Analysis",
         "Attempted to call a constructor, but could not resolve the class",
         cc.getptr());
+  }
 
   atl::vector<atl::shared_ptr<Type>> constructorCallArgTypes;
-  for (unsigned int idx = 0; idx < cc.constructorArgs.size(); ++idx)
+  for (unsigned int idx = 0; idx < cc.constructorArgs.size(); ++idx) {
     constructorCallArgTypes.push_back(cc.constructorArgs[idx]->accept(*this));
+  }
 
-  const FunSignature ctorCallSignature(nullptr, cc.constructorIdentifier,
+  atl::shared_ptr<Identifier> ctorIdentifier = cc.constructorIdentifier;
+  while (ctorIdentifier->tail()) {
+    ctorIdentifier = ctorIdentifier->tail();
+  }
+  const FunSignature ctorCallSignature(nullptr, ctorIdentifier,
                                        constructorCallArgTypes,
                                        atl::set<FunDecl::FunModifiers>());
   const atl::shared_ptr<ConstructorDecl> ctorDecl =
@@ -724,12 +728,13 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
                    "with undefined class type.",
                    atl::static_pointer_cast<Decl>(vd.getptr()));
   }
-  if (currScope->findVarDecl(vd.getIdentifier(), vd.getptr()))
+  if (currScope->findVarDecl(vd.getIdentifier(), vd.getptr())) {
     return error("Name Analysis",
                  "Attempted to define a Variable with an identifier that is "
                  "already in use: " +
                      vd.getIdentifier()->toString(),
                  atl::static_pointer_cast<Decl>(vd.getptr()));
+  }
 
   // Visit the value initialised.
   const atl::shared_ptr<Type> valueType = vd.varValue->accept(*this);

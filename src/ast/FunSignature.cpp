@@ -58,7 +58,7 @@ bool FunSignature::operator==(const FunSignature &rhs) const {
 
   // Check args match.
   for (unsigned int idx = 0u; idx < funArgs.size(); ++idx)
-    if (*funArgs[idx] != *rhs.funArgs[idx])
+    if (funArgs[idx]->canCastTo(*rhs.funArgs[idx]))
       return false;
 
   // Check identifier.
