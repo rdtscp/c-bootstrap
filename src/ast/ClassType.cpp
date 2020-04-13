@@ -23,6 +23,15 @@ bool ClassType::canCastTo(Type &rhs) const {
   return false;
 }
 
+bool ClassType::equivalentTo(Type &rhs) const {
+  if (rhs.astClass() != "ClassType") {
+    return false;
+  }
+
+  const ClassType &ct = *static_cast<ClassType *>(&rhs);
+  return typeDefinition == ct.typeDefinition;
+}
+
 unsigned int ClassType::getBytes() const {
   unsigned int aggregateBytes = 0;
 

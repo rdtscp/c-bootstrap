@@ -15,57 +15,12 @@
 using namespace ACC;
 
 ClassTypeDef::ClassTypeDef(
-    const atl::shared_ptr<ClassType> &p_classType,
+    const atl::shared_ptr<Identifier> &p_classIdentifier,
     const atl::vector<atl::shared_ptr<Decl>> &p_classDecls)
-    : ClassTypeDecl(p_classType), classDecls(p_classDecls) {
-  /* Add `this` parameter to all FunDecls. */
-  for (unsigned int declIdx = 0; declIdx < classDecls.size(); ++declIdx) {
-    const atl::shared_ptr<Decl> currDecl = classDecls[declIdx];
-    if (currDecl->astClass() == "ConstructorDecl" ||
-        currDecl->astClass() == "ConstructorDef") {
-      atl::shared_ptr<ConstructorDecl> constructorDecl =
-          atl::static_pointer_cast<ConstructorDecl>(currDecl);
-
-      // Prepend a hardcoded "this" parameter.
-      const Position &thisPosition = constructorDecl->position;
-      const atl::shared_ptr<PointerType> classPtr(new PointerType(classType));
-      classPtr->position = thisPosition;
-      const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
-      thisIdent->position = thisPosition;
-      const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(classPtr, thisIdent));
-      thisParam->Decl::position = thisPosition;
-
-      constructorDecl->constructorParams.push_front(thisParam);
-
-      rvalRefWrap(constructorDecl);
-    }
-    if (currDecl->astClass() == "FunDecl" || currDecl->astClass() == "FunDef") {
-      // Create a new FunDecl as a copy of the original.
-      atl::shared_ptr<FunDecl> funDecl =
-          atl::static_pointer_cast<FunDecl>(currDecl);
-
-      // We don't add the self parameter for static methods.
-      if (funDecl->funModifiers.find(FunDecl::FunModifiers::STATIC))
-        continue;
-
-      // Prepend a hardcoded "this" parameter.
-      const Position &thisPosition = funDecl->position;
-      const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
-      thisType->position = thisPosition;
-      const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
-      thisType->position = thisPosition;
-      const atl::shared_ptr<VarDecl> thisParam(
-          new VarDecl(thisType, thisIdent));
-      thisParam->Decl::position = thisPosition;
-
-      funDecl->funParams.push_front(thisParam);
-    }
-  }
-}
+    : ClassTypeDecl(p_classIdentifier), classDecls(p_classDecls) {}
 
 atl::shared_ptr<Identifier> ClassTypeDef::getIdentifier() const {
-  return classType->identifier;
+  return classIdentifier;
 }
 
 bool ClassTypeDef::operator==(Decl &rhs) const {
@@ -77,7 +32,7 @@ bool ClassTypeDef::operator==(Decl &rhs) const {
 bool ClassTypeDef::operator!=(Decl &rhs) const { return !(*this == rhs); }
 
 bool ClassTypeDef::operator==(const ClassTypeDef &rhs) const {
-  if (*classType != *rhs.classType)
+  if (*classIdentifier != *rhs.classIdentifier)
     return false;
 
   if (classDecls.size() != rhs.classDecls.size())
@@ -205,9 +160,28 @@ ClassTypeDef::findFunDecl(const FunSignature &funSignature,
 atl::shared_ptr<FunDecl>
 ClassTypeDef::findFunDeclLocal(const FunSignature &funSignature,
                                const atl::shared_ptr<Decl> &exemptDecl) {
+<<<<<<< HEAD
   // /* If there are more namespaces to strip, we won't find in here. */
   // if (funSignature.namespaceCount() > 0)
   //   return nullptr;
+=======
+  if (funSignature.namespaceCount() == 1 &&
+      getIdentifier()->head() == funSignature.namespaceHead()) {
+    for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
+      const atl::shared_ptr<Decl> currDecl = classDecls[idx];
+      if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")
+        continue;
+      const atl::shared_ptr<FunDecl> currFunDecl =
+          atl::static_pointer_cast<FunDecl>(currDecl);
+      if (currFunDecl.get() == exemptDecl.get())
+        continue;
+      if (funSignature.lowerNamespace() != currFunDecl->getSignature())
+        continue;
+
+      return currFunDecl;
+    }
+  }
+>>>>>>> master
 
   /* No Namespacing on this FunSignature, search the class methods. */
   for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
@@ -289,6 +263,7 @@ ClassTypeDef::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
   return nullptr;
 }
 
+<<<<<<< HEAD
 void ClassTypeDef::rvalRefWrap(atl::shared_ptr<ConstructorDecl> ctorDecl) {
   // Make this function static.
   atl::set<FunDecl::FunModifiers> modifiers;
@@ -326,4 +301,16 @@ void ClassTypeDef::rvalRefWrap(atl::shared_ptr<ConstructorDecl> ctorDecl) {
       modifiers, classType->identifier, parameters, returnType, funBlock));
 
   classDecls.push_back(funDef);
+=======
+atl::shared_ptr<VarDecl> ClassTypeDef::createThisParam(const Position &thisPosition) const {
+  const atl::shared_ptr<ClassType> classType(new ClassType(classIdentifier));
+  classType->position = thisPosition;
+  const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
+  thisType->position = thisPosition;
+  const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
+  thisType->position = thisPosition;
+  const atl::shared_ptr<VarDecl> thisParam(new VarDecl(thisType, thisIdent));
+  thisParam->Decl::position = thisPosition;
+  return thisParam;
+>>>>>>> master
 }

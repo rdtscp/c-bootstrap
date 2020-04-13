@@ -15,9 +15,8 @@ public:
 
   ClassType(const atl::shared_ptr<Identifier> &p_identifier);
 
-  bool canCastTo(Type &rhs) const override;
-  bool equivalentTo(Type &rhs) const override;
-  virtual bool equivalentTo(ClassType &rhs) const;
+  virtual bool canCastTo(Type &rhs) const override;
+  virtual bool equivalentTo(Type &rhs) const override; //{ return *this == rhs; }
   unsigned int getBytes() const override;
   atl::string mangle() const override;
 

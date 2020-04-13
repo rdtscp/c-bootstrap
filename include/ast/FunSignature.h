@@ -20,7 +20,7 @@ public:
 
   const unsigned int namespaceCount() const;
 
-  const atl::shared_ptr<Identifier> namespaceHead() const;
+  const atl::string namespaceHead() const;
 
   const FunSignature lowerNamespace() const;
 

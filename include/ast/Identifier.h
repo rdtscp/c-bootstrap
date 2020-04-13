@@ -14,20 +14,17 @@ class Identifier : public ASTNode,
 
 public:
   atl::string value;
-  atl::shared_ptr<Identifier> parentIdentifier;
-
-  Identifier();
+  atl::shared_ptr<Identifier> tailIdentifier;
 
   Identifier(const atl::string &p_value);
 
-  Identifier(const atl::string &p_value,
-             const atl::shared_ptr<Identifier> &p_parentIdentifier);
+  atl::shared_ptr<Identifier> clone() const;
 
-  Identifier(const Identifier &) = delete;
+  void insert(const atl::shared_ptr<Identifier> &p_tailIdentifier);
 
-  const unsigned int namespaceCount() const;
-  const atl::shared_ptr<Identifier> namespaceHead() const;
-  const atl::shared_ptr<Identifier> namespaceTail() const;
+  const atl::string head() const;
+  const atl::shared_ptr<Identifier> tail() const;
+  const unsigned int size() const;
 
   atl::string mangle() const;
   atl::string toString() const;
@@ -40,10 +37,6 @@ public:
   atl::string astClass() const override { return "Identifier"; }
 
   VISITOR_ACCEPTORS
-
-private:
-  const atl::shared_ptr<Identifier>
-  deepCopyIdentifier(const unsigned int depth) const;
 };
 
 } // namespace ACC

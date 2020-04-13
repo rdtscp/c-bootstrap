@@ -207,7 +207,7 @@ atl::string DotGraph::visit(ClassTypeDef &ctd) {
       join(protectedDecls, ctd.classDecls[i]->accept(*this));
   }
 
-  classTypeDeclIDs[ctd.classType->identifier->toString().c_str()] = classID;
+  classTypeDeclIDs[ctd.classIdentifier->toString().c_str()] = classID;
   return classID;
 }
 atl::string DotGraph::visit(ConstructorCall &cc) {
