@@ -10,9 +10,7 @@ ClassType::ClassType(const atl::shared_ptr<Identifier> &p_identifier)
 bool ClassType::canCastTo(Type &rhs) const {
   // We can cast a class to a reference of itself.
   if (rhs.astClass() == "ReferenceType") {
-    const atl::shared_ptr<Type> rhsPtr(&rhs);
-    const atl::shared_ptr<ReferenceType> rhsRefType =
-        atl::static_pointer_cast<ReferenceType>(rhsPtr);
+    const ReferenceType *rhsRefType = static_cast<ReferenceType*>(&rhs);
     if (rhsRefType->referencedType->astClass() == "ClassType") {
       const atl::shared_ptr<ClassType> rhsRefClassType =
           atl::static_pointer_cast<ClassType>(rhsRefType->referencedType);
