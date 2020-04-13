@@ -1,15 +1,15 @@
-#include "ast/ClassType.h"
+#include "ast/Identifier.h"
 #include "ast/ClassTypeDef.h"
 #include "ast/FunDef.h"
 #include "ast/VarDef.h"
 
 using namespace ACC;
 
-ClassTypeDecl::ClassTypeDecl(const atl::shared_ptr<ClassType> &p_classType)
-    : classType(p_classType) {}
+ClassTypeDecl::ClassTypeDecl(const atl::shared_ptr<Identifier> &p_classIdentifier)
+    : classIdentifier(p_classIdentifier) {}
 
 atl::shared_ptr<Identifier> ClassTypeDecl::getIdentifier() const {
-  return classType->identifier;
+  return classIdentifier;
 }
 
 bool ClassTypeDecl::operator==(Decl &rhs) const {
@@ -21,7 +21,7 @@ bool ClassTypeDecl::operator==(Decl &rhs) const {
 bool ClassTypeDecl::operator!=(Decl &rhs) const { return !(*this == rhs); }
 
 bool ClassTypeDecl::operator==(const ClassTypeDecl &rhs) const {
-  if (*classType != *rhs.classType)
+  if (*classIdentifier != *rhs.classIdentifier)
     return false;
 
   return true;

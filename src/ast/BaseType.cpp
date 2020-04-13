@@ -36,8 +36,7 @@ unsigned int BaseType::getBytes() const {
 
 bool BaseType::operator==(Type &rhs) const {
   if (rhs.astClass() == "ReferenceType") {
-    const atl::shared_ptr<ReferenceType> rhsRefType(
-        static_cast<ReferenceType *>(&rhs));
+    const ReferenceType *rhsRefType = static_cast<ReferenceType *>(&rhs);
     return *this == *rhsRefType->referencedType;
   } else {
     if (rhs.astClass() == astClass())

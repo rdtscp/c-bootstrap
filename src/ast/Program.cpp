@@ -10,6 +10,22 @@ using namespace ACC;
 Program::Program(const atl::vector<atl::shared_ptr<Decl>> &p_decls)
     : decls(p_decls) {}
 
+bool Program::operator==(const Program &rhs) const {
+  if (decls.size() != rhs.decls.size())
+    return false;
+
+  for (unsigned int i = 0; i < decls.size(); ++i) {
+    if (*decls[i] != *rhs.decls[i])
+      return false;
+  }
+
+  return true;
+}
+
+bool Program::operator!=(const Program &rhs) const {
+  return !(*this == rhs);
+}
+
 atl::shared_ptr<ClassTypeDecl>
 Program::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                        const atl::shared_ptr<Decl> &exemptDecl) {
@@ -34,17 +50,17 @@ Program::findClassDecl(const atl::shared_ptr<Identifier> identifier,
 atl::shared_ptr<ClassTypeDef>
 Program::findClassDef(const atl::shared_ptr<Identifier> identifier,
                       const atl::shared_ptr<Decl> &exemptDecl) {
-  if (identifier->namespaceCount() > 0) {
+  if (identifier->size() > 1) {
     for (int idx = declsChecked - 1; idx >= 0; --idx) {
       const atl::shared_ptr<Decl> currDecl = decls[idx];
       if (currDecl->astClass() == "Namespace") {
         const atl::shared_ptr<Namespace> currNamespace =
             atl::static_pointer_cast<Namespace>(currDecl);
-        if (*currNamespace->identifier != *identifier->namespaceHead())
+        if (currNamespace->identifier->head() != identifier->head())
           continue;
 
         const atl::shared_ptr<ClassTypeDef> namespaceFind =
-            currNamespace->findClassDef(identifier->namespaceTail(),
+            currNamespace->findClassDef(identifier->tail(),
                                         exemptDecl);
         if (namespaceFind == nullptr)
           continue;
@@ -95,7 +111,7 @@ Program::findFunDeclLocal(const FunSignature &funSignature,
       if (currDecl->astClass() == "ClassTypeDef") {
         const atl::shared_ptr<ClassTypeDef> currClassTypeDef =
             atl::static_pointer_cast<ClassTypeDef>(currDecl);
-        if (*currClassTypeDef->getIdentifier() != *funSignature.namespaceHead())
+        if (currClassTypeDef->getIdentifier()->head() != funSignature.namespaceHead())
           continue;
         if (currClassTypeDef.get() == exemptDecl.get())
           continue;
@@ -110,7 +126,7 @@ Program::findFunDeclLocal(const FunSignature &funSignature,
       } else if (currDecl->astClass() == "Namespace") {
         const atl::shared_ptr<Namespace> currNamespace =
             atl::static_pointer_cast<Namespace>(currDecl);
-        if (*currNamespace->identifier != *funSignature.namespaceHead())
+        if (currNamespace->identifier->head() != funSignature.namespaceHead())
           continue;
 
         const atl::shared_ptr<FunDecl> namespaceFind =

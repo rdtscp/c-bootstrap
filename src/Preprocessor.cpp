@@ -40,7 +40,7 @@ char PPScanner::next() {
 
 Preprocessor::Preprocessor(const SourceHandler &p_src,
                            const atl::vector<atl::string> &p_includePaths,
-                           atl::shared_ptr<Preprocessor> p_parentPreprocessor)
+                           Preprocessor *p_parentPreprocessor)
     : includePaths(p_includePaths), src(p_src),
       parentPreprocessor(p_parentPreprocessor), scanner(new PPScanner(src)) {}
 

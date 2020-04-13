@@ -10,15 +10,15 @@ FunSignature::FunSignature(const atl::shared_ptr<Type> p_funReturnType,
       funArgs(p_funArgs), funModifiers(p_funModifiers) {}
 
 const unsigned int FunSignature::namespaceCount() const {
-  return funIdentifier->namespaceCount();
+  return funIdentifier->size() - 1;
 }
 
-const atl::shared_ptr<Identifier> FunSignature::namespaceHead() const {
-  return funIdentifier->namespaceHead();
+const atl::string FunSignature::namespaceHead() const {
+  return funIdentifier->head();
 }
 
 const FunSignature FunSignature::lowerNamespace() const {
-  return FunSignature(funReturnType, funIdentifier->namespaceTail(), funArgs,
+  return FunSignature(funReturnType, funIdentifier->tail(), funArgs,
                       funModifiers);
 }
 
@@ -58,7 +58,7 @@ bool FunSignature::operator==(const FunSignature &rhs) const {
 
   // Check args match.
   for (unsigned int idx = 0u; idx < funArgs.size(); ++idx)
-    if (*funArgs[idx] != *rhs.funArgs[idx])
+    if (funArgs[idx]->canCastTo(*rhs.funArgs[idx]))
       return false;
 
   // Check identifier.

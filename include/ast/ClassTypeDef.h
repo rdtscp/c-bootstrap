@@ -5,11 +5,10 @@
 namespace ACC {
 
 class ClassTypeDef : public ClassTypeDecl {
-
 public:
   atl::vector<atl::shared_ptr<Decl>> classDecls;
 
-  ClassTypeDef(const atl::shared_ptr<ClassType> &p_classType,
+  ClassTypeDef(const atl::shared_ptr<Identifier> &p_classIdentifier,
                const atl::vector<atl::shared_ptr<Decl>> &p_classDecls);
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
@@ -72,6 +71,9 @@ public:
                    const atl::shared_ptr<Decl> &exemptDecl = nullptr) override;
 
   VISITOR_ACCEPTORS
+
+private:
+  atl::shared_ptr<VarDecl> createThisParam(const Position &thisPosition) const;
 };
 
 } // namespace ACC
