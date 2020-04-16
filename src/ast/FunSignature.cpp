@@ -9,10 +9,6 @@ FunSignature::FunSignature(const atl::shared_ptr<Type> p_funReturnType,
     : funReturnType(p_funReturnType), funIdentifier(p_funIdentifier),
       funArgs(p_funArgs), funModifiers(p_funModifiers) {}
 
-const atl::shared_ptr<Identifier> FunSignature::getIdentifier() const {
-  return funIdentifier;
-}
-
 const unsigned int FunSignature::namespaceCount() const {
   return funIdentifier->size() - 1;
 }
@@ -42,7 +38,7 @@ bool FunSignature::canCall(const FunSignature &rhs) const {
   }
 
   // Check identifier.
-  if (funIdentifier->value != rhs.funIdentifier->value)
+  if (*funIdentifier != *rhs.funIdentifier)
     return false;
 
   // Check Relevant Modifiers

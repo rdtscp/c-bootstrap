@@ -177,7 +177,8 @@ ClassTypeDef::findFunDeclLocal(const FunSignature &funSignature,
     }
   }
 
-  /* No Namespacing on this FunSignature, search the class methods. */
+
+    /* No Namespacing on this FunSignature, search top level. */
   for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
     const atl::shared_ptr<Decl> currDecl = classDecls[idx];
     if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")

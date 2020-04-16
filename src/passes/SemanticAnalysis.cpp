@@ -185,7 +185,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassType &ct) {
       currScope->findClassDef(ct.identifier);
   if (ctd != nullptr) {
     ct.typeDefinition = ctd;
-    ct.identifier = ctd->classIdentifier;
 
     return ct.getptr();
   }
@@ -215,12 +214,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
 
   ctd.outerScope = currScope;
   currScope = ctd.getptr();
-  parentIdentifiers.push_back(ctd.getIdentifier());
+  // parentIdentifiers.push_back(ctd.getIdentifier());
 
   for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx)
     ctd.classDecls[idx]->accept(*this);
 
-  parentIdentifiers.pop_back();
+  // parentIdentifiers.pop_back();
   // ctd.getIdentifier()->tailIdentifier = parentIdentifiers.top();
   currScope = ctd.outerScope;
 
@@ -402,7 +401,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
                      fd.getIdentifier()->toString(),
                  fd.getIdentifier());
 
-  currFunDef = fd.getptr();
+  // currFunDef = fd.getptr();
   fd.outerScope = currScope;
   currScope = fd.getptr();
 
@@ -412,7 +411,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
 
   const atl::shared_ptr<Type> funType = fd.funType->accept(*this);
   currScope = fd.outerScope;
-  currFunDef = nullptr;
+  // currFunDef = nullptr;
   return funType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Identifier &i) {
@@ -513,7 +512,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
                    "Attempted to access member variable of class type without "
                    "using `.` operator.",
                    mc.object);
-    objType = atl::static_pointer_cast<PointerType>(objType)->pointedType;
+    objType = atl::static_pointer_cast<PointerType>(objType)->pointedType->accept(*this);
     // Get ClassType
     if (objType->astClass() != "ClassType")
       return error("Type Analysis",
@@ -567,14 +566,14 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(Namespace &n) {
   n.outerScope = currScope;
   currScope = n.getptr();
-  parentIdentifiers.push_back(n.getIdentifier());
+  // parentIdentifiers.push_back(n.getIdentifier());
 
   for (unsigned int i = 0; i < n.namespaceDecls.size(); ++i) {
     n.namespaceDecls[i]->accept(*this);
     ++n.namespaceDeclsChecked;
   }
 
-  parentIdentifiers.pop_back();
+  // parentIdentifiers.pop_back();
   // n.getIdentifier()->parentIdentifier = parentIdentifiers.top();
 
   currScope = n.outerScope;

@@ -4,10 +4,7 @@ using namespace ACC;
 
 VarDecl::VarDecl(const atl::shared_ptr<Type> &p_type,
                  const atl::shared_ptr<Identifier> &p_identifier)
-    : type(p_type), identifier(p_identifier) {
-  if (identifier == nullptr)
-    identifier = atl::shared_ptr<Identifier>(new Identifier(""));
-}
+    : type(p_type), identifier(p_identifier) {}
 
 unsigned int VarDecl::getBytes() const { return type->getBytes(); }
 

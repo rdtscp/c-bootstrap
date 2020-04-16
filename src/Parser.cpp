@@ -152,10 +152,10 @@ bool Parser::acceptFunDecl(int offset) {
       ++offset;
     }
 
-    while (accept(TC::NAMESPACEACCESS, offset) &&
-           accept(TC::IDENTIFIER, offset + 1)) {
-      offset = offset + 2;
-    }
+    // while (accept(TC::NAMESPACEACCESS, offset) &&
+    //        accept(TC::IDENTIFIER, offset + 1)) {
+    //   offset = offset + 2;
+    // }
 
     return (accept(TC::IDENTIFIER, offset) || acceptOpOverload(offset)) &&
            accept(TC::LPAR, offset + 1);

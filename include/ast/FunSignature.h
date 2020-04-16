@@ -16,8 +16,6 @@ public:
                const atl::vector<atl::shared_ptr<Type>> p_funArgs,
                const atl::set<FunDecl::FunModifiers> p_funModifiers);
 
-  const atl::shared_ptr<Identifier> getIdentifier() const;
-
   const unsigned int namespaceCount() const;
 
   const atl::string namespaceHead() const;
