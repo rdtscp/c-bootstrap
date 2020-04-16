@@ -15,8 +15,10 @@ jobs:
         make --directory ./build -j
 
     - name: Debug Tests
-      run: make test -C ./build ARGS='--output-on-failure'
-    
+      run:  |
+        cd build
+        ctest --output-on-failure
+
     - name: Clean Build
       run: |
        rm -rf ./build/
@@ -28,7 +30,9 @@ jobs:
         make --directory ./build -j
 
     - name: Release Tests
-      run: make test -C ./build ARGS='--output-on-failure'
+      run: |
+        cd build
+        ctest --output-on-failure
 
   gcc-build:
     runs-on: ubuntu-latest
@@ -41,8 +45,10 @@ jobs:
         make --directory ./build -j
 
     - name: Debug Tests
-      run: make test -C ./build ARGS='--output-on-failure'
-    
+      run: |
+        cd build
+        ctest --output-on-failure
+
     - name: Clean Build
       run: |
        rm -rf ./build/
@@ -54,7 +60,9 @@ jobs:
         make --directory ./build -j
 
     - name: Release Tests
-      run: make test -C ./build ARGS='--output-on-failure'
+      run: |
+        cd build
+        ctest --output-on-failure
 
   test-coverage:
     runs-on: ubuntu-latest
@@ -69,7 +77,9 @@ jobs:
         make --directory ./build -j
 
     - name: Debug Tests
-      run: make test -C ./build ARGS='--output-on-failure'
+      run: |
+        cd build
+        ctest --output-on-failure
 
     - name: Get Coverage
       run: |
