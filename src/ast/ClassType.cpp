@@ -27,18 +27,18 @@ bool ClassType::equivalentTo(Type &rhs) const {
   }
 
   const ClassType &ct = *static_cast<ClassType *>(&rhs);
-  return typeDefinition == ct.typeDefinition;
+  return typeDefinition.lock() == ct.typeDefinition.lock();
 }
 
 unsigned int ClassType::getBytes() const {
   unsigned int aggregateBytes = 0;
 
-  const unsigned int classDeclsSize = typeDefinition->classDecls.size();
+  const unsigned int classDeclsSize = typeDefinition.lock()->classDecls.size();
   for (unsigned int i = 0; i < classDeclsSize; ++i) {
-    if (typeDefinition->classDecls[i]->astClass() == "VarDecl" ||
-        typeDefinition->classDecls[i]->astClass() == "VarDef") {
+    if (typeDefinition.lock()->classDecls[i]->astClass() == "VarDecl" ||
+        typeDefinition.lock()->classDecls[i]->astClass() == "VarDef") {
       aggregateBytes +=
-          atl::static_pointer_cast<VarDecl>(typeDefinition->classDecls[i])
+          atl::static_pointer_cast<VarDecl>(typeDefinition.lock()->classDecls[i])
               ->getBytes();
     }
   }

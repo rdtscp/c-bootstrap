@@ -78,7 +78,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
      *    1) Freestanding Functions
      */
     const atl::shared_ptr<ClassTypeDef> lhsClassTypeDef =
-        lhsClassType->typeDefinition;
+        lhsClassType->typeDefinition.lock();
 
     /* Create a FunSignature for Operator Overload Call. */
     // Create the arguments.
@@ -461,7 +461,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
   }
 
   const atl::shared_ptr<ClassTypeDef> objClassTypeDef =
-      objClassType->typeDefinition;
+      objClassType->typeDefinition.lock();
   // Check this ClassType is Defined.
   if (objClassTypeDef == nullptr)
     return error("Type Error",
@@ -515,7 +515,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
   }
 
   const atl::shared_ptr<ClassTypeDef> objClassTypeDef =
-      objClassType->typeDefinition;
+      objClassType->typeDefinition.lock();
   // Check this ClassType is Defined.
   if (objClassTypeDef == nullptr)
     return error("Type Error",
@@ -618,7 +618,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
     const atl::shared_ptr<ClassType> objClassType =
         atl::static_pointer_cast<ClassType>(objType);
     const atl::shared_ptr<ClassTypeDef> objClassTypeDef =
-        objClassType->typeDefinition;
+        objClassType->typeDefinition.lock();
 
     const atl::shared_ptr<Type> indexType = so.index->accept(*this);
 
@@ -701,7 +701,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
   if (varType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> vdClassType =
         atl::static_pointer_cast<ClassType>(varType);
-    if (vdClassType->typeDefinition == nullptr)
+    if (vdClassType->typeDefinition.lock() == nullptr)
       return error("Type Analysis",
                    "Attempted to define variable "
                    "with undefined class type.",
@@ -722,7 +722,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
   if (varType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> vdClassType =
         atl::static_pointer_cast<ClassType>(varType);
-    if (vdClassType->typeDefinition == nullptr)
+    if (vdClassType->typeDefinition.lock() == nullptr)
       return error("Type Analysis",
                    "Attempted to define variable "
                    "with undefined class type.",
