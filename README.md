@@ -137,6 +137,23 @@ Progressively changing to adopt new features of the language(s).
 
 * * *
 
+### Usage
+
+Building/Running/Testing in a unix environment (requires cmake installed:
+
+        # Build Code
+        git clone https://github.com/rdtscp/c-bootstrap.git
+        cd ./c-bootstrap/
+        mkdir build ; cd build
+        cmake -DCMAKE_BUILD_TYPE=Debug ../
+        make -j && ctest
+        # Run Examples below
+        ./acc ../test/tests/Test_Parser/BinOp/test.cpp test.dot --graph
+        ./acc ../test/tests/Test_Parser/BinOp/test.cpp test_opt.dot --graph --opt
+
+Then paste the contents of test.dot and test_opt.dot into a dot-graph generator (I recommend <http://www.webgraphviz.com/>).
+You can then see a graphical representation of the input program.
+
 ### macOS Notes
 
     # Building Assembly:
