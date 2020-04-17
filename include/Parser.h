@@ -134,6 +134,7 @@ private:
   atl::shared_ptr<Expr> parseObjExprOp();
   atl::shared_ptr<FunCall> parseFunCall();
   atl::shared_ptr<Expr> parseLitExpr();
+  atl::shared_ptr<StringLiteral> parseStringLiteral();
 
   atl::string parseOperatorOverload();
   atl::shared_ptr<VarDecl> parseParam();
@@ -142,10 +143,11 @@ private:
 
   /* Converts an Token to an Type */
   atl::shared_ptr<BaseType> tokenToType(const SourceToken::Class &tc);
-  template <typename Ret>
-  atl::shared_ptr<Ret> createNode(atl::shared_ptr<ASTNode> node) {
+
+  template <typename T>
+  atl::shared_ptr<T> createNode(T *node) {
     node->position = prevPosition;
-    return node;
+    return atl::shared_ptr<T>(node);
   }
 };
 
