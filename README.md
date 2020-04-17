@@ -2,6 +2,7 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c18ee2ef41274532a7baa1969fe843b7)](https://app.codacy.com/app/rdtscp/c-bootstrap?utm_source=github.com&utm_medium=referral&utm_content=rdtscp/c-bootstrap&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Frdtscp%2Fc-bootstrap%2Fbadge&style=flat)](https://actions-badge.atrox.dev/rdtscp/c-bootstrap/goto)
+[![codecov](https://codecov.io/gh/rdtscp/c-bootstrap/branch/master/graph/badge.svg)](https://codecov.io/gh/rdtscp/c-bootstrap)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)
 
 -   Bootstrapping a simple C based compiler written in C++.
@@ -136,6 +137,23 @@ Progressively changing to adopt new features of the language(s).
                   | expr
 
 * * *
+
+### Usage
+
+Building/Running/Testing in a unix environment (requires cmake installed:
+
+        # Build Code
+        git clone https://github.com/rdtscp/c-bootstrap.git
+        cd ./c-bootstrap/
+        mkdir build ; cd build
+        cmake -DCMAKE_BUILD_TYPE=Debug ../
+        make -j && ctest
+        # Run Examples below
+        ./acc ../test/tests/Test_Parser/BinOp/test.cpp test.dot --graph
+        ./acc ../test/tests/Test_Parser/BinOp/test.cpp test_opt.dot --graph --opt
+
+Then paste the contents of test.dot and test_opt.dot into a dot-graph generator (I recommend <http://www.webgraphviz.com/>).
+You can then see a graphical representation of the input program.
 
 ### macOS Notes
 
