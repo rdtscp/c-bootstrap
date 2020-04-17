@@ -15,6 +15,7 @@ public:
   atl::shared_ptr<Identifier> constructorIdentifier;
   atl::vector<atl::shared_ptr<Expr>> constructorArgs;
   atl::weak_ptr<ConstructorDecl> constructorDecl;
+  atl::weak_ptr<VarDecl> objectToConstruct;
 
   ConstructorCall(const atl::shared_ptr<Identifier> &p_ctorIdentifier,
                   const atl::vector<atl::shared_ptr<Expr>> &p_ctorArgs);
