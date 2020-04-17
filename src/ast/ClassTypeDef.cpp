@@ -89,7 +89,7 @@ ClassTypeDef::resolveFunCall(const FunSignature &funSignature,
 atl::shared_ptr<ClassTypeDecl>
 ClassTypeDef::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                             const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findClassDecl(identifier);
+  return outerScope.lock()->findClassDecl(identifier);
 }
 
 atl::shared_ptr<ClassTypeDef>
@@ -111,8 +111,8 @@ ClassTypeDef::findClassDef(const atl::shared_ptr<Identifier> identifier,
 
     return atl::static_pointer_cast<ClassTypeDecl>(currDecl);
   }
-  if (outerScope != nullptr)
-    return outerScope->findClassDecl(identifier, exemptDecl);
+  if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findClassDecl(identifier, exemptDecl);
 
   return nullptr;
 }
@@ -145,8 +145,8 @@ ClassTypeDef::findFunDecl(const FunSignature &funSignature,
       findFunDeclLocal(funSignature, exemptDecl);
   if (localFind != nullptr)
     return localFind;
-  else if (outerScope != nullptr)
-    return outerScope->findFunDecl(funSignature, exemptDecl);
+  else if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findFunDecl(funSignature, exemptDecl);
   else
     return nullptr;
 }
@@ -200,8 +200,8 @@ ClassTypeDef::findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
       findTypeDefDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
     return localFind;
-  else if (outerScope != nullptr)
-    return outerScope->findTypeDefDecl(identifier, exemptDecl);
+  else if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findTypeDefDecl(identifier, exemptDecl);
   else
     return nullptr;
 }
@@ -231,8 +231,8 @@ ClassTypeDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
       findVarDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
     return localFind;
-  else if (outerScope != nullptr)
-    return outerScope->findVarDecl(identifier, exemptDecl);
+  else if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findVarDecl(identifier, exemptDecl);
   else
     return nullptr;
 }

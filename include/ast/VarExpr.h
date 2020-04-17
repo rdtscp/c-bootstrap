@@ -10,7 +10,7 @@ class VarExpr : public Expr, public atl::enable_shared_from_this<VarExpr> {
 
 public:
   atl::shared_ptr<Identifier> varIdentifier;
-  atl::shared_ptr<VarDecl> varDecl;
+  atl::weak_ptr<VarDecl> varDecl;
 
   VarExpr(const atl::shared_ptr<Identifier> &p_varIdentifier);
 

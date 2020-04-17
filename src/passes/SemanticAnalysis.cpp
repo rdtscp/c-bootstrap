@@ -78,7 +78,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
      *    1) Freestanding Functions
      */
     const atl::shared_ptr<ClassTypeDef> lhsClassTypeDef =
-        lhsClassType->typeDefinition;
+        lhsClassType->typeDefinition.lock();
 
     /* Create a FunSignature for Operator Overload Call. */
     // Create the arguments.
@@ -154,7 +154,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Block &b) {
     ++b.stmtsChecked;
   }
 
-  currScope = b.outerScope;
+  currScope = b.outerScope.lock();
   return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(BoolLiteral &bl) {
@@ -208,7 +208,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
   for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx)
     ctd.classDecls[idx]->accept(*this);
 
-  currScope = ctd.outerScope;
+  currScope = ctd.outerScope.lock();
 
   return noType();
 }
@@ -243,7 +243,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
                  cc.getptr());
 
   cc.constructorDecl = ctorDecl;
-  return cc.constructorDecl->classType;
+  return cc.constructorDecl.lock()->classType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorDecl &cd) {
   cd.outerScope = currScope;
@@ -252,7 +252,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorDecl &cd) {
   for (unsigned int idx = 0; idx < cd.constructorParams.size(); ++idx)
     cd.constructorParams[idx]->accept(*this);
 
-  currScope = cd.outerScope;
+  currScope = cd.outerScope.lock();
 
   return cd.classType;
 }
@@ -266,7 +266,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorDef &cd) {
     cd.constructorParams[idx]->accept(*this);
   cd.constructorBlock->accept(*this);
 
-  currScope = cd.outerScope;
+  currScope = cd.outerScope.lock();
 
   return cd.classType;
 }
@@ -322,7 +322,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(For &f) {
   f.endBodyExpr->accept(*this);
   f.body->accept(*this);
 
-  currScope = f.outerScope;
+  currScope = f.outerScope.lock();
   return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
@@ -364,7 +364,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
                    fc.getptr());
 
     fc.funDecl = funDecl;
-    return fc.funDecl->funType;
+    return fc.funDecl.lock()->funType;
   }
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(FunDecl &fd) {
@@ -396,7 +396,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
   fd.funBlock->accept(*this);
 
   const atl::shared_ptr<Type> funType = fd.funType->accept(*this);
-  currScope = fd.outerScope;
+  currScope = fd.outerScope.lock();
   return funType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Identifier &i) {
@@ -461,7 +461,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
   }
 
   const atl::shared_ptr<ClassTypeDef> objClassTypeDef =
-      objClassType->typeDefinition;
+      objClassType->typeDefinition.lock();
   // Check this ClassType is Defined.
   if (objClassTypeDef == nullptr)
     return error("Type Error",
@@ -515,7 +515,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
   }
 
   const atl::shared_ptr<ClassTypeDef> objClassTypeDef =
-      objClassType->typeDefinition;
+      objClassType->typeDefinition.lock();
   // Check this ClassType is Defined.
   if (objClassTypeDef == nullptr)
     return error("Type Error",
@@ -559,7 +559,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Namespace &n) {
     ++n.namespaceDeclsChecked;
   }
 
-  currScope = n.outerScope;
+  currScope = n.outerScope.lock();
   return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Nullptr &n) {
@@ -618,7 +618,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
     const atl::shared_ptr<ClassType> objClassType =
         atl::static_pointer_cast<ClassType>(objType);
     const atl::shared_ptr<ClassTypeDef> objClassTypeDef =
-        objClassType->typeDefinition;
+        objClassType->typeDefinition.lock();
 
     const atl::shared_ptr<Type> indexType = so.index->accept(*this);
 
@@ -701,7 +701,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
   if (varType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> vdClassType =
         atl::static_pointer_cast<ClassType>(varType);
-    if (vdClassType->typeDefinition == nullptr)
+    if (vdClassType->typeDefinition.lock() == nullptr)
       return error("Type Analysis",
                    "Attempted to define variable "
                    "with undefined class type.",
@@ -722,7 +722,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
   if (varType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> vdClassType =
         atl::static_pointer_cast<ClassType>(varType);
-    if (vdClassType->typeDefinition == nullptr)
+    if (vdClassType->typeDefinition.lock() == nullptr)
       return error("Type Analysis",
                    "Attempted to define variable "
                    "with undefined class type.",

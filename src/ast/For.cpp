@@ -16,19 +16,19 @@ For::For(const atl::shared_ptr<VarDecl> &p_initialVarDecl,
 atl::shared_ptr<ClassTypeDecl>
 For::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                    const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findClassDecl(identifier, exemptDecl);
+  return outerScope.lock()->findClassDecl(identifier, exemptDecl);
 }
 
 atl::shared_ptr<ClassTypeDef>
 For::findClassDef(const atl::shared_ptr<Identifier> identifier,
                   const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findClassDef(identifier, exemptDecl);
+  return outerScope.lock()->findClassDef(identifier, exemptDecl);
 }
 
 atl::shared_ptr<FunDecl>
 For::findFunDecl(const FunSignature &funSignature,
                  const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findFunDecl(funSignature, exemptDecl);
+  return outerScope.lock()->findFunDecl(funSignature, exemptDecl);
 }
 
 atl::shared_ptr<FunDecl>
@@ -40,7 +40,7 @@ For::findFunDeclLocal(const FunSignature &funSignature,
 atl::shared_ptr<TypeDefDecl>
 For::findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
                      const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findTypeDefDecl(identifier, exemptDecl);
+  return outerScope.lock()->findTypeDefDecl(identifier, exemptDecl);
 }
 
 atl::shared_ptr<TypeDefDecl>
@@ -56,7 +56,7 @@ For::findVarDecl(const atl::shared_ptr<Identifier> identifier,
       initialVarDecl.get() != exemptDecl.get())
     return initialVarDecl;
   else
-    return outerScope->findVarDecl(identifier, exemptDecl);
+    return outerScope.lock()->findVarDecl(identifier, exemptDecl);
 }
 
 atl::shared_ptr<VarDecl>

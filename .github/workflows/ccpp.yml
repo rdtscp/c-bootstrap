@@ -3,33 +3,94 @@ name: C/C++ CI
 on: [push]
 
 jobs:
-  debug-build:
-
-    runs-on: macOS-latest
-    
+  clang-build:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - run: mkdir build
-    - run: cmake -DCMAKE_BUILD_TYPE=Debug -S . -B ./build
-    - run: make --directory ./build -j
-    
-  test:
 
-    runs-on: macOS-latest
+    - name: Debug Compile
+      run: |
+        mkdir build
+        cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -S . -B ./build
+        make --directory ./build -j
+
+    - name: Debug Tests
+      run:  |
+        cd build
+        ctest --output-on-failure
+
+    - name: Clean Build
+      run: |
+       cd ${GITHUB_WORKSPACE}
+       rm -rf ./build/
     
+    - name: Release Compile
+      run: |
+        mkdir build
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -S . -B ./build
+        make --directory ./build -j
+
+    - name: Release Tests
+      run: |
+        cd build
+        ctest --output-on-failure
+
+  gcc-build:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - run: mkdir build
-    - run: cmake -DCMAKE_BUILD_TYPE=Debug -S . -B ./build
-    - run: make --directory ./build -j
-    - run: make test -C ./build ARGS='--output-on-failure'
+    - name: Debug Compile
+      run: |
+        mkdir build
+        cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -S . -B ./build
+        make --directory ./build -j
 
-  release-build:
+    - name: Debug Tests
+      run: |
+        cd build
+        ctest --output-on-failure
 
-    runs-on: macOS-latest
-    
+    - name: Clean Build
+      run: |
+       cd ${GITHUB_WORKSPACE}
+       rm -rf ./build/
+
+    - name: Release Compile
+      run: |
+        mkdir build
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -S . -B ./build
+        make --directory ./build -j
+
+    - name: Release Tests
+      run: |
+        cd build
+        ctest --output-on-failure
+
+  test-coverage:
+    runs-on: ubuntu-latest
     steps:
+    - run: sudo apt install lcov
     - uses: actions/checkout@v1
-    - run: mkdir build
-    - run: cmake -DCMAKE_BUILD_TYPE=Release -S . -B ./build
-    - run: make --directory ./build -j
+
+    - name: Debug Compile
+      run: |
+        mkdir build
+        cmake -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -S . -B ./build
+        make --directory ./build -j
+
+    - name: Debug Tests
+      run: |
+        cd build
+        ctest --output-on-failure
+
+    - name: Get Coverage
+      run: |
+        lcov --directory ./build/ --capture --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
+        lcov --remove coverage.info '*/gtest/*' "${HOME}"'/.cache/*' --output-file coverage.info
+
+        lcov --remove coverage.info '*/atl/*' "${HOME}"'/.cache/*' --output-file coverage.info
+        lcov --list coverage.info
+
+    - name: Upload Coverage
+      run: bash <(curl -s https://codecov.io/bash) -f coverage.info
