@@ -7,7 +7,7 @@
 #include "include/passes/Optimiser.h"
 #include "include/passes/SemanticAnalysis.h"
 #include "include/passes/SourceOutput.h"
-#include "include/targets/GenerateX86.h"
+#include "include/targets/GenerateX64.h"
 
 int main(int argc, char const *argv[]) {
   if (argc < 3) {
@@ -74,8 +74,8 @@ int main(int argc, char const *argv[]) {
       ACC::DotGraph dotGraph(progAST, outFilename);
       dotGraph.print();
     } else {
-      ACC::GenerateX86 x86Generator(progAST, outFilename);
-      x86Generator.run();
+      ACC::GenerateX64 x64Generator(progAST, outFilename);
+      x64Generator.run();
     }
 
     return 0;
