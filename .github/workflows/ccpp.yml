@@ -52,7 +52,7 @@ jobs:
 
     - name: Clean Build
       run: |
-       cd ${GITHUB_WORKSPACE}/c-bootstrap
+       cd ${GITHUB_WORKSPACE}
        rm -rf ./build/
 
     - name: Release Compile
