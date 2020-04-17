@@ -75,8 +75,8 @@ atl::string StringLiteral::toString() const { return strName; }
 
 /* ---- X64::Writer ---- */
 
-Writer::Writer(const atl::string &filename) : x86Output(filename) {
-  if (!x86Output.good())
+Writer::Writer(const atl::string &filename) : x64Output(filename) {
+  if (!x64Output.good())
     throw Error("Not good!");
 }
 
@@ -235,4 +235,4 @@ void Writer::sub(const atl::shared_ptr<X64::Operand> &op, const int value,
         comment);
 }
 
-void Writer::write(const atl::string &str) { x86Output.write(str + "\n"); }
+void Writer::write(const atl::string &str) { x64Output.write(str + "\n"); }
