@@ -11,7 +11,6 @@ class ConstructorCall : public Expr,
                         public atl::enable_shared_from_this<ConstructorCall> {
 
 public:
-  atl::weak_ptr<VarDecl> objectToConstruct;
   atl::shared_ptr<Identifier> constructorIdentifier;
   atl::vector<atl::shared_ptr<Expr>> constructorArgs;
   atl::weak_ptr<ConstructorDecl> constructorDecl;
