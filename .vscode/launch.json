@@ -5,166 +5,84 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Terminal (integrated)",
-      "type": "python",
+      "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/acc.py",
-      "args": [
-        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main.cpp"
-      ],
-      "console": "integratedTerminal"
-    },
-    {
-      "name": "(lldb) acc - parser/class.cpp",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/build/acc",
-      "args": [
-        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/parser/class.cpp",
-        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/class.s",
-        "x86",
-        "--graph"
-      ],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
-    },
-    {
-      "name": "(lldb) acc - main.cpp",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/build/acc",
-      "args": [
-        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/main.cpp",
-        "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/main.s",
-        "x86"
-      ],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
-    },
-    {
       "name": "(lldb) AST Unit Tests",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/build/test/runTest_AST",
+      "program": "${workspaceFolder}//build/test/runTest_AST",
       "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
+      "cwd": "${workspaceFolder}"
     },
     {
+      "type": "lldb",
+      "request": "launch",
       "name": "(lldb) ASTAnalysis Unit Tests",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/build/test/runTest_ASTAnalysis",
+      "program": "${workspaceFolder}//build/test/runTest_ASTAnalysis",
       "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
+      "cwd": "${workspaceFolder}"
     },
     {
+      "type": "lldb",
+      "request": "launch",
       "name": "(lldb) Code Generation Unit Tests",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/build/test/runTest_CodeGeneration",
+      "program": "${workspaceFolder}//build/test/runTest_CodeGeneration",
       "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
+      "cwd": "${workspaceFolder}"
     },
     {
-      "name": "(lldb) File System Unit Tests",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/build/test/runTest_FileSystem",
+      "name": "(lldb) File System  Unit Tests",
+      "program": "${workspaceFolder}//build/test/runTest_FileSystem",
       "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
+      "cwd": "${workspaceFolder}"
     },
     {
+      "type": "lldb",
+      "request": "launch",
       "name": "(lldb) Lexer Unit Tests",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/build/test/runTest_Lexer",
+      "program": "${workspaceFolder}//build/test/runTest_Lexer",
       "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
+      "cwd": "${workspaceFolder}"
     },
     {
+      "type": "lldb",
+      "request": "launch",
       "name": "(lldb) Optimiser Unit Tests",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/build/test/runTest_Optimiser",
+      "program": "${workspaceFolder}//build/test/runTest_Optimiser",
       "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
+      "cwd": "${workspaceFolder}"
     },
     {
-      "name": "(lldb) Parser Unit Tests",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
+      "name": "(lldb) Parser Unit Tests",
       "program": "${workspaceFolder}/build/test/runTest_Parser",
       "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
+      "cwd": "${workspaceFolder}"
     },
     {
-      "name": "(lldb) Preprocessor Unit Tests",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
+      "name": "(lldb) Preprocessor Unit Tests",
       "program": "${workspaceFolder}/build/test/runTest_Preprocessor",
       "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
+      "cwd": "${workspaceFolder}"
     },
     {
-      "name": "(lldb) Scanner Unit Tests",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/build/test/runTestScanner",
+      "name": "(lldb) Scanner Unit Tests",
+      "program": "${workspaceFolder}/build/test/runTest_Scanner",
       "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb-mi"
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "(lldb) acc - main.cpp",
+      "program": "${workspaceFolder}/build/acc",
+      "args": [],
+      "cwd": "${workspaceFolder}"
     }
   ]
 }

@@ -149,6 +149,16 @@ private:
     node->position = prevPosition;
     return atl::shared_ptr<T>(node);
   }
+
+  atl::shared_ptr<VarDecl> createNode(VarDecl *node) {
+    node->Decl::position = prevPosition;
+    return atl::shared_ptr<VarDecl>(node);
+  }
+
+  atl::shared_ptr<VarDef> createNode(VarDef *node) {
+    node->Decl::position = prevPosition;
+    return atl::shared_ptr<VarDecl>(node);
+  }
 };
 
 } // namespace ACC
