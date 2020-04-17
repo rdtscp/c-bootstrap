@@ -30,8 +30,8 @@ TEST(Test_CodeGeneration, X64_SimpleFuncs) {
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
-  GenerateX64 x86Generator(progAST, "./fibonacci_x86.s");
-  x86Generator.run();
+  GenerateX64 x64Generator(progAST, "./fibonacci_x64.s");
+  x64Generator.run();
 }
 
 // The fixture for testing class Project1. From google test primer.

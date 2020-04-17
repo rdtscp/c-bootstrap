@@ -112,7 +112,7 @@ public:
   void write(const atl::string &str);
 
 private:
-  atl::ofstream x86Output;
+  atl::ofstream x64Output;
   atl::string stringLiterals;
 };
 
@@ -126,6 +126,15 @@ static atl::shared_ptr<Register> rsp(new Register(32, "rsp"));
 static atl::shared_ptr<Register> rbp(new Register(32, "rbp"));
 
 static atl::vector<atl::string> externFunDecls = {"printf"};
+
+static atl::shared_ptr<Register> eax(new Register(32, "eax"));
+static atl::shared_ptr<Register> ebx(new Register(32, "ebx"));
+static atl::shared_ptr<Register> ecx(new Register(32, "ecx"));
+static atl::shared_ptr<Register> edx(new Register(32, "edx"));
+static atl::shared_ptr<Register> esi(new Register(32, "esi"));
+static atl::shared_ptr<Register> edi(new Register(32, "edi"));
+static atl::shared_ptr<Register> esp(new Register(32, "esp"));
+static atl::shared_ptr<Register> ebp(new Register(32, "ebp"));
 
 } // namespace X64
 

@@ -12,7 +12,7 @@ void GenerateX64::error(atl::string error) {
 }
 
 void GenerateX64::printErrors() const {
-  printf("FATAL X64 Generation Errors:\n");
+  printf("FATAL x64 Generation Errors:\n");
   for (unsigned int idx = 0; idx < errors.size(); ++idx)
     printf("\t%s\n", errors[idx].c_str());
 }
@@ -58,8 +58,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
   if (rhsOperand->opType() != "GlobalVariable")
     x64.pop(X64::rcx, "Restore LHS from Stack");
   else
-    x64.mov(X64::rcx, rhsOperand,
-            "Restore LHS from GlobalVariable: " + rhsOperand->toString());
+    x64.mov(X64::rcx, rhsOperand, "Restore LHS from GlobalVariable: " + rhsOperand->toString());
 
   /* Perform BinOp */
   switch (bo.operation) {
