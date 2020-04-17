@@ -8,8 +8,6 @@ namespace ACC {
 class Nullptr : public Expr, public atl::enable_shared_from_this<Nullptr> {
 
 public:
-  atl::shared_ptr<Expr> addressOfExpr;
-
   Nullptr();
 
   bool operator==(Expr &rhs) const override;

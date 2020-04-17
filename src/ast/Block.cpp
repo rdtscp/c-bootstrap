@@ -26,19 +26,19 @@ bool Block::operator!=(const Block &rhs) const { return !(*this == rhs); }
 atl::shared_ptr<ClassTypeDecl>
 Block::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                      const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findClassDecl(identifier, exemptDecl);
+  return outerScope.lock()->findClassDecl(identifier, exemptDecl);
 }
 
 atl::shared_ptr<ClassTypeDef>
 Block::findClassDef(const atl::shared_ptr<Identifier> identifier,
                     const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findClassDef(identifier, exemptDecl);
+  return outerScope.lock()->findClassDef(identifier, exemptDecl);
 }
 
 atl::shared_ptr<FunDecl>
 Block::findFunDecl(const FunSignature &funSignature,
                    const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findFunDecl(funSignature, exemptDecl);
+  return outerScope.lock()->findFunDecl(funSignature, exemptDecl);
 }
 
 atl::shared_ptr<FunDecl>
@@ -50,7 +50,7 @@ Block::findFunDeclLocal(const FunSignature &funSignature,
 atl::shared_ptr<TypeDefDecl>
 Block::findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
                        const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findTypeDefDecl(identifier, exemptDecl);
+  return outerScope.lock()->findTypeDefDecl(identifier, exemptDecl);
 }
 
 atl::shared_ptr<TypeDefDecl>
@@ -66,8 +66,8 @@ Block::findVarDecl(const atl::shared_ptr<Identifier> identifier,
       findVarDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
     return localFind;
-  else if (outerScope != nullptr)
-    return outerScope->findVarDecl(identifier, exemptDecl);
+  else if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findVarDecl(identifier, exemptDecl);
   else
     return nullptr;
 }

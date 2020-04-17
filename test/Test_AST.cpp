@@ -294,7 +294,7 @@ TEST(ASTTest, FunDeclFunDefComparisons) {
 TEST(ASTTest, Scope_resolveVarExpr_currScope) {
   //   atl::shared_ptr<Scope> outerScope(new Scope());
   //   atl::shared_ptr<Scope> currScope(new Scope());
-  //   currScope->outerScope = outerScope;
+  //   currScope->outerScope = outerScope.lock();
 
   //   /* Store a variable in the current scope. */
   //   const atl::shared_ptr<BaseType> varDeclType(new
@@ -314,7 +314,7 @@ TEST(ASTTest, Scope_resolveVarExpr_currScope) {
 TEST(ASTTest, Scope_resolveVarExpr_outerScope) {
   //   atl::shared_ptr<Scope> outerScope(new Scope());
   //   atl::shared_ptr<Scope> currScope(new Scope());
-  //   currScope->outerScope = outerScope;
+  //   currScope->outerScope = outerScope.lock();
 
   //   /* Store a variable in the current scope. */
   //   const atl::shared_ptr<BaseType> varDeclType(new
@@ -322,7 +322,7 @@ TEST(ASTTest, Scope_resolveVarExpr_outerScope) {
   //   varDeclIdent(new Identifier("var1")); const atl::shared_ptr<VarDecl>
   //   varDecl(
   //       new VarDecl(varDeclType, varDeclIdent));
-  //   outerScope->insertDecl(varDecl);
+  //   outerScope.lock()->insertDecl(varDecl);
 
   //   /* Resolve it */
   //   const atl::shared_ptr<Identifier> searchIdent(new Identifier("var1"));
@@ -334,7 +334,7 @@ TEST(ASTTest, Scope_resolveVarExpr_outerScope) {
 TEST(ASTTest, Scope_resolveFunCall_innerScope) {
   //   atl::shared_ptr<Scope> outerScope(new Scope());
   //   atl::shared_ptr<Scope> currScope(new Scope());
-  //   currScope->outerScope = outerScope;
+  //   currScope->outerScope = outerScope.lock();
 
   //   /* Store a function in the current scope. */
   //   const atl::shared_ptr<FunDecl> funDeclOne(new FunDecl(
