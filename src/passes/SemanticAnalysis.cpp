@@ -778,8 +778,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarExpr &ve) {
   // Compiler may generate VarExpr's and link them.
-  if (ve.varDecl != nullptr)
-    return ve.varDecl->type;
+  if (ve.varDecl.lock() != nullptr)
+    return ve.varDecl.lock()->type;
   const atl::shared_ptr<VarDecl> varDecl =
       currScope->findVarDecl(ve.varIdentifier);
   if (varDecl == nullptr)

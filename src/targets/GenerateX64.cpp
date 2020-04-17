@@ -82,7 +82,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Block &b) {
   for (unsigned int idx = 0; idx < b.stmts.size(); ++idx)
     b.stmts[idx]->accept(*this);
 
-  currScope = b.outerScope;
+  currScope = b.outerScope.lock();
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BoolLiteral &bl) {
@@ -154,7 +154,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunCall &fc) {
     else
       x64.push(argReg);
   }
-  x64.call(fc.funDecl->getSignature().mangle());
+  x64.call(fc.funDecl.lock()->getSignature().mangle());
   return X64::rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDecl &fd) {
@@ -186,7 +186,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDecl &fd) {
   // x64.write("");
 
   // currFpOffset = 0;
-  // currScope = fd.funBlock->outerBlock;
+  // currScope = fd.funBlock->outerBlock.lock();
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
@@ -223,7 +223,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
   x64.write("");
 
   currFpOffset = 0;
-  currScope = fd.funBlock->outerScope;
+  currScope = fd.funBlock->outerScope.lock();
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Identifier &i) {
@@ -416,10 +416,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
-  const int fpOffset = ve.varDecl->fpOffset;
+  const int fpOffset = ve.varDecl.lock()->fpOffset;
   if (fpOffset == 0)
     return atl::shared_ptr<X64::GlobalVariable>(new X64::GlobalVariable(
-        ve.varDecl->getIdentifier()->toString(), ve.varDecl->getBytes()));
+        ve.varDecl.lock()->getIdentifier()->toString(), ve.varDecl.lock()->getBytes()));
 
   return addrOffset(X64::rbp, fpOffset);
 }
