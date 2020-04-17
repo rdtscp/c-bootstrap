@@ -9,7 +9,7 @@ class FunSignature;
 
 class Scope {
 public:
-  atl::shared_ptr<Scope> outerScope;
+  atl::weak_ptr<Scope> outerScope;
 
   Scope() : outerScope(nullptr) {}
   virtual ~Scope() {}

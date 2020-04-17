@@ -11,7 +11,7 @@ class SubscriptOp : public Expr,
 public:
   atl::shared_ptr<VarExpr> variable;
   atl::shared_ptr<Expr> index;
-  atl::shared_ptr<FunDecl> operatorDecl;
+  atl::weak_ptr<FunDecl> operatorDecl;
 
   SubscriptOp(const atl::shared_ptr<VarExpr> &p_variable,
               const atl::shared_ptr<Expr> &p_index);

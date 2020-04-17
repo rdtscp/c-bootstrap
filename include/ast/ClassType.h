@@ -11,7 +11,7 @@ class ClassType : public Type, public atl::enable_shared_from_this<ClassType> {
 
 public:
   atl::shared_ptr<Identifier> identifier;
-  atl::shared_ptr<ClassTypeDef> typeDefinition;
+  atl::weak_ptr<ClassTypeDef> typeDefinition;
 
   ClassType(const atl::shared_ptr<Identifier> &p_identifier);
 

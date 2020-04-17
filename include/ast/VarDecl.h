@@ -16,7 +16,7 @@ class VarDecl : public Decl,
 public:
   atl::shared_ptr<Type> type;
   atl::shared_ptr<Identifier> identifier;
-  atl::shared_ptr<FunDecl> parentFunc;
+  atl::weak_ptr<FunDecl> parentFunc;
 
   int fpOffset = 0;
 
