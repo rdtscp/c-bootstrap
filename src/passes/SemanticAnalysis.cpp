@@ -718,6 +718,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
                      vd.getIdentifier()->toString() + " with undefined type.",
                  atl::static_pointer_cast<Decl>(vd.getptr()));
   }
+  vd.type = varType;
   varType = collapseReferenceTypes(varType);
   if (varType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> vdClassType =
@@ -747,6 +748,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
                  + " with undefined type.",
                  atl::static_pointer_cast<Decl>(vd.getptr()));
   }
+  vd.type = varType;
   varType = collapseReferenceTypes(varType);
   if (varType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> vdClassType =
