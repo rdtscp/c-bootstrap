@@ -13,7 +13,7 @@ bool BinOp::operator==(const BinOp &other) const {
   if (operation != other.operation)
     return false;
 
-  if (rhs != other.rhs)
+  if (*rhs != *other.rhs)
     return false;
 
   return true;
