@@ -13,6 +13,14 @@ bool ValueAt::operator==(Expr &rhs) const {
 
 bool ValueAt::operator!=(Expr &rhs) const { return !(*this == rhs); }
 
+bool ValueAt::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const ValueAt *>(&rhs);
+  return false;
+}
+
+bool ValueAt::operator!=(const Stmt &rhs) const { return !(*this == rhs); }
+
 bool ValueAt::operator==(const ValueAt &rhs) const {
   if (*derefExpr != *rhs.derefExpr)
     return false;

@@ -21,6 +21,9 @@ public:
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
 
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
+
   bool operator==(const SubscriptOp &rhs) const;
   bool operator!=(const SubscriptOp &rhs) const;
 

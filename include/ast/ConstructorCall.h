@@ -25,6 +25,9 @@ public:
   bool operator==(const ConstructorCall &rhs) const;
   bool operator!=(const ConstructorCall &rhs) const;
 
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
+
   atl::shared_ptr<ConstructorCall> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "ConstructorCall"; }

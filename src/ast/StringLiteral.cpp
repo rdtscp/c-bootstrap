@@ -31,3 +31,11 @@ bool StringLiteral::operator==(const StringLiteral &rhs) const {
 bool StringLiteral::operator!=(const StringLiteral &rhs) const {
   return !(*this == rhs);
 }
+
+bool StringLiteral::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const StringLiteral *>(&rhs);
+  return false;
+}
+
+bool StringLiteral::operator!=(const Stmt &rhs) const { return !(*this == rhs); }

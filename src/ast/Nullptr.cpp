@@ -15,3 +15,12 @@ bool Nullptr::operator!=(Expr &rhs) const { return !(*this == rhs); }
 bool Nullptr::operator==(const Nullptr &rhs) const { return true; }
 
 bool Nullptr::operator!=(const Nullptr &rhs) const { return !(*this == rhs); }
+
+bool Nullptr::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const Nullptr *>(&rhs);
+
+  return false;
+}
+
+bool Nullptr::operator!=(const Stmt &rhs) const { return !(*this == rhs); }

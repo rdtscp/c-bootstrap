@@ -16,6 +16,9 @@ public:
   bool operator==(const Nullptr &rhs) const;
   bool operator!=(const Nullptr &rhs) const;
 
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
+
   atl::shared_ptr<Nullptr> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "Nullptr"; };
