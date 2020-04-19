@@ -22,6 +22,12 @@ public:
       const atl::shared_ptr<Expr> &p_endBodyExpr,
       const atl::shared_ptr<Stmt> &p_body);
 
+  bool operator==(const For &rhs) const;
+  bool operator!=(const For &rhs) const;
+
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
+
   atl::shared_ptr<For> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "For"; }

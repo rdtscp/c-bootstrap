@@ -12,11 +12,11 @@ public:
 
   AddressOf(const atl::shared_ptr<Expr> &p_addressOfExpr);
 
-  bool operator==(Expr &rhs) const override;
-  bool operator!=(Expr &rhs) const override;
-
   bool operator==(const AddressOf &rhs) const;
   bool operator!=(const AddressOf &rhs) const;
+
+  bool operator==(Expr &rhs) const override;
+  bool operator!=(Expr &rhs) const override;
 
   atl::shared_ptr<AddressOf> getptr() { return shared_from_this(); }
 

@@ -20,6 +20,14 @@ bool VarDecl::operator==(Decl &rhs) const {
 
 bool VarDecl::operator!=(Decl &rhs) const { return !(*this == rhs); }
 
+bool VarDecl::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const VarDecl *>(&rhs);
+  return false;
+}
+
+bool VarDecl::operator!=(const Stmt &rhs) const { return !(*this == rhs); }
+
 bool VarDecl::operator==(const VarDecl &rhs) const {
   if (*type != *rhs.type)
     return false;
