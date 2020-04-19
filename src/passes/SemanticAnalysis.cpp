@@ -66,7 +66,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
     return error("Type Analysis", "Assignation RHS has undefined type.",
                  as.getptr());
   }
-  if (!lhsType->equivalentTo(*rhsType)) {
+  if (!lhsType->equivalentTo(*rhsType) && *lhsType != *rhsType) {
     return error("Type Analysis", "Assignation has mismatched types.",
                  as.getptr());
   }
