@@ -13,15 +13,23 @@ bool Block::operator==(const Block &rhs) const {
   if (stmts.size() != rhs.stmts.size())
     return false;
 
-  for (unsigned int i = 0; i < stmts.size(); ++i)
-    /* TODO: Implement comparitors for Stmts. */
-    if (stmts[i]->astClass() != rhs.stmts[i]->astClass())
+  for (unsigned int i = 0; i < stmts.size(); ++i) {
+    if (*stmts[i] != *rhs.stmts[i])
       return false;
+  }
 
   return true;
 }
 
 bool Block::operator!=(const Block &rhs) const { return !(*this == rhs); }
+
+bool Block::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const Block *>(&rhs);
+  return false;
+}
+
+bool Block::operator!=(const Stmt &rhs) const { return !(*this == rhs); }
 
 atl::shared_ptr<ClassTypeDecl>
 Block::findClassDecl(const atl::shared_ptr<Identifier> identifier,

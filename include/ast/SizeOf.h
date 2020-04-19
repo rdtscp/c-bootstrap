@@ -19,6 +19,9 @@ public:
   bool operator==(const SizeOf &rhs) const;
   bool operator!=(const SizeOf &rhs) const;
 
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
+
   atl::shared_ptr<SizeOf> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "SizeOf"; }

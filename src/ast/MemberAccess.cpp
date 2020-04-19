@@ -29,3 +29,11 @@ bool MemberAccess::operator==(const MemberAccess &rhs) const {
 bool MemberAccess::operator!=(const MemberAccess &rhs) const {
   return !(*this == rhs);
 }
+
+bool MemberAccess::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const MemberAccess *>(&rhs);
+  return false;
+}
+
+bool MemberAccess::operator!=(const Stmt &rhs) const { return !(*this == rhs); }

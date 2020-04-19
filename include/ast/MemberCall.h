@@ -26,6 +26,9 @@ public:
   bool operator==(const MemberCall &rhs) const;
   bool operator!=(const MemberCall &rhs) const;
 
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
+
   atl::shared_ptr<MemberCall> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "MemberCall"; }

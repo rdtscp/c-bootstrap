@@ -26,6 +26,9 @@ public:
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
 
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
+
   bool operator==(const VarDef &rhs) const;
   bool operator!=(const VarDef &rhs) const;
 

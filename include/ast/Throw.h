@@ -14,6 +14,12 @@ public:
   Throw();
   Throw(const atl::shared_ptr<StringLiteral> &p_exceptionText);
 
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
+
+  bool operator==(const Throw &rhs) const;
+  bool operator!=(const Throw &rhs) const;
+
   atl::shared_ptr<Throw> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "Throw"; }

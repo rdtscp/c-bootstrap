@@ -13,6 +13,32 @@ For::For(const atl::shared_ptr<VarDecl> &p_initialVarDecl,
     : initialVarDecl(p_initialVarDecl), condition(p_condition),
       endBodyExpr(p_endBodyExpr), body(p_body) {}
 
+bool For::operator==(const For &rhs) const {
+  if (*initialVarDecl != *rhs.initialVarDecl)
+    return false;
+
+  if (*condition != *rhs.condition)
+    return false;
+
+  if (*endBodyExpr != *rhs.endBodyExpr)
+    return false;
+
+  if (*body != *rhs.body)
+    return false;
+
+  return true;
+}
+
+bool For::operator!=(const For &rhs) const { return !(*this == rhs); }
+
+bool For::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const For *>(&rhs);
+  return false;
+}
+
+bool For::operator!=(const Stmt &rhs) const { return !(*this == rhs); }
+
 atl::shared_ptr<ClassTypeDecl>
 For::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                    const atl::shared_ptr<Decl> &exemptDecl) {

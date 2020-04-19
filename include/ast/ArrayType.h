@@ -16,11 +16,11 @@ public:
   unsigned int getBytes() const override;
   virtual bool equivalentTo(Type &rhs) const override;
 
-  bool operator==(Type &rhs) const override;
-  bool operator!=(Type &rhs) const override;
-
   bool operator==(const ArrayType &rhs) const;
   bool operator!=(const ArrayType &rhs) const;
+
+  bool operator==(Type &rhs) const override;
+  bool operator!=(Type &rhs) const override;
 
   atl::shared_ptr<PointerType> getptr() {
     return PointerType::shared_from_this();

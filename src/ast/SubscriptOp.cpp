@@ -27,3 +27,11 @@ bool SubscriptOp::operator==(const SubscriptOp &rhs) const {
 bool SubscriptOp::operator!=(const SubscriptOp &rhs) const {
   return !(*this == rhs);
 }
+
+bool SubscriptOp::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const SubscriptOp *>(&rhs);
+  return false;
+}
+
+bool SubscriptOp::operator!=(const Stmt &rhs) const { return !(*this == rhs); }
