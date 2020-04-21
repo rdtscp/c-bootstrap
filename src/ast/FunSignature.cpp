@@ -23,8 +23,6 @@ const FunSignature FunSignature::lowerNamespace() const {
 }
 
 bool FunSignature::canCall(const FunSignature &rhs) const {
-  // TODO: Incorporate return type?
-
   // TODO: Handle when default args are provided.
   if (funArgs.size() != rhs.funArgs.size())
     return false;
@@ -56,10 +54,12 @@ bool FunSignature::operator==(const FunSignature &rhs) const {
   if (funArgs.size() != rhs.funArgs.size())
     return false;
 
-  // Check args match.
-  for (unsigned int idx = 0u; idx < funArgs.size(); ++idx)
-    if (funArgs[idx]->canCastTo(*rhs.funArgs[idx]))
+  for (unsigned int idx = 0u; idx < funArgs.size(); ++idx) {
+    const atl::shared_ptr<Type> lhsType = funArgs[idx];
+    const atl::shared_ptr<Type> rhsType = rhs.funArgs[idx];
+    if (*lhsType != *rhsType && !lhsType->canCastTo(*rhsType))
       return false;
+  }
 
   // Check identifier.
   if (*funIdentifier != *rhs.funIdentifier)

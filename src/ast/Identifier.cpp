@@ -53,12 +53,17 @@ bool Identifier::operator==(const Identifier &rhs) const {
   if (value != rhs.value)
     return false;
 
-  if (tailIdentifier && rhs.tailIdentifier)
-    if (*tailIdentifier != *rhs.tailIdentifier)
+  if (tailIdentifier && rhs.tailIdentifier) {
+    if (*tailIdentifier != *rhs.tailIdentifier) {
       return false;
-
-  if (tailIdentifier || rhs.tailIdentifier)
+    }
+  }
+  else if (tailIdentifier && !rhs.tailIdentifier) {
     return false;
+  }
+  else if (!tailIdentifier && rhs.tailIdentifier) {
+    return false;
+  }
 
   return true;
 }
