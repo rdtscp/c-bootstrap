@@ -88,6 +88,36 @@ TEST(ASTTest, PointerTypeComparisons) {
   ASSERT_TRUE(voidPtr == voidPtr2);
 }
 
+TEST(ASTTest, IdentifierEquality) {
+ {
+    atl::shared_ptr<Identifier> iden1(new Identifier("iden1"));
+    atl::shared_ptr<Identifier> iden2(new Identifier("iden1"));
+    atl::shared_ptr<Identifier> iden3(new Identifier("iden3"));
+    ASSERT_EQ(*iden1, *iden2);
+  ASSERT_NE(*iden1, *iden3);
+  }
+  {
+    atl::shared_ptr<Identifier> namespaceIden1(new Identifier("Namespace"));
+    atl::shared_ptr<Identifier> iden1(new Identifier("Func"));
+    namespaceIden1->insert(iden1);
+
+    atl::shared_ptr<Identifier> namespaceIden2(new Identifier("Namespace"));
+    atl::shared_ptr<Identifier> iden2(new Identifier("Func"));
+    namespaceIden2->insert(iden2);
+
+    ASSERT_EQ(*namespaceIden1, *namespaceIden2);
+  }
+  {
+    atl::shared_ptr<Identifier> namespaceIden1(new Identifier("Namespace"));
+
+    atl::shared_ptr<Identifier> namespaceIden2(new Identifier("Namespace"));
+    atl::shared_ptr<Identifier> iden2(new Identifier("Func"));
+    namespaceIden2->insert(iden2);
+
+    ASSERT_NE(*namespaceIden1, *namespaceIden2);
+  }
+}
+
 TEST(ASTTest, VarDeclComparisons) {
   VarDecl vd1(atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
               atl::shared_ptr<Identifier>(new Identifier("var1")));
