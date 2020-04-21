@@ -120,6 +120,22 @@ TEST(Test_ASTAnalysis, DuplicateFunction) {
   ASSERT_NE(0, semanticAnalysis.errorCount);
 }
 
+TEST(Test_ASTAnalysis, DuplicateVariable) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "DuplicateVariable/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis semanticAnalysis(progAST);
+  semanticAnalysis.run();
+  semanticAnalysis.printErrors();
+  ASSERT_NE(0, semanticAnalysis.errorCount);
+}
+
 TEST(Test_ASTAnalysis, FunModifiers) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "FunModifiers/test.cpp");
@@ -136,9 +152,9 @@ TEST(Test_ASTAnalysis, FunModifiers) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, DuplicateVariable) {
+TEST(Test_ASTAnalysis, FunctionOverloading) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "DuplicateVariable/test.cpp");
+                          test_prefix + "FunctionOverloading/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -149,7 +165,7 @@ TEST(Test_ASTAnalysis, DuplicateVariable) {
   SemanticAnalysis semanticAnalysis(progAST);
   semanticAnalysis.run();
   semanticAnalysis.printErrors();
-  ASSERT_NE(0, semanticAnalysis.errorCount);
+  ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
 TEST(Test_ASTAnalysis, MemberAccesses) {
