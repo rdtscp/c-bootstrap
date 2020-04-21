@@ -614,7 +614,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Program &p) {
   return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ReferenceType &rt) {
-  rt.referencedType->accept(*this);
+  const atl::shared_ptr<Type> referencedType = rt.referencedType->accept(*this);
+  rt.referencedType = referencedType;
   return rt.getptr();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Return &r) {
@@ -745,8 +746,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
         atl::static_pointer_cast<ClassType>(varType);
     if (vdClassType->typeDefinition.lock() == nullptr) {
       return error("Type Analysis",
-                   "Attempted to declare variable with undefined class type."
-                   + vd.getIdentifier()->toString() + " with undefined class type: "
+                   "Attempted to declare variable '"
+                   + vd.getIdentifier()->toString() + "' with undefined class type: "
                    + vdClassType->identifier->toString(),
                    atl::static_pointer_cast<Decl>(vd.getptr()));
     }
