@@ -214,8 +214,28 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
   ctd.outerScope = currScope;
   currScope = ctd.getptr();
 
-  for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx)
+  for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx) {
+    atl::shared_ptr<Decl> currDecl = ctd.classDecls[idx];
+    if (currDecl->astClass() == "FunDef") {
+      atl::shared_ptr<FunDecl> funDecl = currDecl;
+      visit(*funDecl);
+    }
+    else if (currDecl->astClass() == "ConstructorDef") {
+      atl::shared_ptr<ConstructorDecl> ctorDecl = currDecl;
+      visit(*ctorDecl);
+    }
+    else if (currDecl->astClass() == "DestructorDef") {
+      atl::shared_ptr<DestructorDecl> dtorDecl = currDecl;
+      visit(*dtorDecl);
+    }
+    else {
+      currDecl->accept(*this);
+    }
+  }
+
+  for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx) {
     ctd.classDecls[idx]->accept(*this);
+  }
 
   currScope = ctd.outerScope.lock();
 
