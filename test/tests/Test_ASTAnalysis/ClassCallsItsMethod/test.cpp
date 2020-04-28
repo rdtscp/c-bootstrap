@@ -3,7 +3,7 @@ typedef unsigned int uint;
 public:
 
   Foo(uint x) {
-    update(x);
+    this->update(x);
   }
 
   void update(const uint x) {}

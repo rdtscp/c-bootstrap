@@ -217,15 +217,15 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
   for (unsigned int idx = 0; idx < ctd.classDecls.size(); ++idx) {
     atl::shared_ptr<Decl> currDecl = ctd.classDecls[idx];
     if (currDecl->astClass() == "FunDef") {
-      atl::shared_ptr<FunDecl> funDecl = currDecl;
+      atl::shared_ptr<FunDecl> funDecl = atl::static_pointer_cast<FunDef>(currDecl);
       visit(*funDecl);
     }
     else if (currDecl->astClass() == "ConstructorDef") {
-      atl::shared_ptr<ConstructorDecl> ctorDecl = currDecl;
+      atl::shared_ptr<ConstructorDecl> ctorDecl  = atl::static_pointer_cast<ConstructorDecl>(currDecl);
       visit(*ctorDecl);
     }
     else if (currDecl->astClass() == "DestructorDef") {
-      atl::shared_ptr<DestructorDecl> dtorDecl = currDecl;
+      atl::shared_ptr<DestructorDecl> dtorDecl  = atl::static_pointer_cast<DestructorDecl>(currDecl);
       visit(*dtorDecl);
     }
     else {
@@ -254,6 +254,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
   }
 
   atl::vector<atl::shared_ptr<Type>> constructorCallArgTypes;
+  constructorCallArgTypes.push_back(createThisParamType(cc.constructorIdentifier));
   for (unsigned int idx = 0; idx < cc.constructorArgs.size(); ++idx) {
     constructorCallArgTypes.push_back(cc.constructorArgs[idx]->accept(*this));
   }
@@ -360,6 +361,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
       currScope->findClassDef(fc.funIdentifier);
   if (classTypeDef != nullptr) {
     atl::vector<atl::shared_ptr<Type>> constructorCallArgTypes;
+    constructorCallArgTypes.push_back(createThisParamType(fc.funIdentifier));
     for (unsigned int idx = 0; idx < fc.funArgs.size(); ++idx)
       constructorCallArgTypes.push_back(fc.funArgs[idx]->accept(*this));
 
@@ -557,6 +559,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
   /* Now Manually Visit the Member Call */
   // Visit all parameters first.
   atl::vector<atl::shared_ptr<Type>> funCallArgTypes;
+  funCallArgTypes.push_back(createThisParamType(objClassType->identifier));
   for (unsigned int idx = 0; idx < mc.funCall->funArgs.size(); ++idx)
     funCallArgTypes.push_back(mc.funCall->funArgs[idx]->accept(*this));
 
@@ -660,6 +663,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
 
     // Create FunSignature for SubscriptOp.
     atl::vector<atl::shared_ptr<Type>> opArgs;
+    opArgs.push_back(createThisParamType(objClassType->identifier));
     opArgs.push_back(indexType);
     atl::set<FunDecl::FunModifiers> objTypeModifiers;
     if (objClassType->typeModifiers.find(Type::Modifiers::CONST))
@@ -823,6 +827,14 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(While &w) {
                  w.condition);
   w.body->accept(*this);
   return noType();
+}
+
+atl::shared_ptr<PointerType> SemanticAnalysis::createThisParamType(atl::shared_ptr<Identifier> identifier) const {
+  while (identifier->size() > 1)
+    identifier = identifier->tail();
+  return atl::shared_ptr<PointerType>(new PointerType(
+    atl::shared_ptr<ClassType>(new ClassType(identifier->clone()))
+  ));
 }
 
 
