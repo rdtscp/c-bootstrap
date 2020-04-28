@@ -11,7 +11,34 @@ using namespace ACC;
 ClassTypeDef::ClassTypeDef(
     const atl::shared_ptr<Identifier> &p_classIdentifier,
     const atl::vector<atl::shared_ptr<Decl>> &p_classDecls)
-    : ClassTypeDecl(p_classIdentifier), classDecls(p_classDecls) {}
+    : ClassTypeDecl(p_classIdentifier), classDecls(p_classDecls) {
+  /* Add `this` parameter to all FunDecls. */
+  for (unsigned int declIdx = 0; declIdx < classDecls.size(); ++declIdx) {
+    const atl::shared_ptr<Decl> currDecl = classDecls[declIdx];
+    if (currDecl->astClass() == "ConstructorDecl" ||
+        currDecl->astClass() == "ConstructorDef") {
+      // Create a new ConstructorDecl as a copy of the original.
+      atl::shared_ptr<ConstructorDecl> ctorDecl =
+          atl::static_pointer_cast<ConstructorDecl>(currDecl);
+
+      // Create the this param.
+      atl::shared_ptr<VarDecl> thisParam = createThisParam(ctorDecl->Decl::position);
+      ctorDecl->constructorParams.push_front(thisParam);
+    }
+    if (currDecl->astClass() == "FunDecl" ||
+        currDecl->astClass() == "FunDef") {
+      // Create a new ConstructorDecl as a copy of the original.
+      atl::shared_ptr<FunDecl> funDecl = atl::static_pointer_cast<FunDecl>(currDecl);
+
+      // Create the this param.
+      atl::shared_ptr<VarDecl> thisParam = createThisParam(funDecl->Decl::position);
+      if (funDecl->funModifiers.find(FunDecl::FunModifiers::CONST)) {
+        thisParam->type->typeModifiers.insert(Type::Modifiers::CONST);
+      }
+      funDecl->funParams.push_front(thisParam);
+    }
+  }
+}
 
 atl::shared_ptr<Identifier> ClassTypeDef::getIdentifier() const {
   return classIdentifier;
