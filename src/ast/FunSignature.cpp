@@ -1,5 +1,7 @@
 #include "ast/FunSignature.h"
 
+#include "ast/ReferenceType.h"
+
 using namespace ACC;
 
 FunSignature::FunSignature(const atl::shared_ptr<Type> p_funReturnType,
@@ -48,6 +50,15 @@ bool FunSignature::canCall(const FunSignature &rhs) const {
   return true;
 }
 
+atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type) {
+  if (type->astClass() == "ReferenceType") {
+    type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
+    if (type->astClass() == "ReferenceType")
+      type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
+  }
+  return type;
+}
+
 bool FunSignature::operator==(const FunSignature &rhs) const {
   // TODO: Incorporate return type?
 
@@ -55,8 +66,11 @@ bool FunSignature::operator==(const FunSignature &rhs) const {
     return false;
 
   for (unsigned int idx = 0u; idx < funArgs.size(); ++idx) {
-    const atl::shared_ptr<Type> lhsType = funArgs[idx];
-    const atl::shared_ptr<Type> rhsType = rhs.funArgs[idx];
+    const atl::shared_ptr<Type> lhsType = collapseReferenceTypes(funArgs[idx]);
+    const atl::shared_ptr<Type> rhsType = collapseReferenceTypes(rhs.funArgs[idx]);
+    // const atl::shared_ptr<Type> lhsType = funArgs[idx];
+    // const atl::shared_ptr<Type> rhsType = rhs.funArgs[idx];
+    
     if (*lhsType != *rhsType && !lhsType->canCastTo(*rhsType))
       return false;
   }
@@ -76,4 +90,19 @@ bool FunSignature::operator==(const FunSignature &rhs) const {
 
 bool FunSignature::operator!=(const FunSignature &rhs) const {
   return !(*this == rhs);
+}
+
+
+atl::string FunSignature::toString() const {
+  atl::string output = funIdentifier->toString() + "(";
+
+  for (unsigned int i = 0; i < funArgs.size(); ++i) {
+    output += funArgs[i]->astClass();
+    if (i != funArgs.size() - 1) {
+      output += ", ";
+    }
+  }
+
+  output += ")";
+  return output;
 }

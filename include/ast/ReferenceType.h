@@ -27,6 +27,15 @@ public:
 
   atl::string astClass() const override { return "ReferenceType"; }
 
+  static atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type) {
+    if (type->astClass() == "ReferenceType") {
+      type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
+      if (type->astClass() == "ReferenceType")
+        type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
+    }
+    return type;
+  }
+
   VISITOR_ACCEPTORS
 };
 

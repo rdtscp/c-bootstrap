@@ -79,9 +79,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
   const atl::shared_ptr<Type> lhsType = bo.lhs->accept(*this);
   const atl::shared_ptr<Type> rhsType = bo.rhs->accept(*this);
 
-  if (collapseReferenceTypes(lhsType)->astClass() == "ClassType") {
+  if (ReferenceType::collapseReferenceTypes(lhsType)->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> lhsClassType =
-        atl::static_pointer_cast<ClassType>(collapseReferenceTypes(lhsType));
+        atl::static_pointer_cast<ClassType>(ReferenceType::collapseReferenceTypes(lhsType));
 
     /*  Precedence for operator overloading:
      *    1) Freestanding Functions
@@ -389,7 +389,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
     if (funDecl == nullptr)
       return error("Type Analysis",
                    "Attempted to call undeclared function: " +
-                       fc.funIdentifier->toString(),
+                    funCallSignature.toString(),
                    fc.getptr());
 
     fc.funDecl = funDecl;
@@ -458,7 +458,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(IntLiteral &il) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
   atl::shared_ptr<Type> objType = ma.object->accept(*this);
-  objType = collapseReferenceTypes(objType);
+  objType = ReferenceType::collapseReferenceTypes(objType);
 
   atl::shared_ptr<ClassType> objClassType;
   if (objType->astClass() == "ClassType") {
@@ -510,7 +510,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
   atl::shared_ptr<Type> objType = mc.object->accept(*this);
-  objType = collapseReferenceTypes(objType);
+  objType = ReferenceType::collapseReferenceTypes(objType);
 
   atl::shared_ptr<ClassType> objClassType;
   if (objType->astClass() == "ClassType") {
@@ -643,7 +643,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
                      so.variable->varIdentifier->toString(),
                  so.variable);
   }
-  objType = collapseReferenceTypes(objType);
+  objType = ReferenceType::collapseReferenceTypes(objType);
   if (objType->astClass() == "ArrayType" ||
       objType->astClass() == "PointerType") {
     // TODO: Initialise this FunDef with an implementation.
@@ -740,7 +740,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
                  atl::static_pointer_cast<Decl>(vd.getptr()));
   }
   vd.type = varType;
-  varType = collapseReferenceTypes(varType);
+  varType = ReferenceType::collapseReferenceTypes(varType);
   if (varType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> vdClassType =
         atl::static_pointer_cast<ClassType>(varType);
@@ -770,7 +770,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
                  atl::static_pointer_cast<Decl>(vd.getptr()));
   }
   vd.type = varType;
-  varType = collapseReferenceTypes(varType);
+  varType = ReferenceType::collapseReferenceTypes(varType);
   if (varType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> vdClassType =
         atl::static_pointer_cast<ClassType>(varType);
@@ -825,15 +825,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(While &w) {
   return noType();
 }
 
-atl::shared_ptr<Type>
-SemanticAnalysis::collapseReferenceTypes(atl::shared_ptr<Type> type) {
-  if (type->astClass() == "ReferenceType") {
-    type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
-    if (type->astClass() == "ReferenceType")
-      type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
-  }
-  return type;
-}
+
 atl::set<FunDecl::FunModifiers> SemanticAnalysis::funModifiers(bool isConst) const {
   atl::set<FunDecl::FunModifiers> output;
   if (isConst)

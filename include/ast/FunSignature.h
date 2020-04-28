@@ -27,6 +27,8 @@ public:
   bool operator==(const FunSignature &rhs) const;
   bool operator!=(const FunSignature &rhs) const;
 
+  atl::string toString() const;
+
 private:
   const atl::shared_ptr<Type> funReturnType;
   const atl::shared_ptr<Identifier> funIdentifier;
