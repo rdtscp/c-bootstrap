@@ -37,6 +37,7 @@ ClassTypeDef::ClassTypeDef(
       }
       funDecl->funParams.push_front(thisParam);
     }
+    // TODO: Handle Destructor.
   }
 }
 
