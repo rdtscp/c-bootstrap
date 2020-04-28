@@ -35,9 +35,9 @@ TEST(Test_ASTAnalysis, AmbiguousIdentifier) {
   ASSERT_NE(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, CallWithinNamespace) {
+TEST(Test_ASTAnalysis, CallWithReferences) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "CallWithinNamespace/test.cpp");
+                          test_prefix + "CallWithReferences/test.cpp");
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -50,7 +50,6 @@ TEST(Test_ASTAnalysis, CallWithinNamespace) {
   semanticAnalysis.printErrors();
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
-
 
 TEST(Test_ASTAnalysis, ClassCallsItsMethod) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
