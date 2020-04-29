@@ -88,6 +88,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
      */
     const atl::shared_ptr<ClassTypeDef> lhsClassTypeDef =
         lhsClassType->typeDefinition.lock();
+    if (lhsClassTypeDef == nullptr) {
+      return error("Type Analysis",
+                  "No type definition for LHS of binary operation: "
+                  + lhsClassType->identifier->toString(),
+                 bo.getptr());
+    }
 
     /* Create a FunSignature for Operator Overload Call. */
     // Create the arguments.
@@ -415,7 +421,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDecl &fd) {
   for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
     fd.funParams[idx]->accept(*this);
 
-  return fd.funType->accept(*this);
+  fd.funType = fd.funType->accept(*this);
+  return fd.funType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
   if (currScope->findFunDecl(fd.getSignature(), fd.getptr()) ||
@@ -432,9 +439,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunDef &fd) {
     fd.funParams[idx]->accept(*this);
   fd.funBlock->accept(*this);
 
-  const atl::shared_ptr<Type> funType = fd.funType->accept(*this);
+  fd.funType = fd.funType->accept(*this);
   currScope = fd.outerScope.lock();
-  return funType;
+  return fd.funType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Identifier &i) {
   return noType();
