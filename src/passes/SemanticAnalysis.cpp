@@ -12,10 +12,9 @@ atl::shared_ptr<Type>
 SemanticAnalysis::error(const atl::string &errorType, const atl::string &error,
                         const atl::shared_ptr<ASTNode> &node) {
   errorCount++;
-  const atl::string errorOut =
-      errorType + " Error at: " + node->position.toString() + "\n\t" + error;
-  printf("%s\n", errorOut.c_str());
+  errors.push_back(errorType + " Error at: " + node->position.toString() + "\n\t" + error);
   if (errorCount == 9) {
+    printErrors();
     throw Error("9 Semantic Errors: Exiting Prematurely");
   }
   return noType();
@@ -203,7 +202,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassType &ct) {
       currScope->findClassDef(ct.identifier);
   if (ctd != nullptr) {
     ct.typeDefinition = ctd;
-
     return ct.getptr();
   }
 
@@ -688,7 +686,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
     opArgs.push_back(createThisParamType(objClassType->identifier));
     opArgs.push_back(indexType);
     atl::set<FunDecl::FunModifiers> objTypeModifiers;
-    if (objType->typeModifiers.find(Type::Modifiers::CONST))
+    if (objClassType->typeModifiers.find(Type::Modifiers::CONST))
       objTypeModifiers.insert(FunDecl::FunModifiers::CONST);
     const atl::shared_ptr<Identifier> opIdentifier(new Identifier("operator[]"));
     const FunSignature opSignature(nullptr, opIdentifier, opArgs,
@@ -702,7 +700,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
     if (objSubscriptOpDecl == nullptr) {
       return error("Type Error",
                    "No definiton for subscript operator[] for type: " +
-                       objClassTypeDef->classIdentifier->toString(),
+                       objClassType->identifier->toString(),
                    so.variable);
     }
 
