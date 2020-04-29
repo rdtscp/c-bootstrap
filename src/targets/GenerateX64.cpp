@@ -310,7 +310,14 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Program &p) {
   }
 
   x64.block("_main");
+  //  mov rbx, rsp    ; save original stack pointer
+  x64.mov(X64::rbx, X64::rsp);
+  // and rsp, -16    ; align stack to 16 bytes
+  x64.write("and rsp, -16");
+  // call FunDecl_main_int__char_ptr_ptr_
   x64.call("main_int__char_ptr_ptr_");
+  // mov rsp, rbx    ; restore original stack pointer
+  x64.mov(X64::rsp, X64::rbx);
   x64.ret();
 
   x64.block("FunDecl_printf_char_ptr__char_ptr_");
