@@ -16,6 +16,15 @@ bool IntLiteral::operator==(Expr &rhs) const {
 
 bool IntLiteral::operator!=(Expr &rhs) const { return !(*this == rhs); }
 
+bool IntLiteral::operator==(const IntLiteral &rhs) const {
+  if (value != rhs.value)
+    return false;
+
+  return true;
+}
+
+bool IntLiteral::operator!=(const IntLiteral &rhs) const { return !(*this == rhs); }
+
 bool IntLiteral::operator==(Literal &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<IntLiteral *>(&rhs);
@@ -24,13 +33,10 @@ bool IntLiteral::operator==(Literal &rhs) const {
 
 bool IntLiteral::operator!=(Literal &rhs) const { return !(*this == rhs); }
 
-bool IntLiteral::operator==(const IntLiteral &rhs) const {
-  if (value != rhs.value)
-    return false;
-
-  return true;
+bool IntLiteral::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const IntLiteral *>(&rhs);
+  return false;
 }
 
-bool IntLiteral::operator!=(const IntLiteral &rhs) const {
-  return !(*this == rhs);
-}
+bool IntLiteral::operator!=(const Stmt &rhs) const { return !(*this == rhs); }

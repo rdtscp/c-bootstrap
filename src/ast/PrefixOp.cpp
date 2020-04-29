@@ -25,3 +25,11 @@ bool PrefixOp::operator==(const PrefixOp &rhs) const {
 }
 
 bool PrefixOp::operator!=(const PrefixOp &rhs) const { return !(*this == rhs); }
+
+bool PrefixOp::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const PrefixOp *>(&rhs);
+  return false;
+}
+
+bool PrefixOp::operator!=(const Stmt &rhs) const { return !(*this == rhs); }

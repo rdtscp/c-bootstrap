@@ -7,13 +7,6 @@ ConstructorCall::ConstructorCall(
     const atl::vector<atl::shared_ptr<Expr>> &p_ctorArgs)
     : constructorIdentifier(p_ctorIdentifier), constructorArgs(p_ctorArgs) {}
 
-bool ConstructorCall::operator==(Expr &rhs) const {
-  if (rhs.astClass() == astClass())
-    return *this == *static_cast<ConstructorCall *>(&rhs);
-  return false;
-}
-
-bool ConstructorCall::operator!=(Expr &rhs) const { return !(*this == rhs); }
 
 bool ConstructorCall::operator==(const ConstructorCall &rhs) const {
   if (*constructorIdentifier != *rhs.constructorIdentifier)
@@ -30,6 +23,20 @@ bool ConstructorCall::operator==(const ConstructorCall &rhs) const {
   return true;
 }
 
-bool ConstructorCall::operator!=(const ConstructorCall &rhs) const {
-  return !(*this == rhs);
+bool ConstructorCall::operator!=(const ConstructorCall &rhs) const { return !(*this == rhs); }
+
+bool ConstructorCall::operator==(Expr &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<ConstructorCall *>(&rhs);
+  return false;
 }
+
+bool ConstructorCall::operator!=(Expr &rhs) const { return !(*this == rhs); }
+
+bool ConstructorCall::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const ConstructorCall *>(&rhs);
+  return false;
+}
+
+bool ConstructorCall::operator!=(const Stmt &rhs) const { return !(*this == rhs); }

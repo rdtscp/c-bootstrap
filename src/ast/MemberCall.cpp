@@ -25,6 +25,12 @@ bool MemberCall::operator==(const MemberCall &rhs) const {
   return true;
 }
 
-bool MemberCall::operator!=(const MemberCall &rhs) const {
-  return !(*this == rhs);
+bool MemberCall::operator!=(const MemberCall &rhs) const { return !(*this == rhs); }
+
+bool MemberCall::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const MemberCall *>(&rhs);
+  return false;
 }
+
+bool MemberCall::operator!=(const Stmt &rhs) const { return !(*this == rhs); }

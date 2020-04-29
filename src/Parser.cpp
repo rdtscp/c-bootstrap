@@ -693,12 +693,26 @@ atl::shared_ptr<Type> Parser::parseType() {
     type = createNode(new BaseType(pType));
   }
   if (accept(TC::ASTERIX)) {
-    while (accept(TC::ASTERIX)) {
-      expect(TC::ASTERIX);
-      type = createNode(new PointerType(type));
-      if (accept(TC::CONST)) {
-        expect(TC::CONST);
-        type->typeModifiers.insert(Type::Modifiers::CONST);
+    while (accept(TC::ASTERIX) || accept(TC::REF)) {
+      if (accept(TC::ASTERIX)) {
+        expect(TC::ASTERIX);
+        type = createNode(new PointerType(type));
+        if (accept(TC::CONST)) {
+          expect(TC::CONST);
+          type->typeModifiers.insert(Type::Modifiers::CONST);
+        }
+      }
+      else if (accept(TC::REF)) {
+        /*  We can have:
+         *    void foo(char *& ptr);
+         */
+        expect(TC::REF);
+        type = createNode(new ReferenceType(type));
+        if (accept(TC::CONST)) {
+          expect(TC::CONST);
+          type->typeModifiers.insert(Type::Modifiers::CONST);
+        }
+        break;
       }
     }
   } else if (accept(TC::REF)) {

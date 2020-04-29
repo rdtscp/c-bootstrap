@@ -19,11 +19,22 @@ bool VarDef::operator==(Decl &rhs) const {
 
 bool VarDef::operator!=(Decl &rhs) const { return !(*this == rhs); }
 
+bool VarDef::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const VarDef *>(&rhs);
+  return false;
+}
+
+bool VarDef::operator!=(const Stmt &rhs) const { return !(*this == rhs); }
+
 bool VarDef::operator==(const VarDef &rhs) const {
   if (*type != *rhs.type)
     return false;
 
   if (*identifier != *rhs.identifier)
+    return false;
+
+  if (*varValue != *rhs.varValue)
     return false;
 
   return true;

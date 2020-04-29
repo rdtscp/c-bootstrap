@@ -83,7 +83,7 @@ private:
   atl::shared_ptr<Type> visit(While &w) override;
 
   /* Helpers */
-  atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type);
+  atl::shared_ptr<PointerType> createThisParamType(atl::shared_ptr<Identifier> identifier) const;
   atl::set<FunDecl::FunModifiers> funModifiers(bool isConst) const;
   atl::shared_ptr<BaseType> noType() const;
 };

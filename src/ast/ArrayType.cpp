@@ -29,6 +29,12 @@ bool ArrayType::equivalentTo(Type &rhs) const {
   return *this == rhs;
 }
 
+bool ArrayType::operator==(const ArrayType &rhs) const {
+  return (*pointedType == *rhs.pointedType && *size == *rhs.size);
+}
+
+bool ArrayType::operator!=(const ArrayType &rhs) const { return !(*this == rhs); }
+
 bool ArrayType::operator==(Type &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<ArrayType *>(&rhs);
@@ -36,11 +42,3 @@ bool ArrayType::operator==(Type &rhs) const {
 }
 
 bool ArrayType::operator!=(Type &t) const { return !(*this == t); }
-
-bool ArrayType::operator==(const ArrayType &rhs) const {
-  return (*pointedType == *rhs.pointedType && *size == *rhs.size);
-}
-
-bool ArrayType::operator!=(const ArrayType &rhs) const {
-  return !(*this == rhs);
-}

@@ -67,6 +67,11 @@ atl::string BaseType::mangle() const {
   return output;
 }
 
+bool BaseType::operator==(const BaseType &rhs) const {
+  return primitiveType == rhs.primitiveType;
+}
+bool BaseType::operator!=(const BaseType &rhs) const { return !(*this == rhs); }
+
 bool BaseType::operator==(Type &rhs) const {
   if (rhs.astClass() == "ReferenceType") {
     const ReferenceType *rhsRefType = static_cast<ReferenceType *>(&rhs);
@@ -79,7 +84,3 @@ bool BaseType::operator==(Type &rhs) const {
 }
 bool BaseType::operator!=(Type &t) const { return !(*this == t); }
 
-bool BaseType::operator==(const BaseType &rhs) const {
-  return primitiveType == rhs.primitiveType;
-}
-bool BaseType::operator!=(const BaseType &rhs) const { return !(*this == rhs); }
