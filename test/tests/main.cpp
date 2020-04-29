@@ -1,10 +1,8 @@
-#include "atl/include/string.h"
-
-void printf(const char *, const char *);
+#include "test_string.h"
 
 int main(int argc, char **argv) {
   const char *raw = "World";
-  // atl::string str(raw);
-  printf("Hello %s!", raw);
+  test::string str(raw);
+  printf("Hello %s!\n", raw);
   return 23;
 }
