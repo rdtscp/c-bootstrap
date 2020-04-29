@@ -344,6 +344,22 @@ TEST(Test_ASTAnalysis, TypedefComparisons) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
+TEST(Test_ASTAnalysis, TypeDefReturnType) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "TypeDefReturnType/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis semanticAnalysis(progAST);
+  semanticAnalysis.run();
+  semanticAnalysis.printErrors();
+  ASSERT_EQ(0, semanticAnalysis.errorCount);
+}
+
 TEST(Test_ASTAnalysis, UndefinedClass) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "UndefinedClass/test.cpp");
