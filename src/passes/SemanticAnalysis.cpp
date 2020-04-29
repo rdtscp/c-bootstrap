@@ -76,12 +76,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BaseType &bt) {
   return bt.getptr();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
-  const atl::shared_ptr<Type> lhsType = bo.lhs->accept(*this);
-  const atl::shared_ptr<Type> rhsType = bo.rhs->accept(*this);
+  const atl::shared_ptr<Type> lhsType = ReferenceType::collapseReferenceTypes(bo.lhs->accept(*this));
+  const atl::shared_ptr<Type> rhsType = ReferenceType::collapseReferenceTypes(bo.rhs->accept(*this));
 
-  if (ReferenceType::collapseReferenceTypes(lhsType)->astClass() == "ClassType") {
+  if (lhsType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> lhsClassType =
-        atl::static_pointer_cast<ClassType>(ReferenceType::collapseReferenceTypes(lhsType));
+        atl::static_pointer_cast<ClassType>(lhsType);
 
     /*  Precedence for operator overloading:
      *    1) Freestanding Functions
@@ -92,7 +92,13 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
     /* Create a FunSignature for Operator Overload Call. */
     // Create the arguments.
     atl::vector<atl::shared_ptr<Type>> opOverloadCallArgTypes;
-    opOverloadCallArgTypes.push_back(lhsClassType);
+    switch (bo.operation) {
+      case Op::ADD:
+        opOverloadCallArgTypes.push_back(lhsClassType);
+        break;
+      default:
+        opOverloadCallArgTypes.push_back(atl::shared_ptr<PointerType>(new PointerType(lhsClassType)));
+    }
     opOverloadCallArgTypes.push_back(rhsType);
 
     // Create the modifiers.
@@ -111,10 +117,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
         nullptr, opOverloadIdentifier, opOverloadCallArgTypes, lhsModifiers);
 
     // Try resolve it.
-    // const atl::shared_ptr<FunDecl> opOverloadClassFunc =
-    //     lhsClassTypeDef->resolveFunCall(opOverloadCallSignature);
-    // if (opOverloadClassFunc)
-    //   return opOverloadClassFunc->funType;
+    const atl::shared_ptr<FunDecl> opOverloadClassFunc =
+        lhsClassTypeDef->resolveFunCall(opOverloadCallSignature);
+    if (opOverloadClassFunc)
+      return opOverloadClassFunc->funType;
 
     const atl::shared_ptr<FunDecl> opOverloadScopeFunc =
         currScope->findFunDecl(opOverloadCallSignature);
@@ -601,6 +607,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ParenthExpr &pe) {
   return pe.innerExpr->accept(*this);
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(PointerType &pt) {
+  pt.pointedType->accept(*this);
   return pt.getptr();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(PrefixOp &po) {
