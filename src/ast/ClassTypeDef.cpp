@@ -1,16 +1,10 @@
 #include "ast/ClassTypeDef.h"
-#include "ast/Block.h"
 #include "ast/ClassType.h"
-#include "ast/ConstructorCall.h"
 #include "ast/ConstructorDef.h"
 #include "ast/FunDef.h"
 #include "ast/FunSignature.h"
 #include "ast/PointerType.h"
-#include "ast/ReferenceType.h"
-#include "ast/Return.h"
 #include "ast/VarDecl.h"
-#include "ast/VarDef.h"
-#include "ast/VarExpr.h"
 
 using namespace ACC;
 
@@ -205,23 +199,26 @@ ClassTypeDef::findFunDeclLocal(const FunSignature &funSignature,
     }
   }
 
-
+  if (funSignature.namespaceCount() > 0) {
+    return nullptr;
+  } else {
     /* No Namespacing on this FunSignature, search top level. */
-  for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
-    const atl::shared_ptr<Decl> currDecl = classDecls[idx];
-    if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")
-      continue;
-    const atl::shared_ptr<FunDecl> currFunDecl =
-        atl::static_pointer_cast<FunDecl>(currDecl);
-    if (currFunDecl.get() == exemptDecl.get())
-      continue;
-    if (funSignature != currFunDecl->getSignature())
-      continue;
+    for (int idx = classDecls.size() - 1; idx >= 0; --idx) {
+      const atl::shared_ptr<Decl> currDecl = classDecls[idx];
+      if (currDecl->astClass() != "FunDecl" && currDecl->astClass() != "FunDef")
+        continue;
+      const atl::shared_ptr<FunDecl> currFunDecl =
+          atl::static_pointer_cast<FunDecl>(currDecl);
+      if (currFunDecl.get() == exemptDecl.get())
+        continue;
+      if (funSignature != currFunDecl->getSignature())
+        continue;
 
-    return currFunDecl;
+      return currFunDecl;
+    }
+
+    return nullptr;
   }
-
-  return nullptr;
 }
 
 atl::shared_ptr<TypeDefDecl>
@@ -286,52 +283,14 @@ ClassTypeDef::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
   return nullptr;
 }
 
-// void ClassTypeDef::rvalRefWrap(atl::shared_ptr<ConstructorDecl> ctorDecl) {
-//   // Make this function static.
-//   atl::set<FunDecl::FunModifiers> modifiers;
-//   modifiers.insert(FunDecl::FunModifiers::STATIC);
-
-//   // Make it return a T&&.
-//   const atl::shared_ptr<ReferenceType> returnType(new ReferenceType(
-//       atl::shared_ptr<ReferenceType>(new ReferenceType(classType))));
-
-//   // Copy all parameters except the first.
-//   atl::vector<atl::shared_ptr<VarDecl>> parameters;
-//   for (unsigned int idx = 1u; idx < ctorDecl->constructorParams.size(); ++idx)
-//     parameters.push_back(ctorDecl->constructorParams[idx]);
-
-//   atl::vector<atl::shared_ptr<Expr>> arguments;
-//   for (unsigned int idx = 0u; idx < parameters.size(); ++idx)
-//     arguments.push_back(
-//         atl::shared_ptr<VarExpr>(new VarExpr(parameters[idx]->identifier)));
-
-//   const atl::shared_ptr<Identifier> temporaryIdent(new Identifier("temporary"));
-//   atl::shared_ptr<ConstructorCall> temporaryConstruction(
-//       new ConstructorCall(classType->identifier, arguments));
-//   const atl::shared_ptr<VarDef> temporaryVar(
-//       new VarDef(classType, temporaryIdent, temporaryConstruction));
-//   temporaryConstruction->objectToConstruct = temporaryVar;
-
-//   const atl::shared_ptr<Return> temporaryReturn(
-//       new Return(atl::shared_ptr<VarExpr>(new VarExpr(temporaryIdent))));
-
-//   const atl::vector<atl::shared_ptr<Stmt>> funBody = {temporaryVar,
-//                                                       temporaryReturn};
-//   const atl::shared_ptr<Block> funBlock(new Block(funBody));
-
-//   const atl::shared_ptr<FunDef> funDef(new FunDef(
-//       modifiers, classType->identifier, parameters, returnType, funBlock));
-
-//   classDecls.push_back(funDef);
-// =======
-// atl::shared_ptr<VarDecl> ClassTypeDef::createThisParam(const Position &thisPosition) const {
-//   const atl::shared_ptr<ClassType> classType(new ClassType(classIdentifier));
-//   classType->position = thisPosition;
-//   const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
-//   thisType->position = thisPosition;
-//   const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
-//   thisType->position = thisPosition;
-//   const atl::shared_ptr<VarDecl> thisParam(new VarDecl(thisType, thisIdent));
-//   thisParam->Decl::position = thisPosition;
-//   return thisParam;
-// }
+atl::shared_ptr<VarDecl> ClassTypeDef::createThisParam(const Position &thisPosition) const {
+  const atl::shared_ptr<ClassType> classType(new ClassType(classIdentifier));
+  classType->position = thisPosition;
+  const atl::shared_ptr<PointerType> thisType(new PointerType(classType));
+  thisType->position = thisPosition;
+  const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
+  thisType->position = thisPosition;
+  const atl::shared_ptr<VarDecl> thisParam(new VarDecl(thisType, thisIdent));
+  thisParam->Decl::position = thisPosition;
+  return thisParam;
+}

@@ -59,6 +59,8 @@ atl::string FunSignature::mangle() const {
     output += "_const";
 
   return output;
+}
+
 atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type) {
   if (type->astClass() == "ReferenceType") {
     type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
