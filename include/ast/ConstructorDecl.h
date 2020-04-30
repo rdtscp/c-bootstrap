@@ -15,6 +15,8 @@ public:
   atl::shared_ptr<ClassType> classType;
   atl::vector<atl::shared_ptr<VarDecl>> constructorParams;
 
+  int numCallers = 0;
+
   ConstructorDecl(
       const atl::shared_ptr<Type> &p_classType,
       const atl::vector<atl::shared_ptr<VarDecl>> &p_constructorParams);

@@ -290,6 +290,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
     return error("Type Analysis", "Attempted to call undeclared constructor.",
                  cc.getptr());
 
+  ++ctorDecl->numCallers;
   cc.constructorDecl = ctorDecl;
   return cc.constructorDecl.lock()->classType;
 }
@@ -312,6 +313,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorDef &cd) {
 
   for (unsigned int idx = 0; idx < cd.constructorParams.size(); ++idx)
     cd.constructorParams[idx]->accept(*this);
+
+  // for (unsigned int idx = 0; idx < cd.initialiserList.size(); ++idx)
+  //   cd.initialiserList[idx]->accept(*this);
+
   cd.constructorBlock->accept(*this);
 
   currScope = cd.outerScope.lock();
