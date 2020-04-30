@@ -406,12 +406,14 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(FunCall &fc) {
                                         atl::set<FunDecl::FunModifiers>());
     const atl::shared_ptr<FunDecl> funDecl =
         currScope->findFunDecl(funCallSignature);
-    if (funDecl == nullptr)
+    if (funDecl == nullptr) {
       return error("Type Analysis",
                    "Attempted to call undeclared function: " +
                     funCallSignature.toString(),
                    fc.getptr());
+    }
 
+    ++funDecl->numCallers;
     fc.funDecl = funDecl;
     return fc.funDecl.lock()->funType;
   }
