@@ -46,11 +46,13 @@ public:
 
   /* Constructor */
   string(const char *string_literal) : m_size(char_buf_len(string_literal)), m_value(new char[m_size + 1]) {
+    this->m_size = char_buf_len(string_literal);
+    this->m_value = new char[m_size + 1u];
     for (uint idx = 0u; idx < m_size; ++idx) {
-      m_value[idx] = *string_literal;
+      this->m_value[idx] = *string_literal;
       ++string_literal;
     }
-    m_value[m_size] = '\0';
+    this->m_value[m_size] = '\0';
   }
 
   /* Copy Constructor */
