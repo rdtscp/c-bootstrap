@@ -104,20 +104,71 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassTypeDef &ctd) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorCall &cc) {
-  // TODO: Allocate for the type we are about to construct.
-  for (int idx = cc.constructorArgs.size() - 1; idx >= 0; --idx) {
-    atl::shared_ptr<X64::Operand> argReg =
-        cc.constructorArgs[idx]->accept(*this);
-    x64.push(argReg);
+  const atl::vector<atl::shared_ptr<X64::Register>> argRegisters = {
+      X64::rsi, X64::rdx,
+      X64::rcx // R8, R9
+  };
+
+  const atl::shared_ptr<X64::AddrOffset> objectAddr(new X64::AddrOffset(X64::rsp, cc.objectToConstruct.lock()->fpOffset));
+  x64.mov(X64::rdi, objectAddr);
+
+  for (uint argNum = 0; argNum < cc.constructorArgs.size(); ++argNum) {
+    const atl::shared_ptr<X64::Operand> argReg = cc.constructorArgs[argNum]->accept(*this);
+    if (argNum < 4)
+      x64.mov(argRegisters[argNum], argReg);
+    else
+      x64.push(argReg);
   }
-  x64.call(cc.constructorIdentifier->mangle());
-  return X64::rax;
+
+  x64.call(cc.constructorDecl.lock()->getSignature().mangle());
+  return atl::shared_ptr<X64::None>(new X64::None());
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorDecl &cd) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorDef &cd) {
-  x64.block("CtorDecl_" + cd.getSignature().mangle());
+  if (cd.numCallers == 0) {
+    return atl::shared_ptr<X64::None>();
+  }
+  currScope = cd.constructorBlock;
+
+  x64.block("FunDecl_" + cd.getSignature().mangle());
+
+  /* ---- Callee Prologue ---- */
+  x64.push(X64::rbp);
+  x64.mov(X64::rbp, X64::rsp);
+  x64.push(X64::rbx);
+  x64.push(X64::rdi);
+  x64.push(X64::rsi);
+
+  /* ---- Execute Function ---- */
+  x64.comment(" ---- Constructor Args ----");
+  for (unsigned int idx = 0; idx < cd.constructorParams.size(); ++idx) {
+    cd.constructorParams[idx]->accept(*this);
+  }
+  // x64.comment(" ---- Constructor Initialiser List ----");
+  // for (unsigned int idx = 0; idx < cd.initialiserList.size() ; ++idx) {
+  //   cd.initialiserList[idx]->accept(*this);
+  // }
+  x64.comment(" ---- Constructor Body ----");
+
+
+  cd.constructorBlock->accept(*this);
+  x64.comment(" -----------------------");
+
+  /* -------------------------- */
+
+  /* ---- Callee Epilogue ---- */
+  x64.pop(X64::rsi);
+  x64.pop(X64::rdi);
+  x64.pop(X64::rbx);
+  x64.mov(X64::rsp, X64::rbp);
+  x64.pop(X64::rbp);
+  x64.ret();
+  x64.write("");
+
+  currFpOffset = 0;
+  currScope = cd.constructorBlock->outerScope.lock();
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Deletion &d) {
@@ -146,8 +197,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunCall &fc) {
       X64::rcx // R8, R9
   };
   for (unsigned int argNum = 0u; argNum < fc.funArgs.size(); ++argNum) {
-    const atl::shared_ptr<X64::Operand> argReg =
-        fc.funArgs[argNum]->accept(*this);
+    const atl::shared_ptr<X64::Operand> argReg = fc.funArgs[argNum]->accept(*this);
     if (argNum < 4)
       x64.mov(argRegisters[argNum], argReg);
     else
@@ -189,6 +239,14 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDecl &fd) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
+  if (fd.numCallers == 0 && fd.getIdentifier()->value != "main") {
+    return atl::shared_ptr<X64::None>();
+  }
+  const atl::vector<atl::shared_ptr<X64::Register>> argRegisters = {
+      X64::rdi, X64::rsi, X64::rdx,
+      X64::rcx // R8, R9
+  };
+
   currScope = fd.funBlock;
 
   x64.block("FunDecl_" + fd.getSignature().mangle());
@@ -202,8 +260,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
 
   /* ---- Execute Function ---- */
   x64.comment(" ---- Function Args ----");
-  for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx)
-    fd.funParams[idx]->accept(*this);
+  for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx) {
+    const atl::shared_ptr<X64::Operand> argAddr = fd.funParams[idx]->accept(*this);
+    x64.mov(argAddr, argRegisters[idx]);
+  }
   x64.comment(" ---- Function Body ----");
 
   if (fd.getIdentifier()->value == "main")
@@ -269,8 +329,24 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberAccess &ma) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberCall &mc) {
-  mc.object->accept(*this);
-  return atl::shared_ptr<X64::None>();
+  const atl::vector<atl::shared_ptr<X64::Register>> argRegisters = {
+      X64::rsi, X64::rdx,
+      X64::rcx // R8, R9
+  };
+  const atl::shared_ptr<X64::Operand> this_ptr =  mc.object->accept(*this);
+
+  FunCall &fc = *mc.funCall;
+  x64.mov(X64::rdi, this_ptr);
+  for (unsigned int argNum = 0u; argNum < fc.funArgs.size(); ++argNum) {
+    const atl::shared_ptr<X64::Operand> argReg =
+        fc.funArgs[argNum]->accept(*this);
+    if (argNum < 4)
+      x64.mov(argRegisters[argNum], argReg);
+    else
+      x64.push(argReg);
+  }
+  x64.call(fc.funDecl.lock()->getSignature().mangle());
+  return X64::rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Namespace &n) {
   for (unsigned int idx = 0; idx < n.namespaceDecls.size(); ++idx)
@@ -278,7 +354,6 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Namespace &n) {
 
   return nullptr;
 }
-
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Nullptr &n) {
   return genIntValue(0);
 }
@@ -388,7 +463,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDecl &vd) {
       " @ [rbp" + atl::to_string(currFpOffset) + "]";
 
   x64.sub(X64::rsp, bytesRequired, comment);
-  return atl::shared_ptr<X64::None>();
+  return atl::shared_ptr<X64::AddrOffset>(new X64::AddrOffset(X64::rsp, vd.fpOffset));
+  // return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
   const atl::string vdIdent = vd.getIdentifier()->toString();
@@ -404,21 +480,16 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
 
   x64.sub(X64::rsp, bytesRequired, comment);
 
-  // Operand should be an AddrOffset.
-  if (vd.varValue->astClass() == "ConstructorCall") {
-    currObject = atl::shared_ptr<VarExpr>(new VarExpr(vd.getIdentifier()));
-    currObject->varDecl = vd.getptr();
-  }
-
   const atl::shared_ptr<X64::Operand> valueOperand = vd.varValue->accept(*this);
 
-  x64.mov(X64::rax, valueOperand,
-          "Move " + vdIdent + "'s value into temp register.");
-  x64.mov(addrOffset(X64::rbp, vd.fpOffset), X64::rax,
-          "Move " + vdIdent +
-              "'s temp register into its stack allocated space.");
+  if (valueOperand->opType() != "None") {
+    x64.mov(X64::rax, valueOperand,
+            "Move " + vdIdent + "'s value into temp register.");
+    x64.mov(addrOffset(X64::rbp, vd.fpOffset), X64::rax,
+            "Move " + vdIdent + "'s temp register into its stack allocated space.");
+  }
 
-  return atl::shared_ptr<X64::None>();
+  return atl::shared_ptr<X64::AddrOffset>(new X64::AddrOffset(X64::rsp, vd.fpOffset));
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
