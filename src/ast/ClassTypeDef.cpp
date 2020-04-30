@@ -29,13 +29,14 @@ ClassTypeDef::ClassTypeDef(
         currDecl->astClass() == "FunDef") {
       // Create a new ConstructorDecl as a copy of the original.
       atl::shared_ptr<FunDecl> funDecl = atl::static_pointer_cast<FunDecl>(currDecl);
-
-      // Create the this param.
-      atl::shared_ptr<VarDecl> thisParam = createThisParam(funDecl->Decl::position);
-      if (funDecl->funModifiers.find(FunDecl::FunModifiers::CONST)) {
-        thisParam->type->typeModifiers.insert(Type::Modifiers::CONST);
+      if (!funDecl->funModifiers.find(FunDecl::FunModifiers::STATIC)) {
+        // Create the this param.
+        atl::shared_ptr<VarDecl> thisParam = createThisParam(funDecl->Decl::position);
+        if (funDecl->funModifiers.find(FunDecl::FunModifiers::CONST)) {
+          thisParam->type->typeModifiers.insert(Type::Modifiers::CONST);
+        }
+        funDecl->funParams.push_front(thisParam);
       }
-      funDecl->funParams.push_front(thisParam);
     }
     // TODO: Handle Destructor.
   }
