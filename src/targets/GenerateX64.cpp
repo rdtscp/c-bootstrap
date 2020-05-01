@@ -38,7 +38,14 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ArrayType &at) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Assign &as) {
   atl::shared_ptr<X64::Operand> lhsRegRes = as.lhs->accept(*this);
   atl::shared_ptr<X64::Operand> rhsResReg = as.rhs->accept(*this);
-  x64.mov(lhsRegRes, rhsResReg);
+  // We can't mov a StringLiteral into a space on the stack
+  // load it into a register(effectively the address) and 
+  // then move that address onto the stack.
+  if (rhsResReg->opType() == "StringLiteral") {
+    x64.mov(X64::rax, rhsResReg);
+    rhsResReg = X64::rax;
+  }
+  x64.mov(lhsRegRes, rhsResReg, "Assigning LHS to RHS");
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BaseType &bt) {
@@ -417,16 +424,21 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Program &p) {
   x64.ret();
 
   x64.block("FunDecl_printf_char_ptr__char_ptr_");
-  // x64.call("_printf");
   x64.write("call _printf");
   x64.ret();
 
+  x64.block("FunDecl_printf_char_ptr__int_");
+  x64.write("call _printf");
+  x64.ret();
+
+
   for (unsigned int idx = 0u; idx < p.decls.size(); ++idx) {
-    //  if (p.decls[idx]->astClass() == "VarDecl" || p.decls[idx]->astClass() == "VarDef") {
-    //    continue;
-    // }
+    const atl::shared_ptr<Decl> currDecl = p.decls[idx];
+    if (currDecl->astClass() == "VarDecl" || currDecl->astClass() == "VarDef") {
+       continue;
+    }
     x64.write("\n\n");
-    p.decls[idx]->accept(*this);
+    currDecl->accept(*this);
     x64.write("\n\n");
   }
 
