@@ -521,11 +521,13 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
   const atl::shared_ptr<ClassTypeDef> objClassTypeDef =
       objClassType->typeDefinition.lock();
   // Check this ClassType is Defined.
-  if (objClassTypeDef == nullptr)
+  if (objClassTypeDef == nullptr) {
     return error("Type Error",
                  "Attempted to access member variable of class type that has "
                  "no definition.",
                  ma.object);
+  }
+  ma.objectTypeDef = objClassTypeDef;
 
   const atl::shared_ptr<Scope> outerScope = currScope;
   currScope = objClassTypeDef;
