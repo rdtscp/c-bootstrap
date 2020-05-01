@@ -97,9 +97,13 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassTypeDecl &ctd) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassTypeDef &ctd) {
-  for (unsigned int idx = 0u; idx < ctd.classDecls.size(); ++idx) {
-    ctd.classDecls[idx]->accept(*this);
-  }
+  // for (unsigned int idx = 0u; idx < ctd.classDecls.size(); ++idx) {
+  //   const atl::shared_ptr<Decl> currDecl = ctd.classDecls[idx];
+  //   if (currDecl->astClass() == "VarDecl" || currDecl->astClass() == "VarDef") {
+  //     continue;
+  //   }
+  //   currDecl->accept(*this);
+  // }
 
   return atl::shared_ptr<X64::None>();
 }
@@ -325,8 +329,23 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(IntLiteral &il) {
   return X64::rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberAccess &ma) {
-  ma.object->accept(*this);
-  return atl::shared_ptr<X64::None>();
+  const atl::shared_ptr<X64::Operand> objAddr = ma.object->accept(*this);
+  const atl::shared_ptr<ClassTypeDef> objClassTypeDef = ma.objectTypeDef.lock();
+  const atl::vector<atl::shared_ptr<Decl>> classDecls = objClassTypeDef->classDecls;
+  unsigned int objByteOffset = 0u;
+  for (unsigned int i = 0u; i < classDecls.size(); ++i) {
+    const atl::shared_ptr<Decl> currDecl = classDecls[i];
+    if (currDecl->astClass() != "VarDecl" && currDecl->astClass() != "VarDef") {
+      continue;
+    }
+    const atl::shared_ptr<VarDecl> currMember = atl::static_pointer_cast<VarDecl>(currDecl);
+    if (currMember == ma.fieldVariable->varDecl.lock()) {
+      break;
+    }
+    objByteOffset += currMember->getBytes();
+  }
+
+  return atl::shared_ptr<X64::AddrOffset>(new X64::AddrOffset(objAddr, objByteOffset));
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberCall &mc) {
   const atl::vector<atl::shared_ptr<X64::Register>> argRegisters = {
@@ -385,14 +404,16 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Program &p) {
   }
 
   x64.block("_main");
-  //  mov rbx, rsp    ; save original stack pointer
-  x64.mov(X64::rbx, X64::rsp);
-  // and rsp, -16    ; align stack to 16 bytes
+  // Save the state of the stack, and align it to 16 bytes.
+  x64.mov(X64::rax, X64::rsp);
   x64.write("and rsp, -16");
-  // call FunDecl_main_int__char_ptr_ptr_
+  x64.push(X64::rax);
+  x64.push(X64::rbp);
+  x64.mov(X64::rbp, X64::rsp);
   x64.call("main_int__char_ptr_ptr_");
-  // mov rsp, rbx    ; restore original stack pointer
-  x64.mov(X64::rsp, X64::rbx);
+  x64.pop(X64::rbp);
+  x64.pop(X64::rax);
+  x64.mov(X64::rsp, X64::rax);
   x64.ret();
 
   x64.block("FunDecl_printf_char_ptr__char_ptr_");
@@ -401,6 +422,9 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Program &p) {
   x64.ret();
 
   for (unsigned int idx = 0u; idx < p.decls.size(); ++idx) {
+    //  if (p.decls[idx]->astClass() == "VarDecl" || p.decls[idx]->astClass() == "VarDef") {
+    //    continue;
+    // }
     x64.write("\n\n");
     p.decls[idx]->accept(*this);
     x64.write("\n\n");
