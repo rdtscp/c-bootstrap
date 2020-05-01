@@ -8,7 +8,14 @@
 using namespace ACC;
 
 Program::Program(const atl::vector<atl::shared_ptr<Decl>> &p_decls)
-    : decls(p_decls) {}
+    : decls(p_decls) {
+  for (unsigned int i = 0u; i < decls.size(); ++i) {
+    const atl::shared_ptr<Decl> currDecl = decls[i];
+    if (currDecl->astClass() == "VarDecl" || currDecl->astClass() == "VarDef") {
+      globalVars.push_back(currDecl);
+    }
+  }
+}
 
 bool Program::operator==(const Program &rhs) const {
   if (decls.size() != rhs.decls.size())
