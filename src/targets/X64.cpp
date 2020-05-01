@@ -13,12 +13,21 @@ AddrOffset::AddrOffset(const atl::shared_ptr<X64::Operand> p_addrOperand,
 atl::string AddrOffset::opType() const { return "AddrOffset"; }
 
 atl::string AddrOffset::toString() const {
-  if (offset < 0)
-    return "[" + addrOperand->toString() + atl::to_string(offset) + "]";
-  else if (offset > 0)
-    return "[" + addrOperand->toString() + "+" + atl::to_string(offset) + "]";
+  // Accumulate the offsets and get the address to offset.
+  int byteOffset = offset;
+  atl::shared_ptr<X64::Operand> addressOp = addrOperand;
+  while (addressOp->opType() == "AddrOffset") {
+    atl::shared_ptr<X64::AddrOffset> addrOffset = atl::static_pointer_cast<AddrOffset>(addressOp);
+    byteOffset += addrOffset->offset;
+    addressOp = addrOffset->addrOperand;
+  }
+
+  if (byteOffset < 0)
+    return "[" + addressOp->toString() + atl::to_string(byteOffset) + "]";
+  else if (byteOffset > 0)
+    return "[" + addressOp->toString() + "+" + atl::to_string(byteOffset) + "]";
   else
-    return "[" + addrOperand->toString() + "]";
+    return "[" + addressOp->toString() + "]";
 }
 
 /* ---- X64::Register --- */
