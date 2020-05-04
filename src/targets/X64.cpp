@@ -84,7 +84,16 @@ atl::string StringLiteral::toString() const { return strName; }
 
 /* ---- X64::Writer ---- */
 
-Writer::Writer(const atl::string &filename) : x64Output(filename) {
+Writer::Writer(const atl::string &filename)
+  : rax(new Register(32, "rax")),
+    rbx(new Register(32, "rbx")),
+    rcx(new Register(32, "rcx")),
+    rdx(new Register(32, "rdx")),
+    rsi(new Register(32, "rsi")),
+    rdi(new Register(32, "rdi")),
+    rsp(new Register(32, "rsp")),
+    rbp(new Register(32, "rbp")),
+    x64Output(filename) {
   if (!x64Output.good())
     throw Error("Not good!");
 }
@@ -109,14 +118,6 @@ void Writer::block(atl::string blockName, const atl::string &comment) {
 }
 
 void Writer::call(const atl::string &ident, const atl::string &comment) {
-  for (unsigned int idx = 0u; idx < externFunDecls.size(); ++idx) {
-    const atl::string externFunDecl = externFunDecls[idx];
-    if (ident == externFunDecl) {
-      write("call _" + ident);
-      return;
-    }
-  }
-
   write("call FunDecl_" + ident);
 }
 
@@ -244,49 +245,65 @@ void Writer::sub(const atl::shared_ptr<X64::Operand> &op, const int value,
         comment);
 }
 
-void Writer::write(const atl::string &str) { x64Output.write(str + "\n"); }
+void Writer::write(const atl::string &str) {
+  // printf("%s\n", str.c_str());
+  x64Output.write(str + "\n");
+}
 
 
 /* Helpers */
 void Writer::calleePrologue() {
   comment(" ---- Callee Prologue ----");
-  push(X64::rbp);
-  mov(X64::rbp, X64::rsp);
-  push(X64::rbx);
-  push(X64::rdi);
-  push(X64::rsi);
+  push(rbp);
+  mov(rbp, rsp);
+  push(rbx);
+  push(rdi);
+  push(rsi);
   comment(" -------------------------");
 }
 
 void Writer::calleeEpilogue() {
   comment(" ---- Callee Epilogue ----");
-  pop(X64::rsi);
-  pop(X64::rdi);
-  pop(X64::rbx);
-  mov(X64::rsp, X64::rbp);
-  pop(X64::rbp);
+  pop(rsi);
+  pop(rdi);
+  pop(rbx);
+  mov(rsp, rbp);
+  pop(rbp);
   ret();
   comment(" -------------------------");
 }
 
 void Writer::callerPrologue() {
   comment(" ---- Caller Prologue ----");
-  push(X64::rcx);
-  push(X64::rdx);
-  push(X64::rdi);
-  push(X64::rsi);
-  push(X64::rdx);
-  push(X64::rcx); // R8, R9
+  push(rcx);
+  push(rdx);
+  push(rdi);
+  push(rsi);
+  push(rdx);
+  push(rcx); // R8, R9
   comment(" -------------------------");
 }
 
 void Writer::callerEpilogue() {
   comment(" ---- Caller Epilogue ----");
-  pop(X64::rcx);
-  pop(X64::rdx);
-  pop(X64::rsi);
-  pop(X64::rdi);
-  pop(X64::rdx);
-  pop(X64::rcx);
+  pop(rcx);
+  pop(rdx);
+  pop(rsi);
+  pop(rdi);
+  pop(rdx);
+  pop(rcx);
   comment(" -------------------------");
+}
+
+atl::shared_ptr<Register> Writer::getTempReg() const {
+  return rax;
+}
+
+atl::stack<atl::shared_ptr<Register>> Writer::paramRegs() const {
+  atl::stack<atl::shared_ptr<Register>> output;
+  output.push_back(rcx);
+  output.push_back(rdx);
+  output.push_back(rsi);
+  output.push_back(rdi);
+  return output;
 }

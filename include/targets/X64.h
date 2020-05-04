@@ -2,6 +2,7 @@
 
 #include "atl/include/ofstream.h"
 #include "atl/include/shared_ptr.h"
+#include "atl/include/stack.h"
 #include "atl/include/string.h"
 #include "atl/include/vector.h"
 
@@ -77,12 +78,47 @@ public:
   atl::string toString() const override;
 };
 
+class Registers {
+private:
+  atl::stack<atl::shared_ptr<Register>> m_paramRegs;
+
+public:
+  atl::shared_ptr<Register> rax;
+  atl::shared_ptr<Register> rbx;
+  atl::shared_ptr<Register> rcx;
+  atl::shared_ptr<Register> rdx;
+  atl::shared_ptr<Register> rsi;
+  atl::shared_ptr<Register> rdi;
+  atl::shared_ptr<Register> rsp;
+  atl::shared_ptr<Register> rbp;
+
+
+  atl::shared_ptr<Register> tempReg() const {
+    return rax;
+  }
+
+  atl::stack<atl::shared_ptr<Register>> paramRegs() const {
+    return m_paramRegs;
+  }
+
+};
+
 class Writer final {
 public:
+  atl::shared_ptr<Register> rax;
+  atl::shared_ptr<Register> rbx;
+  atl::shared_ptr<Register> rcx;
+  atl::shared_ptr<Register> rdx;
+  atl::shared_ptr<Register> rsi;
+  atl::shared_ptr<Register> rdi;
+  atl::shared_ptr<Register> rsp;
+  atl::shared_ptr<Register> rbp;
+
   Writer(const atl::string &filename);
   Writer(const Writer &) = delete;
   ~Writer();
 
+  /* Instructions */
   void add(const atl::shared_ptr<X64::Operand> &op1,
            const atl::shared_ptr<X64::Operand> &op2,
            const atl::string &comment = "");
@@ -111,30 +147,19 @@ public:
            const atl::string &comment = "");
   void write(const atl::string &str);
 
+  /* Helpers */
+  void calleePrologue();
+  void calleeEpilogue();
+  void callerPrologue();
+  void callerEpilogue();
+
+  atl::shared_ptr<Register> getTempReg() const;
+  atl::stack<atl::shared_ptr<Register>> paramRegs() const;
+
 private:
   atl::ofstream x64Output;
   atl::string stringLiterals;
 };
-
-static atl::shared_ptr<Register> rax(new Register(32, "rax"));
-static atl::shared_ptr<Register> rbx(new Register(32, "rbx"));
-static atl::shared_ptr<Register> rcx(new Register(32, "rcx"));
-static atl::shared_ptr<Register> rdx(new Register(32, "rdx"));
-static atl::shared_ptr<Register> rsi(new Register(32, "rsi"));
-static atl::shared_ptr<Register> rdi(new Register(32, "rdi"));
-static atl::shared_ptr<Register> rsp(new Register(32, "rsp"));
-static atl::shared_ptr<Register> rbp(new Register(32, "rbp"));
-
-static atl::vector<atl::string> externFunDecls = {"printf"};
-
-static atl::shared_ptr<Register> eax(new Register(32, "eax"));
-static atl::shared_ptr<Register> ebx(new Register(32, "ebx"));
-static atl::shared_ptr<Register> ecx(new Register(32, "ecx"));
-static atl::shared_ptr<Register> edx(new Register(32, "edx"));
-static atl::shared_ptr<Register> esi(new Register(32, "esi"));
-static atl::shared_ptr<Register> edi(new Register(32, "edi"));
-static atl::shared_ptr<Register> esp(new Register(32, "esp"));
-static atl::shared_ptr<Register> ebp(new Register(32, "ebp"));
 
 } // namespace X64
 
