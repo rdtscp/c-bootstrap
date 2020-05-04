@@ -16,14 +16,12 @@ public:
 
   GenerateX64(atl::shared_ptr<Program> progAST, const atl::string &outputFile);
 
-  void error(atl::string error);
-
   void printErrors() const;
-
   void run();
 
 private:
-  X64::Writer x64;
+  void error(atl::string error);
+
   atl::shared_ptr<Program> progAST;
 
   atl::shared_ptr<Scope> currScope;
@@ -34,8 +32,12 @@ private:
   int stringCount = 0;
 
   /* ---- X64 Memory ---- */
+  X64::Writer x64;
 
   void alloc(const VarDecl &vd);
+  void declareExternFuncs();
+  void defSystemFunDecls();
+  void mainEntry();
 
   /* ---- Visit AST ---- */
 
@@ -91,8 +93,7 @@ private:
   atl::shared_ptr<X64::Operand> visit(While &w) override;
 
   /* ---- Helpers ---- */
+  atl::shared_ptr<X64::AddrOffset> addrOffset(const atl::shared_ptr<X64::Operand> addrOperand, const int offset);
   atl::shared_ptr<X64::IntValue> genIntValue(int value);
-  atl::shared_ptr<X64::AddrOffset>
-  addrOffset(const atl::shared_ptr<X64::Operand> addrOperand, const int offset);
 };
 } // namespace ACC
