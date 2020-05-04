@@ -255,19 +255,19 @@ void Writer::write(const atl::string &str) {
 void Writer::calleePrologue() {
   comment(" ---- Callee Prologue ----");
   push(rbp);
-  mov(rbp, rsp);
   push(rbx);
   push(rdi);
   push(rsi);
+  mov(rbp, rsp);
   comment(" -------------------------");
 }
 
 void Writer::calleeEpilogue() {
   comment(" ---- Callee Epilogue ----");
+  mov(rsp, rbp);
   pop(rsi);
   pop(rdi);
   pop(rbx);
-  mov(rsp, rbp);
   pop(rbp);
   ret();
   comment(" -------------------------");

@@ -28,7 +28,7 @@ private:
   atl::shared_ptr<VarExpr> currObject;
 
   int blockCount = 0;
-  int currFpOffset = 0;
+  int currBpOffset = 0;
   int stringCount = 0;
 
   /* ---- X64 Memory ---- */

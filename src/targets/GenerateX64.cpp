@@ -160,7 +160,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassTypeDef &ctd) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorCall &cc) {
   atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
 
-  const atl::shared_ptr<X64::AddrOffset> objectAddr(new X64::AddrOffset(x64.rsp, cc.objectToConstruct.lock()->fpOffset));
+  const atl::shared_ptr<X64::AddrOffset> objectAddr(new X64::AddrOffset(x64.rsp, cc.objectToConstruct.lock()->bpOffset));
   x64.mov(paramRegs.pop_back(), objectAddr);
 
   for (uint argNum = 0; argNum < cc.constructorArgs.size(); ++argNum) {
@@ -186,6 +186,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorDef &cd) {
   atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
 
   currScope = cd.constructorBlock;
+  currBpOffset = 0;
 
   x64.block("FunDecl_" + cd.getSignature().mangle());
 
@@ -212,7 +213,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorDef &cd) {
 
   x64.calleeEpilogue();
 
-  currFpOffset = 0;
+  currBpOffset = 0;
   currScope = cd.constructorBlock->outerScope.lock();
   return atl::shared_ptr<X64::None>();
 }
@@ -282,7 +283,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
 
   x64.calleeEpilogue();
 
-  currFpOffset = 0;
+  currBpOffset = 0;
   currScope = fd.funBlock->outerScope.lock();
   return atl::shared_ptr<X64::None>();
 }
@@ -468,16 +469,16 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDecl &vd) {
   int bytesRequired = vd.getBytes();
   while (bytesRequired % 16 != 0)
     ++bytesRequired;
-  currFpOffset -= bytesRequired;
-  vd.fpOffset = currFpOffset;
+  vd.bpOffset = currBpOffset;
+  currBpOffset -= bytesRequired;
 
   const atl::string comment =
       "Allocated " + atl::to_string(vd.getBytes()) +
       "B (16B Aligned) for VarDecl: " + vd.getIdentifier()->toString() +
-      " @ [rbp" + atl::to_string(currFpOffset) + "]";
+      " @ [rbp" + atl::to_string(currBpOffset) + "]";
 
   x64.sub(x64.rsp, bytesRequired, comment);
-  return atl::shared_ptr<X64::AddrOffset>(new X64::AddrOffset(x64.rsp, vd.fpOffset));
+  return atl::shared_ptr<X64::AddrOffset>(new X64::AddrOffset(x64.rbp, vd.bpOffset));
   // return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
@@ -485,12 +486,12 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
   int bytesRequired = vd.getBytes();
   while (bytesRequired % 16 != 0)
     ++bytesRequired;
-  currFpOffset -= bytesRequired;
-  vd.fpOffset = currFpOffset;
+  vd.bpOffset = currBpOffset;
+  currBpOffset -= bytesRequired;
 
   const atl::string comment = "Allocated " + atl::to_string(vd.getBytes()) +
                               "B (16B Aligned) for VarDef: " + vdIdent +
-                              " @ [rbp" + atl::to_string(currFpOffset) + "]";
+                              " @ [rbp" + atl::to_string(currBpOffset) + "]";
 
   x64.sub(x64.rsp, bytesRequired, comment);
 
@@ -499,20 +500,21 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
   if (valueOperand->opType() != "None") {
     x64.mov(x64.rax, valueOperand,
             "Move " + vdIdent + "'s value into temp register.");
-    x64.mov(addrOffset(x64.rbp, vd.fpOffset), x64.rax,
+    x64.mov(addrOffset(x64.rbp, vd.bpOffset), x64.rax,
             "Move " + vdIdent + "'s temp register into its stack allocated space.");
   }
 
-  return atl::shared_ptr<X64::AddrOffset>(new X64::AddrOffset(x64.rsp, vd.fpOffset));
+  return atl::shared_ptr<X64::AddrOffset>(new X64::AddrOffset(x64.rbp, vd.bpOffset));
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
-  const int fpOffset = ve.varDecl.lock()->fpOffset;
-  if (fpOffset == 0)
+  const atl::shared_ptr<VarDecl> varDecl = ve.varDecl.lock();
+  if (varDecl->isGlobal) {
     return atl::shared_ptr<X64::GlobalVariable>(new X64::GlobalVariable(
         ve.varDecl.lock()->getIdentifier()->toString(), ve.varDecl.lock()->getBytes()));
+  }
 
-  return addrOffset(x64.rbp, fpOffset);
+  return addrOffset(x64.rbp, varDecl->bpOffset);
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(While &w) {
   w.condition->accept(*this);
