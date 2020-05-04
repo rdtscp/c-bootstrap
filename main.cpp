@@ -70,14 +70,26 @@ int main(int argc, char const *argv[]) {
       } while (optimiser.optimisationsCount > 0);
     }
 
+    const atl::string temp_s_filename = "temp.s";
+    const atl::string temp_o_filename = "temp.o";
     if (outputGraph) {
       ACC::DotGraph dotGraph(progAST, outFilename);
       dotGraph.print();
     } else {
-      ACC::GenerateX64 x64Generator(progAST, outFilename);
+      ACC::GenerateX64 x64Generator(progAST, temp_s_filename);
       x64Generator.run();
     }
 
+    const atl::string nasm_cmd = "nasm -f macho64 " + temp_s_filename;
+    const int nasm_status = system(nasm_cmd.c_str());
+    if (nasm_status != 0) {
+      return 1;
+    }
+    const atl::string ld_cmd = "ld -no_pie -macosx_version_min 10.15 -lSystem -o " + outFilename + " " + temp_o_filename;
+    const int ld_status = system(ld_cmd.c_str());
+    if (ld_status != 0) {
+      return 1;
+    }
     return 0;
   }
 }
