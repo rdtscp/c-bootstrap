@@ -545,11 +545,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
 
   atl::shared_ptr<ClassType> objClassType;
   if (objType->astClass() == "ClassType") {
-    if (mc.accessType != SourceToken::Class::DOT)
+    if (mc.accessType != SourceToken::Class::DOT) {
       return error("Type Analysis",
                    "Attempted to call member function of class type without "
                    "using `.` operator.",
                    mc.object);
+    }
     objClassType = atl::static_pointer_cast<ClassType>(objType);
   } else if (objType->astClass() == "PointerType") {
     if (mc.accessType != SourceToken::Class::PTRDOT)
@@ -572,17 +573,16 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
                  mc.object);
   }
 
-  const atl::shared_ptr<ClassTypeDef> objClassTypeDef =
-      objClassType->typeDefinition.lock();
+  const atl::shared_ptr<ClassTypeDef> objClassTypeDef = objClassType->typeDefinition.lock();
   // Check this ClassType is Defined.
-  if (objClassTypeDef == nullptr)
+  if (objClassTypeDef == nullptr) {
     return error("Type Error",
                  "Attempted to call member function of class type that has "
                  "no definition.",
                  mc.object);
+  }
 
-  const bool objIsConst =
-      objClassType->typeModifiers.find(Type::Modifiers::CONST);
+  const bool objIsConst = objClassType->typeModifiers.find(Type::Modifiers::CONST);
   /* Now Manually Visit the Member Call */
   // Visit all parameters first.
   atl::vector<atl::shared_ptr<Type>> funCallArgTypes;
@@ -590,9 +590,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
   for (unsigned int idx = 0; idx < mc.funCall->funArgs.size(); ++idx)
     funCallArgTypes.push_back(mc.funCall->funArgs[idx]->accept(*this));
 
-  atl::shared_ptr<FunDecl> memberFunDecl = objClassTypeDef->findFunDeclLocal(
-      FunSignature(nullptr, mc.funCall->funIdentifier, funCallArgTypes,
-                   funModifiers(true)));
+  const FunSignature memberFunSignature(nullptr, mc.funCall->funIdentifier, funCallArgTypes, funModifiers(true));
+  atl::shared_ptr<FunDecl> memberFunDecl = objClassTypeDef->findFunDeclLocal(memberFunSignature);
 
   // If the object is not const, try to find  non-const version.
   if (memberFunDecl == nullptr && !objIsConst) {
@@ -601,11 +600,14 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberCall &mc) {
                      funModifiers(false)));
   }
 
-  if (memberFunDecl == nullptr)
+  if (memberFunDecl == nullptr) {
     return error("Type Error",
                  "Attempted to call a member function that does "
                  "not exist in the class definition.",
                  mc.funCall);
+  }
+  ++memberFunDecl->numCallers;
+  mc.funCall->funDecl = memberFunDecl;
 
   return memberFunDecl->funType;
 }
