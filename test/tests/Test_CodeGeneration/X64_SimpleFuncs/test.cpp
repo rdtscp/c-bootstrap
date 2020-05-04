@@ -1,3 +1,5 @@
+void printf(const char *, int);
+
 int myGlobalInt;
 
 int ten() {
@@ -13,4 +15,9 @@ int one() {
   return 1;
 }
 
-int main(int argc, char **argv) { return myGlobalInt + one(); }
+int main(int argc, char **argv) {
+  myGlobalInt = 10;
+  int x = myGlobalInt + one();
+  printf("%d\n", x);
+  return 0;
+}
