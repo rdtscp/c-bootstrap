@@ -98,7 +98,7 @@ void Writer::add(const atl::shared_ptr<X64::Operand> &op1,
                  const atl::shared_ptr<X64::Operand> &op2,
                  const atl::string &comment) {
   atl::string output = "add " + op1->toString() + ", " + op2->toString() +
-                       "\t; eax = " + op1->toString() + " + " + op2->toString();
+                       "\t; rax = " + op1->toString() + " + " + op2->toString();
   if (comment != "")
     output += "\t; " + comment;
   write(output);
@@ -245,3 +245,48 @@ void Writer::sub(const atl::shared_ptr<X64::Operand> &op, const int value,
 }
 
 void Writer::write(const atl::string &str) { x64Output.write(str + "\n"); }
+
+
+/* Helpers */
+void Writer::calleePrologue() {
+  comment(" ---- Callee Prologue ----");
+  push(X64::rbp);
+  mov(X64::rbp, X64::rsp);
+  push(X64::rbx);
+  push(X64::rdi);
+  push(X64::rsi);
+  comment(" -------------------------");
+}
+
+void Writer::calleeEpilogue() {
+  comment(" ---- Callee Epilogue ----");
+  pop(X64::rsi);
+  pop(X64::rdi);
+  pop(X64::rbx);
+  mov(X64::rsp, X64::rbp);
+  pop(X64::rbp);
+  ret();
+  comment(" -------------------------");
+}
+
+void Writer::callerPrologue() {
+  comment(" ---- Caller Prologue ----");
+  push(X64::rcx);
+  push(X64::rdx);
+  push(X64::rdi);
+  push(X64::rsi);
+  push(X64::rdx);
+  push(X64::rcx); // R8, R9
+  comment(" -------------------------");
+}
+
+void Writer::callerEpilogue() {
+  comment(" ---- Caller Epilogue ----");
+  pop(X64::rcx);
+  pop(X64::rdx);
+  pop(X64::rsi);
+  pop(X64::rdi);
+  pop(X64::rdx);
+  pop(X64::rcx);
+  comment(" -------------------------");
+}
