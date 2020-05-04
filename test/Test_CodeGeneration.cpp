@@ -13,9 +13,9 @@
 
 using namespace ACC;
 
-atl::string test_prefix =
-"/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_CodeGeneration/";
-// atl::string test_prefix = "../../test/tests/Test_CodeGeneration/";
+// atl::string test_prefix =
+// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_CodeGeneration/";
+atl::string test_prefix = "../../test/tests/Test_CodeGeneration/";
 
 TEST(Test_CodeGeneration, FunCall) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
