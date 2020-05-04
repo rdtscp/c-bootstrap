@@ -1,15 +1,14 @@
 #include "atl/include/string.h"
 
 #include "gtest/gtest.h"
+#include "TestPath.h"
 
 #include "Scanner.h"
 #include "SourceToken.h"
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_Scanner/";
-atl::string test_prefix = "../../test/tests/Test_Scanner/";
+const atl::string test_prefix = test_root + "Test_Scanner/";
 
 TEST(ScannerTest, API) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,

@@ -1,6 +1,7 @@
 #include "atl/include/string.h"
 
 #include "gtest/gtest.h"
+#include "TestPath.h"
 
 #include "Error.h"
 #include "Lexer.h"
@@ -12,10 +13,8 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
-// "test/tests/Test_ASTAnalysis/";
-atl::string test_prefix = "../../test/tests/Test_ASTAnalysis/";
+const atl::string test_prefix = test_root + "Test_ASTAnalysis/";
+
 
 // TODO: Test accessing namespace'd classes.
 

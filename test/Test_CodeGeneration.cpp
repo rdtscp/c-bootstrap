@@ -1,5 +1,6 @@
 #include "atl/include/string.h"
 
+#include "TestPath.h"
 #include "gtest/gtest.h"
 
 #include "passes/DotGraph.h"
@@ -13,9 +14,7 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_CodeGeneration/";
-atl::string test_prefix = "../../test/tests/Test_CodeGeneration/";
+const atl::string test_prefix = test_root + "Test_CodeGeneration/";
 
 TEST(Test_CodeGeneration, FunCall) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,

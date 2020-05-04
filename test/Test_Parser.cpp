@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "TestPath.h"
 
 #include "AST.h"
 #include "Error.h"
@@ -9,10 +10,7 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
-  // "test/tests/Test_Parser/";
-atl::string test_prefix = "../../test/tests/Test_Parser/";
+const atl::string test_prefix = test_root + "Test_Parser/";
 
 TEST(Test_Parser, BinOp) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,

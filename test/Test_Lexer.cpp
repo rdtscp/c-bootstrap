@@ -2,6 +2,7 @@
 #include "atl/include/vector.h"
 
 #include "gtest/gtest.h"
+#include "TestPath.h"
 
 #include "Lexer.h"
 #include "Preprocessor.h"
@@ -10,9 +11,7 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_Lexer/";
-atl::string test_prefix = "../../test/tests/Test_Lexer/";
+const atl::string test_prefix = test_root + "Test_Lexer/";
 
 TEST(Test_Lexer, AllTokens) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,

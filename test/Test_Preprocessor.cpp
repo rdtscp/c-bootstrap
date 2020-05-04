@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "TestPath.h"
 
 #include "atl/include/string.h"
 
@@ -7,10 +8,7 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
-// "test/tests/Test_Preprocessor/";
-atl::string test_prefix = "../../test/tests/Test_Preprocessor/";
+const atl::string test_prefix = test_root + "Test_Preprocessor/";
 
 TEST(Test_Preprocessor, AdjacentInclude) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
