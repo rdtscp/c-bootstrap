@@ -17,6 +17,23 @@ atl::string test_prefix =
 "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_CodeGeneration/";
 // atl::string test_prefix = "../../test/tests/Test_CodeGeneration/";
 
+TEST(Test_CodeGeneration, FunCall) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "FunCall/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+
+  GenerateX64 x64Generator(progAST, test_prefix + "FunCall/test.s");
+  x64Generator.run();
+}
+
 TEST(Test_CodeGeneration, MemberAccesses) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "MemberAccesses/test.cpp");
