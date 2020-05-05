@@ -16,6 +16,23 @@ using namespace ACC;
 
 const atl::string test_prefix = test_root + "Test_CodeGeneration/";
 
+TEST(Test_CodeGeneration, Dereference) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "Dereference/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+
+  GenerateX64 x64Generator(progAST, test_prefix + "Dereference/test.s");
+  x64Generator.run();
+}
+
 TEST(Test_CodeGeneration, FunCall) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
                           test_prefix + "FunCall/test.cpp");
@@ -67,6 +84,39 @@ TEST(Test_CodeGeneration, MemberCall) {
   x64Generator.run();
 }
 
+TEST(Test_CodeGeneration, SubscriptClass) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "SubscriptClass/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+
+  GenerateX64 x64Generator(progAST, test_prefix + "SubscriptClass/test.s");
+  x64Generator.run();
+}
+
+TEST(Test_CodeGeneration, SubscriptPtr) {
+  const SourceHandler src(SourceHandler::Type::FILEPATH,
+                          test_prefix + "SubscriptPtr/test.cpp");
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+
+  GenerateX64 x64Generator(progAST, test_prefix + "SubscriptPtr/test.s");
+  x64Generator.run();
+}
 
 TEST(Test_CodeGeneration, X64_SimpleFuncs) {
   const SourceHandler src(SourceHandler::Type::FILEPATH,
@@ -81,7 +131,7 @@ TEST(Test_CodeGeneration, X64_SimpleFuncs) {
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
-  GenerateX64 x64Generator(progAST, "./fibonacci_x64.s");
+  GenerateX64 x64Generator(progAST, test_prefix + "X64_SimpleFuncs/test.s");
   x64Generator.run();
 }
 
