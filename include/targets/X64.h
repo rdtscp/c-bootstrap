@@ -56,6 +56,7 @@ class IntValue : public Operand {
 public:
   const atl::string val;
 
+  IntValue(const int val);
   IntValue(const atl::string &val);
   bool operator==(const IntValue &rhs);
   atl::string opType() const override;

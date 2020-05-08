@@ -58,6 +58,8 @@ atl::string GlobalVariable::toString() const { return name; }
 
 /* ---- X64::IntValue --- */
 
+IntValue::IntValue(const int val) : val(atl::to_string(val)) {}
+
 IntValue::IntValue(const atl::string &val) : val(val) {}
 
 bool IntValue::operator==(const IntValue &rhs) { return (val == rhs.val); }
@@ -246,7 +248,7 @@ void Writer::sub(const atl::shared_ptr<X64::Operand> &op, const int value,
 }
 
 void Writer::write(const atl::string &str) {
-  // printf("%s\n", str.c_str());
+  printf("%s\n", str.c_str());
   x64Output.write(str + "\n");
 }
 
