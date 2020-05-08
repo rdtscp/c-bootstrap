@@ -71,6 +71,19 @@ void GenerateX64::mainEntry() {
 /* ---- Visit AST ---- */
 
 atl::shared_ptr<X64::Operand> GenerateX64::visit(AddressOf &ao) {
+  const atl::shared_ptr<X64::Operand> aoObj = ao.addressOfExpr->accept(*this);
+  if (aoObj->opType() == "AddrOffset") {
+    // Calculate the address, and store it in
+    const atl::shared_ptr<X64::AddrOffset> addrOffset =
+      atl::static_pointer_cast<X64::AddrOffset>(aoObj);
+
+    x64.mov(x64.rax, addrOffset->addrOperand);
+    const atl::shared_ptr<X64::IntValue> offset(new X64::IntValue(addrOffset->offset));
+    x64.add(x64.rax, offset);
+
+    return x64.rax;
+  }
+
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Allocation &a) {
@@ -135,10 +148,14 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Block &b) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BoolLiteral &bl) {
-  return atl::shared_ptr<X64::None>();
+  if (bl.value == "true") {
+    return atl::shared_ptr<X64::IntValue>(new X64::IntValue(atl::string(1, '1')));
+  } else {
+    return atl::shared_ptr<X64::IntValue>(new X64::IntValue(atl::string(1, '0')));
+  }
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(CharLiteral &cl) {
-  return atl::shared_ptr<X64::None>();
+  return atl::shared_ptr<X64::IntValue>(new X64::IntValue(atl::string(1, cl.value[0])));
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassType &ct) {
   return atl::shared_ptr<X64::None>();
@@ -322,8 +339,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(If &i) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(IntLiteral &il) {
-  x64.mov(x64.rax,
-          atl::shared_ptr<X64::IntValue>(new X64::IntValue(il.getLiteral())));
+  x64.mov(x64.rax, atl::shared_ptr<X64::IntValue>(new X64::IntValue(il.getLiteral())));
   return x64.rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberAccess &ma) {
@@ -462,15 +478,16 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(TypeDefDecl &td) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ValueAt &va) {
-  va.derefExpr->accept(*this);
-  return atl::shared_ptr<X64::None>();
+  const atl::shared_ptr<X64::Operand> exprOperand = va.derefExpr->accept(*this);
+  x64.mov(x64.rax, exprOperand, "Move address into rax");
+  return atl::shared_ptr<X64::AddrOffset>(new X64::AddrOffset(x64.rax, 0));
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDecl &vd) {
   int bytesRequired = vd.getBytes();
   while (bytesRequired % 16 != 0)
     ++bytesRequired;
-  vd.bpOffset = currBpOffset;
   currBpOffset -= bytesRequired;
+  vd.bpOffset = currBpOffset;
 
   const atl::string comment =
       "Allocated " + atl::to_string(vd.getBytes()) +
@@ -486,8 +503,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
   int bytesRequired = vd.getBytes();
   while (bytesRequired % 16 != 0)
     ++bytesRequired;
-  vd.bpOffset = currBpOffset;
   currBpOffset -= bytesRequired;
+  vd.bpOffset = currBpOffset;
 
   const atl::string comment = "Allocated " + atl::to_string(vd.getBytes()) +
                               "B (16B Aligned) for VarDef: " + vdIdent +
