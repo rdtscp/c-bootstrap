@@ -7,6 +7,8 @@ int main(int argc, const char **argv) {
 
   printf("str has value: %d\n", str);
 
-  printf("str[10] has value: %c\n", str[10]);
+  const int idx = 10;
+
+  printf("str[10] has value: %c\n", str[idx]);
   return 0;
 }
