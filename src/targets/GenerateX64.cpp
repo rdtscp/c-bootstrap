@@ -73,8 +73,8 @@ void GenerateX64::mainEntry() {
   x64.call("main_int__char_ptr_ptr_");
   // Restore state.
   x64.pop(x64.rbp);
-  x64.pop(x64.rax);
-  x64.mov(x64.rsp, x64.rax);
+  x64.pop(x64.rcx);
+  x64.mov(x64.rsp, x64.rcx);
   x64.ret();
 }
 
