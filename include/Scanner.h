@@ -1,5 +1,6 @@
 #pragma once
 
+#include "atl/include/shared_ptr.h"
 #include "atl/include/string.h"
 
 #include "Position.h"
@@ -10,7 +11,7 @@ namespace ACC {
 class Scanner {
 
 public:
-  Scanner(const SourceHandler &src);
+  Scanner(const atl::shared_ptr<SourceHandler> &src);
 
   Scanner(const Scanner &rhs) = delete;
 
@@ -21,8 +22,6 @@ public:
   virtual char next();
 
   char peek() const;
-
-  SourceHandler getFileContents() const;
 
   static atl::string getFilename(const atl::string &abspath);
 

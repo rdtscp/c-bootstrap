@@ -6,18 +6,8 @@
 
 using namespace ACC;
 
-Scanner::Scanner(const SourceHandler &src) : column(1), line(1) {
-  if (src.type == SourceHandler::Type::FILEPATH) {
-    /* My Compiler */
-    atl::ifstream fileStream(src.value);
-    if (fileStream.good())
-      file = fileStream.readIntoString();
-    else
-      throw ACC::Error("Scanner: File does not exist: " + src.value);
-  } else if (src.type == SourceHandler::Type::RAW) {
-    file = src.value;
-  }
-
+Scanner::Scanner(const atl::shared_ptr<SourceHandler> &src) : column(1), line(1) {
+  file = src->read();
   currChar = file.begin();
 }
 
@@ -46,11 +36,6 @@ char Scanner::peek() const {
   if (currChar == file.end())
     return '\0';
   return *currChar;
-}
-
-SourceHandler Scanner::getFileContents() const {
-  const atl::string fileStr(file.c_str());
-  return SourceHandler(SourceHandler::Type::RAW, fileStr);
 }
 
 atl::string Scanner::getFilename(const atl::string &abspath) {

@@ -17,8 +17,8 @@ using namespace ACC;
 const atl::string test_prefix = test_root + "Test_CodeGeneration/";
 
 TEST(Test_CodeGeneration, Dereference) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "Dereference/test.cpp");
+  const atl::string filepath = test_prefix + "Dereference/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -29,13 +29,13 @@ TEST(Test_CodeGeneration, Dereference) {
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
-  GenerateX64 x64Generator(progAST, test_prefix + "Dereference/test.s");
+  GenerateX64 x64Generator(progAST);
   x64Generator.run();
 }
 
 TEST(Test_CodeGeneration, FunCall) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "FunCall/test.cpp");
+  const atl::string filepath = test_prefix + "FunCall/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -46,13 +46,13 @@ TEST(Test_CodeGeneration, FunCall) {
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
-  GenerateX64 x64Generator(progAST, test_prefix + "FunCall/test.s");
+  GenerateX64 x64Generator(progAST);
   x64Generator.run();
 }
 
 TEST(Test_CodeGeneration, MemberAccesses) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "MemberAccesses/test.cpp");
+  const atl::string filepath = test_prefix + "MemberAccesses/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -63,13 +63,13 @@ TEST(Test_CodeGeneration, MemberAccesses) {
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
-  GenerateX64 x64Generator(progAST, test_prefix + "MemberAccesses/test.s");
+  GenerateX64 x64Generator(progAST);
   x64Generator.run();
 }
 
 TEST(Test_CodeGeneration, MemberCall) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "MemberCall/test.cpp");
+  const atl::string filepath = test_prefix + "MemberCall/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -80,13 +80,13 @@ TEST(Test_CodeGeneration, MemberCall) {
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
-  GenerateX64 x64Generator(progAST, test_prefix + "MemberCall/test.s");
+  GenerateX64 x64Generator(progAST);
   x64Generator.run();
 }
 
 TEST(Test_CodeGeneration, SubscriptClass) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "SubscriptClass/test.cpp");
+  const atl::string filepath = test_prefix + "SubscriptClass/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -97,13 +97,13 @@ TEST(Test_CodeGeneration, SubscriptClass) {
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
-  GenerateX64 x64Generator(progAST, test_prefix + "SubscriptClass/test.s");
+  GenerateX64 x64Generator(progAST);
   x64Generator.run();
 }
 
 TEST(Test_CodeGeneration, SubscriptPtr) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "SubscriptPtr/test.cpp");
+  const atl::string filepath = test_prefix + "SubscriptPtr/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -114,13 +114,13 @@ TEST(Test_CodeGeneration, SubscriptPtr) {
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
-  GenerateX64 x64Generator(progAST, test_prefix + "SubscriptPtr/test.s");
+  GenerateX64 x64Generator(progAST);
   x64Generator.run();
 }
 
 TEST(Test_CodeGeneration, X64_SimpleFuncs) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "X64_SimpleFuncs/test.cpp");
+  const atl::string filepath = test_prefix + "X64_SimpleFuncs/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -131,7 +131,7 @@ TEST(Test_CodeGeneration, X64_SimpleFuncs) {
   nameAnalysis.run();
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
-  GenerateX64 x64Generator(progAST, test_prefix + "X64_SimpleFuncs/test.s");
+  GenerateX64 x64Generator(progAST);
   x64Generator.run();
 }
 

@@ -11,12 +11,12 @@ using namespace ACC;
 const atl::string test_prefix = test_root + "Test_Preprocessor/";
 
 TEST(Test_Preprocessor, AdjacentInclude) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "AdjacentInclude/test.cpp");
+  const atl::string filepath = test_prefix + "AdjacentInclude/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
-  const SourceHandler pp_src = preprocessor.getSource();
+  const atl::shared_ptr<SourceHandler> pp_src = preprocessor.getSource();
 
-  atl::string actual = pp_src.value;
+  atl::string actual = pp_src->read();
   atl::string expect = "";
   expect += "# 0 \"" + test_prefix + "AdjacentInclude/test.cpp\"\n";
   expect += "# 0 \"" + test_prefix + "AdjacentInclude/header.h\"\n";
@@ -38,13 +38,12 @@ TEST(Test_Preprocessor, AdjacentInclude) {
 }
 
 TEST(Test_Preprocessor, Construction) {
-  const SourceHandler src(SourceHandler::Type::RAW,
-                          "int main(int argc, char **argv) { return 1; }\n");
+  const atl::shared_ptr<SourceMemHandler> src(new SourceMemHandler(
+                          "int main(int argc, char **argv) { return 1; }\n"));
   ACC::Preprocessor preprocessor(src, {});
-  const SourceHandler pp_src = preprocessor.getSource();
-  ASSERT_EQ(pp_src.type, SourceHandler::Type::RAW);
+  const atl::shared_ptr<SourceMemHandler> pp_src = preprocessor.getSource();
 
-  atl::string actual = pp_src.value;
+  atl::string actual = pp_src->read();
   atl::string expect = "";
   expect += "# 0 \"RAW\"\n";
   expect += "int main(int argc, char **argv) { return 1; }\n";
@@ -73,12 +72,12 @@ TEST(Test_Preprocessor, FormatIncludeDirective) {
 }
 
 TEST(Test_Preprocessor, IncludeChildDir) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "IncludeChildDir/test.cpp");
+  const atl::string filepath = test_prefix + "IncludeChildDir/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
-  const SourceHandler pp_src = preprocessor.getSource();
+  const atl::shared_ptr<SourceMemHandler> pp_src = preprocessor.getSource();
 
-  atl::string actual = pp_src.value;
+  atl::string actual = pp_src->read();
   atl::string expect = "";
   expect += "# 0 \"" + test_prefix + "IncludeChildDir/test.cpp\"\n";
   expect += "# 0 \"" + test_prefix + "IncludeChildDir/subdir/header.h\"\n";
@@ -96,12 +95,12 @@ TEST(Test_Preprocessor, IncludeChildDir) {
 }
 
 TEST(Test_Preprocessor, IncludeNormal) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "IncludeNormal/test.cpp");
+  const atl::string filepath = test_prefix + "IncludeNormal/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
-  const SourceHandler pp_src = preprocessor.getSource();
+  const atl::shared_ptr<SourceMemHandler> pp_src = preprocessor.getSource();
 
-  atl::string actual = pp_src.value;
+  atl::string actual = pp_src->read();
   atl::string expect = "";
   expect += "# 0 \"" + test_prefix + "IncludeNormal/test.cpp\"\n";
   expect += "# 0 \"" + test_prefix + "IncludeNormal/header.h\"\n";
@@ -119,16 +118,16 @@ TEST(Test_Preprocessor, IncludeNormal) {
 }
 
 TEST(Test_Preprocessor, IncludeParentDir) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "IncludeParentDir/subdir/test.cpp");
+  const atl::string filepath = test_prefix + "IncludeParentDir/subdir/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
-  const SourceHandler pp_src = preprocessor.getSource();
+  const atl::shared_ptr<SourceMemHandler> pp_src = preprocessor.getSource();
 
   // const SourceHandler src(SourceHandler::Type::FILEPATH,
   //                         test_prefix + "preprocessor/test2.cpp");
   // ACC::Preprocessor preprocessor(src, {});
   // const SourceHandler pp_src = preprocessor.getSource();
-  atl::string actual = pp_src.value;
+  atl::string actual = pp_src->read();
   atl::string expect = "";
   expect += "# 0 \"" + test_prefix + "IncludeParentDir/subdir/test.cpp\"\n";
   expect += "# 0 \"" + test_prefix + "IncludeParentDir/header.h\"\n";
@@ -146,12 +145,12 @@ TEST(Test_Preprocessor, IncludeParentDir) {
 }
 
 TEST(Test_Preprocessor, NestedInclude) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "NestedInclude/test.cpp");
+  const atl::string filepath = test_prefix + "NestedInclude/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
-  const SourceHandler pp_src = preprocessor.getSource();
+  const atl::shared_ptr<SourceMemHandler> pp_src = preprocessor.getSource();
 
-  atl::string actual = pp_src.value;
+  atl::string actual = pp_src->read();
   atl::string expect = "";
   expect += "# 0 \"" + test_prefix + "NestedInclude/test.cpp\"\n";
   expect += "# 0 \"" + test_prefix + "NestedInclude/header.h\"\n";
@@ -174,12 +173,12 @@ TEST(Test_Preprocessor, NestedInclude) {
 }
 
 TEST(Test_Preprocessor, PragmaOnce) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "PragmaOnce/test.cpp");
+  const atl::string filepath = test_prefix + "PragmaOnce/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
-  const SourceHandler pp_src = preprocessor.getSource();
+  const atl::shared_ptr<SourceMemHandler> pp_src = preprocessor.getSource();
 
-  atl::string actual = pp_src.value;
+  atl::string actual = pp_src->read();
   atl::string expect = "";
   expect += "# 0 \"" + test_prefix + "PragmaOnce/test.cpp\"\n";
   expect += "# 0 \"" + test_prefix + "PragmaOnce/header.h\"\n";
