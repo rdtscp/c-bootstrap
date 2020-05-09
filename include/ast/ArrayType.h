@@ -13,6 +13,7 @@ public:
   ArrayType(const atl::shared_ptr<Type> &p_type,
             const atl::shared_ptr<Expr> &p_size);
 
+  bool canCastTo(Type &rhs) const override;
   unsigned int getBytes() const override;
   virtual bool equivalentTo(Type &rhs) const override;
 
