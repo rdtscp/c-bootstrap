@@ -17,14 +17,8 @@ public:
 
   atl::shared_ptr<SourceFileHandler> linkAndBuild() {
     const atl::string temp_s_filename = "temp.s";
-    atl::ofstream temp_s(temp_s_filename);
-    if (!temp_s.good()) {
-      const atl::string error = "Unable to create `" + temp_s_filename + "` file." ;
-      printf("%s\n", error.c_str());
-      throw;
-    }
-    temp_s.write(m_assembly->read().c_str());
-  
+    createTempAssemblyFile(temp_s_filename);
+
     const atl::string nasm_cmd = "nasm -f macho64 " + temp_s_filename;
     const int nasm_status = system(nasm_cmd.c_str());
     if (nasm_status != 0) {
@@ -34,7 +28,7 @@ public:
     const atl::string ld_cmd = "ld -no_pie -macosx_version_min 10.15 -lSystem -o " + m_outFilename + " temp.o";
     const int ld_status = system(ld_cmd.c_str());
     if (ld_status != 0) {
-      printf("ld Failed\n");
+      printf("ld Failed: `%s`\n", ld_cmd.c_str());
       throw;
     }
 
@@ -44,6 +38,16 @@ public:
 private:
   atl::shared_ptr<SourceHandler> m_assembly;
   atl::string m_outFilename;
+
+  void createTempAssemblyFile(const atl::string &temp_s_filename) {
+    atl::ofstream temp_s(temp_s_filename);
+    if (!temp_s.good()) {
+      const atl::string error = "Unable to create `" + temp_s_filename + "` file." ;
+      printf("%s\n", error.c_str());
+      throw;
+    }
+    temp_s.write(m_assembly->read().c_str());
+  }
 };
 
 } // namespace ACC
