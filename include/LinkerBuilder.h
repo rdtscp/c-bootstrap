@@ -15,7 +15,7 @@ public:
     : m_assembly(assembly),
       m_outFilename(outFilename) {}
 
-  atl::shared_ptr<SourceFileHandler> linkAndBuild() {
+  atl::string linkAndBuild() {
     const atl::string temp_s_filename = "temp.s";
     createTempAssemblyFile(temp_s_filename);
 
@@ -36,7 +36,7 @@ public:
       m_outFilename = "ls";
     #endif
 
-    return atl::shared_ptr<ACC::SourceFileHandler>(new SourceFileHandler(m_outFilename));
+    return m_outFilename;
   }
 
 private:
