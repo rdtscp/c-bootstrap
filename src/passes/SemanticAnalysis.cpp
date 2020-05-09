@@ -682,10 +682,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
   objType = ReferenceType::collapseReferenceTypes(objType);
   if (objType->astClass() == "ArrayType" ||
       objType->astClass() == "PointerType") {
-    // TODO: Initialise this FunDef with an implementation.
-    const atl::shared_ptr<FunDef> arrayPointerSubscriptOpDef;
-    so.operatorDecl = arrayPointerSubscriptOpDef;
-    return atl::static_pointer_cast<PointerType>(objType)->pointedType;
+    const atl::shared_ptr<PointerType> ptrType = atl::static_pointer_cast<PointerType>(objType);
+    ptrType->accept(*this);
+    return ptrType->pointedType;
   } else if (objType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> objClassType = atl::static_pointer_cast<ClassType>(objType);
     const atl::shared_ptr<ClassTypeDef> objClassTypeDef = objClassType->typeDefinition.lock();
@@ -715,6 +714,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
                    so.variable);
     }
 
+    ++objSubscriptOpDecl->numCallers;
     so.operatorDecl = objSubscriptOpDecl;
     return objSubscriptOpDecl->funType;
   } else {
