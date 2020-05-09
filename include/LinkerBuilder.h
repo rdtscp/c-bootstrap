@@ -33,7 +33,7 @@ public:
         throw;
       }
     #else
-      m_outFilename = "ls";
+      m_outFilename = "echo \"Cannot link and build on this platform\"";
     #endif
 
     return m_outFilename;
