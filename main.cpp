@@ -1,6 +1,7 @@
 #include "atl/include/string.h"
 
 #include "include/AST.h"
+#include "include/LinkerBuilder.h"
 #include "include/Parser.h"
 #include "include/Preprocessor.h"
 #include "include/passes/DotGraph.h"
@@ -69,33 +70,18 @@ int main(int argc, char const *argv[]) {
       } while (optimiser.optimisationsCount > 0);
     }
 
-    const atl::string temp_s_filename = "temp.s";
-    const atl::string temp_o_filename = "temp.o";
     if (outputGraph) {
       ACC::DotGraph dotGraph(progAST, outFilename);
       dotGraph.print();
     } else {
       ACC::GenerateX64 x64Generator(progAST);
       const atl::shared_ptr<ACC::SourceMemHandler> assembly = x64Generator.run();
-      atl::ofstream temp_s(temp_s_filename);
-      if (!temp_s.good()) {
-        const atl::string error = "Unable to create `" + temp_s_filename + "` file." ;
-        printf("%s\n", error.c_str());
-        return 1;
-      }
-      temp_s.write(assembly->read());
+
+      ACC::LinkerBuilder linkerBuilder(assembly, outFilename);
+      const atl::shared_ptr<ACC::SourceFileHandler> binary = linkerBuilder.linkAndBuild();
+      
     }
 
-    const atl::string nasm_cmd = "nasm -f macho64 " + temp_s_filename;
-    const int nasm_status = system(nasm_cmd.c_str());
-    if (nasm_status != 0) {
-      return 1;
-    }
-    const atl::string ld_cmd = "ld -no_pie -macosx_version_min 10.15 -lSystem -o " + outFilename + " " + temp_o_filename;
-    const int ld_status = system(ld_cmd.c_str());
-    if (ld_status != 0) {
-      return 1;
-    }
     return 0;
   }
 }
