@@ -18,6 +18,22 @@ const atl::string test_prefix = test_root + "Test_ASTAnalysis/";
 
 // TODO: Test accessing namespace'd classes.
 
+TEST(Test_ASTAnalysis, Allocations) {
+  const atl::string filepath = test_prefix + "Allocations/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis semanticAnalysis(progAST);
+  semanticAnalysis.run();
+  semanticAnalysis.printErrors();
+  ASSERT_EQ(0, semanticAnalysis.errorCount);
+}
+
 TEST(Test_ASTAnalysis, AmbiguousIdentifier) {
   const atl::string filepath = test_prefix + "AmbiguousIdentifier/test.cpp";
   const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
