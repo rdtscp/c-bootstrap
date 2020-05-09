@@ -7,6 +7,7 @@
 #include "passes/SemanticAnalysis.h"
 
 #include "Lexer.h"
+#include "LinkerBuilder.h"
 #include "Parser.h"
 #include "Preprocessor.h"
 #include "Scanner.h"
@@ -30,7 +31,11 @@ TEST(Test_CodeGeneration, Dereference) {
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
   GenerateX64 x64Generator(progAST);
-  x64Generator.run();
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name = test_prefix + "Dereference/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary_name.c_str()), 0);
 }
 
 TEST(Test_CodeGeneration, FunCall) {
@@ -47,7 +52,11 @@ TEST(Test_CodeGeneration, FunCall) {
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
   GenerateX64 x64Generator(progAST);
-  x64Generator.run();
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name = test_prefix + "FunCall/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary_name.c_str()), 0);
 }
 
 TEST(Test_CodeGeneration, MemberAccesses) {
@@ -64,7 +73,11 @@ TEST(Test_CodeGeneration, MemberAccesses) {
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
   GenerateX64 x64Generator(progAST);
-  x64Generator.run();
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name = test_prefix + "MemberAccesses/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary_name.c_str()), 0);
 }
 
 TEST(Test_CodeGeneration, MemberCall) {
@@ -81,7 +94,11 @@ TEST(Test_CodeGeneration, MemberCall) {
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
   GenerateX64 x64Generator(progAST);
-  x64Generator.run();
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name = test_prefix + "MemberCall/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary_name.c_str()), 0);
 }
 
 TEST(Test_CodeGeneration, SubscriptClass) {
@@ -98,7 +115,11 @@ TEST(Test_CodeGeneration, SubscriptClass) {
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
   GenerateX64 x64Generator(progAST);
-  x64Generator.run();
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name = test_prefix + "SubscriptClass/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary_name.c_str()), 0);
 }
 
 TEST(Test_CodeGeneration, SubscriptPtr) {
@@ -115,7 +136,11 @@ TEST(Test_CodeGeneration, SubscriptPtr) {
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
   GenerateX64 x64Generator(progAST);
-  x64Generator.run();
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name = test_prefix + "SubscriptPtr/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary_name.c_str()), 0);
 }
 
 TEST(Test_CodeGeneration, X64_SimpleFuncs) {
@@ -132,7 +157,11 @@ TEST(Test_CodeGeneration, X64_SimpleFuncs) {
   ASSERT_EQ(0, nameAnalysis.errorCount);
 
   GenerateX64 x64Generator(progAST);
-  x64Generator.run();
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name = test_prefix + "X64_SimpleFuncs/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary_name.c_str()), 0);
 }
 
 // The fixture for testing class Project1. From google test primer.

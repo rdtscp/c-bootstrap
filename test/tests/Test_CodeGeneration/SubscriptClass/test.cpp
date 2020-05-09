@@ -13,4 +13,5 @@ int main(int argc, const char **argv) {
   Incrementer inc;
 
   printf("inc[5] has value: %d\n", inc[5]);
+  return 0;
 }

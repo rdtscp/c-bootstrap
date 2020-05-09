@@ -8,5 +8,5 @@ int main(int argc, const char **argv) {
   printf("str has value: %d\n", str);
 
   printf("str[10] has value: %c\n", str[10]);
-
+  return 0;
 }
