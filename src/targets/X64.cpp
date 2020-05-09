@@ -270,8 +270,6 @@ void Writer::calleeEpilogue() {
 
 void Writer::callerPrologue() {
   comment(" ---- Caller Prologue ----");
-  push(rcx);
-  push(rdx);
   push(rdi);
   push(rsi);
   push(rdx);
@@ -285,8 +283,6 @@ void Writer::callerEpilogue() {
   pop(rdx);
   pop(rsi);
   pop(rdi);
-  pop(rdx);
-  pop(rcx);
   comment(" -------------------------");
 }
 
