@@ -50,6 +50,7 @@ void GenerateX64::declareExternFuncs() {
 void GenerateX64::defSystemFunDecls() {
   atl::vector<atl::pair<atl::string, atl::string>> systemFunDecls = {
     { "FunDecl_printf_char_ptr__char_ptr_", "_printf"},
+    { "FunDecl_printf_char_ptr__char_", "_printf" },
     { "FunDecl_printf_char_ptr__int_", "_printf" }
   };
 
@@ -473,7 +474,39 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(StringLiteral &sl) {
   return strLit;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(SubscriptOp &so) {
-  return atl::shared_ptr<X64::None>();
+  const atl::shared_ptr<VarDecl> varDecl = so.variable->varDecl.lock();
+  const atl::string varType = varDecl->type->astClass();
+  if (varType == "ClassType") {
+    atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
+
+    x64.callerPrologue();
+
+    /* Handle `this` parameter. */
+    const atl::shared_ptr<X64::Operand> this_ptr =  so.variable->accept(*this);
+    x64.mov(paramRegs.pop_back(), this_ptr);
+
+    const atl::shared_ptr<X64::Operand> index = so.index->accept(*this);
+    x64.mov(paramRegs.pop_back(), index);
+
+    x64.call(so.operatorDecl.lock()->getSignature().mangle());
+  
+    x64.callerEpilogue();
+  }
+  else if (varType == "ArrayType" || varType == "PointerType") {
+    // Get a pointer to the variable.
+    const atl::shared_ptr<X64::Operand> this_ptr =  so.variable->accept(*this);
+    x64.mov(x64.rax, this_ptr);
+    x64.push(x64.rax);
+
+    // Get the index to offset.
+    const atl::shared_ptr<X64::Operand> index = so.index->accept(*this);
+    x64.pop(x64.rcx);
+    x64.add(x64.rcx, index);
+    const atl::shared_ptr<X64::AddrOffset> valueAtIndex(new X64::AddrOffset(x64.rcx, 0));
+    x64.mov(x64.rax, valueAtIndex);
+  }
+
+  return x64.rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(TemplateDef &td) {
   return atl::shared_ptr<X64::None>();
