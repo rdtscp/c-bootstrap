@@ -7,4 +7,5 @@ int main(int argc, const char **argv) {
   x = 5678;
 
   printf("x has value: %d\n", *y);
+  return 0;
 }
