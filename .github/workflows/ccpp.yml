@@ -20,7 +20,7 @@ jobs:
     - name: Debug Tests
       run:  |
         cd build
-        ctest --verbose
+        ctest --output-on-failure
 
     - name: Clean Build
       run: |
@@ -36,7 +36,7 @@ jobs:
     - name: Release Tests
       run: |
         cd build
-        ctest --verbose
+        ctest --output-on-failure
 
   gcc-build:
     runs-on: ubuntu-latest
@@ -90,7 +90,7 @@ jobs:
     - name: Debug Tests
       run:  |
         cd build
-        ctest --verbose
+        ctest --output-on-failure
 
     - name: Clean Build
       run: |
@@ -106,7 +106,7 @@ jobs:
     - name: Release Tests
       run: |
         cd build
-        ctest --verbose
+        ctest --output-on-failure
 
   test-coverage:
     runs-on: ubuntu-latest
