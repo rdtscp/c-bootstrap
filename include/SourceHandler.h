@@ -10,7 +10,7 @@ public:
   SourceHandler(const Type type, const atl::string &value)
       : type(type), value(value) {}
   const Type type;
-  const atl::string value;
+  atl::string value;
 
   atl::string getFilepath() const {
     if (type == Type::FILEPATH)
