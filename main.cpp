@@ -78,7 +78,7 @@ int main(int argc, char const *argv[]) {
       const atl::shared_ptr<ACC::SourceMemHandler> assembly = x64Generator.run();
 
       ACC::LinkerBuilder linkerBuilder(assembly, outFilename);
-      const atl::shared_ptr<ACC::SourceFileHandler> binary = linkerBuilder.linkAndBuild();
+      const atl::string binary = linkerBuilder.linkAndBuild();
       
     }
 

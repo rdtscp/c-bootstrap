@@ -8,6 +8,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - name: Set up NASM
+      uses: ilammy/setup-nasm@v1.0.0
+
     - name: Debug Compile
       run: |
         mkdir build
@@ -39,6 +42,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+      
+    - name: Set up NASM
+      uses: ilammy/setup-nasm@v1.0.0
+
     - name: Debug Compile
       run: |
         mkdir build
@@ -66,12 +73,50 @@ jobs:
         cd build
         ctest --output-on-failure
 
+  macOS-CodeGen:
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up NASM
+      uses: ilammy/setup-nasm@v1.0.0
+
+    - name: Debug Compile
+      run: |
+        mkdir build
+        cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -S . -B ./build
+        make --directory ./build -j
+
+    - name: Debug Tests
+      run:  |
+        cd build
+        ctest --output-on-failure
+
+    - name: Clean Build
+      run: |
+       cd ${GITHUB_WORKSPACE}
+       rm -rf ./build/
+    
+    - name: Release Compile
+      run: |
+        mkdir build
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -S . -B ./build
+        make --directory ./build -j
+
+    - name: Release Tests
+      run: |
+        cd build
+        ctest --output-on-failure
+
   test-coverage:
     runs-on: ubuntu-latest
     steps:
     - run: sudo apt install lcov
     - uses: actions/checkout@v1
 
+    - name: Set up NASM
+      uses: ilammy/setup-nasm@v1.0.0
+      
     - name: Debug Compile
       run: |
         mkdir build
