@@ -684,6 +684,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
       objType->astClass() == "PointerType") {
     const atl::shared_ptr<PointerType> ptrType = atl::static_pointer_cast<PointerType>(objType);
     ptrType->accept(*this);
+    so.index->accept(*this);
     return ptrType->pointedType;
   } else if (objType->astClass() == "ClassType") {
     const atl::shared_ptr<ClassType> objClassType = atl::static_pointer_cast<ClassType>(objType);
