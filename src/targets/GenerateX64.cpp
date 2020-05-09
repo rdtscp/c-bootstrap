@@ -34,14 +34,14 @@ void GenerateX64::error(atl::string error) {
 }
 
 
-  /* ---- X64 Memory ---- */
+/* ---- X64 Memory ---- */
 
 void GenerateX64::alloc(const VarDecl &vd) {
   x64.write(vd.getIdentifier()->toString() + ": db " + atl::to_string(vd.getBytes()));
 }
 
 void GenerateX64::declareExternFuncs() {
-  const atl::vector<atl::string> externFunDecls = { "printf" };
+  const atl::vector<atl::string> externFunDecls = { "malloc", "printf" };
   for (unsigned int idx = 0u; idx < externFunDecls.size(); ++idx) {
     x64.write("extern _" + externFunDecls[idx]);
   }
@@ -49,6 +49,7 @@ void GenerateX64::declareExternFuncs() {
 
 void GenerateX64::defSystemFunDecls() {
   atl::vector<atl::pair<atl::string, atl::string>> systemFunDecls = {
+    { "FunDecl_malloc_int_", "_malloc"},
     { "FunDecl_printf_char_ptr__char_ptr_", "_printf"},
     { "FunDecl_printf_char_ptr__char_", "_printf" },
     { "FunDecl_printf_char_ptr__int_", "_printf" }
@@ -79,6 +80,17 @@ void GenerateX64::mainEntry() {
   x64.ret();
 }
 
+void GenerateX64::malloc(const uint32_t num_bytes) {
+  x64.callerPrologue();
+
+  const atl::shared_ptr<X64::IntValue> byte_value(new X64::IntValue(num_bytes));
+  x64.mov(x64.rdi, byte_value);
+
+  x64.write("call FunDecl_malloc_int_");
+
+  x64.callerEpilogue();
+}
+
 /* ---- Visit AST ---- */
 
 atl::shared_ptr<X64::Operand> GenerateX64::visit(AddressOf &ao) {
@@ -98,20 +110,31 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(AddressOf &ao) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Allocation &a) {
-  return atl::shared_ptr<X64::None>();
+  if (a.varType != nullptr) {
+    // Allocate required bytes.
+    const int bytesRequired = roundTo16Bytes(a.varType->getBytes());
+    malloc(bytesRequired);
+    return x64.rax;
+  } else {
+    // Handle allocating structs.
+    return x64.rax;
+  }
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ArrayType &at) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Assign &as) {
-  atl::shared_ptr<X64::Operand> lhsRegRes = as.lhs->accept(*this);
-  atl::shared_ptr<X64::Operand> rhsResReg = as.rhs->accept(*this);
+  const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
+  x64.mov(x64.rax, rhs, "Move the RHS into a temp register");
+  x64.push(x64.rax, "Store RHS on the Stack Temporarily");
+
+  const atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
+  x64.pop(x64.rcx, "Pop the RHS off the Stack into rcx");
   // We can't mov a StringLiteral into a space on the stack
   // load it into a register(effectively the address) and 
   // then move that address onto the stack.
-  const atl::shared_ptr<X64::Register> tempReg = x64.getTempReg();
-  x64.mov(tempReg, rhsResReg, "Move RHS into a register.");
-  x64.mov(lhsRegRes, tempReg, "Move register into LHS.");
+
+  x64.mov(lhs, x64.rcx, "Move RHS into LHS.");
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BaseType &bt) {
@@ -166,7 +189,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BoolLiteral &bl) {
   }
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(CharLiteral &cl) {
-  return atl::shared_ptr<X64::IntValue>(new X64::IntValue(atl::string(1, cl.value[0])));
+  return atl::shared_ptr<X64::IntValue>(new X64::IntValue(cl.value));
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassType &ct) {
   return atl::shared_ptr<X64::None>();
@@ -543,9 +566,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDecl &vd) {
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
   const atl::string vdIdent = vd.getIdentifier()->toString();
-  int bytesRequired = vd.getBytes();
-  while (bytesRequired % 16 != 0)
-    ++bytesRequired;
+  const int bytesRequired = roundTo16Bytes(vd.getBytes());
   currBpOffset -= bytesRequired;
   vd.bpOffset = currBpOffset;
 
@@ -593,4 +614,10 @@ GenerateX64::addrOffset(const atl::shared_ptr<X64::Operand> addrOperand,
                         const int offset) {
   return atl::shared_ptr<X64::AddrOffset>(
       new X64::AddrOffset(addrOperand, offset));
+}
+
+int GenerateX64::roundTo16Bytes(int bytes) const {
+  while (bytes % 16 != 0)
+    ++bytes;
+  return bytes;
 }

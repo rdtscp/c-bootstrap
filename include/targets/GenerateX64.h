@@ -40,6 +40,7 @@ private:
   void declareExternFuncs();
   void defSystemFunDecls();
   void mainEntry();
+  void malloc(const uint32_t num_bytes);
 
   atl::vector<atl::shared_ptr<X64::StringLiteral>> stringLiterals;
 
@@ -99,5 +100,6 @@ private:
   /* ---- Helpers ---- */
   atl::shared_ptr<X64::AddrOffset> addrOffset(const atl::shared_ptr<X64::Operand> addrOperand, const int offset);
   atl::shared_ptr<X64::IntValue> genIntValue(int value);
+  int roundTo16Bytes(int bytes) const;
 };
 } // namespace ACC
