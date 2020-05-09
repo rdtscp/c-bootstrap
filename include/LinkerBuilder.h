@@ -25,12 +25,16 @@ public:
       printf("Nasm Failed\n");
       throw;
     }
-    const atl::string ld_cmd = "ld -no_pie -macosx_version_min 10.15 -lSystem -o " + m_outFilename + " temp.o";
-    const int ld_status = system(ld_cmd.c_str());
-    if (ld_status != 0) {
-      printf("ld Failed: `%s`\n", ld_cmd.c_str());
-      throw;
-    }
+    #ifdef __APPLE__
+      const atl::string ld_cmd = "ld -no_pie -macosx_version_min 10.15 -lSystem -o " + m_outFilename + " temp.o";
+      const int ld_status = system(ld_cmd.c_str());
+      if (ld_status != 0) {
+        printf("ld Failed: `%s`\n", ld_cmd.c_str());
+        throw;
+      }
+    #else
+      m_outFilename = "ls";
+    #endif
 
     return atl::shared_ptr<ACC::SourceFileHandler>(new SourceFileHandler(m_outFilename));
   }
