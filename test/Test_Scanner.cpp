@@ -11,8 +11,8 @@ using namespace ACC;
 const atl::string test_prefix = test_root + "Test_Scanner/";
 
 TEST(ScannerTest, API) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "API/test.cpp");
+  const atl::string filepath = test_prefix + "API/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Scanner scanner(src);
 
   atl::string output;
@@ -57,8 +57,8 @@ TEST(ScannerTest, API) {
 }
 
 TEST(ScannerTest, FetchingPastEOF) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "FetchingPastEOF/test.cpp");
+  const atl::string filepath = test_prefix + "FetchingPastEOF/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Scanner scanner(src);
   ASSERT_EQ(scanner.next(), 'c');
   ASSERT_EQ(scanner.next(), 'h');
@@ -75,8 +75,8 @@ TEST(ScannerTest, FetchingPastEOF) {
 }
 
 TEST(ScannerTest, PeekingPastEOF) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "PeekingPastEOF/test.cpp");
+  const atl::string filepath = test_prefix + "PeekingPastEOF/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Scanner scanner(src);
   ASSERT_EQ(scanner.next(), 'c');
   ASSERT_EQ(scanner.peek(), 'h');
@@ -103,9 +103,8 @@ TEST(ScannerTest, PeekingPastEOF) {
 }
 
 TEST(ScannerTest, ScanningPreprocessorDirectives) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix +
-                              "ScanningPreprocessorDirectives/test.cpp");
+  const atl::string filepath = test_prefix + "ScanningPreprocessorDirectives/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Scanner scanner(src);
 
   while (scanner.next() != '\0') {

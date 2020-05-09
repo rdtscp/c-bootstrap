@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SourceHandler.h"
+
 #include "atl/include/ofstream.h"
 #include "atl/include/shared_ptr.h"
 #include "atl/include/stack.h"
@@ -115,9 +117,10 @@ public:
   atl::shared_ptr<Register> rsp;
   atl::shared_ptr<Register> rbp;
 
-  Writer(const atl::string &filename);
+  Writer(const atl::shared_ptr<SourceHandler> &output);
+  Writer() = delete;
   Writer(const Writer &) = delete;
-  ~Writer();
+  ~Writer() = default;
 
   /* Instructions */
   void add(const atl::shared_ptr<X64::Operand> &op1,
@@ -158,8 +161,10 @@ public:
   atl::stack<atl::shared_ptr<Register>> paramRegs() const;
 
 private:
-  atl::ofstream x64Output;
+  atl::shared_ptr<SourceHandler> x64Output;
   atl::string stringLiterals;
+
+  void writeStringLiterals();
 };
 
 } // namespace X64

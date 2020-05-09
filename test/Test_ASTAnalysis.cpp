@@ -19,8 +19,8 @@ const atl::string test_prefix = test_root + "Test_ASTAnalysis/";
 // TODO: Test accessing namespace'd classes.
 
 TEST(Test_ASTAnalysis, AmbiguousIdentifier) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "AmbiguousIdentifier/test.cpp");
+  const atl::string filepath = test_prefix + "AmbiguousIdentifier/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -35,8 +35,8 @@ TEST(Test_ASTAnalysis, AmbiguousIdentifier) {
 }
 
 TEST(Test_ASTAnalysis, CallWithReferences) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "CallWithReferences/test.cpp");
+  const atl::string filepath = test_prefix + "CallWithReferences/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -51,8 +51,8 @@ TEST(Test_ASTAnalysis, CallWithReferences) {
 }
 
 TEST(Test_ASTAnalysis, ClassCallsItsMethod) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "ClassCallsItsMethod/test.cpp");
+  const atl::string filepath = test_prefix + "ClassCallsItsMethod/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -67,8 +67,8 @@ TEST(Test_ASTAnalysis, ClassCallsItsMethod) {
 }
 
 TEST(Test_ASTAnalysis, ClassCallsItsOwnCtor) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "ClassCallsItsOwnCtor/test.cpp");
+  const atl::string filepath = test_prefix + "ClassCallsItsOwnCtor/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -83,8 +83,8 @@ TEST(Test_ASTAnalysis, ClassCallsItsOwnCtor) {
 }
 
 TEST(Test_ASTAnalysis, ClassCallsItsOwnCtorNamespaced) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "ClassCallsItsOwnCtorNamespaced/test.cpp");
+  const atl::string filepath = test_prefix + "ClassCallsItsOwnCtorNamespaced/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -106,8 +106,8 @@ TEST(Test_ASTAnalysis, ClassCallsItsOwnCtorNamespaced) {
 }
 
 TEST(Test_ASTAnalysis, ClassCallsStatic) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "ClassCallsStatic/test.cpp");
+  const atl::string filepath = test_prefix + "ClassCallsStatic/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -122,8 +122,8 @@ TEST(Test_ASTAnalysis, ClassCallsStatic) {
 }
 
 TEST(Test_ASTAnalysis, DotGraph) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "DotGraph/test.cpp");
+  const atl::string filepath = test_prefix + "DotGraph/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -136,8 +136,8 @@ TEST(Test_ASTAnalysis, DotGraph) {
 }
 
 TEST(Test_ASTAnalysis, DuplicateFunction) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "DuplicateFunction/test.cpp");
+  const atl::string filepath = test_prefix + "DuplicateFunction/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -152,8 +152,8 @@ TEST(Test_ASTAnalysis, DuplicateFunction) {
 }
 
 TEST(Test_ASTAnalysis, DuplicateVariable) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "DuplicateVariable/test.cpp");
+  const atl::string filepath = test_prefix + "DuplicateVariable/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -168,8 +168,8 @@ TEST(Test_ASTAnalysis, DuplicateVariable) {
 }
 
 TEST(Test_ASTAnalysis, FunModifiers) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "FunModifiers/test.cpp");
+  const atl::string filepath = test_prefix + "FunModifiers/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -184,8 +184,8 @@ TEST(Test_ASTAnalysis, FunModifiers) {
 }
 
 TEST(Test_ASTAnalysis, FunctionOverloading) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "FunctionOverloading/test.cpp");
+  const atl::string filepath = test_prefix + "FunctionOverloading/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -200,8 +200,8 @@ TEST(Test_ASTAnalysis, FunctionOverloading) {
 }
 
 TEST(Test_ASTAnalysis, MemberAccesses) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "MemberAccesses/test.cpp");
+  const atl::string filepath = test_prefix + "MemberAccesses/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -216,8 +216,8 @@ TEST(Test_ASTAnalysis, MemberAccesses) {
 }
 
 TEST(Test_ASTAnalysis, MemberCalls) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "MemberCalls/test.cpp");
+  const atl::string filepath = test_prefix + "MemberCalls/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -232,8 +232,8 @@ TEST(Test_ASTAnalysis, MemberCalls) {
 }
 
 TEST(Test_ASTAnalysis, NameAnalysis) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "NameAnalysis/test.cpp");
+  const atl::string filepath = test_prefix + "NameAnalysis/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -248,8 +248,8 @@ TEST(Test_ASTAnalysis, NameAnalysis) {
 }
 
 TEST(Test_ASTAnalysis, NamespaceClass) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "NamespaceClass/test.cpp");
+  const atl::string filepath = test_prefix + "NamespaceClass/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -264,8 +264,8 @@ TEST(Test_ASTAnalysis, NamespaceClass) {
 }
 
 TEST(Test_ASTAnalysis, NamespaceFunction) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "NamespaceFunction/test.cpp");
+  const atl::string filepath = test_prefix + "NamespaceFunction/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -280,8 +280,8 @@ TEST(Test_ASTAnalysis, NamespaceFunction) {
 }
 
 TEST(Test_ASTAnalysis, NoMainFunc) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "NoMainFunc/test.cpp");
+  const atl::string filepath = test_prefix + "NoMainFunc/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -296,8 +296,8 @@ TEST(Test_ASTAnalysis, NoMainFunc) {
 }
 
 TEST(Test_ASTAnalysis, ReferenceClassBinOp) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "ReferenceClassBinOp/test.cpp");
+  const atl::string filepath = test_prefix + "ReferenceClassBinOp/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -312,8 +312,8 @@ TEST(Test_ASTAnalysis, ReferenceClassBinOp) {
 }
 
 TEST(Test_ASTAnalysis, StringClass) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "StringClass/test.cpp");
+  const atl::string filepath = test_prefix + "StringClass/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -328,8 +328,8 @@ TEST(Test_ASTAnalysis, StringClass) {
 }
 
 TEST(Test_ASTAnalysis, SubscriptResolution) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "SubscriptResolution/test.cpp");
+  const atl::string filepath = test_prefix + "SubscriptResolution/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -344,8 +344,8 @@ TEST(Test_ASTAnalysis, SubscriptResolution) {
 }
 
 TEST(Test_ASTAnalysis, TypedefComparisons) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "TypedefComparisons/test.cpp");
+  const atl::string filepath = test_prefix + "TypedefComparisons/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -360,8 +360,8 @@ TEST(Test_ASTAnalysis, TypedefComparisons) {
 }
 
 TEST(Test_ASTAnalysis, TypeDefReturnType) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "TypeDefReturnType/test.cpp");
+  const atl::string filepath = test_prefix + "TypeDefReturnType/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -376,8 +376,8 @@ TEST(Test_ASTAnalysis, TypeDefReturnType) {
 }
 
 TEST(Test_ASTAnalysis, UndefinedClass) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "UndefinedClass/test.cpp");
+  const atl::string filepath = test_prefix + "UndefinedClass/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -392,8 +392,8 @@ TEST(Test_ASTAnalysis, UndefinedClass) {
 }
 
 TEST(Test_ASTAnalysis, UndefinedFunction) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "UndefinedFunction/test.cpp");
+  const atl::string filepath = test_prefix + "UndefinedFunction/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -408,8 +408,8 @@ TEST(Test_ASTAnalysis, UndefinedFunction) {
 }
 
 TEST(Test_ASTAnalysis, UndefinedVariable) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "UndefinedVariable/test.cpp");
+  const atl::string filepath = test_prefix + "UndefinedVariable/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -424,8 +424,8 @@ TEST(Test_ASTAnalysis, UndefinedVariable) {
 }
 
 TEST(Test_ASTAnalysis, UseBeforeDecl) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "UseBeforeDecl/test.cpp");
+  const atl::string filepath = test_prefix + "UseBeforeDecl/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);

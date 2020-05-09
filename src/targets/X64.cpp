@@ -86,7 +86,7 @@ atl::string StringLiteral::toString() const { return strName; }
 
 /* ---- X64::Writer ---- */
 
-Writer::Writer(const atl::string &filename)
+Writer::Writer(const atl::shared_ptr<SourceHandler> &output)
   : rax(new Register(32, "rax")),
     rbx(new Register(32, "rbx")),
     rcx(new Register(32, "rcx")),
@@ -95,14 +95,7 @@ Writer::Writer(const atl::string &filename)
     rdi(new Register(32, "rdi")),
     rsp(new Register(32, "rsp")),
     rbp(new Register(32, "rbp")),
-    x64Output(filename) {
-  if (!x64Output.good())
-    throw Error("Not good!");
-}
-
-Writer::~Writer() {
-  write("SECTION .data");
-  write(stringLiterals);
+    x64Output(output) {
 }
 
 void Writer::add(const atl::shared_ptr<X64::Operand> &op1,
@@ -238,7 +231,7 @@ void Writer::string_literal(const atl::string &strName,
     }
   }
   // TODO: Replace '\n' and other special characters with [", ASCII(c), "]
-  stringLiterals += "\n" + strName + ":\tdb \"" + writtenValue + "\", 0";
+  write(strName + ":\tdb \"" + writtenValue + "\", 0");
 }
 
 void Writer::sub(const atl::shared_ptr<X64::Operand> &op, const int value,
@@ -248,8 +241,8 @@ void Writer::sub(const atl::shared_ptr<X64::Operand> &op, const int value,
 }
 
 void Writer::write(const atl::string &str) {
-  printf("%s\n", str.c_str());
-  x64Output.write(str + "\n");
+  // printf("%s\n", str.c_str());
+  x64Output->write(str + "\n");
 }
 
 
@@ -308,4 +301,9 @@ atl::stack<atl::shared_ptr<Register>> Writer::paramRegs() const {
   output.push_back(rsi);
   output.push_back(rdi);
   return output;
+}
+
+void Writer::writeStringLiterals() {
+  write("SECTION .data");
+  write(stringLiterals);
 }

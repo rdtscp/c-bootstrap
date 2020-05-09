@@ -5,6 +5,7 @@
 #include "AST.h"
 #include "ASTVisitor.h"
 #include "targets/X64.h"
+#include "SourceHandler.h"
 
 namespace ACC {
 
@@ -14,10 +15,10 @@ public:
   int errorCount = 0;
   atl::vector<atl::string> errors;
 
-  GenerateX64(atl::shared_ptr<Program> progAST, const atl::string &outputFile);
+  GenerateX64(atl::shared_ptr<Program> progAST);
 
   void printErrors() const;
-  void run();
+  atl::shared_ptr<SourceMemHandler> run();
 
 private:
   void error(atl::string error);
@@ -31,6 +32,7 @@ private:
   int currBpOffset = 0;
   int stringCount = 0;
 
+  atl::shared_ptr<SourceMemHandler> outputSource;
   /* ---- X64 Memory ---- */
   X64::Writer x64;
 
@@ -38,6 +40,8 @@ private:
   void declareExternFuncs();
   void defSystemFunDecls();
   void mainEntry();
+
+  atl::vector<atl::shared_ptr<X64::StringLiteral>> stringLiterals;
 
   /* ---- Visit AST ---- */
 

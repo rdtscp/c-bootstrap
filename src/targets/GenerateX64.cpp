@@ -2,9 +2,10 @@
 
 using namespace ACC;
 
-GenerateX64::GenerateX64(atl::shared_ptr<Program> progAST,
-                         const atl::string &outputFile)
-    : progAST(progAST), x64(outputFile) {
+GenerateX64::GenerateX64(atl::shared_ptr<Program> progAST)
+    : progAST(progAST),
+      outputSource(new SourceMemHandler()),
+      x64(outputSource) {
 }
 
 void GenerateX64::printErrors() const {
@@ -13,7 +14,16 @@ void GenerateX64::printErrors() const {
     printf("\t%s\n", errors[idx].c_str());
 }
 
-void GenerateX64::run() { visit(*progAST); }
+atl::shared_ptr<SourceMemHandler> GenerateX64::run() {
+  visit(*progAST);
+  // Write all the data section last.
+  x64.write("SECTION .data");
+  for (uint32_t i = 0u; i < stringLiterals.size(); ++i) {
+    const atl::shared_ptr<X64::StringLiteral> &strLiteral = stringLiterals[i];
+    x64.string_literal(strLiteral->strName, strLiteral->strVal);
+  }
+  return outputSource;
+}
 
 
 /***** PRIVATE *****/
@@ -458,9 +468,9 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(StaticCast &sc) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(StringLiteral &sl) {
   const atl::string strName = "strLiteral" + atl::to_string(stringCount++);
   const atl::string strVal = sl.value;
-  x64.string_literal(strName, strVal);
-  return atl::shared_ptr<X64::StringLiteral>(
-      new X64::StringLiteral(strName, strVal));
+  const atl::shared_ptr<X64::StringLiteral> strLit(new X64::StringLiteral(strName, strVal));
+  stringLiterals.push_back(strLit);
+  return strLit;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(SubscriptOp &so) {
   return atl::shared_ptr<X64::None>();

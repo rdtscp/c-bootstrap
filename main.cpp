@@ -33,18 +33,17 @@ int main(int argc, char const *argv[]) {
     }
   }
 
+  const atl::shared_ptr<ACC::SourceFileHandler> src(new ACC::SourceFileHandler(inFilename, atl::fstream::open_mode::read));
   if (preprocess) {
-    ACC::SourceHandler src(ACC::SourceHandler::Type::FILEPATH, inFilename);
     ACC::Preprocessor preprocessor(src, {"/Users/alexanderwilson/Documents/"
                                          "GitHub/c-bootstrap/build/atl/src/",
                                          "/Users/alexanderwilson/Documents/"
                                          "GitHub/c-bootstrap/include/"});
-    ACC::SourceHandler pp_src = preprocessor.getSource();
-    printf("%s", pp_src.value.c_str());
+    const atl::shared_ptr<ACC::SourceMemHandler> pp_src = preprocessor.getSource();
+    printf("%s", pp_src->read().c_str());
 
     return 0;
   } else {
-    ACC::SourceHandler src(ACC::SourceHandler::Type::FILEPATH, inFilename);
     ACC::Preprocessor preprocessor(src, {"/Users/alexanderwilson/Documents/"
                                          "GitHub/c-bootstrap/build/atl/src/",
                                          "/Users/alexanderwilson/Documents/"
@@ -76,8 +75,15 @@ int main(int argc, char const *argv[]) {
       ACC::DotGraph dotGraph(progAST, outFilename);
       dotGraph.print();
     } else {
-      ACC::GenerateX64 x64Generator(progAST, temp_s_filename);
-      x64Generator.run();
+      ACC::GenerateX64 x64Generator(progAST);
+      const atl::shared_ptr<ACC::SourceMemHandler> assembly = x64Generator.run();
+      atl::ofstream temp_s(temp_s_filename);
+      if (!temp_s.good()) {
+        const atl::string error = "Unable to create `" + temp_s_filename + "` file." ;
+        printf("%s\n", error.c_str());
+        return 1;
+      }
+      temp_s.write(assembly->read());
     }
 
     const atl::string nasm_cmd = "nasm -f macho64 " + temp_s_filename;
