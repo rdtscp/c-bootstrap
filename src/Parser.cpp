@@ -1062,14 +1062,11 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
       return createNode(new Allocation(atl::static_pointer_cast<FunCall>(funCall)));
     } else {
       atl::shared_ptr<Type> allocatedType = parseType();
-      if (accept(TC::LSBR)) {
-        expect(TC::LSBR);
-        const atl::shared_ptr<Expr> arraySize = parseExpr();
-        expect(TC::RSBR);
-        allocatedType =
-            atl::shared_ptr<ArrayType>(new ArrayType(allocatedType, arraySize));
-        return createNode(new Allocation(allocatedType));
-      }
+      expect(TC::LSBR);
+      const atl::shared_ptr<Expr> arraySize = parseExpr();
+      expect(TC::RSBR);
+      allocatedType = atl::shared_ptr<ArrayType>(new ArrayType(allocatedType, arraySize));
+      return createNode(new Allocation(allocatedType));
     }
   }
   if (accept(TC::REF)) {
