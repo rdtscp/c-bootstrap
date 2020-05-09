@@ -17,26 +17,26 @@ using namespace ACC;
 
 const atl::string test_prefix = test_root + "Test_CodeGeneration/";
 
-// TEST(Test_CodeGeneration, Allocations) {
-//   const atl::string filepath = test_prefix + "Allocations/test.cpp";
-//   const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
-//   ACC::Preprocessor preprocessor(src, {});
-//   ACC::Scanner scanner(preprocessor.getSource());
-//   ACC::Lexer lexer(scanner);
-//   ACC::Parser parser(lexer);
-//   atl::shared_ptr<Program> progAST = parser.getAST();
+TEST(Test_CodeGeneration, Allocations) {
+  const atl::string filepath = test_prefix + "Allocations/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> progAST = parser.getAST();
 
-//   SemanticAnalysis nameAnalysis(progAST);
-//   nameAnalysis.run();
-//   ASSERT_EQ(0, nameAnalysis.errorCount);
+  SemanticAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
 
-//   GenerateX64 x64Generator(progAST);
-//   const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
-//   const atl::string binary_name = test_prefix + "Allocations/binary";
-//   LinkerBuilder linkAndBuilder(assembly, binary_name);
-//   linkAndBuilder.linkAndBuild();
-//   ASSERT_EQ(system(binary_name.c_str()), 0);
-// }
+  GenerateX64 x64Generator(progAST);
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name = test_prefix + "Allocations/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary_name.c_str()), 0);
+}
 
 TEST(Test_CodeGeneration, Dereference) {
   const atl::string filepath = test_prefix + "Dereference/test.cpp";
