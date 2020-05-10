@@ -1,4 +1,4 @@
-void printf(const char *, const int);
+void printf(const char *, const bool);
 
 int main(int argc, const char **argv) {
   int one = 1;
@@ -21,7 +21,7 @@ int main(int argc, const char **argv) {
   printf("two <= one == %d\n", two <= one);
   printf("two <= two == %d\n", two <= two);
   printf("two <= three == %d\n", two <= three);
-m
+
   printf("three % two == %d\n", three % two);
   printf("four % two == %d\n", four % two);
 
