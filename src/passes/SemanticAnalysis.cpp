@@ -49,12 +49,13 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(AddressOf &ao) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Allocation &a) {
   if (a.varType != nullptr)
-    return a.varType;
+    return a.varType->accept(*this);
 
   return atl::shared_ptr<PointerType>(
       new PointerType(a.varConstructorCall->accept(*this)));
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ArrayType &at) {
+  at.size->accept(*this);
   return at.getptr();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
