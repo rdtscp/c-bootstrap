@@ -515,10 +515,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(StringLiteral &sl) {
   return strLit;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(SubscriptOp &so) {
-  const atl::shared_ptr<VarDecl> varDecl = so.variable->varDecl.lock();
-  const atl::shared_ptr<Type> varType = ReferenceType::collapseReferenceTypes(varDecl->type);
-  const atl::string typeClass = varType->astClass();
-  if (typeClass == "ClassType") {
+  if (!so.operatorDecl.expired()) {
     atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
 
     x64.callerPrologue();
@@ -535,11 +532,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(SubscriptOp &so) {
     x64.callerEpilogue();
 
     return x64.rax;
-  }
-  else if (typeClass == "ArrayType" || typeClass == "PointerType") {
+  } else {
     // Get a pointer to the variable.
     const atl::shared_ptr<X64::Operand> this_ptr =  so.variable->accept(*this);
-    x64.mov(x64.rax, this_ptr, "Pointer to " + so.variable->varIdentifier->toString());
+    x64.mov(x64.rax, this_ptr, "Pointer to subscript variable.");
     x64.push(x64.rax);
 
     // Get the index to offset.
