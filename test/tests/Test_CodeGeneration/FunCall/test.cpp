@@ -1,16 +1,29 @@
 void printf(const char *, int);
 
-int five() {
-  return 5;
-}
-
-int ten() {
-  return 10;
-}
-
 int add(int a, int b) {
   return a + b;
 }
+
+int two() {
+  return add(1, 1);
+}
+
+int three() {
+  return add(1, two());
+}
+
+int five() {
+  return add(two(), three());
+}
+
+int x2(int x) {
+  return x * 2;
+}
+
+int ten() {
+  return x2(five());
+}
+
 
 int main(int argc, char **argv) {
   printf("five() == %d\n", five());
