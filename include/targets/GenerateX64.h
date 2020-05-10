@@ -40,7 +40,7 @@ private:
   void declareExternFuncs();
   void defSystemFunDecls();
   void mainEntry();
-  void malloc(const uint32_t num_bytes);
+  void malloc(const atl::shared_ptr<X64::Operand> &num_bytes);
 
   atl::vector<atl::shared_ptr<X64::StringLiteral>> stringLiterals;
 

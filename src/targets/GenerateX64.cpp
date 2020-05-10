@@ -81,11 +81,10 @@ void GenerateX64::mainEntry() {
   x64.ret();
 }
 
-void GenerateX64::malloc(const uint32_t num_bytes) {
+void GenerateX64::malloc(const atl::shared_ptr<X64::Operand> &num_bytes) {
   x64.callerPrologue();
 
-  const atl::shared_ptr<X64::IntValue> byte_value(new X64::IntValue(num_bytes));
-  x64.mov(x64.rdi, byte_value);
+  x64.mov(x64.rdi, num_bytes);
 
   x64.write("call FunDecl_malloc_int_");
 
@@ -113,8 +112,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(AddressOf &ao) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Allocation &a) {
   if (a.varType != nullptr) {
     // Allocate required bytes.
-    const int bytesRequired = roundTo16Bytes(a.varType->getBytes());
-    malloc(bytesRequired);
+    const atl::shared_ptr<X64::Operand> numBytes = a.varType->accept(*this);
+    malloc(numBytes);
     return x64.rax;
   } else {
     // Handle allocating structs.
@@ -122,7 +121,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Allocation &a) {
   }
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ArrayType &at) {
-  return atl::shared_ptr<X64::None>();
+  return at.size->accept(*this);
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Assign &as) {
   const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
@@ -514,8 +513,9 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(StringLiteral &sl) {
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(SubscriptOp &so) {
   const atl::shared_ptr<VarDecl> varDecl = so.variable->varDecl.lock();
-  const atl::string varType = varDecl->type->astClass();
-  if (varType == "ClassType") {
+  const atl::shared_ptr<Type> varType = ReferenceType::collapseReferenceTypes(varDecl->type);
+  const atl::string typeClass = varType->astClass();
+  if (typeClass == "ClassType") {
     atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
 
     x64.callerPrologue();
@@ -533,7 +533,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(SubscriptOp &so) {
 
     return x64.rax;
   }
-  else if (varType == "ArrayType" || varType == "PointerType") {
+  else if (typeClass == "ArrayType" || typeClass == "PointerType") {
     // Get a pointer to the variable.
     const atl::shared_ptr<X64::Operand> this_ptr =  so.variable->accept(*this);
     x64.mov(x64.rax, this_ptr, "Pointer to " + so.variable->varIdentifier->toString());
