@@ -21,7 +21,7 @@ public:
     const unsigned int string_length = lhs_len + rhs_len;
 
     // Allocate memory for the new string.
-    char *new_string_value = new char[string_length + 1];
+    char *new_string_value = new char[string_length + 1u];
     char *new_string_value_ptr = new_string_value;
 
     // Copy the LHS.
