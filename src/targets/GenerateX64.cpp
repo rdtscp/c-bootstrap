@@ -52,7 +52,8 @@ void GenerateX64::defSystemFunDecls() {
     { "FunDecl_malloc_int_", "_malloc"},
     { "FunDecl_printf_char_ptr__char_ptr_", "_printf"},
     { "FunDecl_printf_char_ptr__char_", "_printf" },
-    { "FunDecl_printf_char_ptr__int_", "_printf" }
+    { "FunDecl_printf_char_ptr__int_", "_printf" },
+    { "FunDecl_printf_char_ptr_", "_printf" }
   };
 
   for (unsigned int i = 0u; i < systemFunDecls.size(); ++i) {
@@ -189,7 +190,22 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BoolLiteral &bl) {
   }
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(CharLiteral &cl) {
-  return atl::shared_ptr<X64::IntValue>(new X64::IntValue(cl.value));
+  const atl::string &charStr = cl.value;
+  if (charStr[0] == '\\') {
+    const char escapedChar = charStr[1];
+    switch (escapedChar) {
+      case '0':
+        return atl::shared_ptr<X64::IntValue>(new X64::IntValue(static_cast<int>('\0')));
+      case 'n':
+        return atl::shared_ptr<X64::IntValue>(new X64::IntValue(static_cast<int>('\n')));
+      default:
+        error("Unsupported Char Literal");
+        return atl::shared_ptr<X64::None>();
+    }
+  } else {
+    const char charVal = charStr[0];
+    return atl::shared_ptr<X64::IntValue>(new X64::IntValue(static_cast<int>(charVal)));
+  }
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassType &ct) {
   return atl::shared_ptr<X64::None>();
@@ -514,22 +530,25 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(SubscriptOp &so) {
     x64.call(so.operatorDecl.lock()->getSignature().mangle());
   
     x64.callerEpilogue();
+
+    return x64.rax;
   }
   else if (varType == "ArrayType" || varType == "PointerType") {
     // Get a pointer to the variable.
     const atl::shared_ptr<X64::Operand> this_ptr =  so.variable->accept(*this);
-    x64.mov(x64.rax, this_ptr);
+    x64.mov(x64.rax, this_ptr, "Pointer to " + so.variable->varIdentifier->toString());
     x64.push(x64.rax);
 
     // Get the index to offset.
     const atl::shared_ptr<X64::Operand> index = so.index->accept(*this);
     x64.pop(x64.rcx);
     x64.add(x64.rcx, index);
-    const atl::shared_ptr<X64::AddrOffset> valueAtIndex(new X64::AddrOffset(x64.rcx, 0));
-    x64.mov(x64.rax, valueAtIndex);
+    x64.mov(x64.rax, x64.rcx);
+    const atl::shared_ptr<X64::AddrOffset> valueAtIndex(new X64::AddrOffset(x64.rax, 0));
+    return valueAtIndex;
   }
 
-  return x64.rax;
+  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(TemplateDef &td) {
   return atl::shared_ptr<X64::None>();
@@ -582,7 +601,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
     x64.mov(x64.rax, valueOperand,
             "Move " + vdIdent + "'s value into temp register.");
     x64.mov(addrOffset(x64.rbp, vd.bpOffset), x64.rax,
-            "Move " + vdIdent + "'s temp register into its stack allocated space.");
+            "Move " + vdIdent + "'s value into its stack allocated space.");
   }
 
   return atl::shared_ptr<X64::AddrOffset>(new X64::AddrOffset(x64.rbp, vd.bpOffset));
