@@ -1,4 +1,5 @@
 void printf(const char *, const bool);
+void printf(const char *, const unsigned int);
 
 int main(int argc, const char **argv) {
   int one = 1;
