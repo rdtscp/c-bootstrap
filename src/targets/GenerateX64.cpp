@@ -162,6 +162,9 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
     x64.add(x64.rax, x64.rcx);
     break;
   }
+  case Op::SUB: {
+    x64.sub(x64.rax, x64.rcx);
+  }
   case Op::MUL: {
     x64.imul(x64.rax, x64.rcx);
     break;
