@@ -51,8 +51,10 @@ void GenerateX64::defSystemFunDecls() {
   atl::vector<atl::pair<atl::string, atl::string>> systemFunDecls = {
     { "FunDecl_malloc_int_", "_malloc"},
     { "FunDecl_printf_char_ptr__char_ptr_", "_printf"},
+    { "FunDecl_printf_char_ptr__bool_", "_printf" },
     { "FunDecl_printf_char_ptr__char_", "_printf" },
     { "FunDecl_printf_char_ptr__int_", "_printf" },
+    { "FunDecl_printf_char_ptr__unsigned_int_", "_printf" },
     { "FunDecl_printf_char_ptr_", "_printf" }
   };
 
