@@ -37,7 +37,7 @@ public:
   }
 
   /* Constructor */
-  string(const uint count, const char c) : m_size(count), m_value(new char[m_size + 1]) {
+  string(const uint count, const char c) : m_size(count), m_value(new char[m_size + 1u]) {
     for (uint idx = 0u; idx < m_size; ++idx) {
       m_value[idx] = c;
     }
@@ -45,7 +45,7 @@ public:
   }
 
   /* Constructor */
-  string(const char *string_literal) : m_size(char_buf_len(string_literal)), m_value(new char[m_size + 1]) {
+  string(const char *string_literal) : m_size(char_buf_len(string_literal)), m_value(new char[m_size + 1u]) {
     this->m_size = char_buf_len(string_literal);
     this->m_value = new char[m_size + 1u];
     for (uint idx = 0u; idx < m_size; ++idx) {
@@ -56,7 +56,7 @@ public:
   }
 
   /* Copy Constructor */
-  string(const string &rhs) : m_size(rhs.m_size), m_value(new char[m_size + 1]) {
+  string(const string &rhs) : m_size(rhs.m_size), m_value(new char[m_size + 1u]) {
     for (uint idx = 0u; idx < m_size; ++idx) {
       m_value[idx] = rhs[idx];
     }
