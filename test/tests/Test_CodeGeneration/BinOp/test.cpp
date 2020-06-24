@@ -20,7 +20,15 @@ int main(int argc, const char **argv) {
   // if (one < two) {
   //   printf("success\n", one < two);
   // }
-  if (test_assert("one < two == %d\n", one < two, true) == false) {
+
+  const bool true_val = true;
+  const bool false_val = !true_val;
+
+  if (false_val == true) {
+    return failure;
+  }
+
+  if (!test_assert("one < two == %d\n", one < two, true)) {
     return failure;
   }
 
