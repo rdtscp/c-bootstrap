@@ -39,34 +39,34 @@ int main(int argc, const char **argv) {
   if (!test_assert("three < one == %d\n", three < one, false)) {
     return failure;
   }
-  // if (!test_assert("three > two == %d\n", three > two, true)) {
-  //   return failure;
-  // }
-  // if (!test_assert("two > one == %d\n", two > one, true)) {
-  //   return failure;
-  // }
-  // if (!test_assert("one > three == %d\n", one > three, true)) {
-  //   return failure;
-  // }
-  // if (!test_assert("two >= one == %d\n", two >= one, true)) {
-  //   return failure;
-  // }
-  // if (!test_assert("two >= two == %d\n", two >= two, true)) {
-  //   return failure;
-  // }
-  // if (!test_assert("two >= three == %d\n", two >= three, true)) {
-  //   return failure;
-  // }
+  if (!test_assert("three > two == %d\n", three > two, true)) {
+    return failure;
+  }
+  if (!test_assert("two > one == %d\n", two > one, true)) {
+    return failure;
+  }
+  if (!test_assert("one > three == %d\n", one > three, false)) {
+    return failure;
+  }
+  if (!test_assert("two >= one == %d\n", two >= one, true)) {
+    return failure;
+  }
+  if (!test_assert("two >= two == %d\n", two >= two, true)) {
+    return failure;
+  }
+  if (!test_assert("two >= three == %d\n", two >= three, false)) {
+    return failure;
+  }
 
-  // if (!test_assert("two <= one == %d\n", two <= one, true)) {
-  //   return failure;
-  // }
-  // if (!test_assert("two <= two == %d\n", two <= two, true)) {
-  //   return failure;
-  // }
-  // if (!test_assert("two <= three == %d\n", two <= three, true)) {
-  //   return failure;
-  // }
+  if (!test_assert("two <= one == %d\n", two <= one, false)) {
+    return failure;
+  }
+  if (!test_assert("two <= two == %d\n", two <= two, true)) {
+    return failure;
+  }
+  if (!test_assert("two <= three == %d\n", two <= three, true)) {
+    return failure;
+  }
 
   // if (!test_assert("three mod two == %d\n", three % two, 1u)) {
   //   return failure;

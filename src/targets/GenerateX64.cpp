@@ -99,6 +99,9 @@ void GenerateX64::defSystemFunDecls() {
 
   // Define operator<
   defOperator("operator_lt", "jl");
+  defOperator("operator_le", "jle");
+  defOperator("operator_gt", "jg");
+  defOperator("operator_ge", "jge");
   defOperator("operator_eq", "je");
 }
 
@@ -225,6 +228,33 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
     x64.mov(paramRegs.pop_back(), x64.rcx);
     x64.mov(paramRegs.pop_back(), x64.rax);
     x64.call("operator_lt");
+    x64.callerEpilogue();
+    break;
+  }
+  case Op::LE: {
+    atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
+    x64.callerPrologue();
+    x64.mov(paramRegs.pop_back(), x64.rcx);
+    x64.mov(paramRegs.pop_back(), x64.rax);
+    x64.call("operator_le");
+    x64.callerEpilogue();
+    break;
+  }
+  case Op::GT: {
+    atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
+    x64.callerPrologue();
+    x64.mov(paramRegs.pop_back(), x64.rcx);
+    x64.mov(paramRegs.pop_back(), x64.rax);
+    x64.call("operator_gt");
+    x64.callerEpilogue();
+    break;
+  }
+  case Op::GE: {
+    atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
+    x64.callerPrologue();
+    x64.mov(paramRegs.pop_back(), x64.rcx);
+    x64.mov(paramRegs.pop_back(), x64.rax);
+    x64.call("operator_ge");
     x64.callerEpilogue();
     break;
   }
