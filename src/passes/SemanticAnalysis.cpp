@@ -629,6 +629,16 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Namespace &n) {
   currScope = n.outerScope.lock();
   return noType();
 }
+atl::shared_ptr<Type> SemanticAnalysis::visit(Not &n) {
+  const atl::shared_ptr<Type> notExprType = n.expr->accept(*this);
+  if (notExprType->astClass() != "BaseType") {
+    const atl::shared_ptr<BaseType> notExprBaseType = atl::static_pointer_cast<BaseType>(notExprType);
+    if (notExprBaseType->primitiveType != PrimitiveType::BOOL) {
+      return error("Name/Type Error", "Cannot negate a non-boolean type.", n.getptr());
+    }
+  }
+  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::BOOL));
+}
 atl::shared_ptr<Type> SemanticAnalysis::visit(Nullptr &n) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::NULLPTR_T));
 }

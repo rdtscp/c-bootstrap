@@ -1076,7 +1076,8 @@ atl::shared_ptr<Expr> Parser::parseUnaryExpr() {
   }
   if (accept(TC::NOT)) {
     expect(TC::NOT);
-    // TODO: Parse NOT Node.
+    const atl::shared_ptr<Expr> notExpr = parseObjExpr();
+    return createNode(new Not(notExpr));
   }
   if (accept(TC::STATIC_CAST)) {
     expect(TC::STATIC_CAST);

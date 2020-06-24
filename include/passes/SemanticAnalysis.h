@@ -61,6 +61,7 @@ private:
   atl::shared_ptr<Type> visit(MemberAccess &ma) override;
   atl::shared_ptr<Type> visit(MemberCall &mc) override;
   atl::shared_ptr<Type> visit(Namespace &n) override;
+  atl::shared_ptr<Type> visit(Not &n) override;
   atl::shared_ptr<Type> visit(Nullptr &n) override;
   atl::shared_ptr<Type> visit(ParenthExpr &pe) override;
   atl::shared_ptr<Type> visit(PointerType &pt) override;

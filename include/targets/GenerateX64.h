@@ -77,6 +77,7 @@ private:
   atl::shared_ptr<X64::Operand> visit(MemberAccess &ma) override;
   atl::shared_ptr<X64::Operand> visit(MemberCall &mc) override;
   atl::shared_ptr<X64::Operand> visit(Namespace &n) override;
+  atl::shared_ptr<X64::Operand> visit(Not &n) override;
   atl::shared_ptr<X64::Operand> visit(Nullptr &n) override;
   atl::shared_ptr<X64::Operand> visit(ParenthExpr &pe) override;
   atl::shared_ptr<X64::Operand> visit(PointerType &pt) override;

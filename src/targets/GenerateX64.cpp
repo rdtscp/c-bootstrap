@@ -512,6 +512,38 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Namespace &n) {
 
   return nullptr;
 }
+atl::shared_ptr<X64::Operand> GenerateX64::visit(Not &n) {
+  /* Calculate Names for Blocks */
+  const atl::string trueBlockName =
+      "ifTrueBlock" + atl::to_string(blockCount++);
+  const atl::string falseBlockName =
+      "ifFalseBlock" + atl::to_string(blockCount++);
+  const atl::string endBlockName = "ifEndBlock" + atl::to_string(blockCount++);
+
+  /* Calculate the boolean value of the not expression. */
+  const atl::shared_ptr<X64::Operand> exprRes = n.expr->accept(*this);
+  x64.mov(x64.rax, exprRes);
+
+  /* Branch to False block if False, else branch to True block. */
+  x64.cmp(x64.rax, atl::shared_ptr<X64::IntValue>(new X64::IntValue(0)));
+  x64.je(falseBlockName);
+  x64.jmp(trueBlockName);
+
+  /* Handle when the Case is True. */
+  x64.block(trueBlockName);
+  x64.mov(x64.rax, atl::shared_ptr<X64::IntValue>(new X64::IntValue(0)));
+  x64.jmp(endBlockName);
+
+  /* Handle when the Case is False. */
+  x64.block(falseBlockName);
+  x64.mov(x64.rax, atl::shared_ptr<X64::IntValue>(new X64::IntValue(1)));
+  x64.jmp(endBlockName);
+
+  /* Handle after the If statement. */
+  x64.block(endBlockName);
+
+  return x64.rax;
+}
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Nullptr &n) {
   return genIntValue(0);
 }

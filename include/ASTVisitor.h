@@ -32,6 +32,7 @@ class IntLiteral;
 class MemberAccess;
 class MemberCall;
 class Namespace;
+class Not;
 class Nullptr;
 class ParenthExpr;
 class PointerType;
@@ -88,6 +89,7 @@ public:
   virtual T visit(MemberAccess &ma) = 0;
   virtual T visit(MemberCall &mc) = 0;
   virtual T visit(Namespace &n) = 0;
+  virtual T visit(Not &n) = 0;
   virtual T visit(Nullptr &n) = 0;
   virtual T visit(ParenthExpr &pe) = 0;
   virtual T visit(PointerType &pt) = 0;
