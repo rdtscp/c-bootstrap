@@ -47,6 +47,30 @@ void GenerateX64::declareExternFuncs() {
   }
 }
 
+void GenerateX64::defOperator(const atl::string &op_name, const atl::string &inst) {
+  atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
+  x64.block("FunDecl_" + op_name);
+  x64.calleePrologue();
+
+  x64.comment(" ---- Function Body ----");
+  x64.mov(x64.rax, paramRegs.pop_back());
+  x64.mov(x64.rcx, paramRegs.pop_back());
+  x64.cmp(x64.rax, x64.rcx);
+  x64.write(inst + " " + op_name + "_true");
+  x64.jmp(op_name + "_false");
+
+  x64.block(op_name + "_true");
+  x64.mov(x64.rax, atl::shared_ptr<X64::IntValue>(new X64::IntValue(1)));
+  x64.jmp(op_name + "_exit");
+  x64.block(op_name + "_false");
+  x64.mov(x64.rax, atl::shared_ptr<X64::IntValue>(new X64::IntValue(0)));
+  x64.jmp(op_name + "_exit");
+  x64.comment(" -----------------------");
+  x64.block(op_name + "_exit");
+  x64.calleeEpilogue();
+  x64.ret();
+}
+
 void GenerateX64::defSystemFunDecls() {
   atl::vector<atl::pair<atl::string, atl::string>> systemFunDecls = {
     { "FunDecl_malloc_int_", "_malloc"},
@@ -61,9 +85,21 @@ void GenerateX64::defSystemFunDecls() {
   for (unsigned int i = 0u; i < systemFunDecls.size(); ++i) {
     const atl::pair<atl::string, atl::string> &systemFunDecl = systemFunDecls[i];
     x64.block(systemFunDecl.first);
+    x64.mov(x64.rax, x64.rsp);
+    x64.write("and rsp, -16");
+    x64.push(x64.rax);
+    x64.push(x64.rbp);
+    x64.mov(x64.rbp, x64.rsp);
     x64.write("call " + systemFunDecl.second);
+    x64.pop(x64.rbp);
+    x64.pop(x64.rcx);
+    x64.mov(x64.rsp, x64.rcx);
     x64.ret();
   }
+
+  // Define operator<
+  defOperator("operator_lt", "jl");
+  defOperator("operator_eq", "je");
 }
 
 void GenerateX64::mainEntry() {
@@ -158,7 +194,19 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
   x64.pop(x64.rcx, "Restore LHS from Stack into RCX.");
   x64.mov(x64.rax, rhsOperand, "Move RHS into RCX.");
 
-  /* Perform BinOp */
+  /* Check if this Op is Overloaded */
+  const atl::shared_ptr<FunDecl> opOverloadFun = bo.overload.lock();
+  if (opOverloadFun) {
+    atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
+    x64.callerPrologue();
+    x64.mov(paramRegs.pop_back(), x64.rcx);
+    x64.mov(paramRegs.pop_back(), x64.rax);
+    x64.call(opOverloadFun->getSignature().mangle());
+    x64.callerEpilogue();
+    return x64.rax;
+  }
+
+  /* Perform Regular BinOp */
   switch (bo.operation) {
   case Op::ADD: {
     x64.add(x64.rax, x64.rcx);
@@ -169,6 +217,24 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
   }
   case Op::MUL: {
     x64.imul(x64.rax, x64.rcx);
+    break;
+  }
+  case Op::LT: {
+    atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
+    x64.callerPrologue();
+    x64.mov(paramRegs.pop_back(), x64.rcx);
+    x64.mov(paramRegs.pop_back(), x64.rax);
+    x64.call("operator_lt");
+    x64.callerEpilogue();
+    break;
+  }
+  case Op::EQ: {
+    atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
+    x64.callerPrologue();
+    x64.mov(paramRegs.pop_back(), x64.rcx);
+    x64.mov(paramRegs.pop_back(), x64.rax);
+    x64.call("operator_eq");
+    x64.callerEpilogue();
     break;
   }
   default:
@@ -373,8 +439,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(If &i) {
   atl::shared_ptr<X64::Operand> condResReg = i.ifCondition->accept(*this);
 
   /* Branch to False block if False, else branch to True block. */
-  // x64.cmp(condResReg, 0);
-  x64.jeq(falseBlockName);
+  x64.cmp(condResReg, atl::shared_ptr<X64::IntValue>(new X64::IntValue(0)));
+  x64.je(falseBlockName);
   x64.jmp(trueBlockName);
 
   /* Handle when the Case is True. */
@@ -501,6 +567,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Return &r) {
     atl::shared_ptr<X64::Operand> rVal = r.returnExpr->accept(*this);
     x64.mov(x64.rax, rVal);
   }
+  x64.calleeEpilogue();
+  x64.ret();
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(SizeOf &so) {

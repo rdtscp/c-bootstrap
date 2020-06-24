@@ -116,10 +116,16 @@ void Writer::call(const atl::string &ident, const atl::string &comment) {
   write("call FunDecl_" + ident);
 }
 
-void Writer::cmp(const atl::shared_ptr<X64::Operand> &op, const int value,
+// void Writer::cmp(const atl::shared_ptr<X64::Operand> &op1, const int value,
+//                  const atl::string &comment) {
+//   write("cmp " + op1->toString() + ", " + atl::to_string(value));
+// }
+
+void Writer::cmp(const atl::shared_ptr<X64::Operand> &op1, const atl::shared_ptr<X64::Operand> &op2,
                  const atl::string &comment) {
-  write("cmp " + op->toString() + ", " + atl::to_string(value));
+  write("cmp " + op1->toString() + ", " + op2->toString());
 }
+
 
 void Writer::comment(const atl::string &comment) { write(";" + comment); }
 
@@ -133,8 +139,8 @@ void Writer::imul(const atl::shared_ptr<X64::Operand> &op1,
   write(output);
 }
 
-void Writer::jeq(const atl::string &label, const atl::string &comment) {
-  write("jeq " + label);
+void Writer::je(const atl::string &label, const atl::string &comment) {
+  write("je " + label);
 }
 
 void Writer::jmp(const atl::string &label, const atl::string &comment) {
@@ -249,6 +255,7 @@ void Writer::write(const atl::string &str) {
 /* Helpers */
 void Writer::calleePrologue() {
   comment(" ---- Callee Prologue ----");
+  // sub(rsp, 8);
   push(rbp);
   push(rbx);
   push(rdi);
@@ -264,6 +271,7 @@ void Writer::calleeEpilogue() {
   pop(rdi);
   pop(rbx);
   pop(rbp);
+  // add(rsp, atl::shared_ptr<X64::IntValue>(new X64::IntValue(8)));
   ret();
   comment(" -------------------------");
 }

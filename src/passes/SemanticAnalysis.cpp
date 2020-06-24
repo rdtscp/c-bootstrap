@@ -131,13 +131,17 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
     // Try resolve it.
     const atl::shared_ptr<FunDecl> opOverloadClassFunc =
         lhsClassTypeDef->resolveFunCall(opOverloadCallSignature);
-    if (opOverloadClassFunc)
+    if (opOverloadClassFunc) {
+      bo.overload = opOverloadClassFunc;
       return opOverloadClassFunc->funType;
+    }
 
     const atl::shared_ptr<FunDecl> opOverloadScopeFunc =
         currScope->findFunDecl(opOverloadCallSignature);
-    if (opOverloadScopeFunc)
+    if (opOverloadScopeFunc) {
+      bo.overload = opOverloadScopeFunc;
       return opOverloadScopeFunc->funType;
+    }
 
     return error("Type Analysis",
                  "No definition for " + opOverloadStr + "(" +
