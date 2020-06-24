@@ -14,7 +14,7 @@ int main(int argc, const char **argv) {
   const int failure = 1;
   int one = 1;
   int two = 2;
-  // int three = 3;
+  int three = 3;
   // int four = 4;
   // printf("one < two == %d\n", one < two);
   // if (one < two) {
@@ -32,46 +32,46 @@ int main(int argc, const char **argv) {
     return failure;
   }
 
-  // if (!test_assert("two < three == %d\n", two < three == true)) {
+  if (!test_assert("two < three == %d\n", two < three, true)) {
+    return failure;
+  }
+
+  if (!test_assert("three < one == %d\n", three < one, false)) {
+    return failure;
+  }
+  // if (!test_assert("three > two == %d\n", three > two, true)) {
+  //   return failure;
+  // }
+  // if (!test_assert("two > one == %d\n", two > one, true)) {
+  //   return failure;
+  // }
+  // if (!test_assert("one > three == %d\n", one > three, true)) {
+  //   return failure;
+  // }
+  // if (!test_assert("two >= one == %d\n", two >= one, true)) {
+  //   return failure;
+  // }
+  // if (!test_assert("two >= two == %d\n", two >= two, true)) {
+  //   return failure;
+  // }
+  // if (!test_assert("two >= three == %d\n", two >= three, true)) {
   //   return failure;
   // }
 
-  // if (!test_assert("three < one == %d\n", three < one == false)) {
+  // if (!test_assert("two <= one == %d\n", two <= one, true)) {
   //   return failure;
   // }
-  // if (!test_assert("three > two == %d\n", three > two == true)) {
+  // if (!test_assert("two <= two == %d\n", two <= two, true)) {
   //   return failure;
   // }
-  // if (!test_assert("two > one == %d\n", two > one == true)) {
-  //   return failure;
-  // }
-  // if (!test_assert("one > three == %d\n", one > three == false)) {
-  //   return failure;
-  // }
-  // if (!test_assert("two >= one == %d\n", two >= one == true)) {
-  //   return failure;
-  // }
-  // if (!test_assert("two >= two == %d\n", two >= two == true)) {
-  //   return failure;
-  // }
-  // if (!test_assert("two >= three == %d\n", two >= three == false)) {
+  // if (!test_assert("two <= three == %d\n", two <= three, true)) {
   //   return failure;
   // }
 
-  // if (!test_assert("two <= one == %d\n", two <= one == false)) {
+  // if (!test_assert("three mod two == %d\n", three % two, 1u)) {
   //   return failure;
   // }
-  // if (!test_assert("two <= two == %d\n", two <= two == true)) {
-  //   return failure;
-  // }
-  // if (!test_assert("two <= three == %d\n", two <= three == true)) {
-  //   return failure;
-  // }
-
-  // if (!test_assert("three mod two == %d\n", three % two == 1u)) {
-  //   return failure;
-  // }
-  // if (!test_assert("four mod two == %d\n", four % two == 0u)) {
+  // if (!test_assert("four mod two == %d\n", four % two, 0u)) {
   //   return failure;
   // }
 
