@@ -1,8 +1,24 @@
 void printf(const char *, const bool);
-// void printf(const char *, const int);
-// void printf(const char *, const unsigned int);
+void printf(const char *, const int);
+void printf(const char *, const unsigned int);
 
 bool test_assert(const char *log, const bool actual, const bool expect) {
+  printf(log, actual);
+  if (actual == expect) {
+    return true;
+  }
+  return false;
+}
+
+bool test_assert(const char *log, const int actual, const int expect) {
+  printf(log, actual);
+  if (actual == expect) {
+    return true;
+  }
+  return false;
+}
+
+bool test_assert(const char *log, const unsigned int actual, const unsigned int expect) {
   printf(log, actual);
   if (actual == expect) {
     return true;
@@ -15,11 +31,7 @@ int main(int argc, const char **argv) {
   int one = 1;
   int two = 2;
   int three = 3;
-  // int four = 4;
-  // printf("one < two == %d\n", one < two);
-  // if (one < two) {
-  //   printf("success\n", one < two);
-  // }
+  int four = 4;
 
   const bool true_val = true;
   const bool false_val = !true_val;
@@ -68,12 +80,19 @@ int main(int argc, const char **argv) {
     return failure;
   }
 
-  // if (!test_assert("three mod two == %d\n", three % two, 1u)) {
-  //   return failure;
-  // }
-  // if (!test_assert("four mod two == %d\n", four % two, 0u)) {
-  //   return failure;
-  // }
+  if (!test_assert("three mod two == %d\n", three % two, 1u)) {
+    return failure;
+  }
+
+  if (!test_assert("four mod two == %d\n", four % two, 0u)) {
+    return failure;
+  }
+
+  if (!test_assert("four - two == %d\n", four - two, 2)) {
+    return failure;
+  }
+
+  
 
   return 0;
 }

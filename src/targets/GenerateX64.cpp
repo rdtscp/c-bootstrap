@@ -216,7 +216,9 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
     break;
   }
   case Op::SUB: {
-    x64.sub(x64.rax, x64.rcx);
+    x64.sub(x64.rcx, x64.rax);
+    x64.mov(x64.rax, x64.rcx);
+    break;
   }
   case Op::MUL: {
     x64.imul(x64.rax, x64.rcx);
@@ -266,6 +268,16 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
     x64.call("operator_eq");
     x64.callerEpilogue();
     break;
+  }
+  case Op::MOD: {
+    // Swap rax and rcx
+    x64.push(x64.rax);
+    x64.mov(x64.rax, x64.rcx);
+    x64.pop(x64.rcx);
+
+    x64.mov(x64.rdx, atl::shared_ptr<X64::IntValue>(new X64::IntValue(0)));
+    x64.idiv(x64.rcx);
+    x64.mov(x64.rax, x64.rdx);
   }
   default:
     x64.comment("Not Implemented this BinOp Yet");
@@ -710,7 +722,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDecl &vd) {
       "B (16B Aligned) for VarDecl: " + vd.getIdentifier()->toString() +
       " @ [rbp" + atl::to_string(currBpOffset) + "]";
 
-  x64.sub(x64.rsp, bytesRequired, comment);
+  x64.sub(x64.rsp, atl::shared_ptr<X64::IntValue>(new X64::IntValue(bytesRequired)), comment);
   return atl::shared_ptr<X64::AddrOffset>(new X64::AddrOffset(x64.rbp, vd.bpOffset));
   // return atl::shared_ptr<X64::None>();
 }
@@ -724,7 +736,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
                               "B (16B Aligned) for VarDef: " + vdIdent +
                               " @ [rbp" + atl::to_string(currBpOffset) + "]";
 
-  x64.sub(x64.rsp, bytesRequired, comment);
+  x64.sub(x64.rsp, atl::shared_ptr<X64::IntValue>(new X64::IntValue(bytesRequired)), comment);
 
   const atl::shared_ptr<X64::Operand> valueOperand = vd.varValue->accept(*this);
 

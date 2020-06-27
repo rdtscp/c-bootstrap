@@ -129,6 +129,15 @@ void Writer::cmp(const atl::shared_ptr<X64::Operand> &op1, const atl::shared_ptr
 
 void Writer::comment(const atl::string &comment) { write(";" + comment); }
 
+void Writer::idiv(const atl::shared_ptr<X64::Register> &op, const atl::string &comment) {
+  atl::string assembly = "idiv " + op->toString();
+  if (comment != "")
+    assembly += "\t; " + comment;
+  
+  write(assembly);
+}
+
+
 void Writer::imul(const atl::shared_ptr<X64::Operand> &op1,
                   const atl::shared_ptr<X64::Operand> &op2,
                   const atl::string &comment) {
@@ -240,10 +249,13 @@ void Writer::string_literal(const atl::string &strName,
   write(strName + ":\tdb \"" + writtenValue + "\", 0");
 }
 
-void Writer::sub(const atl::shared_ptr<X64::Operand> &op, const int value,
+void Writer::sub(const atl::shared_ptr<X64::Operand> &dst, const atl::shared_ptr<X64::Operand> &src,
                  const atl::string &comment) {
-  write("sub " + op->toString() + ", " + atl::to_string(value) + "\t; " +
-        comment);
+  atl::string assembly = "sub " + dst->toString() + ", " + src->toString();
+  if (comment != "")
+    assembly += "\t; " + comment;
+
+  write(assembly);
 }
 
 void Writer::write(const atl::string &str) {

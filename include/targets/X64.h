@@ -133,6 +133,7 @@ public:
   void cmp(const atl::shared_ptr<X64::Operand> &op1, const atl::shared_ptr<X64::Operand> &op2,
            const atl::string &comment = "");
   void comment(const atl::string &comment);
+  void idiv(const atl::shared_ptr<X64::Register> &op, const atl::string &comment = "");
   void imul(const atl::shared_ptr<X64::Operand> &dst,
             const atl::shared_ptr<X64::Operand> &src,
             const atl::string &comment = "");
@@ -149,7 +150,7 @@ public:
             const atl::string &comment = "");
   void ret(const atl::string &comment = "");
   void string_literal(const atl::string &strName, const atl::string &strValue);
-  void sub(const atl::shared_ptr<X64::Operand> &reg, const int value,
+  void sub(const atl::shared_ptr<X64::Operand> &dst, const atl::shared_ptr<X64::Operand> &src,
            const atl::string &comment = "");
   void write(const atl::string &str);
 
