@@ -98,67 +98,91 @@ Writer::Writer(const atl::shared_ptr<SourceHandler> &output)
     x64Output(output) {
 }
 
-void Writer::add(const atl::shared_ptr<X64::Operand> &op1,
-                 const atl::shared_ptr<X64::Operand> &op2,
+void Writer::add(const atl::shared_ptr<X64::Operand> &dst,
+                 const atl::shared_ptr<X64::Operand> &src,
                  const atl::string &comment) {
-  atl::string output = "add " + op1->toString() + ", " + op2->toString() +
-                       "\t; rax = " + op1->toString() + " + " + op2->toString();
-  if (comment != "")
-    output += "\t; " + comment;
-  write(output);
-}
-
-void Writer::block(atl::string blockName, const atl::string &comment) {
-  write("\n" + blockName + ":" + "\t" + comment);
-}
-
-void Writer::call(const atl::string &ident, const atl::string &comment) {
-  write("call FunDecl_" + ident);
-}
-
-// void Writer::cmp(const atl::shared_ptr<X64::Operand> &op1, const int value,
-//                  const atl::string &comment) {
-//   write("cmp " + op1->toString() + ", " + atl::to_string(value));
-// }
-
-void Writer::cmp(const atl::shared_ptr<X64::Operand> &op1, const atl::shared_ptr<X64::Operand> &op2,
-                 const atl::string &comment) {
-  write("cmp " + op1->toString() + ", " + op2->toString());
-}
-
-
-void Writer::comment(const atl::string &comment) { write(";" + comment); }
-
-void Writer::idiv(const atl::shared_ptr<X64::Register> &op, const atl::string &comment) {
-  atl::string assembly = "idiv " + op->toString();
+  atl::string assembly = "add " + dst->toString() + ", " + src->toString();
   if (comment != "")
     assembly += "\t; " + comment;
-  
+
   write(assembly);
 }
 
+void Writer::block(const atl::string &blockName,
+                   const atl::string &comment) {
+  atl::string assembly = "\n" + blockName + ":";
+  if (comment != "")
+    assembly += "\t: " + comment;
+
+  write(assembly);
+}
+
+void Writer::call(const atl::string &ident,
+                  const atl::string &comment) {
+  atl::string assembly = "call FunDecl_" + ident;
+  if (comment != "")
+    assembly += "\t: " + comment;
+
+  write(assembly);
+}
+
+void Writer::cmp(const atl::shared_ptr<X64::Operand> &op1,
+                 const atl::shared_ptr<X64::Operand> &op2,
+                 const atl::string &comment) {
+  atl::string assembly = "cmp " + op1->toString() + ", " + op2->toString();
+  if (comment != "")
+    assembly += "\t: " + comment;
+
+  write(assembly);
+}
+
+void Writer::comment(const atl::string &comment) { write(";" + comment); }
+
+void Writer::idiv(const atl::shared_ptr<X64::Register> &op,
+                  const atl::string &comment) {
+  atl::string assembly = "idiv " + op->toString();
+  if (comment != "")
+    assembly += "\t; " + comment;
+
+  write(assembly);
+}
 
 void Writer::imul(const atl::shared_ptr<X64::Operand> &op1,
                   const atl::shared_ptr<X64::Operand> &op2,
                   const atl::string &comment) {
-  atl::string output = "imul " + op1->toString() + ", " + op2->toString() +
-                       "\t; eax = " + op1->toString() + " * " + op2->toString();
+  atl::string assembly = "imul " + op1->toString() + ", " + op2->toString();
   if (comment != "")
-    output += "\t; " + comment;
-  write(output);
+    assembly += "\t; " + comment;
+
+  write(assembly);
 }
 
-void Writer::je(const atl::string &label, const atl::string &comment) {
-  write("je " + label);
+void Writer::je(const atl::string &label,
+                const atl::string &comment) {
+  atl::string assembly = "je " + label;
+  if (comment != "")
+    assembly += "\t; " + comment;
+
+  write(assembly);
 }
 
-void Writer::jmp(const atl::string &label, const atl::string &comment) {
-  write("jmp " + label);
+void Writer::jmp(const atl::string &label,
+                 const atl::string &comment) {
+  atl::string assembly = "jmp " + label;
+  if (comment != "")
+    assembly += "\t; " + comment;
+
+  write(assembly);
 }
 
 void Writer::lea(const atl::shared_ptr<X64::Operand> &dst,
-                 const atl::shared_ptr<X64::Operand> &src) {
-  write("lea " + dst->toString() + ", " + "[rel " + src->toString() + "]");
+                 const atl::shared_ptr<X64::Operand> &src,
+                 const atl::string &comment) {
+  atl::string assembly = "lea " + dst->toString() + ", " + "[rel " + src->toString() + "]";
+  if (comment != "")
+    assembly += "\t; " + comment;
+
+  write(assembly);
 }
 
 void Writer::mov(const atl::shared_ptr<X64::Operand> &dst,
@@ -174,29 +198,38 @@ void Writer::mov(const atl::shared_ptr<X64::Operand> &dst,
   if (src->opType() == "GlobalVariable")
     srcStr = "[" + srcStr + "]";
 
-  atl::string output = "mov " + dstStr + ", " + srcStr;
+  atl::string assembly = "mov " + dstStr + ", " + srcStr;
   if (comment != "")
-    output += "\t; " + comment;
-  write(output);
+    assembly += "\t; " + comment;
+
+  write(assembly);
 }
 
 void Writer::pop(const atl::shared_ptr<X64::Operand> &op,
                  const atl::string &comment) {
-  atl::string output = "pop " + op->toString();
+  atl::string assembly = "pop " + op->toString();
   if (comment != "")
-    output += "\t; " + comment;
-  write(output);
+    assembly += "\t; " + comment;
+
+  write(assembly);
 }
 
 void Writer::push(const atl::shared_ptr<X64::Operand> &op,
                   const atl::string &comment) {
-  atl::string output = "push " + op->toString();
+  atl::string assembly = "push " + op->toString();
   if (comment != "")
-    output += "\t; " + comment;
-  write(output);
+    assembly += "\t; " + comment;
+
+  write(assembly);
 }
 
-void Writer::ret(const atl::string &comment) { write("ret"); }
+void Writer::ret(const atl::string &comment) {
+  atl::string assembly = "ret";
+  if (comment != "")
+    assembly += "\t; " + comment;
+
+  write(assembly);
+}
 
 void Writer::string_literal(const atl::string &strName,
                             const atl::string &strValue) {
@@ -249,7 +282,8 @@ void Writer::string_literal(const atl::string &strName,
   write(strName + ":\tdb \"" + writtenValue + "\", 0");
 }
 
-void Writer::sub(const atl::shared_ptr<X64::Operand> &dst, const atl::shared_ptr<X64::Operand> &src,
+void Writer::sub(const atl::shared_ptr<X64::Operand> &dst,
+                 const atl::shared_ptr<X64::Operand> &src,
                  const atl::string &comment) {
   atl::string assembly = "sub " + dst->toString() + ", " + src->toString();
   if (comment != "")

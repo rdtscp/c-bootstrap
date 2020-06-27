@@ -123,24 +123,29 @@ public:
   ~Writer() = default;
 
   /* Instructions */
-  void add(const atl::shared_ptr<X64::Operand> &op1,
+  void add(const atl::shared_ptr<X64::Operand> &dst,
+           const atl::shared_ptr<X64::Operand> &src,
+           const atl::string &comment = "");
+  void block(const atl::string &blockName,
+             const atl::string &comment = "");
+  void call(const atl::string &ident,
+            const atl::string &comment = "");
+  void cmp(const atl::shared_ptr<X64::Operand> &op1,
            const atl::shared_ptr<X64::Operand> &op2,
            const atl::string &comment = "");
-  void block(atl::string blockName, const atl::string &comment = "");
-  void call(const atl::string &ident, const atl::string &comment = "");
-  // void cmp(const atl::shared_ptr<X64::Operand> &op1, const int value,
-  //          const atl::string &comment = "");
-  void cmp(const atl::shared_ptr<X64::Operand> &op1, const atl::shared_ptr<X64::Operand> &op2,
-           const atl::string &comment = "");
   void comment(const atl::string &comment);
-  void idiv(const atl::shared_ptr<X64::Register> &op, const atl::string &comment = "");
+  void idiv(const atl::shared_ptr<X64::Register> &op,
+            const atl::string &comment = "");
   void imul(const atl::shared_ptr<X64::Operand> &dst,
             const atl::shared_ptr<X64::Operand> &src,
             const atl::string &comment = "");
-  void je(const atl::string &label, const atl::string &comment = "");
-  void jmp(const atl::string &label, const atl::string &comment = "");
+  void je(const atl::string &label,
+          const atl::string &comment = "");
+  void jmp(const atl::string &label,
+           const atl::string &comment = "");
   void lea(const atl::shared_ptr<X64::Operand> &dst,
-           const atl::shared_ptr<X64::Operand> &src);
+           const atl::shared_ptr<X64::Operand> &src,
+           const atl::string &comment = "");
   void mov(const atl::shared_ptr<X64::Operand> &dst,
            const atl::shared_ptr<X64::Operand> &src,
            const atl::string &comment = "");
@@ -149,9 +154,12 @@ public:
   void push(const atl::shared_ptr<X64::Operand> &op,
             const atl::string &comment = "");
   void ret(const atl::string &comment = "");
-  void string_literal(const atl::string &strName, const atl::string &strValue);
-  void sub(const atl::shared_ptr<X64::Operand> &dst, const atl::shared_ptr<X64::Operand> &src,
+  void string_literal(const atl::string &strName,
+                      const atl::string &strValue);
+  void sub(const atl::shared_ptr<X64::Operand> &dst,
+           const atl::shared_ptr<X64::Operand> &src,
            const atl::string &comment = "");
+
   void write(const atl::string &str);
 
   /* Helpers */
