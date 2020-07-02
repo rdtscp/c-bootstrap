@@ -103,6 +103,7 @@ void GenerateX64::defSystemFunDecls() {
   defOperator("operator_gt", "jg");
   defOperator("operator_ge", "jge");
   defOperator("operator_eq", "je");
+  defOperator("operator_ne", "jne");
 }
 
 void GenerateX64::mainEntry() {
@@ -269,6 +270,15 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
     x64.callerEpilogue();
     break;
   }
+  case Op::NE: {
+    atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
+    x64.callerPrologue();
+    x64.mov(paramRegs.pop_back(), x64.rcx);
+    x64.mov(paramRegs.pop_back(), x64.rax);
+    x64.call("operator_ne");
+    x64.callerEpilogue();
+    break;
+  }
   case Op::MOD: {
     // Swap rax and rcx
     x64.push(x64.rax);
@@ -326,6 +336,19 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassTypeDecl &ctd) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassTypeDef &ctd) {
+  // Tell the members their byte offset into the class.
+  unsigned int objByteOffset = 0u;
+  for (unsigned int idx = 0u; idx < ctd.classDecls.size(); ++idx) {
+    atl::shared_ptr<Decl> currDecl = ctd.classDecls[idx];
+    if (currDecl->astClass() != "VarDecl" || currDecl->astClass() != "VarDef") {
+      continue;
+    }
+    atl::shared_ptr<VarDecl> currMember = atl::static_pointer_cast<VarDecl>(currDecl);
+    currMember->bpOffset = objByteOffset;
+    objByteOffset += currMember->getBytes();
+  }
+
+  // Generate code for methods.
   for (unsigned int idx = 0u; idx < ctd.classDecls.size(); ++idx) {
     const atl::shared_ptr<Decl> currDecl = ctd.classDecls[idx];
     if (currDecl->astClass() == "VarDecl" || currDecl->astClass() == "VarDef") {
@@ -508,7 +531,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberAccess &ma) {
   const atl::shared_ptr<X64::Operand> objAddr = ma.object->accept(*this);
   const atl::shared_ptr<ClassTypeDef> objClassTypeDef = ma.objectTypeDef.lock();
   const atl::vector<atl::shared_ptr<Decl>> classDecls = objClassTypeDef->classDecls;
-  unsigned int objByteOffset = 0u;
+  atl::shared_ptr<VarDecl> memberDecl;
   for (unsigned int i = 0u; i < classDecls.size(); ++i) {
     const atl::shared_ptr<Decl> currDecl = classDecls[i];
     if (currDecl->astClass() != "VarDecl" && currDecl->astClass() != "VarDef") {
@@ -516,10 +539,12 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberAccess &ma) {
     }
     const atl::shared_ptr<VarDecl> currMember = atl::static_pointer_cast<VarDecl>(currDecl);
     if (currMember == ma.fieldVariable->varDecl.lock()) {
+      memberDecl = currMember;
       break;
     }
-    objByteOffset += currMember->getBytes();
   }
+
+  const unsigned int objByteOffset = memberDecl->bpOffset;
 
   return atl::shared_ptr<X64::AddrOffset>(new X64::AddrOffset(objAddr, objByteOffset));
 }
@@ -596,7 +621,26 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(PointerType &pt) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(PrefixOp &po) {
-  // TODO
+  /* Get the value for the prefix-ops expression. */
+  atl::shared_ptr<X64::Operand> varReg = po.variable->accept(*this);
+  x64.mov(x64.rax, varReg);
+  switch (po.operation) {
+  case PrefixOp::Op::INC: {
+    x64.add(x64.rax, atl::shared_ptr<X64::IntValue>(new X64::IntValue(1)));
+    break;
+  }
+  case PrefixOp::Op::DEC: {
+    x64.sub(x64.rax, atl::shared_ptr<X64::IntValue>(new X64::IntValue(1)));
+    break;
+  }
+  default:
+    x64.comment("Not Implemented this PrefixOp Yet");
+    break;
+  }
+
+
+  x64.mov(po.variable->accept(*this), x64.rax);
+
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Program &p) {
@@ -760,8 +804,24 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarExpr &ve) {
   return addrOffset(x64.rbp, varDecl->bpOffset);
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(While &w) {
-  w.condition->accept(*this);
+  const atl::string whileCondition = "whileCond" + atl::to_string(blockCount++);
+  const atl::string whileStart = "whileStart" + atl::to_string(blockCount++);
+  const atl::string whileEnd = "whileEnd" + atl::to_string(blockCount++);
+  
+  /* Create Condition Block */
+  x64.block(whileCondition);
+  const atl::shared_ptr<X64::Operand> condRes = w.condition->accept(*this);
+  x64.mov(x64.rax, condRes);
+  x64.mov(x64.rcx, atl::shared_ptr<X64::IntValue>(new X64::IntValue(1)));
+  x64.cmp(x64.rax, x64.rcx);
+  x64.write("je " + whileStart);
+  x64.jmp(whileEnd);
+
+  x64.block(whileStart);
   w.body->accept(*this);
+  x64.jmp(whileCondition);
+
+  x64.block(whileEnd);
   return atl::shared_ptr<X64::None>();
 }
 
