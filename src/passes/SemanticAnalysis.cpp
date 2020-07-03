@@ -8,6 +8,12 @@ using namespace ACC;
 SemanticAnalysis::SemanticAnalysis(atl::shared_ptr<Program> progAST)
     : progAST(progAST) {}
 
+SemanticAnalysis::~SemanticAnalysis() {
+  if (errorCount != 0) {
+    printErrors();
+  }
+}
+
 atl::shared_ptr<Type>
 SemanticAnalysis::error(const atl::string &errorType, const atl::string &error,
                         const atl::shared_ptr<ASTNode> &node) {
@@ -319,8 +325,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorDef &cd) {
   for (unsigned int idx = 0; idx < cd.constructorParams.size(); ++idx)
     cd.constructorParams[idx]->accept(*this);
 
-  for (unsigned int idx = 0; idx < cd.initialiserList.size(); ++idx)
+  for (unsigned int idx = 0; idx < cd.initialiserList.size(); ++idx) {
     cd.initialiserList[idx]->accept(*this);
+    atl::shared_ptr<VarExpr> memberExpr =  atl::static_pointer_cast<VarExpr>(cd.initialiserList[idx]->lhs);
+  }
 
   cd.constructorBlock->accept(*this);
 
