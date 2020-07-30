@@ -95,20 +95,19 @@ public:
   atl::shared_ptr<Register> rsp;
   atl::shared_ptr<Register> rbp;
 
-
-  atl::shared_ptr<Register> tempReg() const {
-    return rax;
-  }
+  atl::shared_ptr<Register> tempReg() const { return rax; }
 
   atl::stack<atl::shared_ptr<Register>> paramRegs() const {
     return m_paramRegs;
   }
-
 };
 
 class Writer final {
 public:
   atl::shared_ptr<Register> rax;
+  atl::shared_ptr<Register> eax;
+  atl::shared_ptr<Register> ax;
+  atl::shared_ptr<Register> al;
   atl::shared_ptr<Register> rbx;
   atl::shared_ptr<Register> rcx;
   atl::shared_ptr<Register> rdx;
@@ -126,10 +125,8 @@ public:
   void add(const atl::shared_ptr<X64::Operand> &dst,
            const atl::shared_ptr<X64::Operand> &src,
            const atl::string &comment = "");
-  void block(const atl::string &blockName,
-             const atl::string &comment = "");
-  void call(const atl::string &ident,
-            const atl::string &comment = "");
+  void block(const atl::string &blockName, const atl::string &comment = "");
+  void call(const atl::string &ident, const atl::string &comment = "");
   void cmp(const atl::shared_ptr<X64::Operand> &op1,
            const atl::shared_ptr<X64::Operand> &op2,
            const atl::string &comment = "");
@@ -139,10 +136,8 @@ public:
   void imul(const atl::shared_ptr<X64::Operand> &dst,
             const atl::shared_ptr<X64::Operand> &src,
             const atl::string &comment = "");
-  void je(const atl::string &label,
-          const atl::string &comment = "");
-  void jmp(const atl::string &label,
-           const atl::string &comment = "");
+  void je(const atl::string &label, const atl::string &comment = "");
+  void jmp(const atl::string &label, const atl::string &comment = "");
   void lea(const atl::shared_ptr<X64::Operand> &dst,
            const atl::shared_ptr<X64::Operand> &src,
            const atl::string &comment = "");
@@ -154,8 +149,7 @@ public:
   void push(const atl::shared_ptr<X64::Operand> &op,
             const atl::string &comment = "");
   void ret(const atl::string &comment = "");
-  void string_literal(const atl::string &strName,
-                      const atl::string &strValue);
+  void string_literal(const atl::string &strName, const atl::string &strValue);
   void sub(const atl::shared_ptr<X64::Operand> &dst,
            const atl::shared_ptr<X64::Operand> &src,
            const atl::string &comment = "");

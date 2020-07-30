@@ -4,8 +4,8 @@
 
 #include "AST.h"
 #include "ASTVisitor.h"
-#include "targets/X64.h"
 #include "SourceHandler.h"
+#include "targets/X64.h"
 
 namespace ACC {
 
@@ -100,8 +100,11 @@ private:
   atl::shared_ptr<X64::Operand> visit(While &w) override;
 
   /* ---- Helpers ---- */
-  atl::shared_ptr<X64::AddrOffset> addrOffset(const atl::shared_ptr<X64::Operand> addrOperand, const int offset);
+  atl::shared_ptr<X64::AddrOffset>
+  addrOffset(const atl::shared_ptr<X64::Operand> addrOperand, const int offset);
   atl::shared_ptr<X64::IntValue> genIntValue(int value);
   int roundTo16Bytes(int bytes) const;
+  atl::shared_ptr<X64::Register>
+  getRegisterForType(const PrimitiveType &type) const;
 };
 } // namespace ACC

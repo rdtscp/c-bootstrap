@@ -17,7 +17,8 @@ atl::string AddrOffset::toString() const {
   int byteOffset = offset;
   atl::shared_ptr<X64::Operand> addressOp = addrOperand;
   while (addressOp->opType() == "AddrOffset") {
-    atl::shared_ptr<X64::AddrOffset> addrOffset = atl::static_pointer_cast<AddrOffset>(addressOp);
+    atl::shared_ptr<X64::AddrOffset> addrOffset =
+        atl::static_pointer_cast<AddrOffset>(addressOp);
     byteOffset += addrOffset->offset;
     addressOp = addrOffset->addrOperand;
   }
@@ -87,16 +88,13 @@ atl::string StringLiteral::toString() const { return strName; }
 /* ---- X64::Writer ---- */
 
 Writer::Writer(const atl::shared_ptr<SourceHandler> &output)
-  : rax(new Register(32, "rax")),
-    rbx(new Register(32, "rbx")),
-    rcx(new Register(32, "rcx")),
-    rdx(new Register(32, "rdx")),
-    rsi(new Register(32, "rsi")),
-    rdi(new Register(32, "rdi")),
-    rsp(new Register(32, "rsp")),
-    rbp(new Register(32, "rbp")),
-    x64Output(output) {
-}
+    : rax(new Register(64, "rax")), eax(new Register(32, "eax")),
+      ax(new Register(16, "ax")), al(new Register(8, "al")),
+
+      rbx(new Register(64, "rbx")), rcx(new Register(64, "rcx")),
+      rdx(new Register(64, "rdx")), rsi(new Register(64, "rsi")),
+      rdi(new Register(64, "rdi")), rsp(new Register(64, "rsp")),
+      rbp(new Register(64, "rbp")), x64Output(output) {}
 
 void Writer::add(const atl::shared_ptr<X64::Operand> &dst,
                  const atl::shared_ptr<X64::Operand> &src,
@@ -108,8 +106,7 @@ void Writer::add(const atl::shared_ptr<X64::Operand> &dst,
   write(assembly);
 }
 
-void Writer::block(const atl::string &blockName,
-                   const atl::string &comment) {
+void Writer::block(const atl::string &blockName, const atl::string &comment) {
   atl::string assembly = "\n" + blockName + ":";
   if (comment != "")
     assembly += "\t: " + comment;
@@ -117,8 +114,7 @@ void Writer::block(const atl::string &blockName,
   write(assembly);
 }
 
-void Writer::call(const atl::string &ident,
-                  const atl::string &comment) {
+void Writer::call(const atl::string &ident, const atl::string &comment) {
   atl::string assembly = "call FunDecl_" + ident;
   if (comment != "")
     assembly += "\t: " + comment;
@@ -157,8 +153,7 @@ void Writer::imul(const atl::shared_ptr<X64::Operand> &op1,
   write(assembly);
 }
 
-void Writer::je(const atl::string &label,
-                const atl::string &comment) {
+void Writer::je(const atl::string &label, const atl::string &comment) {
   atl::string assembly = "je " + label;
   if (comment != "")
     assembly += "\t; " + comment;
@@ -166,8 +161,7 @@ void Writer::je(const atl::string &label,
   write(assembly);
 }
 
-void Writer::jmp(const atl::string &label,
-                 const atl::string &comment) {
+void Writer::jmp(const atl::string &label, const atl::string &comment) {
   atl::string assembly = "jmp " + label;
   if (comment != "")
     assembly += "\t; " + comment;
@@ -178,7 +172,8 @@ void Writer::jmp(const atl::string &label,
 void Writer::lea(const atl::shared_ptr<X64::Operand> &dst,
                  const atl::shared_ptr<X64::Operand> &src,
                  const atl::string &comment) {
-  atl::string assembly = "lea " + dst->toString() + ", " + "[rel " + src->toString() + "]";
+  atl::string assembly =
+      "lea " + dst->toString() + ", " + "[rel " + src->toString() + "]";
   if (comment != "")
     assembly += "\t; " + comment;
 
@@ -297,7 +292,6 @@ void Writer::write(const atl::string &str) {
   x64Output->write(str + "\n");
 }
 
-
 /* Helpers */
 void Writer::calleePrologue() {
   comment(" ---- Callee Prologue ----");
@@ -340,9 +334,7 @@ void Writer::callerEpilogue() {
   comment(" -------------------------");
 }
 
-atl::shared_ptr<Register> Writer::getTempReg() const {
-  return rax;
-}
+atl::shared_ptr<Register> Writer::getTempReg() const { return rax; }
 
 atl::stack<atl::shared_ptr<Register>> Writer::paramRegs() const {
   atl::stack<atl::shared_ptr<Register>> output;

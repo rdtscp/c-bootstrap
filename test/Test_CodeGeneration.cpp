@@ -59,6 +59,27 @@ TEST(Test_CodeGeneration, BinOp) {
   ASSERT_EQ(system(binary.c_str()), 0);
 }
 
+TEST(Test_CodeGeneration, ClassPointer) {
+  const atl::string filepath = test_prefix + "ClassPointer/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+
+  GenerateX64 x64Generator(progAST);
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name = test_prefix + "ClassPointer/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  const atl::string binary = linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary.c_str()), 0);
+}
+
 TEST(Test_CodeGeneration, Dereference) {
   const atl::string filepath = test_prefix + "Dereference/test.cpp";
   const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
@@ -101,6 +122,29 @@ TEST(Test_CodeGeneration, FunCall) {
   ASSERT_EQ(system(binary.c_str()), 0);
 }
 
+TEST(Test_CodeGeneration, InitialiserListConstruction) {
+  const atl::string filepath =
+      test_prefix + "InitialiserListConstruction/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+
+  GenerateX64 x64Generator(progAST);
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name =
+      test_prefix + "InitialiserListConstruction/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  const atl::string binary = linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary.c_str()), 0);
+}
+
 TEST(Test_CodeGeneration, MemberAccesses) {
   const atl::string filepath = test_prefix + "MemberAccesses/test.cpp";
   const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
@@ -138,6 +182,27 @@ TEST(Test_CodeGeneration, MemberCall) {
   GenerateX64 x64Generator(progAST);
   const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
   const atl::string binary_name = test_prefix + "MemberCall/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  const atl::string binary = linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary.c_str()), 0);
+}
+
+TEST(Test_CodeGeneration, PointerLooping) {
+  const atl::string filepath = test_prefix + "PointerLooping/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+
+  GenerateX64 x64Generator(progAST);
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name = test_prefix + "PointerLooping/binary";
   LinkerBuilder linkAndBuilder(assembly, binary_name);
   const atl::string binary = linkAndBuilder.linkAndBuild();
   ASSERT_EQ(system(binary.c_str()), 0);
