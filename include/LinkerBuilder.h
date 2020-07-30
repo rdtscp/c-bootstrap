@@ -11,30 +11,32 @@ namespace ACC {
 class LinkerBuilder final {
 
 public:
-  LinkerBuilder(const atl::shared_ptr<SourceHandler> &assembly, const atl::string &outFilename)
-    : m_assembly(assembly),
-      m_outFilename(outFilename) {}
+  LinkerBuilder(const atl::shared_ptr<SourceHandler> &assembly,
+                const atl::string &outFilename)
+      : m_assembly(assembly), m_outFilename(outFilename) {}
 
   atl::string linkAndBuild() {
     const atl::string temp_s_filename = "temp.s";
     createTempAssemblyFile(temp_s_filename);
 
-    const atl::string nasm_cmd = "nasm -f macho64 " + temp_s_filename;
+    const atl::string nasm_cmd = "nasm -g -f macho64  " + temp_s_filename;
     const int nasm_status = system(nasm_cmd.c_str());
     if (nasm_status != 0) {
       printf("Nasm Failed\n");
       throw;
     }
-    #ifdef __APPLE__
-      const atl::string ld_cmd = "ld -no_pie -macosx_version_min 10.15 -lSystem -o " + m_outFilename + " temp.o";
-      const int ld_status = system(ld_cmd.c_str());
-      if (ld_status != 0) {
-        printf("ld Failed: `%s`\n", ld_cmd.c_str());
-        throw;
-      }
-    #else
-      m_outFilename = "echo \"Cannot link and build on this platform\"";
-    #endif
+#ifdef __APPLE__
+    const atl::string ld_cmd =
+        "ld -no_pie -macosx_version_min 10.15 -lSystem -o " + m_outFilename +
+        " temp.o";
+    const int ld_status = system(ld_cmd.c_str());
+    if (ld_status != 0) {
+      printf("ld Failed: `%s`\n", ld_cmd.c_str());
+      throw;
+    }
+#else
+    m_outFilename = "echo \"Cannot link and build on this platform\"";
+#endif
 
     return m_outFilename;
   }
@@ -46,7 +48,8 @@ private:
   void createTempAssemblyFile(const atl::string &temp_s_filename) {
     atl::ofstream temp_s(temp_s_filename);
     if (!temp_s.good()) {
-      const atl::string error = "Unable to create `" + temp_s_filename + "` file." ;
+      const atl::string error =
+          "Unable to create `" + temp_s_filename + "` file.";
       printf("%s\n", error.c_str());
       throw;
     }

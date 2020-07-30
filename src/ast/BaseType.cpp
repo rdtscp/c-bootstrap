@@ -83,4 +83,3 @@ bool BaseType::operator==(Type &rhs) const {
   }
 }
 bool BaseType::operator!=(Type &t) const { return !(*this == t); }
-
