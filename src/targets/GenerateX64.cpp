@@ -916,4 +916,6 @@ GenerateX64::getRegisterForType(const PrimitiveType &type) const {
   case PrimitiveType::VOID:
     return x64.rax;
   }
+  printf("FATAL ERROR: Unknown PrimitiveType\n");
+  throw;
 }
