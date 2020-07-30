@@ -11,6 +11,7 @@ public:
 
 int main(int argc, char **argv) {
   Base obj;
+  printf("Created obj for: %d\n", 13);
   obj.m_size = 13;
   printf("Hello: %d\n", obj.get_size());
   const int size = obj.get_size();
