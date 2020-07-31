@@ -1,6 +1,7 @@
 #include "ast/ClassTypeDef.h"
 #include "ast/ClassType.h"
 #include "ast/ConstructorDef.h"
+#include "ast/DestructorDef.h"
 #include "ast/FunDef.h"
 #include "ast/FunSignature.h"
 #include "ast/PointerType.h"
@@ -22,16 +23,27 @@ ClassTypeDef::ClassTypeDef(
           atl::static_pointer_cast<ConstructorDecl>(currDecl);
 
       // Create the this param.
-      atl::shared_ptr<VarDecl> thisParam = createThisParam(ctorDecl->Decl::position);
+      atl::shared_ptr<VarDecl> thisParam =
+          createThisParam(ctorDecl->Decl::position);
       ctorDecl->constructorParams.push_front(thisParam);
     }
-    if (currDecl->astClass() == "FunDecl" ||
-        currDecl->astClass() == "FunDef") {
+    if (currDecl->astClass() == "DestructorDecl" ||
+        currDecl->astClass() == "DestructorDef") {
+      atl::shared_ptr<DestructorDecl> dtorDecl =
+          atl::static_pointer_cast<DestructorDecl>(currDecl);
+
+      atl::shared_ptr<VarDecl> thisParam =
+          createThisParam(dtorDecl->Decl::position);
+      dtorDecl->thisParam = thisParam;
+    }
+    if (currDecl->astClass() == "FunDecl" || currDecl->astClass() == "FunDef") {
       // Create a new ConstructorDecl as a copy of the original.
-      atl::shared_ptr<FunDecl> funDecl = atl::static_pointer_cast<FunDecl>(currDecl);
+      atl::shared_ptr<FunDecl> funDecl =
+          atl::static_pointer_cast<FunDecl>(currDecl);
       if (!funDecl->funModifiers.find(FunDecl::FunModifiers::STATIC)) {
         // Create the this param.
-        atl::shared_ptr<VarDecl> thisParam = createThisParam(funDecl->Decl::position);
+        atl::shared_ptr<VarDecl> thisParam =
+            createThisParam(funDecl->Decl::position);
         if (funDecl->funModifiers.find(FunDecl::FunModifiers::CONST)) {
           thisParam->type->typeModifiers.insert(Type::Modifiers::CONST);
         }
@@ -284,7 +296,8 @@ ClassTypeDef::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
   return nullptr;
 }
 
-atl::shared_ptr<VarDecl> ClassTypeDef::createThisParam(const Position &thisPosition) const {
+atl::shared_ptr<VarDecl>
+ClassTypeDef::createThisParam(const Position &thisPosition) const {
   const atl::shared_ptr<ClassType> classType(new ClassType(classIdentifier));
   classType->position = thisPosition;
   const atl::shared_ptr<PointerType> thisType(new PointerType(classType));

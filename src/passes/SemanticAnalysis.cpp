@@ -348,10 +348,24 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Deletion &d) {
   return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(DestructorDecl &dd) {
+  dd.outerScope = currScope;
+  currScope = dd.getptr();
+
+  dd.thisParam->accept(*this);
+
+  currScope = dd.outerScope.lock();
+
   return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(DestructorDef &dd) {
+  dd.outerScope = currScope;
+  currScope = dd.getptr();
+
+  dd.thisParam->accept(*this);
+
   dd.destructorBlock->accept(*this);
+
+  currScope = dd.outerScope.lock();
 
   return noType();
 }

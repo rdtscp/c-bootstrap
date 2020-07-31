@@ -1,7 +1,7 @@
 #include "atl/include/string.h"
 
-#include "gtest/gtest.h"
 #include "TestPath.h"
+#include "gtest/gtest.h"
 
 #include "Error.h"
 #include "Lexer.h"
@@ -14,7 +14,6 @@
 using namespace ACC;
 
 const atl::string test_prefix = test_root + "Test_ASTAnalysis/";
-
 
 // TODO: Test accessing namespace'd classes.
 
@@ -99,7 +98,8 @@ TEST(Test_ASTAnalysis, ClassCallsItsOwnCtor) {
 }
 
 TEST(Test_ASTAnalysis, ClassCallsItsOwnCtorNamespaced) {
-  const atl::string filepath = test_prefix + "ClassCallsItsOwnCtorNamespaced/test.cpp";
+  const atl::string filepath =
+      test_prefix + "ClassCallsItsOwnCtorNamespaced/test.cpp";
   const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
@@ -116,13 +116,30 @@ TEST(Test_ASTAnalysis, ClassCallsItsOwnCtorNamespaced) {
     const atl::string &primary_error = semanticAnalysis.errors[0];
     const int newline_idx = primary_error.find('\t');
     ASSERT_NE(newline_idx, -1);
-    const atl::string reason = &(primary_error.c_str()[newline_idx+1]);
-    ASSERT_EQ(reason, "Attempted to use a Class that was not declared: atl::string");
+    const atl::string reason = &(primary_error.c_str()[newline_idx + 1]);
+    ASSERT_EQ(reason,
+              "Attempted to use a Class that was not declared: atl::string");
   }
 }
 
 TEST(Test_ASTAnalysis, ClassCallsStatic) {
   const atl::string filepath = test_prefix + "ClassCallsStatic/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis semanticAnalysis(progAST);
+  semanticAnalysis.run();
+  semanticAnalysis.printErrors();
+  ASSERT_EQ(0, semanticAnalysis.errorCount);
+}
+
+TEST(Test_ASTAnalysis, DestructorMembers) {
+  const atl::string filepath = test_prefix + "DestructorMembers/test.cpp";
   const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
