@@ -295,22 +295,26 @@ void Writer::write(const atl::string &str) {
 /* Helpers */
 void Writer::calleePrologue() {
   comment(" ---- Callee Prologue ----");
+  indent();
   // sub(rsp, 8);
   push(rbp);
   push(rbx);
   push(rdi);
   push(rsi);
   mov(rbp, rsp);
+  unindent();
   comment(" -------------------------");
 }
 
 void Writer::calleeEpilogue() {
   comment(" ---- Callee Epilogue ----");
+  indent();
   mov(rsp, rbp);
   pop(rsi);
   pop(rdi);
   pop(rbx);
   pop(rbp);
+  unindent();
   // add(rsp, atl::shared_ptr<X64::IntValue>(new X64::IntValue(8)));
   ret();
   comment(" -------------------------");
@@ -318,20 +322,34 @@ void Writer::calleeEpilogue() {
 
 void Writer::callerPrologue() {
   comment(" ---- Caller Prologue ----");
+  indent();
   push(rdi);
   push(rsi);
   push(rdx);
   push(rcx); // R8, R9
+  unindent();
   comment(" -------------------------");
 }
 
 void Writer::callerEpilogue() {
   comment(" ---- Caller Epilogue ----");
+  indent();
   pop(rcx);
   pop(rdx);
   pop(rsi);
   pop(rdi);
+  unindent();
   comment(" -------------------------");
+}
+
+void Writer::indent() { indentation += "  "; }
+void Writer::unindent() {
+  if (indentation.size() < 2) {
+    printf("INTERNAL_ERROR: Unindent Failure");
+    throw;
+  }
+
+  indentation = atl::string(indentation.size() - 2, ' ');
 }
 
 atl::shared_ptr<Register> Writer::getTempReg() const { return rax; }

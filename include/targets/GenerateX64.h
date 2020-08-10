@@ -41,7 +41,7 @@ private:
   void defOperator(const atl::string &op_name, const atl::string &inst);
   void defSystemFunDecls();
   void mainEntry();
-  void malloc(const atl::shared_ptr<X64::Operand> &num_bytes);
+  void mem_alloc(const atl::shared_ptr<X64::Operand> &num_bytes);
 
   atl::vector<atl::shared_ptr<X64::StringLiteral>> stringLiterals;
 

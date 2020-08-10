@@ -161,6 +161,8 @@ public:
   void calleeEpilogue();
   void callerPrologue();
   void callerEpilogue();
+  void indent();
+  void unindent();
 
   atl::shared_ptr<Register> getTempReg() const;
   atl::stack<atl::shared_ptr<Register>> paramRegs() const;
@@ -168,6 +170,7 @@ public:
 private:
   atl::shared_ptr<SourceHandler> x64Output;
   atl::string stringLiterals;
+  atl::string indentation;
 
   void writeStringLiterals();
 };
