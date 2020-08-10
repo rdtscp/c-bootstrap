@@ -121,7 +121,7 @@ void GenerateX64::mainEntry() {
   x64.ret();
 }
 
-void GenerateX64::malloc(const atl::shared_ptr<X64::Operand> &num_bytes) {
+void GenerateX64::mem_alloc(const atl::shared_ptr<X64::Operand> &num_bytes) {
   x64.callerPrologue();
 
   x64.mov(x64.rdi, num_bytes);
@@ -154,7 +154,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Allocation &a) {
   if (a.varType != nullptr) {
     // Allocate required bytes.
     const atl::shared_ptr<X64::Operand> numBytes = a.varType->accept(*this);
-    malloc(numBytes);
+    mem_alloc(numBytes);
     return x64.rax;
   } else {
     // Handle allocating structs.
