@@ -18,6 +18,7 @@ public:
   virtual bool canCastTo(Type &rhs) const override;
   virtual bool equivalentTo(Type &rhs) const override; //{ return *this == rhs; }
   unsigned int getBytes() const override;
+  atl::string mangle() const override;
 
   bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;

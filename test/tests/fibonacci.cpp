@@ -27,9 +27,9 @@ void main() {
   first = 0;
   second = 1;
 
-  print_s((char *)"First ");
+  print_s("First ");
   print_i(n);
-  print_s((char *)" terms of Fibonacci series are : ");
+  print_s(" terms of Fibonacci series are : ");
 
   c = 0;
   while (c < n) {
@@ -41,7 +41,7 @@ void main() {
       second = next;
     }
     print_i(next);
-    print_s((char *)" ");
+    print_s(" ");
     c = c + 1;
   }
 }

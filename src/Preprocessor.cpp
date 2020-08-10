@@ -7,8 +7,8 @@ using namespace ACC;
 
 /* ---- PPScanner ---- */
 
-PPScanner::PPScanner(const SourceHandler &src) : Scanner(src) {
-  const atl::string abspath = src.getFilepath();
+PPScanner::PPScanner(const atl::shared_ptr<SourceHandler> &src) : Scanner(src) {
+  const atl::string abspath = src->getFilepath();
 
   filepath = getFilepath(abspath);
   filename = getFilename(abspath);
@@ -38,14 +38,14 @@ char PPScanner::next() {
 
 /* ---- Preprocessor ---- */
 
-Preprocessor::Preprocessor(const SourceHandler &p_src,
+Preprocessor::Preprocessor(const atl::shared_ptr<SourceHandler> &p_src,
                            const atl::vector<atl::string> &p_includePaths,
                            Preprocessor *p_parentPreprocessor)
     : includePaths(p_includePaths), src(p_src),
       parentPreprocessor(p_parentPreprocessor), scanner(new PPScanner(src)) {}
 
-SourceHandler Preprocessor::getSource() {
-  atl::string output = formatIncludeDirective(src.getFilepath()) + "\n";
+atl::shared_ptr<SourceMemHandler> Preprocessor::getSource() {
+  atl::string output = formatIncludeDirective(src->getFilepath()) + "\n";
   char c;
   do {
     c = scanner->next();
@@ -55,38 +55,36 @@ SourceHandler Preprocessor::getSource() {
       const atl::string newlines(linesInComment, '\n');
       output += newlines;
     } else if (c == '#' && scanner->peek() == 'i') {
-      const SourceHandler includeFilepath = lexInclude();
+      const atl::shared_ptr<SourceHandler> includeFilepath = lexInclude();
 
       // Preprocess the included file.
       Preprocessor includePreprocessor(includeFilepath, includePaths, this);
-      const SourceHandler includeSource = includePreprocessor.getSource();
+      const atl::shared_ptr<SourceMemHandler> includeSource = includePreprocessor.getSource();
 
       // Append the preprocessed source.
-      output += includeSource.value;
+      output += includeSource->read();
 
       // Mark we are returning to the original file.
-      output += Preprocessor::formatIncludeDirective(
-          src.getFilepath(), scanner->getPosition().line);
+      output += Preprocessor::formatIncludeDirective(src->getFilepath(), scanner->getPosition().line);
     } else if (c == '#' && scanner->peek() == 'p') {
       const bool filePreprocessed = lexPragmaOnce();
       if (filePreprocessed) {
-        return SourceHandler(SourceHandler::Type::RAW, output + "\n");
+        return atl::shared_ptr<SourceMemHandler>(new SourceMemHandler(output + "\n"));
       } else {
-        markVisited(src.getFilepath());
+        markVisited(src->getFilepath());
         output += "\n";
       }
     } else {
       output += c;
     }
   } while (c != '\0');
-  output += "\n";
-  return SourceHandler(SourceHandler::Type::RAW, output);
+  return atl::shared_ptr<SourceMemHandler>(new SourceMemHandler(output + "\n"));
 }
 
 // bool Preprocessor::filePreprocessed(const atl::string &filename) { if }
 
 /* Have found `#i`, lex the rest and return a SourceHandler. */
-SourceHandler Preprocessor::lexInclude() {
+atl::shared_ptr<SourceHandler> Preprocessor::lexInclude() {
   lexKeyword("#include");
   scanner->next(); // Skip space.
   char c = scanner->next();
@@ -97,7 +95,7 @@ SourceHandler Preprocessor::lexInclude() {
      */
     if (scanner->peek() == 'i') {
       lexKeyword("<initializer_list>");
-      return SourceHandler(SourceHandler::Type::RAW, "\n");
+      return atl::shared_ptr<SourceMemHandler>(new SourceMemHandler("\n"));
     } else if (scanner->peek() == 's') {
       lexKeyword("<stdio.h>");
       atl::string stdio_h_str;
@@ -105,7 +103,7 @@ SourceHandler Preprocessor::lexInclude() {
       stdio_h_str += "extern \"C\" FILE *fopen(char *, char *);\n";
       stdio_h_str += "extern \"C\" void fclose(FILE *);\n";
       stdio_h_str += "extern \"C\" char *fgets(char *, int, FILE *);\n";
-      return SourceHandler(SourceHandler::Type::RAW, stdio_h_str);
+      return atl::shared_ptr<SourceMemHandler>(new SourceMemHandler(stdio_h_str));
     } else {
       throw ACC::Error(
           "Preprocessor: #include directives must be followed by a "
@@ -129,16 +127,17 @@ SourceHandler Preprocessor::lexInclude() {
   }
 
   const atl::string absoluteIncludePath =
-      FileSystem::resolveRelativePath(src.getFilepath(), relativeIncludePath);
+      FileSystem::resolveRelativePath(src->getFilepath(), relativeIncludePath);
 
   // Check the file exists.
   if (fileExists(absoluteIncludePath))
-    return SourceHandler(SourceHandler::Type::FILEPATH, absoluteIncludePath);
+    return atl::shared_ptr<SourceFileHandler>(new SourceFileHandler(absoluteIncludePath, atl::fstream::open_mode::read));
 
   for (unsigned int idx = 0; idx < includePaths.size(); ++idx) {
     const atl::string currIncludePath = includePaths[idx] + relativeIncludePath;
     if (fileExists(currIncludePath))
-      return SourceHandler(SourceHandler::Type::FILEPATH, currIncludePath);
+    return atl::shared_ptr<SourceFileHandler>(new SourceFileHandler(currIncludePath, atl::fstream::open_mode::read));
+
   }
   throw ACC::Error(
       "Preprocessor: Could not include file that does not exist: " +
@@ -156,7 +155,7 @@ bool Preprocessor::lexPragmaOnce() {
                        scanner->getPosition());
     c = scanner->next();
   }
-  return checkVisited(src.getFilepath());
+  return checkVisited(src->getFilepath());
 }
 
 /* Helpers */

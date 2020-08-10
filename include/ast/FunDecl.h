@@ -20,6 +20,8 @@ public:
   atl::vector<atl::shared_ptr<VarDecl>> funParams;
   atl::shared_ptr<Type> funType;
 
+  int numCallers = 0;
+
   FunDecl(const atl::set<FunModifiers> &p_funModifiers,
           const atl::shared_ptr<Identifier> &p_funIdentifier,
           const atl::vector<atl::shared_ptr<VarDecl>> &p_funParams,

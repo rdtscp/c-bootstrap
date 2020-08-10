@@ -4,12 +4,12 @@
 #include "Assign.h"
 #include "Block.h"
 #include "ConstructorDecl.h"
+#include "MemberAccess.h"
 #include "Type.h"
 
 namespace ACC {
 
 class ConstructorDef : public ConstructorDecl {
-
 public:
   atl::vector<atl::shared_ptr<Assign>> initialiserList;
   atl::shared_ptr<Block> constructorBlock;
@@ -27,6 +27,9 @@ public:
   bool operator!=(const ConstructorDef &rhs) const;
 
   atl::shared_ptr<Identifier> getIdentifier() const override;
+
+  atl::shared_ptr<MemberAccess>
+  createThisAccess(const atl::shared_ptr<Expr> &memberExpr) const;
 
   atl::shared_ptr<ConstructorDecl> getptr() {
     return ConstructorDecl::shared_from_this();

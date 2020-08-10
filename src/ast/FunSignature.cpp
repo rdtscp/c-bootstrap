@@ -50,6 +50,17 @@ bool FunSignature::canCall(const FunSignature &rhs) const {
   return true;
 }
 
+atl::string FunSignature::mangle() const {
+  atl::string output = funIdentifier->mangle();
+  for (unsigned int idx = 0u; idx < funArgs.size(); ++idx) {
+    output += "_" + funArgs[idx]->mangle() + "_";
+  }
+  if (funModifiers.find(FunDecl::FunModifiers::CONST))
+    output += "_const";
+
+  return output;
+}
+
 atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type) {
   if (type->astClass() == "ReferenceType") {
     type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;

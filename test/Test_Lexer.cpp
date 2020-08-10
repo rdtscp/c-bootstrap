@@ -2,6 +2,7 @@
 #include "atl/include/vector.h"
 
 #include "gtest/gtest.h"
+#include "TestPath.h"
 
 #include "Lexer.h"
 #include "Preprocessor.h"
@@ -10,13 +11,11 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_Lexer/";
-atl::string test_prefix = "../../test/tests/Test_Lexer/";
+const atl::string test_prefix = test_root + "Test_Lexer/";
 
 TEST(Test_Lexer, AllTokens) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "AllTokens/test.txt");
+  const atl::string filepath = test_prefix + "AllTokens/test.txt";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -101,8 +100,8 @@ TEST(Test_Lexer, AllTokens) {
 }
 
 TEST(Test_Lexer, FunDecl) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "FunDecl/test.cpp");
+  const atl::string filepath = test_prefix + "FunDecl/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -114,8 +113,8 @@ TEST(Test_Lexer, FunDecl) {
 }
 
 TEST(Test_Lexer, NestedComments) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "NestedComments/test.cpp");
+  const atl::string filepath = test_prefix + "NestedComments/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -127,8 +126,8 @@ TEST(Test_Lexer, NestedComments) {
 }
 
 TEST(Test_Lexer, VarDecls) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "VarDecls/test.cpp");
+  const atl::string filepath = test_prefix + "VarDecls/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);

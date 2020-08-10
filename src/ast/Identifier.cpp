@@ -41,6 +41,47 @@ const unsigned int Identifier::size() const {
   return output;
 }
 
+atl::string Identifier::mangle() const {
+  atl::string output;
+  for (unsigned int idx = 0u; idx < value.size(); ++idx) {
+    const char c = value[idx];
+
+    switch (c) {
+    case '<':
+      output += "LT";
+      break;
+    case '>':
+      output += "GT";
+      break;
+    case '=':
+      output += "EQ";
+      break;
+    case '!':
+      output += "NOT";
+      break;
+    case '[':
+      output += "LSBR";
+      break;
+    case ']':
+      output += "RSBR";
+      break;
+    case '~':
+      output += "_des_";
+      break;
+    case '+':
+      output += "PLUS";
+      break;
+    default:
+      output += c;
+      break;
+    }
+  }
+  if (tailIdentifier) {
+    output += "COLONCOLON" + tail()->mangle();
+  }
+  return output;
+}
+
 atl::string Identifier::toString() const {
   atl::string output = value;
   if (tailIdentifier) {

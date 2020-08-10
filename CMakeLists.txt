@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.6.2)
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_FLAGS "-Wall -Wno-unused-function -Werror")
 
+project(acc)
+
 IF (CMAKE_BUILD_TYPE MATCHES Debug)
   IF (NOT CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     message("Enabling LeakSanitizer")
@@ -25,7 +27,6 @@ IF (CODE_COVERAGE)
   endif()
 ENDIF (CODE_COVERAGE)
 
-project(acc)
 
 include(ExternalProject)
 ExternalProject_Add(atl
@@ -70,6 +71,7 @@ add_library(AST SHARED
   src/ast/MemberAccess.cpp
   src/ast/MemberCall.cpp
   src/ast/Namespace.cpp
+  src/ast/Not.cpp
   src/ast/Nullptr.cpp
   src/ast/ParenthExpr.cpp
   src/ast/PointerType.cpp

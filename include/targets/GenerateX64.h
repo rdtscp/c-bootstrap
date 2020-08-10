@@ -4,6 +4,7 @@
 
 #include "AST.h"
 #include "ASTVisitor.h"
+#include "SourceHandler.h"
 #include "targets/X64.h"
 
 namespace ACC {
@@ -14,25 +15,35 @@ public:
   int errorCount = 0;
   atl::vector<atl::string> errors;
 
-  GenerateX64(atl::shared_ptr<Program> progAST, const atl::string &outputFile);
-
-  void error(atl::string error);
+  GenerateX64(atl::shared_ptr<Program> progAST);
 
   void printErrors() const;
-
-  void run();
+  atl::shared_ptr<SourceMemHandler> run();
 
 private:
-  X64::Writer x64;
+  void error(atl::string error);
+
   atl::shared_ptr<Program> progAST;
 
   atl::shared_ptr<Scope> currScope;
-  int blockCount = 0;
-  int currFpOffset = 0;
+  atl::shared_ptr<VarExpr> currObject;
 
+  int blockCount = 0;
+  int currBpOffset = 0;
+  int stringCount = 0;
+
+  atl::shared_ptr<SourceMemHandler> outputSource;
   /* ---- X64 Memory ---- */
+  X64::Writer x64;
 
   void alloc(const VarDecl &vd);
+  void declareExternFuncs();
+  void defOperator(const atl::string &op_name, const atl::string &inst);
+  void defSystemFunDecls();
+  void mainEntry();
+  void mem_alloc(const atl::shared_ptr<X64::Operand> &num_bytes);
+
+  atl::vector<atl::shared_ptr<X64::StringLiteral>> stringLiterals;
 
   /* ---- Visit AST ---- */
 
@@ -66,6 +77,7 @@ private:
   atl::shared_ptr<X64::Operand> visit(MemberAccess &ma) override;
   atl::shared_ptr<X64::Operand> visit(MemberCall &mc) override;
   atl::shared_ptr<X64::Operand> visit(Namespace &n) override;
+  atl::shared_ptr<X64::Operand> visit(Not &n) override;
   atl::shared_ptr<X64::Operand> visit(Nullptr &n) override;
   atl::shared_ptr<X64::Operand> visit(ParenthExpr &pe) override;
   atl::shared_ptr<X64::Operand> visit(PointerType &pt) override;
@@ -88,6 +100,11 @@ private:
   atl::shared_ptr<X64::Operand> visit(While &w) override;
 
   /* ---- Helpers ---- */
-  atl::shared_ptr<X64::Operand> genIntValue(int value);
+  atl::shared_ptr<X64::AddrOffset>
+  addrOffset(const atl::shared_ptr<X64::Operand> addrOperand, const int offset);
+  atl::shared_ptr<X64::IntValue> genIntValue(int value);
+  int roundTo16Bytes(int bytes) const;
+  atl::shared_ptr<X64::Register>
+  getRegisterForType(const PrimitiveType &type) const;
 };
 } // namespace ACC

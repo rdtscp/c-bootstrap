@@ -14,26 +14,23 @@ namespace ACC {
 
 class PPScanner : public Scanner {
 public:
-  PPScanner(const SourceHandler &src);
+  PPScanner(const atl::shared_ptr<SourceHandler> &src);
 
   char next() override;
 };
 
 class Preprocessor {
 public:
-  Preprocessor(
-      const SourceHandler &src, const atl::vector<atl::string> &includePaths,
-      Preprocessor *parentPreprocessor = nullptr);
-
-  Preprocessor(const SourceHandler &&src,
+  Preprocessor(const atl::shared_ptr<SourceHandler> &src,
                const atl::vector<atl::string> &includePaths,
-               Preprocessor *parentPreprocessor) = delete;
+               Preprocessor *parentPreprocessor = nullptr);
+
   Preprocessor(const Preprocessor &rhs) = delete;
   Preprocessor(Preprocessor &&rhs) = delete;
   Preprocessor &operator=(const Preprocessor &rhs) = delete;
   Preprocessor &operator=(Preprocessor &&rhs) = delete;
 
-  SourceHandler getSource();
+  atl::shared_ptr<SourceMemHandler> getSource();
 
   static atl::string formatIncludeDirective(const atl::string &filepath,
                                             const int lineNum = 0) {
@@ -47,13 +44,13 @@ public:
 
 private:
   const atl::vector<atl::string> includePaths;
-  const SourceHandler &src;
+  const atl::shared_ptr<SourceHandler> src;
   // TODO: Use `observer_ptr` instead of raw pointer here.
   Preprocessor* parentPreprocessor;
   atl::shared_ptr<PPScanner> scanner;
   atl::vector<atl::string> filesPreprocessed;
 
-  SourceHandler lexInclude();
+  atl::shared_ptr<SourceHandler> lexInclude();
   bool lexPragmaOnce();
 
   /* Helpers */

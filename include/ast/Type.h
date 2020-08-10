@@ -13,6 +13,7 @@ public:
   virtual unsigned int getBytes() const = 0;
   virtual bool canCastTo(Type &rhs) const = 0;
   virtual bool equivalentTo(Type &rhs) const { return *this == rhs; }
+  virtual atl::string mangle() const = 0;
   virtual bool operator==(Type &rhs) const = 0;
   virtual bool operator!=(Type &rhs) const = 0;
 };

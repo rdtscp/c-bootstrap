@@ -14,10 +14,19 @@ ConstructorDef::ConstructorDef(
     const atl::shared_ptr<Block> &p_constructorBlock)
     : ConstructorDecl(p_classType, p_constructorParams),
       initialiserList(p_initialiserList), constructorBlock(p_constructorBlock) {
+  // Make every initialiser list LHS be a MemberAccess.
+  for (unsigned int idx = 0u; idx < initialiserList.size(); ++idx) {
+    initialiserList[idx]->lhs = createThisAccess(initialiserList[idx]->lhs);
+  }
 }
 
 atl::shared_ptr<Identifier> ConstructorDef::getIdentifier() const {
   return classType->identifier;
+}
+
+atl::shared_ptr<MemberAccess> ConstructorDef::createThisAccess(const atl::shared_ptr<Expr> &memberExpr) const {
+  const atl::shared_ptr<VarExpr> thisExpr(new VarExpr(atl::shared_ptr<Identifier>(new Identifier("this"))));
+  return atl::shared_ptr<MemberAccess>(new MemberAccess(thisExpr, memberExpr, SourceToken::Class::PTRDOT));
 }
 
 bool ConstructorDef::operator==(Decl &rhs) const {

@@ -1,6 +1,7 @@
 #include "atl/include/string.h"
 
 #include "gtest/gtest.h"
+#include "TestPath.h"
 
 #include "Parser.h"
 #include "Preprocessor.h"
@@ -10,13 +11,11 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_Optimiser/";
-atl::string test_prefix = "../../test/tests/Test_Optimiser/";
+const atl::string test_prefix = test_root + "Test_Optimiser/";
 
 TEST(Test_Optimiser, FunDecls) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "FunDecls/test.cpp");
+  const atl::string filepath = test_prefix + "FunDecls/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);

@@ -9,8 +9,8 @@
 namespace ACC {
 
 class FunDef : public FunDecl {
-
 public:
+  int localVarBytes = 0;
   atl::shared_ptr<Block> funBlock;
 
   FunDef(const atl::set<FunModifiers> &p_funModifiers,

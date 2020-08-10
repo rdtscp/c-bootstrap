@@ -12,6 +12,7 @@ public:
   atl::shared_ptr<Expr> lhs;
   Op operation;
   atl::shared_ptr<Expr> rhs;
+  atl::weak_ptr<FunDecl> overload;
 
   BinOp(const atl::shared_ptr<Expr> &p_lhs, const Op p_operation,
         const atl::shared_ptr<Expr> &p_rhs);

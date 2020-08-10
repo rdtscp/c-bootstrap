@@ -199,6 +199,10 @@ atl::shared_ptr<ASTNode> Optimiser::visit(Namespace &n) {
   }
   return n.getptr();
 }
+atl::shared_ptr<ASTNode> Optimiser::visit(Not &n) {
+  n.expr = atl::static_pointer_cast<Expr>(n.expr->accept(*this));
+  return n.getptr();
+}
 atl::shared_ptr<ASTNode> Optimiser::visit(Nullptr &n) { return n.getptr(); }
 atl::shared_ptr<ASTNode> Optimiser::visit(ParenthExpr &pe) {
   pe.innerExpr = atl::static_pointer_cast<Expr>(pe.innerExpr->accept(*this));

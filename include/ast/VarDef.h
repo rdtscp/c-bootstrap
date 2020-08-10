@@ -13,8 +13,6 @@ class VarDef : public VarDecl {
 public:
   atl::shared_ptr<Expr> varValue;
 
-  int fpOffset = 0;
-
   VarDef(const atl::shared_ptr<Type> &p_varType,
          const atl::shared_ptr<Identifier> &p_varidentifier,
          const atl::shared_ptr<Expr> &p_varValue);

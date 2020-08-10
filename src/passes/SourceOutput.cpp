@@ -375,6 +375,11 @@ atl::string SourceOutput::visit(Namespace &n) {
 
   return output;
 }
+atl::string SourceOutput::visit(Not &n) {
+  atl::string output = "!";
+  output += n.expr->accept(*this);
+  return output;
+}
 atl::string SourceOutput::visit(Nullptr &n) { return "nullptr"; }
 atl::string SourceOutput::visit(ParenthExpr &pe) {
   atl::string output = "(";

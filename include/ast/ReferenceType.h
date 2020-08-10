@@ -16,6 +16,7 @@ public:
   bool canCastTo(Type &rhs) const override;
   unsigned int getBytes() const override;
   bool equivalentTo(Type &rhs) const override;
+  atl::string mangle() const override;
 
   bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;

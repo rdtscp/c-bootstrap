@@ -1,6 +1,7 @@
 #include "atl/include/string.h"
 
 #include "include/AST.h"
+#include "include/LinkerBuilder.h"
 #include "include/Parser.h"
 #include "include/Preprocessor.h"
 #include "include/passes/DotGraph.h"
@@ -33,18 +34,17 @@ int main(int argc, char const *argv[]) {
     }
   }
 
+  const atl::shared_ptr<ACC::SourceFileHandler> src(new ACC::SourceFileHandler(inFilename, atl::fstream::open_mode::read));
   if (preprocess) {
-    ACC::SourceHandler src(ACC::SourceHandler::Type::FILEPATH, inFilename);
     ACC::Preprocessor preprocessor(src, {"/Users/alexanderwilson/Documents/"
                                          "GitHub/c-bootstrap/build/atl/src/",
                                          "/Users/alexanderwilson/Documents/"
                                          "GitHub/c-bootstrap/include/"});
-    ACC::SourceHandler pp_src = preprocessor.getSource();
-    printf("%s", pp_src.value.c_str());
+    const atl::shared_ptr<ACC::SourceMemHandler> pp_src = preprocessor.getSource();
+    printf("%s", pp_src->read().c_str());
 
     return 0;
   } else {
-    ACC::SourceHandler src(ACC::SourceHandler::Type::FILEPATH, inFilename);
     ACC::Preprocessor preprocessor(src, {"/Users/alexanderwilson/Documents/"
                                          "GitHub/c-bootstrap/build/atl/src/",
                                          "/Users/alexanderwilson/Documents/"
@@ -74,8 +74,12 @@ int main(int argc, char const *argv[]) {
       ACC::DotGraph dotGraph(progAST, outFilename);
       dotGraph.print();
     } else {
-      ACC::GenerateX64 x64Generator(progAST, outFilename);
-      x64Generator.run();
+      ACC::GenerateX64 x64Generator(progAST);
+      const atl::shared_ptr<ACC::SourceMemHandler> assembly = x64Generator.run();
+
+      ACC::LinkerBuilder linkerBuilder(assembly, outFilename);
+      const atl::string binary = linkerBuilder.linkAndBuild();
+      
     }
 
     return 0;

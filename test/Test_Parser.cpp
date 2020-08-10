@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include "TestPath.h"
 
 #include "AST.h"
 #include "Error.h"
@@ -9,14 +10,11 @@
 
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/"
-  // "test/tests/Test_Parser/";
-atl::string test_prefix = "../../test/tests/Test_Parser/";
+const atl::string test_prefix = test_root + "Test_Parser/";
 
 TEST(Test_Parser, BinOp) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "BinOp/test.cpp");
+  const atl::string filepath = test_prefix + "BinOp/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -103,8 +101,9 @@ TEST(Test_Parser, BinOp) {
 }
 
 TEST(Test_Parser, ClassDefinition) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "ClassDefinition/test.cpp");
+  const atl::string filepath = test_prefix + "ClassDefinition/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -114,8 +113,9 @@ TEST(Test_Parser, ClassDefinition) {
 }
 
 TEST(Test_Parser, ComplexBinOp) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "ComplexBinOp/test.cpp");
+  const atl::string filepath = test_prefix + "ComplexBinOp/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -125,8 +125,9 @@ TEST(Test_Parser, ComplexBinOp) {
 }
 
 TEST(Test_Parser, ComplexParamTypes) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "ComplexParamTypes/test.cpp");
+  const atl::string filepath = test_prefix + "ComplexParamTypes/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -210,8 +211,9 @@ TEST(Test_Parser, ComplexParamTypes) {
 }
 
 TEST(Test_Parser, FunDecl) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "FunDecl/test.cpp");
+  const atl::string filepath = test_prefix + "FunDecl/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -243,8 +245,9 @@ TEST(Test_Parser, FunDecl) {
 }
 
 TEST(Test_Parser, InvalidSignatureFunDef) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "InvalidSignatureFunDef/test.cpp");
+  const atl::string filepath = test_prefix + "InvalidSignatureFunDef/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -264,8 +267,9 @@ TEST(Test_Parser, InvalidSignatureFunDef) {
 }
 
 TEST(Test_Parser, SubscriptOp) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "SubscriptOp/test.cpp");
+  const atl::string filepath = test_prefix + "SubscriptOp/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);
@@ -302,8 +306,9 @@ TEST(Test_Parser, SubscriptOp) {
 }
 
 TEST(Test_Parser, VarDecls) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "VarDecls/test.cpp");
+  const atl::string filepath = test_prefix + "VarDecls/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   ACC::Lexer lexer(scanner);

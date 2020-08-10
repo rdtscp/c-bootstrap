@@ -32,3 +32,53 @@ bool DestructorDef::operator==(const DestructorDef &rhs) const {
 bool DestructorDef::operator!=(const DestructorDef &rhs) const {
   return !(*this == rhs);
 }
+
+atl::shared_ptr<ClassTypeDecl>
+DestructorDef::findClassDecl(const atl::shared_ptr<Identifier> identifier,
+                             const atl::shared_ptr<Decl> &exemptDecl) {
+  return outerScope.lock()->findClassDecl(identifier, exemptDecl);
+}
+
+atl::shared_ptr<ClassTypeDef>
+DestructorDef::findClassDef(const atl::shared_ptr<Identifier> identifier,
+                            const atl::shared_ptr<Decl> &exemptDecl) {
+  return outerScope.lock()->findClassDef(identifier, exemptDecl);
+}
+
+atl::shared_ptr<FunDecl>
+DestructorDef::findFunDecl(const FunSignature &funSignature,
+                           const atl::shared_ptr<Decl> &exemptDecl) {
+  return outerScope.lock()->findFunDecl(funSignature, exemptDecl);
+}
+
+atl::shared_ptr<FunDecl>
+DestructorDef::findFunDeclLocal(const FunSignature &funSignature,
+                                const atl::shared_ptr<Decl> &exemptDecl) {
+  return nullptr;
+}
+
+atl::shared_ptr<VarDecl>
+DestructorDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
+                           const atl::shared_ptr<Decl> &exemptDecl) {
+  const atl::shared_ptr<VarDecl> localFind =
+      findVarDeclLocal(identifier, exemptDecl);
+  if (localFind != nullptr)
+    return localFind;
+  else if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findVarDecl(identifier, exemptDecl);
+  else
+    return nullptr;
+}
+
+atl::shared_ptr<VarDecl>
+DestructorDef::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
+                                const atl::shared_ptr<Decl> &exemptDecl) {
+  if (thisParam.get() == exemptDecl.get())
+    return nullptr;
+
+  if (*thisParam->getIdentifier() != *identifier)
+    return nullptr;
+
+  // return nullptr;
+  return thisParam;
+}

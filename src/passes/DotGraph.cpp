@@ -390,6 +390,9 @@ atl::string DotGraph::visit(Namespace &n) {
     n.namespaceDecls[i]->accept(*this);
   return namespaceID;
 }
+atl::string DotGraph::visit(Not &n) {
+  return n.expr->accept(*this);
+}
 atl::string DotGraph::visit(Nullptr &n) {
   const atl::string nullptrID = "Nullptr" + atl::to_string(++nodeCount);
   declare(nullptrID, "nullptr");
