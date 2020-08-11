@@ -48,6 +48,7 @@ void GenerateX64::defOperator(const atl::string &op_name,
                               const atl::string &inst) {
   atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
   x64.block("FunDecl_" + op_name);
+  x64.indent();
   x64.calleePrologue();
 
   x64.comment(" ---- Function Body ----");
@@ -67,6 +68,7 @@ void GenerateX64::defOperator(const atl::string &op_name,
   x64.block(op_name + "_exit");
   x64.calleeEpilogue();
   x64.ret();
+  x64.unindent();
 }
 
 void GenerateX64::defSystemFunDecls() {
@@ -83,6 +85,7 @@ void GenerateX64::defSystemFunDecls() {
     const atl::pair<atl::string, atl::string> &systemFunDecl =
         systemFunDecls[i];
     x64.block(systemFunDecl.first);
+    x64.indent();
     x64.mov(x64.rax, x64.rsp);
     x64.write("and rsp, -16");
     x64.push(x64.rax);
@@ -93,6 +96,7 @@ void GenerateX64::defSystemFunDecls() {
     x64.pop(x64.rcx);
     x64.mov(x64.rsp, x64.rcx);
     x64.ret();
+    x64.unindent();
   }
 
   // Define operator<
@@ -106,6 +110,7 @@ void GenerateX64::defSystemFunDecls() {
 
 void GenerateX64::mainEntry() {
   x64.block("_main");
+  x64.indent();
   // Save the state of the stack, and align it to 16 bytes.
   x64.mov(x64.rax, x64.rsp);
   x64.write("and rsp, -16");
@@ -119,6 +124,7 @@ void GenerateX64::mainEntry() {
   x64.pop(x64.rcx);
   x64.mov(x64.rsp, x64.rcx);
   x64.ret();
+  x64.unindent();
 }
 
 void GenerateX64::mem_alloc(const atl::shared_ptr<X64::Operand> &num_bytes) {
@@ -287,6 +293,24 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
     x64.mov(x64.rdx, atl::shared_ptr<X64::IntValue>(new X64::IntValue(0)));
     x64.idiv(x64.rcx);
     x64.mov(x64.rax, x64.rdx);
+    break;
+  }
+  case Op::AND: {
+    // TODO: Handle this earlier (we don't eval RHS if LHS is falsey)
+    atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
+    x64.callerPrologue();
+    x64.mov(paramRegs.pop_back(), x64.rcx);
+    x64.mov(paramRegs.pop_back(), x64.rax);
+    x64.call("operator_eq");
+    x64.callerEpilogue();
+
+    paramRegs = x64.paramRegs();
+    x64.callerPrologue();
+    x64.mov(paramRegs.pop_back(), x64.rcx);
+    x64.mov(paramRegs.pop_back(), genIntValue(0));
+    x64.call("operator_ne");
+    x64.callerEpilogue();
+    break;
   }
   default:
     x64.comment("Not Implemented this BinOp Yet");
@@ -300,13 +324,21 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Block &b) {
 
   currScope = b.getptr();
 
+  x64.comment(" --- " + currScope->scopeName + " --- ");
   x64.indent();
   for (unsigned int idx = 0; idx < b.stmts.size(); ++idx) {
     b.stmts[idx]->accept(*this);
   }
   x64.unindent();
 
+  x64.block("Exit_" + currScope->scopeName);
+  // TODO: Destruct Variables.
+
   currScope = currScope->outerScope.lock();
+
+  x64.cmp(x64.r12, genIntValue(1));
+  x64.je("Exit_" + currScope->scopeName);
+
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BoolLiteral &bl) {
@@ -398,41 +430,54 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorDecl &cd) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorDef &cd) {
+  cd.scopeName = "FunDecl_" + cd.getSignature().mangle();
   if (cd.numCallers == 0) {
     return atl::shared_ptr<X64::None>();
   }
 
-  atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
+  currScope = cd.getptr();
 
-  currScope = cd.constructorBlock;
   currBpOffset = 0;
 
-  x64.block("FunDecl_" + cd.getSignature().mangle());
+  x64.block(currScope->scopeName);
+  x64.indent();
 
   x64.calleePrologue();
 
   x64.comment(" ---- Constructor Args ----");
+  x64.indent();
+  atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
   for (unsigned int idx = 0; idx < cd.constructorParams.size(); ++idx) {
     const atl::shared_ptr<X64::Operand> argAddr =
         cd.constructorParams[idx]->accept(*this);
     x64.mov(argAddr, paramRegs.pop_back());
   }
+  x64.unindent();
   x64.comment(" --------------------------");
 
   x64.comment(" ---- Constructor Initialiser List ----");
+  x64.indent();
   for (unsigned int idx = 0; idx < cd.initialiserList.size(); ++idx) {
     cd.initialiserList[idx]->accept(*this);
   }
+  x64.unindent();
   x64.comment(" --------------------------------------");
 
   x64.comment(" ---- Constructor Body ----");
+  x64.indent();
   cd.constructorBlock->accept(*this);
+  x64.unindent();
   x64.comment(" --------------------------");
 
+  x64.block("Exit_" + currScope->scopeName);
+  x64.indent();
   x64.calleeEpilogue();
+  x64.ret();
+  x64.unindent();
+  x64.unindent();
 
   currBpOffset = 0;
-  currScope = cd.constructorBlock->outerScope.lock();
+  currScope = currScope->outerScope.lock();
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Deletion &d) {
@@ -485,7 +530,12 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
 
   currScope = fd.getptr();
 
+  currBpOffset = 0;
+
   x64.block(currScope->scopeName);
+  x64.indent();
+
+  x64.mov(x64.r12, genIntValue(0), "Returning Early Flag OFF");
 
   x64.calleePrologue();
 
@@ -511,6 +561,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
   x64.calleeEpilogue();
   x64.ret();
   x64.unindent();
+  x64.unindent();
 
   currBpOffset = 0;
   currScope = currScope->outerScope.lock();
@@ -529,9 +580,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(If &i) {
 
   /* Calculate the result of the if condition. */
   atl::shared_ptr<X64::Operand> condResReg = i.ifCondition->accept(*this);
+  x64.mov(x64.rax, condResReg);
 
   /* Branch to False block if False, else branch to True block. */
-  x64.cmp(condResReg, atl::shared_ptr<X64::IntValue>(new X64::IntValue(0)));
+  x64.cmp(x64.rax, genIntValue(0));
   x64.je(falseBlockName);
   x64.jmp(trueBlockName);
 
@@ -720,8 +772,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Return &r) {
     atl::shared_ptr<X64::Operand> rVal = r.returnExpr->accept(*this);
     x64.mov(x64.rax, rVal);
   }
-  x64.calleeEpilogue();
-  x64.ret();
+
+  x64.mov(x64.r12, genIntValue(1), "Returning Early Flag ON");
+  x64.jmp("Exit_" + currScope->scopeName);
+
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(SizeOf &so) {
