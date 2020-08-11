@@ -475,7 +475,6 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
   if (fd.numCallers == 0 && fd.funIdentifier->value != "main") {
     return atl::shared_ptr<X64::None>();
   }
-  atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
 
   currScope = fd.funBlock;
 
@@ -484,6 +483,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
   x64.calleePrologue();
 
   x64.comment(" ---- Function Args ----");
+  atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
   for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx) {
     const atl::shared_ptr<X64::Operand> argAddr =
         fd.funParams[idx]->accept(*this);
