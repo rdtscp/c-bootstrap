@@ -289,7 +289,7 @@ void Writer::sub(const atl::shared_ptr<X64::Operand> &dst,
 
 void Writer::write(const atl::string &str) {
   // printf("%s\n", str.c_str());
-  x64Output->write(str + "\n");
+  x64Output->write(indentation + str + "\n");
 }
 
 /* Helpers */
