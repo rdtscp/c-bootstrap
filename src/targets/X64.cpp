@@ -111,7 +111,7 @@ void Writer::block(const atl::string &blockName, const atl::string &comment) {
   if (comment != "")
     assembly += "\t: " + comment;
 
-  write("\n");
+  write("");
   write(assembly);
 }
 
