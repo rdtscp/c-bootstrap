@@ -174,8 +174,7 @@ void Writer::jmp(const atl::string &label, const atl::string &comment) {
 void Writer::lea(const atl::shared_ptr<X64::Operand> &dst,
                  const atl::shared_ptr<X64::Operand> &src,
                  const atl::string &comment) {
-  atl::string assembly =
-      "lea " + dst->toString() + ", " + "[rel " + src->toString() + "]";
+  atl::string assembly = "lea " + dst->toString() + ", " + src->toString();
   if (comment != "")
     assembly += "\t; " + comment;
 
