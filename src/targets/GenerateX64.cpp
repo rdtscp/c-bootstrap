@@ -296,11 +296,17 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
   return x64.rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Block &b) {
-  currScope = b.getptr();
-  for (unsigned int idx = 0; idx < b.stmts.size(); ++idx)
-    b.stmts[idx]->accept(*this);
+  b.scopeName = "Block" + atl::to_string(blockCount++);
 
-  currScope = b.outerScope.lock();
+  currScope = b.getptr();
+
+  x64.indent();
+  for (unsigned int idx = 0; idx < b.stmts.size(); ++idx) {
+    b.stmts[idx]->accept(*this);
+  }
+  x64.unindent();
+
+  currScope = currScope->outerScope.lock();
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BoolLiteral &bl) {
