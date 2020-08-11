@@ -115,6 +115,7 @@ public:
   atl::shared_ptr<Register> rdi;
   atl::shared_ptr<Register> rsp;
   atl::shared_ptr<Register> rbp;
+  atl::shared_ptr<Register> r12;
 
   Writer(const atl::shared_ptr<SourceHandler> &output);
   Writer() = delete;

@@ -94,7 +94,8 @@ Writer::Writer(const atl::shared_ptr<SourceHandler> &output)
       rbx(new Register(64, "rbx")), rcx(new Register(64, "rcx")),
       rdx(new Register(64, "rdx")), rsi(new Register(64, "rsi")),
       rdi(new Register(64, "rdi")), rsp(new Register(64, "rsp")),
-      rbp(new Register(64, "rbp")), x64Output(output) {}
+      rbp(new Register(64, "rbp")), r12(new Register(64, "r12")),
+      x64Output(output) {}
 
 void Writer::add(const atl::shared_ptr<X64::Operand> &dst,
                  const atl::shared_ptr<X64::Operand> &src,
