@@ -18,7 +18,8 @@ bool test_assert(const char *log, const int actual, const int expect) {
   return false;
 }
 
-bool test_assert(const char *log, const unsigned int actual, const unsigned int expect) {
+bool test_assert(const char *log, const unsigned int actual,
+                 const unsigned int expect) {
   printf(log, actual);
   if (actual == expect) {
     return true;
@@ -91,8 +92,6 @@ int main(int argc, const char **argv) {
   if (!test_assert("four - two == %d\n", four - two, 2)) {
     return failure;
   }
-
-  
 
   return 0;
 }
