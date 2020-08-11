@@ -472,33 +472,42 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDecl &fd) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
+  fd.scopeName = fd.getSignature().mangle();
   if (fd.numCallers == 0 && fd.funIdentifier->value != "main") {
     return atl::shared_ptr<X64::None>();
   }
 
   currScope = fd.getptr();
 
-  x64.block("FunDecl_" + fd.getSignature().mangle());
+  x64.block("FunDecl_" + currScope->scopeName);
 
   x64.calleePrologue();
 
   x64.comment(" ---- Function Args ----");
+  x64.indent();
   atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
   for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx) {
     const atl::shared_ptr<X64::Operand> argAddr =
         fd.funParams[idx]->accept(*this);
     x64.mov(argAddr, paramRegs.pop_back());
   }
+  x64.unindent();
   x64.comment(" -----------------------");
 
   x64.comment(" ---- Function Body ----");
+  x64.indent();
   fd.funBlock->accept(*this);
+  x64.unindent();
   x64.comment(" -----------------------");
 
+  x64.block("Exit_FunDecl_" + currScope->scopeName);
+  x64.indent();
   x64.calleeEpilogue();
+  x64.ret();
+  x64.unindent();
 
   currBpOffset = 0;
-  currScope = fd.outerScope.lock();
+  currScope = currScope->outerScope.lock();
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Identifier &i) {

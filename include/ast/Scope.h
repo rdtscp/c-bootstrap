@@ -10,6 +10,7 @@ class FunSignature;
 class Scope {
 public:
   atl::weak_ptr<Scope> outerScope;
+  atl::string scopeName;
 
   Scope() : outerScope(nullptr) {}
   virtual ~Scope() {}
