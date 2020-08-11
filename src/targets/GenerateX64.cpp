@@ -476,7 +476,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
     return atl::shared_ptr<X64::None>();
   }
 
-  currScope = fd.funBlock;
+  currScope = fd.getptr();
 
   x64.block("FunDecl_" + fd.getSignature().mangle());
 
@@ -498,7 +498,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
   x64.calleeEpilogue();
 
   currBpOffset = 0;
-  currScope = fd.funBlock->outerScope.lock();
+  currScope = fd.outerScope.lock();
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Identifier &i) {
