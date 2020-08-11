@@ -107,10 +107,11 @@ void Writer::add(const atl::shared_ptr<X64::Operand> &dst,
 }
 
 void Writer::block(const atl::string &blockName, const atl::string &comment) {
-  atl::string assembly = "\n" + blockName + ":";
+  atl::string assembly = blockName + ":";
   if (comment != "")
     assembly += "\t: " + comment;
 
+  write("\n");
   write(assembly);
 }
 
@@ -316,7 +317,6 @@ void Writer::calleeEpilogue() {
   pop(rbp);
   unindent();
   // add(rsp, atl::shared_ptr<X64::IntValue>(new X64::IntValue(8)));
-  ret();
   comment(" -------------------------");
 }
 
