@@ -4,6 +4,8 @@ void printf(const char *, const char);
 class Foo {
 public:
   char *m_val;
+
+  ~Foo() {}
 };
 
 int main(int argc, const char **argv) {

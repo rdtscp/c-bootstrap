@@ -21,6 +21,8 @@ public:
   string_view(const char *value)
       : m_size(char_buf_len(value)), m_value(value) {}
 
+  ~string_view() {}
+
   const char *c_str() { return this->m_value; }
 
   const char *c_str() const { return this->m_value; }

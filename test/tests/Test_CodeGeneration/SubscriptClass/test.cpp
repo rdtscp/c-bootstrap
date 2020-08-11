@@ -2,11 +2,9 @@ void printf(const char *, int);
 
 class Incrementer {
 public:
+  ~Incrementer() {}
 
-  int operator[](const int x) {
-    return x + 1;
-  }
-
+  int operator[](const int x) { return x + 1; }
 };
 
 int main(int argc, const char **argv) {

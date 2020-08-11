@@ -18,6 +18,7 @@ public:
   char *m_value;
 
   string_view(char *value) : m_size(char_buf_len(value)), m_value(value) {}
+  ~string_view() {}
 };
 
 int main(int argc, char **argv) {
