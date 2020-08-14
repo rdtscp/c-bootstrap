@@ -163,6 +163,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
     return error("Type Analysis", "Binary operation has mismatched types.",
                  bo.getptr());
 
+  bo.lhs->exprType = lhsType;
+  bo.rhs->exprType = rhsType;
+
   switch (bo.operation) {
   case Op::MOD:
     return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::UINT));
