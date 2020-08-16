@@ -6,24 +6,50 @@
 void printf(const char *, const char *);
 
 namespace test {
-  typedef unsigned int uint;
-  void swap(uint &lhs, uint &rhs) {
-    uint temp = lhs;
-    lhs = rhs;
-    rhs = temp;
-  }
-  void swap(char * &lhs, char * &rhs) {
-    char *temp = lhs;
-    lhs = rhs;
-    rhs = temp;
-  }
+typedef unsigned int uint;
+void swap(uint &lhs, uint &rhs) {
+  uint temp = lhs;
+  lhs = rhs;
+  rhs = temp;
 }
+void swap(char *&lhs, char *&rhs) {
+  char *temp = lhs;
+  lhs = rhs;
+  rhs = temp;
+}
+} // namespace test
 
 namespace test {
+typedef unsigned int uint;
+
+uint char_buf_len(const char *buf) {
+  uint length = 0u;
+  while (*buf != '\0') {
+    ++length;
+    ++buf;
+  }
+  return length;
+}
+
+class string_view {
+private:
+  uint m_size;
+  const char *m_value;
+
+public:
+  string_view(const char *value) : m_value(value) {
+    this->m_size = char_buf_len(value);
+  }
+
+  char *c_str() { return this->m_value; }
+
+  char *c_str() const { return this->m_value; }
+
+  uint size() const { return this->m_size; }
+};
 
 class string {
 private:
-  typedef unsigned int uint;
   uint m_size;
   char *m_value;
 
@@ -32,12 +58,11 @@ public:
   typedef char *iterator;
 
   /* Constructor */
-  string() : m_size(0u), m_value(new char[1]) {
-    *m_value = '\0';
-  }
+  string() : m_size(0u), m_value(new char[1]) { *m_value = '\0'; }
 
   /* Constructor */
-  string(const uint count, const char c) : m_size(count), m_value(new char[m_size + 1u]) {
+  string(const uint count, const char c)
+      : m_size(count), m_value(new char[m_size + 1u]) {
     for (uint idx = 0u; idx < m_size; ++idx) {
       m_value[idx] = c;
     }
@@ -45,18 +70,23 @@ public:
   }
 
   /* Constructor */
-  string(const char *string_literal) : m_size(char_buf_len(string_literal)), m_value(new char[m_size + 1u]) {
-    this->m_size = char_buf_len(string_literal);
-    this->m_value = new char[m_size + 1u];
-    for (uint idx = 0u; idx < m_size; ++idx) {
-      this->m_value[idx] = *string_literal;
-      ++string_literal;
+  string(const char *string_literal)
+      : m_size(char_buf_len(string_literal)), m_value(new char[m_size + 1u]) {
+    unsigned int idx = 0u;
+    while (idx < 4u) {
+      this->m_value[idx] = string_literal[idx];
+      ++idx;
     }
+    // for (uint idx = 0u; idx < m_size; ++idx) {
+    //   this->m_value[idx] = *string_literal;
+    //   ++string_literal;
+    // }
     this->m_value[m_size] = '\0';
   }
 
   /* Copy Constructor */
-  string(const string &rhs) : m_size(rhs.m_size), m_value(new char[m_size + 1u]) {
+  string(const string &rhs)
+      : m_size(rhs.m_size), m_value(new char[m_size + 1u]) {
     for (uint idx = 0u; idx < m_size; ++idx) {
       m_value[idx] = rhs[idx];
     }
@@ -78,18 +108,15 @@ public:
 
   /* Destructor */
   ~string() {
-    m_size = 0u;
-    delete[] m_value;
-    m_value = nullptr;
+    printf("Destructing string: '%s'\n", this->m_value);
+    this->m_size = 0u;
+    delete[] this->m_value;
+    this->m_value = nullptr;
   }
 
-  char &operator[](const uint index) {
-    return this->at(index);
-  }
+  char &operator[](const uint index) { return this->at(index); }
 
-  const char operator[](const uint index) const {
-    return this->at(index);
-  }
+  const char operator[](const uint index) const { return this->at(index); }
 
   string &operator+=(const char rhs) {
     this->append(string(1u, rhs));
@@ -271,9 +298,9 @@ public:
     return &m_value[len];
   }
 
-  char *c_str() { return m_value; }
+  char *c_str() { return this->m_value; }
 
-  char *c_str() const { return m_value; }
+  char *c_str() const { return this->m_value; }
 
   int find(const char searchChar) const {
     const uint len = this->length();
@@ -289,17 +316,17 @@ public:
 
   uint length() const { return this->size(); }
 
-  uint size() const { return m_size; }
+  uint size() const { return this->m_size; }
 
 private:
-  static uint char_buf_len(const char *buf) {
-    uint length = 0u;
-    while (*buf != '\0') {
-      ++length;
-      ++buf;
-    }
-    return length;
-  }
+  // static uint char_buf_len(const char *buf) {
+  //   uint length = 0u;
+  //   while (*buf != '\0') {
+  //     ++length;
+  //     ++buf;
+  //   }
+  //   return length;
+  // }
 };
 
 /* operator+ */

@@ -312,6 +312,39 @@ TEST(Test_ASTAnalysis, NamespaceFunction) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
+TEST(Test_ASTAnalysis, NamespacePopulation) {
+  const atl::string filepath = test_prefix + "NamespacePopulation/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis semanticAnalysis(progAST);
+  semanticAnalysis.run();
+  semanticAnalysis.printErrors();
+  ASSERT_EQ(0, semanticAnalysis.errorCount);
+
+  // Assert AST has been modified with namespacing included.
+  ASSERT_EQ(progAST->decls[0]->astClass(), "Namespace");
+  const atl::shared_ptr<Namespace> nspace =
+      atl::static_pointer_cast<Namespace>(progAST->decls[0]);
+
+  ASSERT_EQ(nspace->namespaceDecls[1]->astClass(), "FunDef");
+  const atl::shared_ptr<FunDef> getClassFunDef =
+      atl::static_pointer_cast<FunDef>(nspace->namespaceDecls[1]);
+
+  ASSERT_EQ(getClassFunDef->funType->astClass(), "ClassType");
+  const atl::shared_ptr<ClassType> retType =
+      atl::static_pointer_cast<ClassType>(getClassFunDef->funType);
+
+  const atl::shared_ptr<ClassTypeDef> classTypeDef =
+      retType->typeDefinition.lock();
+  ASSERT_NE(classTypeDef, nullptr);
+}
+
 TEST(Test_ASTAnalysis, NoMainFunc) {
   const atl::string filepath = test_prefix + "NoMainFunc/test.cpp";
   const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
