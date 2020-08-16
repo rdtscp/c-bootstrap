@@ -193,7 +193,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
   if (lhsOperand->opType() == "Register") {
     x64.push(lhsOperand, "Store LHS to Stack");
   } else {
-    const atl::shared_ptr<X64::Register> tempReg = x64.getTempReg();
+    const atl::shared_ptr<X64::Register> tempReg = x64.getTempReg(8);
     x64.mov(tempReg, lhsOperand, "Move the LHS into temp register.");
     x64.push(tempReg, "Push temp register onto the stack.");
   }
@@ -333,6 +333,12 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Block &b) {
 
   x64.block("Exit_" + currScope->scopeName);
   // TODO: Destruct Variables.
+  for (int idx = currScope->objectsToDestruct.size() - 1; idx >= 0; --idx) {
+    const atl::shared_ptr<VarDecl> currObj = currScope->objectsToDestruct[idx];
+    x64.block("Exit_" + currScope->scopeName + "_" + atl::to_string(idx));
+    x64.lea(x64.rdi, addrOffset(x64.rbp, currObj->bpOffset));
+    x64.call("Dtor_" + currObj->type->mangle());
+  }
 
   currScope = currScope->outerScope.lock();
 
@@ -487,6 +493,41 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(DestructorDecl &dd) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(DestructorDef &dd) {
+  dd.scopeName = "Dtor_" + dd.classType->mangle();
+
+  currScope = dd.getptr();
+
+  currBpOffset = 0;
+
+  x64.block("FunDecl_" + currScope->scopeName);
+  x64.indent();
+
+  x64.calleePrologue();
+
+  x64.comment(" ---- Destructor Args ----");
+  x64.indent();
+  const atl::shared_ptr<X64::Operand> thisAddr = dd.thisParam->accept(*this);
+  x64.mov(thisAddr, x64.rdi);
+  x64.unindent();
+  x64.comment(" -------------------------");
+
+  x64.comment(" ---- Destructor Body ----");
+  x64.indent();
+  dd.destructorBlock->accept(*this);
+  x64.unindent();
+  x64.comment(" -------------------------");
+
+  // TODO: Destruct members.
+
+  x64.block("Exit_" + currScope->scopeName);
+  x64.indent();
+  x64.calleeEpilogue();
+  x64.ret();
+  x64.unindent();
+  x64.unindent();
+
+  currBpOffset = 0;
+  currScope = currScope->outerScope.lock();
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(DoWhile &dw) {
@@ -603,9 +644,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(If &i) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(IntLiteral &il) {
-  x64.mov(x64.rax,
-          atl::shared_ptr<X64::IntValue>(new X64::IntValue(il.getLiteral())));
-  return x64.rax;
+  return atl::shared_ptr<X64::IntValue>(new X64::IntValue(il.getLiteral()));
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberAccess &ma) {
   const atl::shared_ptr<X64::Operand> objAddr = ma.object->accept(*this);
@@ -846,16 +885,12 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ValueAt &va) {
     const atl::shared_ptr<X64::Operand> exprOperand =
         va.derefExpr->accept(*this);
 
-    const atl::shared_ptr<BaseType> valueType =
-        atl::static_pointer_cast<BaseType>(vaType);
     const atl::shared_ptr<X64::Register> destReg =
-        getRegisterForType(valueType->primitiveType);
+        x64.getTempReg(va.exprType->getBytes());
     x64.mov(x64.rcx, exprOperand, "Move address into rcx");
     x64.mov(x64.rax, genIntValue(0), "Set rax to all 0");
     x64.mov(destReg, addrOffset(x64.rcx, 0));
-    // x64.mov(destReg, x64.rcx);
     return x64.rax;
-    // return atl::shared_ptr<X64::AddrOffset>(new X64::AddrOffset(x64.rax, 0));
   } else {
     printf("Dereferencing Non-Primitive Types not Supported Yet.\n");
     throw;
@@ -874,9 +909,13 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDecl &vd) {
   x64.sub(x64.rsp,
           atl::shared_ptr<X64::IntValue>(new X64::IntValue(bytesRequired)),
           comment);
+
+  if (vd.type->astClass() == "ClassType") {
+    currScope->objectsToDestruct.push_back(vd.getptr());
+  }
+
   return atl::shared_ptr<X64::AddrOffset>(
       new X64::AddrOffset(x64.rbp, vd.bpOffset));
-  // return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
   const atl::string vdIdent = vd.getIdentifier()->toString();
@@ -899,6 +938,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
             "Move " + vdIdent + "'s value into temp register.");
     x64.mov(addrOffset(x64.rbp, vd.bpOffset), x64.rax,
             "Move " + vdIdent + "'s value into its stack allocated space.");
+  }
+
+  if (vd.type->astClass() == "ClassType") {
+    currScope->objectsToDestruct.push_back(vd.getptr());
   }
 
   return atl::shared_ptr<X64::AddrOffset>(
@@ -965,26 +1008,4 @@ int GenerateX64::roundTo16Bytes(int bytes) const {
   while (bytes % 16 != 0)
     ++bytes;
   return bytes;
-}
-
-atl::shared_ptr<X64::Register>
-GenerateX64::getRegisterForType(const PrimitiveType &type) const {
-  switch (type) {
-  case PrimitiveType::CHAR:
-    return x64.al;
-  case PrimitiveType::BOOL:
-    return x64.al;
-  case PrimitiveType::INT:
-    return x64.eax;
-  case PrimitiveType::NULLPTR_T:
-    return x64.rax;
-  case PrimitiveType::SHORT:
-    return x64.ax;
-  case PrimitiveType::UINT:
-    return x64.eax;
-  case PrimitiveType::VOID:
-    return x64.rax;
-  }
-  printf("FATAL ERROR: Unknown PrimitiveType\n");
-  throw;
 }
