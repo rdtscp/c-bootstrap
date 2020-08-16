@@ -162,16 +162,28 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ArrayType &at) {
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Assign &as) {
   const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
-  x64.mov(x64.rax, rhs, "Move the RHS into a temp register");
+  if (rhs->opType() != "Register") {
+    const atl::shared_ptr<X64::Register> rhsReg = x64.getTempReg(
+        as.rhs->exprType->getBytes(), 1); // HACKY. TODO: Fix this.
+    x64.mov(x64.rcx, genIntValue(0), "Set rcx to all 0");
+    x64.mov(rhsReg, rhs, "Move the RHS into its size specific register.");
+  } else {
+    x64.mov(x64.rcx, rhs, "Move the LHS into RCX");
+  }
+  x64.mov(x64.rax, x64.rcx, "Move the RHS into a temp register");
   x64.push(x64.rax, "Store RHS on the Stack Temporarily");
 
   const atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
+  x64.mov(x64.rcx, genIntValue(0));
   x64.pop(x64.rcx, "Pop the RHS off the Stack into rcx");
   // We can't mov a StringLiteral into a space on the stack
   // load it into a register(effectively the address) and
   // then move that address onto the stack.
 
-  x64.mov(lhs, x64.rcx, "Move RHS into LHS.");
+  const atl::shared_ptr<X64::Register> rhsReg =
+      x64.getTempReg(as.rhs->exprType->getBytes(), 1);
+
+  x64.mov(lhs, rhsReg, "Move RHS into LHS.");
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BaseType &bt) {
@@ -404,6 +416,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassTypeDef &ctd) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorCall &cc) {
   atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
 
+  x64.callerPrologue();
+
   // bpOffset is negative, so we add here.
   const atl::shared_ptr<VarDecl> objToCtruct = cc.objectToConstruct.lock();
   x64.lea(paramRegs.pop_back(), addrOffset(x64.rbp, objToCtruct->bpOffset),
@@ -420,6 +434,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorCall &cc) {
   }
 
   x64.call(cc.constructorDecl.lock()->getSignature().mangle());
+
+  x64.callerEpilogue();
   return atl::shared_ptr<X64::None>(new X64::None());
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorDecl &cd) {
@@ -657,7 +673,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberAccess &ma) {
   }
   const unsigned int objByteOffset = memberDecl->bpOffset;
   // Handle Pointer Access
-  if (ma.accessType == SourceToken::Class::PTRDOT) {
+  if (ma.accessType == SourceToken::Class::PTRDOT ||
+      ma.object->exprType->astClass() == "ReferenceType") {
     x64.mov(x64.rax, objAddr, "Move objects address into rax");
     return addrOffset(x64.rax, objByteOffset);
   } else {
@@ -963,7 +980,17 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(While &w) {
   /* Create Condition Block */
   x64.block(whileCondition);
   const atl::shared_ptr<X64::Operand> condRes = w.condition->accept(*this);
-  x64.mov(x64.rax, condRes);
+  if (condRes->opType() != "Register") {
+    const atl::shared_ptr<X64::Register> condReg =
+        x64.getTempReg(w.condition->exprType->getBytes(), 1);
+    x64.mov(x64.rcx, genIntValue(0), "Set rcx to all 0");
+    x64.mov(condReg, condRes,
+            "Move the condition result into its size specific register.");
+  } else {
+    x64.mov(x64.rcx, condRes, "Move the LHS into RCX");
+  }
+  x64.mov(x64.rax, x64.rcx);
+
   x64.mov(x64.rcx, atl::shared_ptr<X64::IntValue>(new X64::IntValue(1)));
   x64.cmp(x64.rax, x64.rcx);
   x64.write("je " + whileStart);
