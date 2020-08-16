@@ -10,7 +10,7 @@ ClassType::ClassType(const atl::shared_ptr<Identifier> &p_identifier)
 bool ClassType::canCastTo(Type &rhs) const {
   // We can cast a class to a reference of itself.
   if (rhs.astClass() == "ReferenceType") {
-    const ReferenceType *rhsRefType = static_cast<ReferenceType*>(&rhs);
+    const ReferenceType *rhsRefType = static_cast<ReferenceType *>(&rhs);
     if (rhsRefType->referencedType->astClass() == "ClassType") {
       const atl::shared_ptr<ClassType> rhsRefClassType =
           atl::static_pointer_cast<ClassType>(rhsRefType->referencedType);
@@ -37,9 +37,9 @@ unsigned int ClassType::getBytes() const {
   for (unsigned int i = 0; i < classDeclsSize; ++i) {
     if (typeDefinition.lock()->classDecls[i]->astClass() == "VarDecl" ||
         typeDefinition.lock()->classDecls[i]->astClass() == "VarDef") {
-      aggregateBytes +=
-          atl::static_pointer_cast<VarDecl>(typeDefinition.lock()->classDecls[i])
-              ->getBytes();
+      aggregateBytes += atl::static_pointer_cast<VarDecl>(
+                            typeDefinition.lock()->classDecls[i])
+                            ->getBytes();
     }
   }
 
@@ -47,7 +47,7 @@ unsigned int ClassType::getBytes() const {
 }
 
 atl::string ClassType::mangle() const {
-  atl::string output = identifier->mangle();
+  atl::string output = typeDefinition.lock()->classIdentifier->mangle();
 
   if (typeModifiers.find(Type::Modifiers::CONST))
     output += "_const";
