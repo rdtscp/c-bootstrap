@@ -91,10 +91,13 @@ Writer::Writer(const atl::shared_ptr<SourceHandler> &output)
     : rax(new Register(64, "rax")), eax(new Register(32, "eax")),
       ax(new Register(16, "ax")), al(new Register(8, "al")),
 
-      rbx(new Register(64, "rbx")), rcx(new Register(64, "rcx")),
-      rdx(new Register(64, "rdx")), rsi(new Register(64, "rsi")),
-      rdi(new Register(64, "rdi")), rsp(new Register(64, "rsp")),
-      rbp(new Register(64, "rbp")), x64Output(output) {}
+      rcx(new Register(64, "rcx")), ecx(new Register(32, "ecx")),
+      cx(new Register(16, "cx")), cl(new Register(8, "cl")),
+
+      rbx(new Register(64, "rbx")), rdx(new Register(64, "rdx")),
+      rsi(new Register(64, "rsi")), rdi(new Register(64, "rdi")),
+      rsp(new Register(64, "rsp")), rbp(new Register(64, "rbp")),
+      r12(new Register(64, "r12")), x64Output(output) {}
 
 void Writer::add(const atl::shared_ptr<X64::Operand> &dst,
                  const atl::shared_ptr<X64::Operand> &src,
@@ -107,10 +110,11 @@ void Writer::add(const atl::shared_ptr<X64::Operand> &dst,
 }
 
 void Writer::block(const atl::string &blockName, const atl::string &comment) {
-  atl::string assembly = "\n" + blockName + ":";
+  atl::string assembly = blockName + ":";
   if (comment != "")
     assembly += "\t: " + comment;
 
+  write("");
   write(assembly);
 }
 
@@ -172,8 +176,7 @@ void Writer::jmp(const atl::string &label, const atl::string &comment) {
 void Writer::lea(const atl::shared_ptr<X64::Operand> &dst,
                  const atl::shared_ptr<X64::Operand> &src,
                  const atl::string &comment) {
-  atl::string assembly =
-      "lea " + dst->toString() + ", " + "[rel " + src->toString() + "]";
+  atl::string assembly = "lea " + dst->toString() + ", " + src->toString();
   if (comment != "")
     assembly += "\t; " + comment;
 
@@ -289,52 +292,100 @@ void Writer::sub(const atl::shared_ptr<X64::Operand> &dst,
 
 void Writer::write(const atl::string &str) {
   // printf("%s\n", str.c_str());
-  x64Output->write(str + "\n");
+  x64Output->write(indentation + str + "\n");
 }
 
 /* Helpers */
 void Writer::calleePrologue() {
   comment(" ---- Callee Prologue ----");
+  indent();
   // sub(rsp, 8);
   push(rbp);
   push(rbx);
   push(rdi);
   push(rsi);
   mov(rbp, rsp);
+  unindent();
   comment(" -------------------------");
 }
 
 void Writer::calleeEpilogue() {
   comment(" ---- Callee Epilogue ----");
+  indent();
   mov(rsp, rbp);
   pop(rsi);
   pop(rdi);
   pop(rbx);
   pop(rbp);
+  unindent();
   // add(rsp, atl::shared_ptr<X64::IntValue>(new X64::IntValue(8)));
-  ret();
   comment(" -------------------------");
 }
 
 void Writer::callerPrologue() {
   comment(" ---- Caller Prologue ----");
+  indent();
   push(rdi);
   push(rsi);
   push(rdx);
   push(rcx); // R8, R9
+  unindent();
   comment(" -------------------------");
 }
 
 void Writer::callerEpilogue() {
   comment(" ---- Caller Epilogue ----");
+  indent();
   pop(rcx);
   pop(rdx);
   pop(rsi);
   pop(rdi);
+  unindent();
   comment(" -------------------------");
 }
 
-atl::shared_ptr<Register> Writer::getTempReg() const { return rax; }
+void Writer::indent() { indentation += "  "; }
+void Writer::unindent() {
+  if (indentation.size() < 2) {
+    printf("INTERNAL_ERROR: Unindent Failure");
+    throw;
+  }
+
+  indentation = atl::string(indentation.size() - 2, ' ');
+}
+
+atl::shared_ptr<Register> Writer::getTempReg(const unsigned int num_bytes,
+                                             const unsigned int reg_num) const {
+  switch (num_bytes) {
+  case 1: {
+    if (reg_num == 0)
+      return al;
+    else
+      return cl;
+  }
+  case 2: {
+    if (reg_num == 0)
+      return ax;
+    else
+      return cx;
+  }
+  case 4: {
+    if (reg_num == 0)
+      return eax;
+    else
+      return ecx;
+  }
+  case 8: {
+    if (reg_num == 0)
+      return rax;
+    else
+      return rcx;
+  }
+  }
+  printf("INTERNAL_ERROR: Invalid number of bytes requested for a register: %d",
+         num_bytes);
+  throw;
+}
 
 atl::stack<atl::shared_ptr<Register>> Writer::paramRegs() const {
   atl::stack<atl::shared_ptr<Register>> output;

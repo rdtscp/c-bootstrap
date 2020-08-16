@@ -10,6 +10,8 @@ class FunSignature;
 class Scope {
 public:
   atl::weak_ptr<Scope> outerScope;
+  atl::vector<atl::shared_ptr<VarDecl>> objectsToDestruct;
+  atl::string scopeName;
 
   Scope() : outerScope(nullptr) {}
   virtual ~Scope() {}

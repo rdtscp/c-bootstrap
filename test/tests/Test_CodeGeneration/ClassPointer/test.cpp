@@ -4,11 +4,13 @@ class Point {
 public:
   int x;
   int y;
+
+  ~Point() {}
 };
 
 int main(int argc, char **argv) {
   Point point;
-  
+
   Point *point_ptr = &point;
   point_ptr->x = 5;
   point_ptr->y = 10;
