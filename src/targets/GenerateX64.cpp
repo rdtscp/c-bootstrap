@@ -141,18 +141,8 @@ void GenerateX64::mem_alloc(const atl::shared_ptr<X64::Operand> &num_bytes) {
 
 atl::shared_ptr<X64::Operand> GenerateX64::visit(AddressOf &ao) {
   const atl::shared_ptr<X64::Operand> aoObj = ao.addressOfExpr->accept(*this);
-  if (aoObj->opType() == "AddrOffset") {
-    // Calculate the address, and store it in
-    const atl::shared_ptr<X64::AddrOffset> addrOffset =
-        atl::static_pointer_cast<X64::AddrOffset>(aoObj);
-
-    x64.mov(x64.rax, addrOffset->addrOperand);
-    const atl::shared_ptr<X64::IntValue> offset(
-        new X64::IntValue(addrOffset->offset));
-    x64.add(x64.rax, offset);
-
-    return x64.rax;
-  }
+  x64.lea(x64.rax, aoObj);
+  return x64.rax;
 
   return atl::shared_ptr<X64::None>();
 }
@@ -190,18 +180,18 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BaseType &bt) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
   /* Get the value for the LHS. */
   atl::shared_ptr<X64::Operand> lhsOperand = bo.lhs->accept(*this);
-  if (lhsOperand->opType() == "Register") {
-    x64.push(lhsOperand, "Store LHS to Stack");
+  if (lhsOperand->opType() != "Register") {
+    const atl::shared_ptr<X64::Register> lhsReg = x64.getTempReg(
+        bo.lhs->exprType->getBytes(), 1); // HACKY. TODO: Fix this.
+    x64.mov(x64.rcx, genIntValue(0), "Set rcx to all 0");
+    x64.mov(lhsReg, lhsOperand);
   } else {
-    const atl::shared_ptr<X64::Register> tempReg = x64.getTempReg(8);
-    x64.mov(tempReg, lhsOperand, "Move the LHS into temp register.");
-    x64.push(tempReg, "Push temp register onto the stack.");
+    x64.mov(x64.rcx, lhsOperand);
   }
 
   /* Evaluate RHS and Store in EAX */
   atl::shared_ptr<X64::Operand> rhsOperand = bo.rhs->accept(*this);
-  x64.pop(x64.rcx, "Restore LHS from Stack into RCX.");
-  x64.mov(x64.rax, rhsOperand, "Move RHS into RCX.");
+  x64.mov(x64.rax, rhsOperand, "Move RHS into RAX.");
 
   /* Check if this Op is Overloaded */
   const atl::shared_ptr<FunDecl> opOverloadFun = bo.overload.lock();
@@ -413,11 +403,9 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassTypeDef &ctd) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorCall &cc) {
   atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
 
-  x64.mov(x64.rax, x64.rbp);
-
   // bpOffset is negative, so we add here.
-  x64.add(x64.rax, genIntValue(cc.objectToConstruct.lock()->bpOffset));
-  x64.mov(paramRegs.pop_back(), x64.rax);
+  const unsigned int rbpOffset = cc.objectToConstruct.lock()->bpOffset;
+  x64.lea(paramRegs.pop_back(), addrOffset(x64.rbp, rbpOffset));
 
   for (uint argNum = 0; argNum < cc.constructorArgs.size(); ++argNum) {
     const atl::shared_ptr<X64::Operand> argReg =
@@ -885,12 +873,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ValueAt &va) {
     const atl::shared_ptr<X64::Operand> exprOperand =
         va.derefExpr->accept(*this);
 
-    const atl::shared_ptr<X64::Register> destReg =
-        x64.getTempReg(va.exprType->getBytes());
-    x64.mov(x64.rcx, exprOperand, "Move address into rcx");
-    x64.mov(x64.rax, genIntValue(0), "Set rax to all 0");
-    x64.mov(destReg, addrOffset(x64.rcx, 0));
-    return x64.rax;
+    x64.mov(x64.rax, exprOperand, "Move address into rax");
+    return addrOffset(x64.rax, 0);
   } else {
     printf("Dereferencing Non-Primitive Types not Supported Yet.\n");
     throw;
