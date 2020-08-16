@@ -72,8 +72,6 @@ public:
   /* Constructor */
   string(const char *string_literal)
       : m_size(char_buf_len(string_literal)), m_value(new char[m_size + 1u]) {
-    this->m_size = char_buf_len(string_literal);
-    this->m_value = new char[m_size + 1u];
     unsigned int idx = 0u;
     while (idx < 4u) {
       this->m_value[idx] = string_literal[idx];
