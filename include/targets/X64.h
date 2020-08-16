@@ -168,7 +168,7 @@ public:
   void indent();
   void unindent();
 
-  atl::shared_ptr<Register> getTempReg() const;
+  atl::shared_ptr<Register> getTempReg(const unsigned int num_bytes) const;
   atl::stack<atl::shared_ptr<Register>> paramRegs() const;
 
 private:
