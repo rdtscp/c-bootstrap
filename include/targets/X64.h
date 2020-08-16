@@ -37,7 +37,7 @@ public:
   const int bits;
   const atl::string name;
 
-  Register(int bits, const atl::string &name);
+  Register(const int bits, const atl::string &name);
   bool operator==(const Register &rhs);
   atl::string opType() const override;
   atl::string toString() const override;
@@ -108,8 +108,11 @@ public:
   atl::shared_ptr<Register> eax;
   atl::shared_ptr<Register> ax;
   atl::shared_ptr<Register> al;
-  atl::shared_ptr<Register> rbx;
   atl::shared_ptr<Register> rcx;
+  atl::shared_ptr<Register> ecx;
+  atl::shared_ptr<Register> cx;
+  atl::shared_ptr<Register> cl;
+  atl::shared_ptr<Register> rbx;
   atl::shared_ptr<Register> rdx;
   atl::shared_ptr<Register> rsi;
   atl::shared_ptr<Register> rdi;

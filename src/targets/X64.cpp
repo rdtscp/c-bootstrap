@@ -91,11 +91,13 @@ Writer::Writer(const atl::shared_ptr<SourceHandler> &output)
     : rax(new Register(64, "rax")), eax(new Register(32, "eax")),
       ax(new Register(16, "ax")), al(new Register(8, "al")),
 
-      rbx(new Register(64, "rbx")), rcx(new Register(64, "rcx")),
-      rdx(new Register(64, "rdx")), rsi(new Register(64, "rsi")),
-      rdi(new Register(64, "rdi")), rsp(new Register(64, "rsp")),
-      rbp(new Register(64, "rbp")), r12(new Register(64, "r12")),
-      x64Output(output) {}
+      rcx(new Register(64, "rcx")), ecx(new Register(32, "ecx")),
+      cx(new Register(16, "cx")), cl(new Register(8, "cl")),
+
+      rbx(new Register(64, "rbx")), rdx(new Register(64, "rdx")),
+      rsi(new Register(64, "rsi")), rdi(new Register(64, "rdi")),
+      rsp(new Register(64, "rsp")), rbp(new Register(64, "rbp")),
+      r12(new Register(64, "r12")), x64Output(output) {}
 
 void Writer::add(const atl::shared_ptr<X64::Operand> &dst,
                  const atl::shared_ptr<X64::Operand> &src,
