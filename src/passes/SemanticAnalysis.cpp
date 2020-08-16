@@ -712,10 +712,13 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ReferenceType &rt) {
   return rt.getptr();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Return &r) {
-  if (r.returnExpr)
-    return r.returnExpr->accept(*this);
-
-  return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID));
+  if (r.returnExpr) {
+    r.returnExpr->exprType = r.returnExpr->accept(*this);
+  } else {
+    r.returnExpr->exprType =
+        atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID));
+  }
+  return r.returnExpr->exprType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(SizeOf &so) {
   return atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT));
