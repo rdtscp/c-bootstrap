@@ -32,6 +32,10 @@ public:
     this->m_value[m_size] = '\0';
   }
 
+  ~string() {
+    // TODO: Delete m_value;
+  }
+
   const char *c_str() { return this->m_value; }
 
   const char *c_str() const { return this->m_value; }

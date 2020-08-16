@@ -37,7 +37,7 @@ public:
   const int bits;
   const atl::string name;
 
-  Register(int bits, const atl::string &name);
+  Register(const int bits, const atl::string &name);
   bool operator==(const Register &rhs);
   atl::string opType() const override;
   atl::string toString() const override;
@@ -108,13 +108,17 @@ public:
   atl::shared_ptr<Register> eax;
   atl::shared_ptr<Register> ax;
   atl::shared_ptr<Register> al;
-  atl::shared_ptr<Register> rbx;
   atl::shared_ptr<Register> rcx;
+  atl::shared_ptr<Register> ecx;
+  atl::shared_ptr<Register> cx;
+  atl::shared_ptr<Register> cl;
+  atl::shared_ptr<Register> rbx;
   atl::shared_ptr<Register> rdx;
   atl::shared_ptr<Register> rsi;
   atl::shared_ptr<Register> rdi;
   atl::shared_ptr<Register> rsp;
   atl::shared_ptr<Register> rbp;
+  atl::shared_ptr<Register> r12;
 
   Writer(const atl::shared_ptr<SourceHandler> &output);
   Writer() = delete;
@@ -164,7 +168,8 @@ public:
   void indent();
   void unindent();
 
-  atl::shared_ptr<Register> getTempReg() const;
+  atl::shared_ptr<Register> getTempReg(const unsigned int num_bytes,
+                                       const unsigned int reg_num = 0) const;
   atl::stack<atl::shared_ptr<Register>> paramRegs() const;
 
 private:

@@ -9,6 +9,8 @@ public:
 class Derived {
 public:
   Base m_base;
+
+  ~Derived() {}
 };
 
 int main(int argc, char **argv) {
