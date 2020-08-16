@@ -383,9 +383,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ClassTypeDef &ctd) {
     atl::shared_ptr<VarDecl> currMember =
         atl::static_pointer_cast<VarDecl>(currDecl);
     currMember->bpOffset = objByteOffset;
-    // TODO: MASSIVE HACK, this is just so that each var gets its own line,
-    // seems inefficient...
-    objByteOffset += 16; // currMember->getBytes();
+    objByteOffset += currMember->getBytes();
   }
 
   // Generate code for methods.
