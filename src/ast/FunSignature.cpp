@@ -55,8 +55,6 @@ atl::string FunSignature::mangle() const {
   for (unsigned int idx = 0u; idx < funArgs.size(); ++idx) {
     output += "_" + funArgs[idx]->mangle() + "_";
   }
-  if (funModifiers.find(FunDecl::FunModifiers::CONST))
-    output += "_const";
 
   return output;
 }
@@ -78,10 +76,11 @@ bool FunSignature::operator==(const FunSignature &rhs) const {
 
   for (unsigned int idx = 0u; idx < funArgs.size(); ++idx) {
     const atl::shared_ptr<Type> lhsType = collapseReferenceTypes(funArgs[idx]);
-    const atl::shared_ptr<Type> rhsType = collapseReferenceTypes(rhs.funArgs[idx]);
+    const atl::shared_ptr<Type> rhsType =
+        collapseReferenceTypes(rhs.funArgs[idx]);
     // const atl::shared_ptr<Type> lhsType = funArgs[idx];
     // const atl::shared_ptr<Type> rhsType = rhs.funArgs[idx];
-    
+
     if (*lhsType != *rhsType && !lhsType->canCastTo(*rhsType))
       return false;
   }
@@ -102,7 +101,6 @@ bool FunSignature::operator==(const FunSignature &rhs) const {
 bool FunSignature::operator!=(const FunSignature &rhs) const {
   return !(*this == rhs);
 }
-
 
 atl::string FunSignature::toString() const {
   atl::string output = funIdentifier->toString() + "(";
