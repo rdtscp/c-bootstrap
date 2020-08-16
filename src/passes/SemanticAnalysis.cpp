@@ -70,15 +70,13 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
   if (lhsType == nullptr)
     return error("Type Analysis", "Assignation LHS has undefined type.",
                  as.getptr());
+  as.lhs->exprType = lhsType;
   const atl::shared_ptr<Type> rhsType = as.rhs->accept(*this);
-  if (lhsType == nullptr) {
-    return error("Type Analysis", "Assignation LHS has undefined type.",
-                 as.getptr());
-  }
   if (rhsType == nullptr) {
     return error("Type Analysis", "Assignation RHS has undefined type.",
                  as.getptr());
   }
+  as.rhs->exprType = rhsType;
   if (!lhsType->equivalentTo(*rhsType) && *lhsType != *rhsType) {
     return error("Type Analysis", "Assignation has mismatched types.",
                  as.getptr());
@@ -526,6 +524,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(IntLiteral &il) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
   atl::shared_ptr<Type> objType = ma.object->accept(*this);
+  ma.object->exprType = objType;
   objType = ReferenceType::collapseReferenceTypes(objType);
 
   atl::shared_ptr<ClassType> objClassType;
