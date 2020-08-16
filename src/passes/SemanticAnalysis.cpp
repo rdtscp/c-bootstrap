@@ -364,6 +364,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(DestructorDef &dd) {
   dd.outerScope = currScope;
   currScope = dd.getptr();
 
+  dd.classType->accept(*this);
+
   dd.thisParam->accept(*this);
 
   dd.destructorBlock->accept(*this);
