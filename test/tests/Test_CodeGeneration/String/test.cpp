@@ -20,12 +20,11 @@ private:
 public:
   /* Constructor */
   string(const char *string_literal)
-      : m_size(char_buf_len(string_literal)), m_value(new char[m_size + 1u]) {
-    this->m_size = char_buf_len(string_literal);
-    this->m_value = new char[m_size + 1u];
+      : m_size(char_buf_len(string_literal)),
+        m_value(new char[this->m_size + 1u]) {
 
-    unsigned int idx = 0u;
-    while (idx < 4u) {
+    uint idx = 0u;
+    while (idx < this->m_size) {
       this->m_value[idx] = string_literal[idx];
       ++idx;
     }
@@ -33,7 +32,9 @@ public:
   }
 
   ~string() {
-    // TODO: Delete m_value;
+    this->m_size = 0u;
+    delete[] this->m_value;
+    this->m_value = nullptr;
   }
 
   const char *c_str() { return this->m_value; }
@@ -47,16 +48,6 @@ int main(int argc, char **argv) {
   const char *raw = "Test";
 
   string str(raw);
-
-  // char *copy = new char[5u];
-
-  // const char *raw_ptr = raw;
-  // unsigned int idx = 0u;
-  // while (idx < 4u) {
-  //   copy[idx] = *raw_ptr;
-  //   ++raw_ptr;
-  //   ++idx;
-  // }
 
   printf("expect: Test\nactual: %s\n", str.c_str());
 
