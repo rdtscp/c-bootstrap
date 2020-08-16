@@ -122,26 +122,26 @@ TEST(Test_CodeGeneration, Dereference) {
   ASSERT_EQ(system(binary.c_str()), 0);
 }
 
-// TEST(Test_CodeGeneration, Destructor) {
-//   const atl::string filepath = test_prefix + "Destructor/test.cpp";
-//   const atl::shared_ptr<SourceFileHandler> src(new
-//   SourceFileHandler(filepath)); ACC::Preprocessor preprocessor(src, {});
-//   ACC::Scanner scanner(preprocessor.getSource());
-//   ACC::Lexer lexer(scanner);
-//   ACC::Parser parser(lexer);
-//   atl::shared_ptr<Program> progAST = parser.getAST();
+TEST(Test_CodeGeneration, Destructor) {
+  const atl::string filepath = test_prefix + "Destructor/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> progAST = parser.getAST();
 
-//   SemanticAnalysis nameAnalysis(progAST);
-//   nameAnalysis.run();
-//   ASSERT_EQ(0, nameAnalysis.errorCount);
+  SemanticAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
 
-//   GenerateX64 x64Generator(progAST);
-//   const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
-//   const atl::string binary_name = test_prefix + "Destructor/binary";
-//   LinkerBuilder linkAndBuilder(assembly, binary_name);
-//   const atl::string binary = linkAndBuilder.linkAndBuild();
-//   ASSERT_EQ(system(binary.c_str()), 0);
-// }
+  GenerateX64 x64Generator(progAST);
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name = test_prefix + "Destructor/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  const atl::string binary = linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary.c_str()), 0);
+}
 
 TEST(Test_CodeGeneration, FunCall) {
   const atl::string filepath = test_prefix + "FunCall/test.cpp";
