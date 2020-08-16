@@ -354,17 +354,33 @@ void Writer::unindent() {
   indentation = atl::string(indentation.size() - 2, ' ');
 }
 
-atl::shared_ptr<Register>
-Writer::getTempReg(const unsigned int num_bytes) const {
+atl::shared_ptr<Register> Writer::getTempReg(const unsigned int num_bytes,
+                                             const unsigned int reg_num) const {
   switch (num_bytes) {
-  case 1:
-    return al;
-  case 2:
-    return ax;
-  case 4:
-    return eax;
-  case 8:
-    return rax;
+  case 1: {
+    if (reg_num == 0)
+      return al;
+    else
+      return cl;
+  }
+  case 2: {
+    if (reg_num == 0)
+      return ax;
+    else
+      return cx;
+  }
+  case 4: {
+    if (reg_num == 0)
+      return eax;
+    else
+      return ecx;
+  }
+  case 8: {
+    if (reg_num == 0)
+      return rax;
+    else
+      return rcx;
+  }
   }
   printf("INTERNAL_ERROR: Invalid number of bytes requested for a register: %d",
          num_bytes);
