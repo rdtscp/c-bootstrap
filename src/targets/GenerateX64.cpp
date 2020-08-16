@@ -329,10 +329,12 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Block &b) {
     const atl::shared_ptr<VarDecl> currObj = currScope->objectsToDestruct[idx];
     x64.block("Exit_" + currScope->scopeName + "_" + atl::to_string(idx));
     x64.push(x64.rax);
+    x64.callerPrologue();
     x64.lea(x64.rdi, addrOffset(x64.rbp, currObj->bpOffset),
             "Load the address of VarDecl '" + currObj->identifier->toString() +
                 "'");
     x64.call("Dtor_" + currObj->type->mangle());
+    x64.callerEpilogue();
     x64.pop(x64.rax);
   }
 
