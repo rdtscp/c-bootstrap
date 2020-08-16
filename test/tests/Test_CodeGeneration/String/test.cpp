@@ -32,10 +32,9 @@ public:
   }
 
   ~string() {
-    // this->m_size = 0u;
-    // delete[] this->m_value;
-    // this->m_value = nullptr;
-    // TODO: Delete m_value;
+    this->m_size = 0u;
+    delete[] this->m_value;
+    this->m_value = nullptr;
   }
 
   const char *c_str() { return this->m_value; }
