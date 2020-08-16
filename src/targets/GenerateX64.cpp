@@ -489,6 +489,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(DestructorDef &dd) {
 
   currBpOffset = 0;
 
+  x64.block("FunDecl_" + currScope->scopeName + "_const");
   x64.block("FunDecl_" + currScope->scopeName);
   x64.indent();
 
