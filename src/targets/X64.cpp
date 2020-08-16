@@ -112,7 +112,7 @@ void Writer::add(const atl::shared_ptr<X64::Operand> &dst,
 void Writer::block(const atl::string &blockName, const atl::string &comment) {
   atl::string assembly = blockName + ":";
   if (comment != "")
-    assembly += "\t: " + comment;
+    assembly += "\t; " + comment;
 
   write("");
   write(assembly);
@@ -121,7 +121,7 @@ void Writer::block(const atl::string &blockName, const atl::string &comment) {
 void Writer::call(const atl::string &ident, const atl::string &comment) {
   atl::string assembly = "call FunDecl_" + ident;
   if (comment != "")
-    assembly += "\t: " + comment;
+    assembly += "\t; " + comment;
 
   write(assembly);
 }
@@ -131,7 +131,7 @@ void Writer::cmp(const atl::shared_ptr<X64::Operand> &op1,
                  const atl::string &comment) {
   atl::string assembly = "cmp " + op1->toString() + ", " + op2->toString();
   if (comment != "")
-    assembly += "\t: " + comment;
+    assembly += "\t; " + comment;
 
   write(assembly);
 }
