@@ -601,6 +601,11 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
 
   currScope = outerScope;
 
+  // References are just like pointers.
+  if (ma.object->exprType->astClass() == "ReferenceType") {
+    ma.accessType = SourceToken::Class::PTRDOT;
+  }
+
   ma.exprType = memberType;
   return ma.exprType;
 }
