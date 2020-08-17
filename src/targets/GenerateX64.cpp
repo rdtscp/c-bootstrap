@@ -412,7 +412,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorCall &cc) {
     atl::shared_ptr<X64::Operand> argReg =
         cc.constructorArgs[argNum]->accept(*this);
     if (ctorDecl->constructorParams[argNum + 1]->type->astClass() ==
-        "ReferenceType") {
+            "ReferenceType" &&
+        cc.constructorArgs[argNum]->exprType->astClass() != "ReferenceType") {
       x64.lea(x64.rcx, argReg);
       argReg = x64.rcx;
     }

@@ -65,7 +65,8 @@ DestructorDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
   if (localFind != nullptr)
     return localFind;
   else if (outerScope.lock() != nullptr)
-    return outerScope.lock()->findVarDecl(identifier, exemptDecl);
+    return outerScope.lock()->outerScope.lock()->findVarDecl(identifier,
+                                                             exemptDecl);
   else
     return nullptr;
 }

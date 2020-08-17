@@ -30,8 +30,8 @@ public:
 
   ~string_view() {
     printf("\tDestruct string_view: '%s'\n", this->m_value);
-    m_size = 0u;
-    m_value = nullptr;
+    this->m_size = 0u;
+    this->m_value = nullptr;
   }
 
   const char *c_str() const { return this->m_value; }
@@ -39,7 +39,10 @@ public:
   const uint size() const { return this->m_size; }
 };
 
-void print(const string_view &msg) { printf("print('%s')\n", msg.c_str()); }
+void print(const string_view &msg) {
+  const string_view copy(msg);
+  printf("print('%s')\n", copy.c_str());
+}
 
 int main(int argc, char **argv) {
   const char *raw = "Hello World";

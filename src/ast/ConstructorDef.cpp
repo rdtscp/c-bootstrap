@@ -24,9 +24,12 @@ atl::shared_ptr<Identifier> ConstructorDef::getIdentifier() const {
   return classType->identifier;
 }
 
-atl::shared_ptr<MemberAccess> ConstructorDef::createThisAccess(const atl::shared_ptr<Expr> &memberExpr) const {
-  const atl::shared_ptr<VarExpr> thisExpr(new VarExpr(atl::shared_ptr<Identifier>(new Identifier("this"))));
-  return atl::shared_ptr<MemberAccess>(new MemberAccess(thisExpr, memberExpr, SourceToken::Class::PTRDOT));
+atl::shared_ptr<MemberAccess> ConstructorDef::createThisAccess(
+    const atl::shared_ptr<Expr> &memberExpr) const {
+  const atl::shared_ptr<VarExpr> thisExpr(
+      new VarExpr(atl::shared_ptr<Identifier>(new Identifier("this"))));
+  return atl::shared_ptr<MemberAccess>(
+      new MemberAccess(thisExpr, memberExpr, SourceToken::Class::PTRDOT));
 }
 
 bool ConstructorDef::operator==(Decl &rhs) const {
@@ -91,7 +94,8 @@ ConstructorDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
   if (localFind != nullptr)
     return localFind;
   else if (outerScope.lock() != nullptr)
-    return outerScope.lock()->findVarDecl(identifier, exemptDecl);
+    return outerScope.lock()->outerScope.lock()->findVarDecl(identifier,
+                                                             exemptDecl);
   else
     return nullptr;
 }
