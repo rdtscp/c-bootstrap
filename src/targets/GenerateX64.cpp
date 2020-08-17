@@ -973,7 +973,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(While &w) {
 
 /* ---- Helpers ---- */
 
-atl::shared_ptr<X64::IntValue> GenerateX64::genIntValue(int value) {
+atl::shared_ptr<X64::IntValue> GenerateX64::genIntValue(int value) const {
   return atl::shared_ptr<X64::IntValue>(
       new X64::IntValue(atl::to_string(value)));
 }
