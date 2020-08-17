@@ -28,7 +28,8 @@ public:
       this->m_value[idx] = string_literal[idx];
       ++idx;
     }
-    this->m_value[m_size] = '\0';
+    // TODO: Why wasn't a lack of `this` in the [] caught
+    this->m_value[this->m_size] = '\0';
   }
 
   ~string() {
