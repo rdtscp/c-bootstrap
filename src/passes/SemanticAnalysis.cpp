@@ -553,11 +553,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
 
   atl::shared_ptr<ClassType> objClassType;
   if (objType->astClass() == "ClassType") {
-    if (ma.accessType != SourceToken::Class::DOT)
+    if (ma.accessType != SourceToken::Class::DOT) {
       return error("Type Analysis",
                    "Attempted to access member variable of class type without "
                    "using `.` operator.",
                    ma.object);
+    }
     objClassType = atl::static_pointer_cast<ClassType>(objType);
   } else if (objType->astClass() == "PointerType") {
     if (ma.accessType != SourceToken::Class::PTRDOT) {
