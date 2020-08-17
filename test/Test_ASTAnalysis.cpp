@@ -264,6 +264,22 @@ TEST(Test_ASTAnalysis, MemberCalls) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
+TEST(Test_ASTAnalysis, MemberVar) {
+  const atl::string filepath = test_prefix + "MemberVar/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  Lexer lexer(scanner);
+  Parser parser(lexer);
+
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis semanticAnalysis(progAST);
+  semanticAnalysis.run();
+  semanticAnalysis.printErrors();
+  ASSERT_NE(0, semanticAnalysis.errorCount);
+}
+
 TEST(Test_ASTAnalysis, NameAnalysis) {
   const atl::string filepath = test_prefix + "NameAnalysis/test.cpp";
   const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
