@@ -93,20 +93,20 @@ public:
       this->m_value[idx] = rhs.m_value[idx];
       ++idx;
     }
-    m_value[this->m_size] = '\0';
+    this->m_value[this->m_size] = '\0';
   }
 
   /* Assignment Operator */
   string &operator=(string rhs) {
-    test::swap(m_size, rhs.m_size);
-    test::swap(m_value, rhs.m_value);
+    test::swap(this->m_size, rhs.m_size);
+    test::swap(this->m_value, rhs.m_value);
     return *this;
   }
 
   /* Move Constructor */
   string(string &&rhs) : m_size(0u), m_value(nullptr) {
-    test::swap(m_size, rhs.m_size);
-    test::swap(m_value, rhs.m_value);
+    test::swap(this->m_size, rhs.m_size);
+    test::swap(this->m_value, rhs.m_value);
   }
 
   /* Destructor */
@@ -137,15 +137,15 @@ public:
   }
 
   bool operator<(const string &rhs) const {
-    if (m_size < rhs.m_size) {
+    if (this->m_size < rhs.m_size) {
       return true;
     }
 
-    if (m_size > rhs.m_size) {
+    if (this->m_size > rhs.m_size) {
       return false;
     }
 
-    for (uint idx = 0u; idx < m_size; ++idx) {
+    for (uint idx = 0u; idx < this->m_size; ++idx) {
       const char currLhs = this->at(idx);
       const char currRhs = rhs.at(idx);
       if (static_cast<int>(currLhs) < static_cast<int>(currRhs)) {
@@ -156,14 +156,14 @@ public:
   }
 
   bool operator>(const string &rhs) const {
-    if (m_size < rhs.m_size) {
+    if (this->m_size < rhs.m_size) {
       return false;
     }
-    if (m_size > rhs.m_size) {
+    if (this->m_size > rhs.m_size) {
       return true;
     }
 
-    for (uint idx = 0u; idx < m_size; ++idx) {
+    for (uint idx = 0u; idx < this->m_size; ++idx) {
       const char currLhs = this->at(idx);
       const char currRhs = rhs.at(idx);
       if (static_cast<int>(currLhs) > static_cast<int>(currRhs)) {
@@ -175,14 +175,14 @@ public:
   }
 
   bool operator<=(const string &rhs) const {
-    if (m_size < rhs.m_size) {
+    if (this->m_size < rhs.m_size) {
       return true;
     }
-    if (m_size > rhs.m_size) {
+    if (this->m_size > rhs.m_size) {
       return false;
     }
 
-    for (uint idx = 0u; idx < m_size; ++idx) {
+    for (uint idx = 0u; idx < this->m_size; ++idx) {
       const char currLhs = this->at(idx);
       const char currRhs = rhs.at(idx);
       if (static_cast<int>(currLhs) > static_cast<int>(currRhs)) {
@@ -193,14 +193,14 @@ public:
   }
 
   bool operator>=(const string &rhs) const {
-    if (m_size < rhs.m_size) {
+    if (this->m_size < rhs.m_size) {
       return false;
     }
-    if (m_size > rhs.m_size) {
+    if (this->m_size > rhs.m_size) {
       return true;
     }
 
-    for (uint idx = 0u; idx < m_size; ++idx) {
+    for (uint idx = 0u; idx < this->m_size; ++idx) {
       const char currLhs = this->at(idx);
       const char currRhs = rhs.at(idx);
       if (static_cast<int>(currLhs) < static_cast<int>(currRhs)) {
@@ -212,11 +212,11 @@ public:
   }
 
   bool operator==(const string &rhs) const {
-    if (m_size != rhs.m_size) {
+    if (this->m_size != rhs.m_size) {
       return false;
     }
 
-    for (uint idx = 0u; idx < m_size; ++idx) {
+    for (uint idx = 0u; idx < this->m_size; ++idx) {
       if (this->at(idx) != rhs.at(idx)) {
         return false;
       }
@@ -241,7 +241,7 @@ public:
 
   char &at(const uint index) {
     if (index < this->size()) {
-      return m_value[index];
+      return this->m_value[index];
     }
     printf("%s\n", "test::string::at Out of Bounds Exception");
     throw;
@@ -249,7 +249,7 @@ public:
 
   const char &at(const uint index) const {
     if (index < this->size()) {
-      return m_value[index];
+      return this->m_value[index];
     }
     printf("%s\n", "test::string::at Out of Bounds Exception");
     throw;
@@ -264,15 +264,15 @@ public:
       return;
     }
 
-    const uint new_size = m_size + rhs.m_size;
+    const uint new_size = this->m_size + rhs.m_size;
 
     // Allocate memory for the new string.
     char *new_string_value = new char[new_size + 1u];
     char *new_string_value_ptr = new_string_value;
 
     // Copy the LHS.
-    const char *lhs_ptr = m_value;
-    for (uint idx = 0u; idx < m_size; ++idx) {
+    const char *lhs_ptr = this->m_value;
+    for (uint idx = 0u; idx < this->m_size; ++idx) {
       *new_string_value_ptr = *lhs_ptr;
       ++lhs_ptr;
       ++new_string_value_ptr;
@@ -289,16 +289,16 @@ public:
     // Null terminate.
     *new_string_value_ptr = '\0';
 
-    delete[] m_value;
-    m_size = new_size;
-    m_value = new_string_value;
+    delete[] this->m_value;
+    this->m_size = new_size;
+    this->m_value = new_string_value;
   }
 
-  const_iterator begin() const { return &m_value[0u]; }
+  const_iterator begin() const { return &this->m_value[0u]; }
 
   const_iterator end() const {
     const uint len = this->size();
-    return &m_value[len];
+    return &this->m_value[len];
   }
 
   char *c_str() { return this->m_value; }
