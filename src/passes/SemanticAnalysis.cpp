@@ -79,6 +79,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
     return error("Type Analysis", "Assignation RHS has undefined type.",
                  as.getptr());
   }
+  as.rhs->exprType = rhsType;
   if (!lhsType->equivalentTo(*rhsType) && *lhsType != *rhsType) {
     return error("Type Analysis", "Assignation has mismatched types.",
                  as.getptr());
@@ -547,15 +548,17 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(IntLiteral &il) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(MemberAccess &ma) {
   atl::shared_ptr<Type> objType = ma.object->accept(*this);
+  ma.object->exprType = objType;
   objType = ReferenceType::collapseReferenceTypes(objType);
 
   atl::shared_ptr<ClassType> objClassType;
   if (objType->astClass() == "ClassType") {
-    if (ma.accessType != SourceToken::Class::DOT)
+    if (ma.accessType != SourceToken::Class::DOT) {
       return error("Type Analysis",
                    "Attempted to access member variable of class type without "
                    "using `.` operator.",
                    ma.object);
+    }
     objClassType = atl::static_pointer_cast<ClassType>(objType);
   } else if (objType->astClass() == "PointerType") {
     if (ma.accessType != SourceToken::Class::PTRDOT) {

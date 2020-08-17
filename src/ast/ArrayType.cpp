@@ -17,6 +17,7 @@ unsigned int ArrayType::getBytes() const {
     return 8;
   }
 
+
   const atl::shared_ptr<IntLiteral> sizeIntLiteral =
       atl::static_pointer_cast<IntLiteral>(size);
   return atl::stoi(sizeIntLiteral->getLiteral()) * elementSize;
