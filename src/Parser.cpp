@@ -649,7 +649,7 @@ atl::shared_ptr<VarDecl> Parser::parseVarDecl() {
       params.push_back(parseExpr());
     while (accept(TC::COMMA)) {
       expect(TC::COMMA);
-      params.push_back(parseLitExpr());
+      params.push_back(parseExpr());
     }
     expect(TC::RPAR);
     const atl::shared_ptr<ConstructorCall> constructorCall =
