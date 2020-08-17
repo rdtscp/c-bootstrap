@@ -11,7 +11,7 @@ public:
 int main(int argc, const char **argv) {
   char str[13] = "Hello World\n";
 
-  printf("str has value: %d\n", str);
+  printf("str has value: %s\n", str);
 
   const int idx = 10;
 
