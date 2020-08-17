@@ -34,6 +34,8 @@ public:
 
   atl::string astClass() const override { return "FunDef"; }
 
+  bool isThisParam(const atl::shared_ptr<VarDecl> &varDecl) const;
+
   /* Scope Methods */
   virtual atl::shared_ptr<ClassTypeDecl>
   findClassDecl(const atl::shared_ptr<Identifier> identifier,
