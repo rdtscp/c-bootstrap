@@ -157,16 +157,17 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ArrayType &at) {
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Assign &as) {
   const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
-  x64.mov(x64.rax, rhs, "Move the RHS into a temp register");
-  x64.push(x64.rax, "Store RHS on the Stack Temporarily");
+  atl::shared_ptr<X64::Register> rhsReg =
+      copyToRegister(rhs, as.rhs->exprType->getBytes());
+  x64.push(rhsReg, "Store RHS on the Stack Temporarily");
 
   const atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
   x64.pop(x64.rcx, "Pop the RHS off the Stack into rcx");
   // We can't mov a StringLiteral into a space on the stack
   // load it into a register(effectively the address) and
   // then move that address onto the stack.
-
-  x64.mov(lhs, x64.rcx, "Move RHS into LHS.");
+  rhsReg = x64.getTempReg(as.rhs->exprType->getBytes(), 1);
+  x64.mov(lhs, rhsReg, "Move RHS into LHS.");
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BaseType &bt) {
