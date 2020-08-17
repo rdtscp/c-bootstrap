@@ -402,9 +402,15 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorCall &cc) {
   x64.lea(paramRegs.pop_back(), addrOffset(x64.rbp, objToCtruct->bpOffset),
           "Load the address of: " + objToCtruct->identifier->toString());
 
+  const atl::shared_ptr<ConstructorDecl> ctorDecl = cc.constructorDecl.lock();
   for (uint argNum = 0; argNum < cc.constructorArgs.size(); ++argNum) {
-    const atl::shared_ptr<X64::Operand> argReg =
+    atl::shared_ptr<X64::Operand> argReg =
         cc.constructorArgs[argNum]->accept(*this);
+    if (ctorDecl->constructorParams[argNum + 1]->type->astClass() ==
+        "ReferenceType") {
+      x64.lea(x64.rcx, argReg);
+      argReg = x64.rcx;
+    }
     if (paramRegs.size() > 0) {
       x64.mov(paramRegs.pop_back(), argReg);
     } else {
@@ -649,7 +655,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberAccess &ma) {
   }
   const unsigned int objByteOffset = memberDecl->bpOffset;
   // Handle Pointer Access
-  if (ma.accessType == SourceToken::Class::PTRDOT) {
+  if (ma.accessType == SourceToken::Class::PTRDOT ||
+      ma.object->exprType->astClass() == "ReferenceType") {
     x64.mov(x64.rax, objAddr, "Move objects address into rax");
     return addrOffset(x64.rax, objByteOffset);
   } else {
