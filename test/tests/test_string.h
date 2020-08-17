@@ -58,15 +58,15 @@ public:
   typedef char *iterator;
 
   /* Constructor */
-  string() : m_size(0u), m_value(new char[1]) { *m_value = '\0'; }
+  string() : m_size(0u), m_value(new char[1]) { *this->m_value = '\0'; }
 
   /* Constructor */
   string(const uint count, const char c)
-      : m_size(count), m_value(new char[m_size + 1u]) {
-    for (uint idx = 0u; idx < m_size; ++idx) {
-      m_value[idx] = c;
+      : m_size(count), m_value(new char[this->m_size + 1u]) {
+    for (uint idx = 0u; idx < this->m_size; ++idx) {
+      this->m_value[idx] = c;
     }
-    m_value[m_size] = '\0';
+    this->m_value[this->m_size] = '\0';
   }
 
   /* Constructor */
