@@ -325,6 +325,7 @@ void Writer::calleeEpilogue() {
 void Writer::callerPrologue() {
   comment(" ---- Caller Prologue ----");
   indent();
+  push(r12);
   push(rdi);
   push(rsi);
   push(rdx);
@@ -340,6 +341,7 @@ void Writer::callerEpilogue() {
   pop(rdx);
   pop(rsi);
   pop(rdi);
+  pop(r12);
   unindent();
   comment(" -------------------------");
 }

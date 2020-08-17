@@ -157,16 +157,17 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ArrayType &at) {
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Assign &as) {
   const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
-  x64.mov(x64.rax, rhs, "Move the RHS into a temp register");
-  x64.push(x64.rax, "Store RHS on the Stack Temporarily");
+  atl::shared_ptr<X64::Register> rhsReg =
+      copyToRegister(rhs, as.rhs->exprType->getBytes());
+  x64.push(rhsReg, "Store RHS on the Stack Temporarily");
 
   const atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
   x64.pop(x64.rcx, "Pop the RHS off the Stack into rcx");
   // We can't mov a StringLiteral into a space on the stack
   // load it into a register(effectively the address) and
   // then move that address onto the stack.
-
-  x64.mov(lhs, x64.rcx, "Move RHS into LHS.");
+  rhsReg = x64.getTempReg(as.rhs->exprType->getBytes(), 1);
+  x64.mov(lhs, rhsReg, "Move RHS into LHS.");
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BaseType &bt) {
@@ -401,9 +402,15 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorCall &cc) {
   x64.lea(paramRegs.pop_back(), addrOffset(x64.rbp, objToCtruct->bpOffset),
           "Load the address of: " + objToCtruct->identifier->toString());
 
+  const atl::shared_ptr<ConstructorDecl> ctorDecl = cc.constructorDecl.lock();
   for (uint argNum = 0; argNum < cc.constructorArgs.size(); ++argNum) {
-    const atl::shared_ptr<X64::Operand> argReg =
+    atl::shared_ptr<X64::Operand> argReg =
         cc.constructorArgs[argNum]->accept(*this);
+    if (ctorDecl->constructorParams[argNum + 1]->type->astClass() ==
+        "ReferenceType") {
+      x64.lea(x64.rcx, argReg);
+      argReg = x64.rcx;
+    }
     if (paramRegs.size() > 0) {
       x64.mov(paramRegs.pop_back(), argReg);
     } else {
@@ -835,16 +842,17 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(SubscriptOp &so) {
     // Get a pointer to the variable.
     const atl::shared_ptr<X64::Operand> this_ptr = so.variable->accept(*this);
     x64.mov(x64.rax, this_ptr, "Pointer to subscript variable.");
-    x64.push(x64.rax);
+    x64.push(x64.rax, "Save ptr to subscript var to stack.");
 
     // Get the index to offset.
     const atl::shared_ptr<X64::Operand> index = so.index->accept(*this);
-    x64.pop(x64.rcx);
-    x64.add(x64.rcx, index);
-    x64.mov(x64.rax, x64.rcx);
-    const atl::shared_ptr<X64::AddrOffset> valueAtIndex(
-        new X64::AddrOffset(x64.rax, 0));
-    return valueAtIndex;
+    const atl::shared_ptr<X64::Register> indexReg =
+        copyToRegister(index, so.index->exprType->getBytes());
+    x64.pop(x64.rcx, "Restore ptr to subscript var from stack.");
+    x64.add(x64.rcx, indexReg, "Increment the ptr by appropriate amount.");
+    x64.mov(x64.rax, x64.rcx, "Move the new address into RAX");
+
+    return addrOffset(x64.rax, 0);
   }
 
   return atl::shared_ptr<X64::None>();
