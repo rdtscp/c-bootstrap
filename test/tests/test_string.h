@@ -41,9 +41,9 @@ public:
     this->m_size = char_buf_len(value);
   }
 
-  char *c_str() { return this->m_value; }
+  const char *c_str() { return this->m_value; }
 
-  char *c_str() const { return this->m_value; }
+  const char *c_str() const { return this->m_value; }
 
   uint size() const { return this->m_size; }
 };
@@ -73,8 +73,8 @@ public:
   string(const char *string_literal)
       : m_size(char_buf_len(string_literal)),
         m_value(new char[this->m_size + 1u]) {
-    unsigned int idx = 0u;
-    while (idx < 4u) {
+    uint idx = 0u;
+    while (idx < this->m_size) {
       this->m_value[idx] = string_literal[idx];
       ++idx;
     }
@@ -82,16 +82,18 @@ public:
     //   this->m_value[idx] = *string_literal;
     //   ++string_literal;
     // }
-    this->m_value[m_size] = '\0';
+    this->m_value[this->m_size] = '\0';
   }
 
   /* Copy Constructor */
   string(const string &rhs)
-      : m_size(rhs.m_size), m_value(new char[m_size + 1u]) {
-    for (uint idx = 0u; idx < m_size; ++idx) {
-      m_value[idx] = rhs[idx];
+      : m_size(rhs.m_size), m_value(new char[this->m_size + 1u]) {
+    uint idx = 0u;
+    while (idx < this->m_size) {
+      this->m_value[idx] = rhs.m_value[idx];
+      ++idx;
     }
-    m_value[m_size] = '\0';
+    m_value[this->m_size] = '\0';
   }
 
   /* Assignment Operator */
