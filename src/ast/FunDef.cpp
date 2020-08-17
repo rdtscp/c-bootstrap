@@ -19,6 +19,25 @@ atl::shared_ptr<Identifier> FunDef::getIdentifier() const {
   return funIdentifier;
 }
 
+bool FunDef::isThisParam(const atl::shared_ptr<VarDecl> &varDecl) const {
+  if (varDecl->type->astClass() != "PointerType") {
+    return false;
+  }
+
+  const atl::shared_ptr<PointerType> varPtrType =
+      atl::static_pointer_cast<PointerType>(varDecl->type);
+  if (varPtrType->pointedType->astClass() != "ClassType") {
+    return false;
+  }
+
+  const atl::shared_ptr<Identifier> thisIdent(new Identifier("this"));
+  if (*varDecl->identifier != *thisIdent) {
+    return false;
+  }
+
+  return true;
+}
+
 bool FunDef::operator==(Decl &rhs) const {
   if (rhs.astClass() == astClass())
     return *this == *static_cast<FunDef *>(&rhs);
@@ -103,18 +122,36 @@ FunDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
                     const atl::shared_ptr<Decl> &exemptDecl) {
   const atl::shared_ptr<VarDecl> localFind =
       findVarDeclLocal(identifier, exemptDecl);
-  if (localFind != nullptr)
+  if (localFind != nullptr) {
     return localFind;
-  else if (outerScope.lock() != nullptr)
-    return outerScope.lock()->findVarDecl(identifier, exemptDecl);
-  else
+  } else if (outerScope.lock() != nullptr) {
+    if (funParams.size() > 0 && isThisParam(funParams[0])) {
+      return outerScope.lock()->outerScope.lock()->findVarDecl(identifier,
+                                                               exemptDecl);
+    } else {
+      return outerScope.lock()->findVarDecl(identifier, exemptDecl);
+    }
+  } else {
     return nullptr;
+  }
 }
 
 atl::shared_ptr<VarDecl>
 FunDef::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
                          const atl::shared_ptr<Decl> &exemptDecl) {
   const int numParams = funParams.size();
+  // // Check if
+  // if (funParams.size() > 0 && isThisParam(funParams[0])) {
+  //   atl::shared_ptr<VarDecl> thisParam = funParams[0];
+  //   atl::shared_ptr<ClassTypeDef> thisTypeDef =
+  //       atl::static_pointer_cast<ClassType>(thisParam->type)
+  //           ->typeDefinition.lock();
+  //   const atl::shared_ptr<VarDecl> thisParamFind =
+  //       thisTypeDef->findVarDeclLocal(identifier, exemptDecl);
+  //   if (thisParamFind != nullptr) {
+  //     return thisParamFind;
+  //   }
+  // }
   for (int idx = 0; idx < numParams; ++idx) {
     const atl::shared_ptr<VarDecl> currParam = funParams[idx];
     if (currParam.get() == exemptDecl.get())

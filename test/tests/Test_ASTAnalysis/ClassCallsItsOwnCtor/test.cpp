@@ -4,8 +4,8 @@ public:
   /* Constructor */
   string(const char *string_literal) {
     const unsigned int string_length = 0u;
-    string_value = new char[string_length + 1u];
-    char *string_value_ptr = string_value;
+    this->string_value = new char[string_length + 1u];
+    char *string_value_ptr = this->string_value;
     for (unsigned int i = 0u; i < string_length; ++i) {
       *string_value_ptr = *string_literal;
       ++string_value_ptr;
@@ -25,7 +25,7 @@ public:
     char *new_string_value_ptr = new_string_value;
 
     // Copy the LHS.
-    char *lhs_ptr = string_value;
+    char *lhs_ptr = this->string_value;
     for (unsigned int i = 0u; i < lhs_len; ++i) {
       *new_string_value_ptr = *lhs_ptr;
       ++lhs_ptr;
@@ -48,9 +48,9 @@ public:
     return output;
   }
 
-  char *c_str() { return string_value; }
+  char *c_str() { return this->string_value; }
 
-  char *c_str() const { return string_value; }
+  char *c_str() const { return this->string_value; }
 
   unsigned int size() const { return 0u; }
 
