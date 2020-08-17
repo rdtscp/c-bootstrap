@@ -162,7 +162,6 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Assign &as) {
       copyToRegister(rhs, as.rhs->exprType->getBytes());
   x64.push(rhsReg, "Store RHS on the Stack Temporarily");
 
-
   const atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
   x64.mov(x64.rcx, genIntValue(0));
   x64.pop(x64.rcx, "Pop the RHS off the Stack into rcx");
@@ -544,9 +543,13 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunCall &fc) {
 
   x64.callerPrologue();
 
+  const atl::shared_ptr<FunDecl> funDecl = fc.funDecl.lock();
   for (unsigned int argNum = 0u; argNum < fc.funArgs.size(); ++argNum) {
-    const atl::shared_ptr<X64::Operand> argReg =
-        fc.funArgs[argNum]->accept(*this);
+    atl::shared_ptr<X64::Operand> argReg = fc.funArgs[argNum]->accept(*this);
+    if (funDecl->funParams[argNum]->type->astClass() == "ReferenceType") {
+      x64.lea(x64.rcx, argReg);
+      argReg = x64.rcx;
+    }
     if (paramRegs.size() > 0)
       x64.mov(paramRegs.pop_back(), argReg);
     else
@@ -678,7 +681,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberCall &mc) {
   x64.callerPrologue();
 
   /* Handle `this` parameter. */
-  const atl::shared_ptr<AddressOf> thisPtrExpr(new AddressOf(mc.object));
+  const atl::shared_ptr<Expr> thisPtrExpr =
+      (mc.object->exprType->astClass() == "ReferenceType")
+          ? mc.object
+          : atl::shared_ptr<Expr>(new AddressOf(mc.object));
   const atl::shared_ptr<X64::Operand> this_ptr = thisPtrExpr->accept(*this);
   x64.mov(paramRegs.pop_back(), this_ptr);
 
