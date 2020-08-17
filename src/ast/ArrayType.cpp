@@ -13,10 +13,10 @@ ArrayType::ArrayType(const atl::shared_ptr<Type> &p_type,
 unsigned int ArrayType::getBytes() const {
   unsigned int elementSize = pointedType->getBytes();
   if (size->astClass() != "IntLiteral") {
+    // It's a dynamic array, its just a pointer.
     return 8;
   }
-  // throw ACC::Error(
-  //     "Internal Error: Attempted to getBytes() of dynamic ArrayType.");
+
 
   const atl::shared_ptr<IntLiteral> sizeIntLiteral =
       atl::static_pointer_cast<IntLiteral>(size);
