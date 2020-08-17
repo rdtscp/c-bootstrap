@@ -4,7 +4,8 @@ class Foo {
   uint m_size;
 
   Foo() {
-    for (uint idx = 0u; idx < m_size; ++idx) {}
+    for (uint idx = 0u; idx < this->m_size; ++idx) {
+    }
   }
 };
 
@@ -12,8 +13,9 @@ typedef unsigned int uint;
 
 int main() {
   uint size = 1u;
-  
-  for (uint i = 0u; i < size; ++i) {}
+
+  for (uint i = 0u; i < size; ++i) {
+  }
 
   return 1;
 }
