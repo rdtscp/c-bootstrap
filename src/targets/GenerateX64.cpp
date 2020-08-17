@@ -655,8 +655,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(MemberAccess &ma) {
   }
   const unsigned int objByteOffset = memberDecl->bpOffset;
   // Handle Pointer Access
-  if (ma.accessType == SourceToken::Class::PTRDOT ||
-      ma.object->exprType->astClass() == "ReferenceType") {
+  if (ma.accessType == SourceToken::Class::PTRDOT) {
     x64.mov(x64.rax, objAddr, "Move objects address into rax");
     return addrOffset(x64.rax, objByteOffset);
   } else {
@@ -843,16 +842,17 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(SubscriptOp &so) {
     // Get a pointer to the variable.
     const atl::shared_ptr<X64::Operand> this_ptr = so.variable->accept(*this);
     x64.mov(x64.rax, this_ptr, "Pointer to subscript variable.");
-    x64.push(x64.rax);
+    x64.push(x64.rax, "Save ptr to subscript var to stack.");
 
     // Get the index to offset.
     const atl::shared_ptr<X64::Operand> index = so.index->accept(*this);
-    x64.pop(x64.rcx);
-    x64.add(x64.rcx, index);
-    x64.mov(x64.rax, x64.rcx);
-    const atl::shared_ptr<X64::AddrOffset> valueAtIndex(
-        new X64::AddrOffset(x64.rax, 0));
-    return valueAtIndex;
+    const atl::shared_ptr<X64::Register> indexReg =
+        copyToRegister(index, so.index->exprType->getBytes());
+    x64.pop(x64.rcx, "Restore ptr to subscript var from stack.");
+    x64.add(x64.rcx, indexReg, "Increment the ptr by appropriate amount.");
+    x64.mov(x64.rax, x64.rcx, "Move the new address into RAX");
+
+    return addrOffset(x64.rax, 0);
   }
 
   return atl::shared_ptr<X64::None>();
