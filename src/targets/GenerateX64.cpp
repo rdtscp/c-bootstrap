@@ -147,15 +147,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(AddressOf &ao) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Allocation &a) {
-  if (a.varType != nullptr) {
-    // Allocate required bytes.
-    const atl::shared_ptr<X64::Operand> numBytes = a.varType->accept(*this);
-    mem_alloc(numBytes);
-    return x64.rax;
-  } else {
-    // Handle allocating structs.
-    return x64.rax;
-  }
+  // Allocate required bytes.
+  const atl::shared_ptr<X64::Operand> numBytes = a.varType->accept(*this);
+  mem_alloc(numBytes);
+  return x64.rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ArrayType &at) {
   return at.size->accept(*this);
