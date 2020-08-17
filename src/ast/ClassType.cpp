@@ -14,8 +14,9 @@ bool ClassType::canCastTo(Type &rhs) const {
     if (rhsRefType->referencedType->astClass() == "ClassType") {
       const atl::shared_ptr<ClassType> rhsRefClassType =
           atl::static_pointer_cast<ClassType>(rhsRefType->referencedType);
-      if (*rhsRefClassType->identifier == *identifier)
+      if (rhsRefClassType->typeDefinition.lock() == typeDefinition.lock()) {
         return true;
+      }
     }
   }
   return false;

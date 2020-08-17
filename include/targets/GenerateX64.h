@@ -102,7 +102,11 @@ private:
   /* ---- Helpers ---- */
   atl::shared_ptr<X64::AddrOffset>
   addrOffset(const atl::shared_ptr<X64::Operand> addrOperand, const int offset);
-  atl::shared_ptr<X64::IntValue> genIntValue(int value);
+  atl::shared_ptr<X64::IntValue> genIntValue(int value) const;
   int roundTo16Bytes(int bytes) const;
+
+  atl::shared_ptr<X64::Register>
+  copyToRegister(const atl::shared_ptr<X64::Operand> &operand,
+                 const unsigned int num_bytes);
 };
 } // namespace ACC
