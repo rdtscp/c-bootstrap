@@ -18,16 +18,18 @@ class string_view {
 
 public:
   string_view(const char *value) : m_value(value), m_size(char_buf_len(value)) {
-    printf("Construct string_view: '%s'\n", m_value);
+    printf("\tConstruct string_view: '%s'\n", m_value);
   }
 
   string_view(const string_view &rhs)
       : m_value(rhs.m_value), m_size(rhs.m_size) {
-    printf("Copy string_view: '%s'\n", this->m_value);
+    printf("\tCopy string_view: '%s'\n", this->m_value);
+    printf("\trhs string_view: '%d'\n", rhs.m_size);
+    printf("\tthis string_view: '%d'\n", this->m_size);
   }
 
   ~string_view() {
-    printf("Destruct string_view: '%s'\n", this->m_value);
+    printf("\tDestruct string_view: '%s'\n", this->m_value);
     m_size = 0u;
     m_value = nullptr;
   }
@@ -42,11 +44,13 @@ int main(int argc, char **argv) {
 
   string_view sv1(raw);
   printf("Printing sv1: '%s'\n", sv1.c_str());
-  printf(" Size of sv1: %d\n", sv1.size());
+  printf("Size of sv1:  %d\n", sv1.size());
 
-  string_view sv2(sv1);
-  printf("Printing sv2: '%s'\n", sv2.c_str());
-  printf(" Size of sv2: %d\n", sv2.size());
+  {
+    string_view sv2(sv1);
+    printf("Printing sv2: '%s'\n", sv2.c_str());
+    printf("Size of sv2:  %d\n", sv2.size());
+  }
 
-  return 0; // 11u - sv2.size();
+  return 11u - sv1.size();
 }
