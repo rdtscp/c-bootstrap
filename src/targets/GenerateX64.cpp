@@ -147,15 +147,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(AddressOf &ao) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Allocation &a) {
-  if (a.varType != nullptr) {
-    // Allocate required bytes.
-    const atl::shared_ptr<X64::Operand> numBytes = a.varType->accept(*this);
-    mem_alloc(numBytes);
-    return x64.rax;
-  } else {
-    // Handle allocating structs.
-    return x64.rax;
-  }
+  // Allocate required bytes.
+  const atl::shared_ptr<X64::Operand> numBytes = a.varType->accept(*this);
+  mem_alloc(numBytes);
+  return x64.rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ArrayType &at) {
   return at.size->accept(*this);
@@ -192,19 +187,16 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BaseType &bt) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
   /* Get the value for the LHS. */
   atl::shared_ptr<X64::Operand> lhsOperand = bo.lhs->accept(*this);
-  if (lhsOperand->opType() != "Register") {
-    const atl::shared_ptr<X64::Register> lhsReg = x64.getTempReg(
-        bo.lhs->exprType->getBytes(), 1); // HACKY. TODO: Fix this.
-    x64.mov(x64.rcx, genIntValue(0), "Set rcx to all 0");
-    x64.mov(lhsReg, lhsOperand,
-            "Move the LHS into its size specific register.");
-  } else {
-    x64.mov(x64.rcx, lhsOperand, "Move the LHS into RCX");
-  }
+  atl::shared_ptr<X64::Register> lhsReadReg =
+      copyToRegister(lhsOperand, bo.lhs->exprType->getBytes());
+  x64.push(lhsReadReg);
 
   /* Evaluate RHS and Store in EAX */
   atl::shared_ptr<X64::Operand> rhsOperand = bo.rhs->accept(*this);
-  x64.mov(x64.rax, rhsOperand, "Move RHS into RAX.");
+  atl::shared_ptr<X64::Register> rhsReadReg =
+      copyToRegister(rhsOperand, bo.rhs->exprType->getBytes());
+  x64.mov(x64.rax, rhsReadReg, "Move RHS into RAX.");
+  x64.pop(x64.rcx);
 
   /* Check if this Op is Overloaded */
   const atl::shared_ptr<FunDecl> opOverloadFun = bo.overload.lock();
@@ -1006,7 +998,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(While &w) {
 
 /* ---- Helpers ---- */
 
-atl::shared_ptr<X64::IntValue> GenerateX64::genIntValue(int value) {
+atl::shared_ptr<X64::IntValue> GenerateX64::genIntValue(int value) const {
   return atl::shared_ptr<X64::IntValue>(
       new X64::IntValue(atl::to_string(value)));
 }
@@ -1022,4 +1014,23 @@ int GenerateX64::roundTo16Bytes(int bytes) const {
   while (bytes % 16 != 0)
     ++bytes;
   return bytes;
+}
+
+atl::shared_ptr<X64::Register>
+GenerateX64::copyToRegister(const atl::shared_ptr<X64::Operand> &operand,
+                            const unsigned int num_bytes) {
+  if (operand->opType() == "Register") {
+    return operand;
+  }
+
+  x64.push(x64.rcx);
+
+  const atl::shared_ptr<X64::Register> reg = x64.getTempReg(num_bytes, 1);
+  x64.mov(x64.rcx, genIntValue(0), "Set rcx to all 0");
+  x64.mov(reg, operand, "Move operand into its size specific register.");
+  x64.mov(x64.rax, x64.rcx);
+
+  x64.pop(x64.rcx);
+
+  return x64.rax;
 }
