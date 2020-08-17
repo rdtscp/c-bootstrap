@@ -16,6 +16,11 @@ bool ClassType::canCastTo(Type &rhs) const {
           atl::static_pointer_cast<ClassType>(rhsRefType->referencedType);
       if (*rhsRefClassType->identifier == *identifier)
         return true;
+
+      if (typeDefinition.lock() != nullptr &&
+          rhsRefClassType->typeDefinition.lock() == typeDefinition.lock()) {
+        return true;
+      }
     }
   }
   return false;
