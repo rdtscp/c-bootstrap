@@ -6,6 +6,7 @@ public:
   int m_val;
 
   Class(int val) : m_val(val) {}
+  Class(const Class &rhs) : m_val(rhs.m_val) {}
   ~Class() {}
 };
 

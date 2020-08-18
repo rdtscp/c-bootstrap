@@ -4,11 +4,14 @@ class MyClass {
 public:
   MyClass(const int x) : m_x(x) {}
 
+  MyClass(const MyClass &rhs) : m_x(rhs.m_x) {}
+
   int m_x;
 };
 } // namespace MyNamespace
 
-static MyNamespace::MyClass operator+(const MyNamespace::MyClass &lhs, const int rhs) {
+static MyNamespace::MyClass operator+(const MyNamespace::MyClass &lhs,
+                                      const int rhs) {
   MyNamespace::MyClass output(lhs.m_x + rhs);
   return output;
 }
