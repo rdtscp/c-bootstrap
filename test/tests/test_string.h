@@ -12,7 +12,7 @@ void swap(uint &lhs, uint &rhs) {
   lhs = rhs;
   rhs = temp;
 }
-void swap(char *&lhs, char *&rhs) {
+void swap(const char *&lhs, const char *&rhs) {
   char *temp = lhs;
   lhs = rhs;
   rhs = temp;
@@ -37,16 +37,25 @@ private:
   const char *m_value;
 
 public:
-  string_view(const char *value) : m_value(value) {
-    this->m_size = char_buf_len(value);
+  string_view(const char *value)
+      : m_size(char_buf_len(value)), m_value(value) {}
+
+  string_view(const string_view &rhs)
+      : m_size(rhs.m_size), m_value(rhs.m_value) {}
+
+  string_view &operator=(string_view rhs) {
+    test::swap(this->m_size, rhs.m_size);
+    test::swap(this->m_value, rhs.m_value);
   }
+
+  ~string_view() {}
 
   const char *c_str() { return this->m_value; }
 
   const char *c_str() const { return this->m_value; }
 
   uint size() const { return this->m_size; }
-};
+}; // namespace test
 
 class string {
 private:
