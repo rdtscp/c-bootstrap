@@ -81,8 +81,49 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
     return error("Type Analysis", "Assignation RHS has undefined type.",
                  as.getptr());
   }
-  as.rhs->exprType = rhsType;
-  if (!lhsType->equivalentTo(*rhsType) && *lhsType != *rhsType) {
+
+  if (ReferenceType::collapseReferenceTypes(lhsType)->astClass() ==
+      "ClassType") {
+    const atl::shared_ptr<ClassType> lhsClassType =
+        ReferenceType::collapseReferenceTypes(lhsType);
+    /* Look for overload */
+
+    // Construct the Identifier
+    const atl::shared_ptr<Identifier> assignOverloadIdentifier(
+        new Identifier("operator="));
+
+    // Construct the arguments.
+    atl::vector<atl::shared_ptr<Type>> assignOverloadCallArgTypes;
+    assignOverloadCallArgTypes.push_back(
+        createThisParamType(lhsClassType->identifier));
+    assignOverloadCallArgTypes.push_back(rhsType);
+
+    // Create the modifiers.
+    atl::set<FunDecl::FunModifiers> lhsModifiers;
+    if (lhsType->typeModifiers.find(Type::Modifiers::CONST) ||
+        lhsClassType->typeModifiers.find(Type::Modifiers::CONST))
+      lhsModifiers.insert(FunDecl::FunModifiers::CONST);
+
+    // Construct the Signature.
+    const FunSignature assignOverloadCallSignature(
+        nullptr, assignOverloadIdentifier, assignOverloadCallArgTypes,
+        lhsModifiers);
+
+    const atl::shared_ptr<FunDecl> overloadDecl =
+        lhsClassType->typeDefinition.lock()->resolveFunCall(
+            assignOverloadCallSignature);
+    // TODO: Validate
+    if (overloadDecl == nullptr) {
+      return error(
+          "Type Analysis",
+          "Assignation LHS is type '" + lhsClassType->identifier->toString() +
+              "' which does not have an 'operator=' overload for RHS type: '" +
+              rhsType->astClass() + "'",
+          as.getptr());
+    }
+    as.assignOverload = overloadDecl;
+    return noType();
+  } else if (!lhsType->equivalentTo(*rhsType) && *lhsType != *rhsType) {
     return error("Type Analysis", "Assignation has mismatched types.",
                  as.getptr());
   }
