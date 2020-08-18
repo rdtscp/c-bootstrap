@@ -923,27 +923,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
   return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
-  atl::shared_ptr<Type> varType = vd.type->accept(*this);
-  if (varType == nullptr) {
-    return error("Type Analysis",
-                 "Attempted to define variable " +
-                     vd.getIdentifier()->toString() + " with undefined type.",
-                 atl::static_pointer_cast<Decl>(vd.getptr()));
-  }
-  vd.type = varType;
-  varType = ReferenceType::collapseReferenceTypes(varType);
-  if (varType->astClass() == "ClassType") {
-    const atl::shared_ptr<ClassType> vdClassType =
-        atl::static_pointer_cast<ClassType>(varType);
-    if (vdClassType->typeDefinition.lock() == nullptr) {
-      return error("Type Analysis",
-                   "Attempted to define variable " +
-                       vd.getIdentifier()->toString() +
-                       " with undefined class type: " +
-                       vdClassType->identifier->toString(),
-                   atl::static_pointer_cast<Decl>(vd.getptr()));
-    }
-  }
+  /* Check the name of our variable is valid. */
   if (currScope->findVarDecl(vd.getIdentifier(), vd.getptr())) {
     return error("Name Analysis",
                  "Attempted to define a Variable with an identifier that is "
@@ -952,11 +932,66 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
                  atl::static_pointer_cast<Decl>(vd.getptr()));
   }
 
-  // Visit the value initialised.
+  /* Check the type of our variable is valid. */
+  vd.type = vd.type->accept(*this);
   const atl::shared_ptr<Type> valueType = vd.varValue->accept(*this);
-  if (!valueType->equivalentTo(*varType)) {
-    return error("Type Analysis", "VarDef has mismatched types.",
+
+  /* Unknown Type */
+  if (vd.type == nullptr) {
+    return error("Type Analysis",
+                 "Attempted to define variable " +
+                     vd.getIdentifier()->toString() + " with undefined type.",
                  atl::static_pointer_cast<Decl>(vd.getptr()));
+  }
+  if (ReferenceType::collapseReferenceTypes(vd.type)->astClass() ==
+          "ClassType" &&
+      vd.varValue->astClass() != "ConstructorCall") {
+    const atl::shared_ptr<ClassType> vdClassType =
+        atl::static_pointer_cast<ClassType>(vd.type);
+    if (vdClassType->typeDefinition.lock() == nullptr) {
+      return error("Type Analysis",
+                   "Attempted to define variable " +
+                       vd.getIdentifier()->toString() +
+                       " with undefined class type: " +
+                       vdClassType->identifier->toString(),
+                   atl::static_pointer_cast<Decl>(vd.getptr()));
+    }
+    /* Check a valid constructor exists. */
+    atl::vector<atl::shared_ptr<Type>> constructorCallArgTypes;
+    constructorCallArgTypes.push_back(
+        createThisParamType(vdClassType->identifier));
+    constructorCallArgTypes.push_back(valueType);
+
+    atl::shared_ptr<Identifier> ctorIdentifier = vdClassType->identifier;
+    while (ctorIdentifier->tail()) {
+      ctorIdentifier = ctorIdentifier->tail();
+    }
+    const FunSignature ctorCallSignature(nullptr, ctorIdentifier,
+                                         constructorCallArgTypes,
+                                         atl::set<FunDecl::FunModifiers>());
+    const atl::shared_ptr<ConstructorDecl> ctor =
+        vdClassType->typeDefinition.lock()->resolveConstructorCall(
+            ctorCallSignature);
+    if (ctor == nullptr) {
+      return error("Type Analysis",
+                   "Attempted to construct a variable '" +
+                       vd.getIdentifier()->toString() +
+                       "' using non-existant constructor: " +
+                       ctorCallSignature.toString(),
+                   atl::static_pointer_cast<Decl>(vd.getptr()));
+    }
+    atl::shared_ptr<ConstructorCall> copyCtorCall =
+        atl::shared_ptr<ConstructorCall>(
+            new ConstructorCall(vdClassType->identifier, {vd.varValue}));
+    copyCtorCall->objectToConstruct = vd.getptr();
+    vd.varValue = copyCtorCall;
+    vd.varValue->accept(*this);
+  } else {
+    // Visit the value initialised.
+    if (!valueType->equivalentTo(*vd.type)) {
+      return error("Type Analysis", "VarDef has mismatched types.",
+                   atl::static_pointer_cast<Decl>(vd.getptr()));
+    }
   }
 
   return noType();
