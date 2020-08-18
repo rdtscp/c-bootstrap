@@ -112,7 +112,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
     const atl::shared_ptr<FunDecl> overloadDecl =
         lhsClassType->typeDefinition.lock()->resolveFunCall(
             assignOverloadCallSignature);
-    // TODO: Validate
     if (overloadDecl == nullptr) {
       return error(
           "Type Analysis",
