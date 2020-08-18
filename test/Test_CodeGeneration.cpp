@@ -38,6 +38,27 @@ TEST(Test_CodeGeneration, Allocations) {
   ASSERT_EQ(system(binary.c_str()), 0);
 }
 
+TEST(Test_CodeGeneration, AssignOverload) {
+  const atl::string filepath = test_prefix + "AssignOverload/test.cpp";
+  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+
+  GenerateX64 x64Generator(progAST);
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  const atl::string binary_name = test_prefix + "AssignOverload/binary";
+  LinkerBuilder linkAndBuilder(assembly, binary_name);
+  const atl::string binary = linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary.c_str()), 0);
+}
+
 TEST(Test_CodeGeneration, BinOp) {
   const atl::string filepath = test_prefix + "BinOp/test.cpp";
   const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
