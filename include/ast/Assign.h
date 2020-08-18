@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Expr.h"
+#include "FunDecl.h"
 #include "Stmt.h"
 #include "Type.h"
 
@@ -11,6 +12,7 @@ class Assign : public Stmt, public atl::enable_shared_from_this<Assign> {
 public:
   atl::shared_ptr<Expr> lhs;
   atl::shared_ptr<Expr> rhs;
+  atl::shared_ptr<FunDecl> assignOverload;
 
   Assign(const atl::shared_ptr<Expr> &p_lhs,
          const atl::shared_ptr<Expr> &p_rhs);
