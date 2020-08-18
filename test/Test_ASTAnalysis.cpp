@@ -53,7 +53,7 @@ TEST(Test_ASTAnalysis, AssignOverload) {
   ASSERT_EQ(progAST->decls[5]->astClass(), "FunDef");
   const atl::shared_ptr<FunDef> func =
       atl::static_pointer_cast<FunDef>(progAST->decls[5]);
-  ASSERT_EQ(func->funBlock->stmts.size(), 3);
+  ASSERT_EQ(func->funBlock->stmts.size(), 3u);
   ASSERT_EQ(func->funBlock->stmts[1]->astClass(), "VarDef");
   const atl::shared_ptr<VarDef> vardef =
       atl::static_pointer_cast<VarDef>(func->funBlock->stmts[1]);
