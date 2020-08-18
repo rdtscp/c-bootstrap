@@ -954,9 +954,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
 
   // Visit the value initialised.
   const atl::shared_ptr<Type> valueType = vd.varValue->accept(*this);
-  if (!valueType->equivalentTo(*varType))
+  if (!valueType->equivalentTo(*varType)) {
     return error("Type Analysis", "VarDef has mismatched types.",
                  atl::static_pointer_cast<Decl>(vd.getptr()));
+  }
 
   return noType();
 }
