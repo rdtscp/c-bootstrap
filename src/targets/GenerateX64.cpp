@@ -947,8 +947,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
     currScope->objectsToDestruct.push_back(vd.getptr());
   }
 
-  return atl::shared_ptr<X64::AddrOffset>(
-      new X64::AddrOffset(x64.rbp, vd.bpOffset));
+  return addrOffset(x64.rbp, vd.bpOffset);
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarExpr &ve) {
   /* Find this Variable's Location in the Stack, and Load It. */
