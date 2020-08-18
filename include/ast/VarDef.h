@@ -13,7 +13,6 @@ class VarDef : public VarDecl {
 
 public:
   atl::shared_ptr<Expr> varValue;
-  atl::shared_ptr<ConstructorDecl> ctorOverload;
 
   VarDef(const atl::shared_ptr<Type> &p_varType,
          const atl::shared_ptr<Identifier> &p_varidentifier,

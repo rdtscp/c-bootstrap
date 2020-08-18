@@ -48,7 +48,7 @@ TEST(Test_ASTAnalysis, AssignOverload) {
   semanticAnalysis.printErrors();
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 
-  ASSERT_EQ(progAST->decls.size(), 6);
+  ASSERT_EQ(progAST->decls.size(), 6u);
 
   ASSERT_EQ(progAST->decls[5]->astClass(), "FunDef");
   const atl::shared_ptr<FunDef> func =
@@ -58,13 +58,7 @@ TEST(Test_ASTAnalysis, AssignOverload) {
   const atl::shared_ptr<VarDef> vardef =
       atl::static_pointer_cast<VarDef>(func->funBlock->stmts[1]);
 
-  ASSERT_EQ(progAST->decls[4]->astClass(), "ClassTypeDef");
-  const atl::shared_ptr<ClassTypeDef> classtypdef =
-      atl::static_pointer_cast<ClassTypeDef>(progAST->decls[4]);
-
-  ASSERT_EQ(classtypdef->classDecls[3]->astClass(), "ConstructorDef");
-  const atl::shared_ptr<ConstructorDecl> copyctor = classtypdef->classDecls[3];
-  ASSERT_EQ(vardef->ctorOverload.get(), classtypdef->classDecls[3].get());
+  ASSERT_EQ(vardef->varValue->astClass(), "ConstructorCall");
 }
 
 TEST(Test_ASTAnalysis, AmbiguousIdentifier) {

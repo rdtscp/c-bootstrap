@@ -980,7 +980,12 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(VarDef &vd) {
                        ctorCallSignature.toString(),
                    atl::static_pointer_cast<Decl>(vd.getptr()));
     }
-    vd.ctorOverload = ctor;
+    atl::shared_ptr<ConstructorCall> copyCtorCall =
+        atl::shared_ptr<ConstructorCall>(
+            new ConstructorCall(vdClassType->identifier, {vd.varValue}));
+    copyCtorCall->objectToConstruct = vd.getptr();
+    vd.varValue = copyCtorCall;
+    vd.varValue->accept(*this);
   } else {
     // Visit the value initialised.
     if (!valueType->equivalentTo(*vd.type)) {
