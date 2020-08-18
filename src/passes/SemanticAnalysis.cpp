@@ -48,9 +48,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(AddressOf &ao) {
   if (exprType->astClass() == "ReferenceType") {
     const atl::shared_ptr<ReferenceType> refExprType =
         atl::static_pointer_cast<ReferenceType>(exprType);
-    if (refExprType->referencedType->astClass() == "ReferenceType")
+    if (refExprType->referencedType->astClass() == "ReferenceType") {
       return error("Type Error", "Cannot take the address of non LVALUE.",
                    ao.getptr());
+    }
   }
   ao.exprType = atl::shared_ptr<PointerType>(new PointerType(exprType));
   return ao.exprType;
@@ -70,9 +71,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ArrayType &at) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
   const atl::shared_ptr<Type> lhsType = as.lhs->accept(*this);
-  if (lhsType == nullptr)
+  if (lhsType == nullptr) {
     return error("Type Analysis", "Assignation LHS has undefined type.",
                  as.getptr());
+  }
 
   const atl::shared_ptr<Type> rhsType = as.rhs->accept(*this);
   if (rhsType == nullptr) {
@@ -162,9 +164,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
                  bo.getptr());
   }
 
-  if (!lhsType->equivalentTo(*rhsType))
+  if (!lhsType->equivalentTo(*rhsType)) {
     return error("Type Analysis", "Binary operation has mismatched types.",
                  bo.getptr());
+  }
 
   bo.lhs->exprType = lhsType;
   bo.rhs->exprType = rhsType;
@@ -246,22 +249,24 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ClassType &ct) {
                ct.getptr());
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDecl &ctd) {
-  if (currScope->findClassDef(ctd.getIdentifier(), ctd.getptr()))
+  if (currScope->findClassDef(ctd.getIdentifier(), ctd.getptr())) {
     return error("Name Analysis",
                  "Attempted to declare a Class with an identifier that is "
                  "already in use: " +
                      ctd.getIdentifier()->toString(),
                  ctd.getptr());
+  }
 
   return noType();
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(ClassTypeDef &ctd) {
-  if (currScope->findClassDef(ctd.getIdentifier(), ctd.getptr()))
+  if (currScope->findClassDef(ctd.getIdentifier(), ctd.getptr())) {
     return error("Name Analysis",
                  "Attempted to declare a Class with an identifier that is "
                  "already in use: " +
                      ctd.getIdentifier()->toString(),
                  ctd.getptr());
+  }
 
   ctd.outerScope = currScope;
   currScope = ctd.getptr();
@@ -323,9 +328,10 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ConstructorCall &cc) {
                                        atl::set<FunDecl::FunModifiers>());
   const atl::shared_ptr<ConstructorDecl> ctorDecl =
       ctorClassTypeDef->resolveConstructorCall(ctorCallSignature);
-  if (ctorDecl == nullptr)
+  if (ctorDecl == nullptr) {
     return error("Type Analysis", "Attempted to call undeclared constructor.",
                  cc.getptr());
+  }
 
   ++ctorDecl->numCallers;
   cc.constructorDecl = ctorDecl;
@@ -393,17 +399,21 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(DestructorDef &dd) {
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(DoWhile &dw) {
   const atl::shared_ptr<Type> conditionType = dw.condition->accept(*this);
-  if (conditionType->astClass() != "BaseType")
+  if (conditionType->astClass() != "BaseType") {
     return error("Type Analysis", "Type of If condition is invalid.",
                  dw.condition);
-  atl::shared_ptr<BaseType> conditionBaseType =
+  }
+
+  const atl::shared_ptr<BaseType> conditionBaseType =
       atl::static_pointer_cast<BaseType>(conditionType);
   if (conditionBaseType->primitiveType != PrimitiveType::BOOL &&
       conditionBaseType->primitiveType != PrimitiveType::INT &&
-      conditionBaseType->primitiveType != PrimitiveType::UINT)
+      conditionBaseType->primitiveType != PrimitiveType::UINT) {
     return error("Type Analysis",
                  "Type of If condition is not BOOL, INT or UINT.",
                  dw.condition);
+  }
+
   dw.body->accept(*this);
   return noType();
 }
@@ -417,17 +427,21 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(For &f) {
 
   f.initialVarDecl->accept(*this);
   const atl::shared_ptr<Type> conditionType = f.condition->accept(*this);
-  if (conditionType->astClass() != "BaseType")
+  if (conditionType->astClass() != "BaseType") {
     return error("Type Analysis", "Type of For condition is invalid.",
                  f.condition);
-  atl::shared_ptr<BaseType> conditionBaseType =
+  }
+
+  const atl::shared_ptr<BaseType> conditionBaseType =
       atl::static_pointer_cast<BaseType>(conditionType);
   if (conditionBaseType->primitiveType != PrimitiveType::BOOL &&
       conditionBaseType->primitiveType != PrimitiveType::INT &&
-      conditionBaseType->primitiveType != PrimitiveType::UINT)
+      conditionBaseType->primitiveType != PrimitiveType::UINT) {
     return error("Type Analysis",
                  "Type of For condition is not BOOL, INT or UINT.",
                  f.condition);
+  }
+
   f.endBodyExpr->accept(*this);
   f.body->accept(*this);
 
