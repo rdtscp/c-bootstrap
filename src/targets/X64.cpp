@@ -384,8 +384,9 @@ atl::shared_ptr<Register> Writer::getTempReg(const unsigned int num_bytes,
       return rcx;
   }
   }
-  printf("INTERNAL_ERROR: Invalid number of bytes requested for a register: %d",
-         num_bytes);
+  printf(
+      "INTERNAL_ERROR: Invalid number of bytes requested for a register: %d\n",
+      num_bytes);
   throw;
 }
 
