@@ -206,7 +206,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
   }
 
   if (!lhsType->equivalentTo(*rhsType)) {
-    return error("Type Analysis", "Binary operation has mismatched types.",
+    return error("Type Analysis",
+                 "Binary operation has mismatched types. LHS: " +
+                     lhsType->astClass() + ", RHS: " + rhsType->astClass(),
                  bo.getptr());
   }
 
@@ -929,7 +931,8 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(ValueAt &va) {
     return error("Type Analysis",
                  "Attempted to dereference variable that wasn't a pointer. ",
                  va.derefExpr);
-  va.exprType = atl::static_pointer_cast<PointerType>(exprType)->pointedType;
+  va.exprType = atl::shared_ptr<ReferenceType>(new ReferenceType(
+      atl::static_pointer_cast<PointerType>(exprType)->pointedType));
   return va.exprType;
 }
 atl::shared_ptr<Type> SemanticAnalysis::visit(VarDecl &vd) {
