@@ -121,6 +121,7 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(Assign &as) {
           as.getptr());
     }
     as.assignOverload = overloadDecl;
+    ++overloadDecl->numCallers;
     return noType();
   } else if (!lhsType->equivalentTo(*rhsType) && *lhsType != *rhsType) {
     return error("Type Analysis", "Assignation has mismatched types.",
