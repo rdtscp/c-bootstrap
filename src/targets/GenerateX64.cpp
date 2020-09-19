@@ -156,21 +156,40 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ArrayType &at) {
   return at.size->accept(*this);
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Assign &as) {
-  const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
+  if (!as.assignOverload.expired()) {
+    atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
 
-  atl::shared_ptr<X64::Register> rhsReg =
-      copyToRegister(rhs, as.rhs->exprType->getBytes());
-  x64.push(rhsReg, "Store RHS on the Stack Temporarily");
+    x64.callerPrologue();
 
-  const atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
-  x64.mov(x64.rcx, genIntValue(0));
-  x64.pop(x64.rcx, "Pop the RHS off the Stack into rcx");
-  // We can't mov a StringLiteral into a space on the stack
-  // load it into a register(effectively the address) and
-  // then move that address onto the stack.
+    const atl::shared_ptr<FunDecl> funDecl = as.assignOverload.lock();
+    const atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
+    x64.lea(paramRegs.pop_back(), lhs);
+    const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
+    if (funDecl->funParams[1]->type->astClass() == "ReferenceType") {
+      x64.lea(paramRegs.pop_back(), rhs);
+    } else {
+      x64.mov(paramRegs.pop_back(), rhs);
+    }
+    x64.call(funDecl->getSignature().mangle());
 
-  rhsReg = x64.getTempReg(as.rhs->exprType->getBytes(), 1);
-  x64.mov(lhs, rhsReg, "Move RHS into LHS.");
+    x64.callerEpilogue();
+  } else {
+    const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
+
+    atl::shared_ptr<X64::Register> rhsReg =
+        copyToRegister(rhs, as.rhs->exprType->getBytes());
+    x64.push(rhsReg, "Store RHS on the Stack Temporarily");
+
+    const atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
+    x64.mov(x64.rcx, genIntValue(0));
+    x64.pop(x64.rcx, "Pop the RHS off the Stack into rcx");
+    // We can't mov a StringLiteral into a space on the stack
+    // load it into a register(effectively the address) and
+    // then move that address onto the stack.
+
+    rhsReg = x64.getTempReg(as.rhs->exprType->getBytes(), 1);
+    x64.mov(lhs, rhsReg, "Move RHS into LHS.");
+  }
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BaseType &bt) {
@@ -887,7 +906,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(TypeDefDecl &td) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ValueAt &va) {
-  const atl::shared_ptr<Type> vaType = va.exprType;
+  const atl::shared_ptr<Type> vaType =
+      ReferenceType::collapseReferenceTypes(va.exprType);
   if (vaType->astClass() == "BaseType") {
     const atl::shared_ptr<X64::Operand> exprOperand =
         va.derefExpr->accept(*this);

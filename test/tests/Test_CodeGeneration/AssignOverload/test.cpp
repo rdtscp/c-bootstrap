@@ -56,6 +56,8 @@ int main(int argc, char **argv) {
 
   string_view copy = str;
 
+  copy = str;
+
   printf("Copy: '%s'\n", copy.c_str());
 
   return 4u - char_buf_len(copy.c_str());
