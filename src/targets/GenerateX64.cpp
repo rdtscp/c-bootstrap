@@ -79,6 +79,7 @@ void GenerateX64::defSystemFunDecls() {
       {"FunDecl_printf_char_ptr__char_", "_printf"},
       {"FunDecl_printf_char_ptr__int_", "_printf"},
       {"FunDecl_printf_char_ptr__unsigned_int_", "_printf"},
+      {"FunDecl_printf_char_ptr__int_ptr_", "_printf"},
       {"FunDecl_printf_char_ptr_", "_printf"}};
 
   for (unsigned int i = 0u; i < systemFunDecls.size(); ++i) {
