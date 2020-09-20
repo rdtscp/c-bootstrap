@@ -907,18 +907,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(TypeDefDecl &td) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ValueAt &va) {
-  const atl::shared_ptr<Type> vaType =
-      ReferenceType::collapseReferenceTypes(va.exprType);
-  if (vaType->astClass() == "BaseType") {
-    const atl::shared_ptr<X64::Operand> exprOperand =
-        va.derefExpr->accept(*this);
+  const atl::shared_ptr<X64::Operand> exprOperand = va.derefExpr->accept(*this);
 
-    x64.mov(x64.rax, exprOperand, "Move address into rax");
-    return addrOffset(x64.rax, 0);
-  } else {
-    printf("Dereferencing Non-Primitive Types not Supported Yet.\n");
-    throw;
-  }
+  x64.mov(x64.rax, exprOperand, "Move address into rax");
+  return addrOffset(x64.rax, 0);
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDecl &vd) {
   const int bytesRequired = roundTo16Bytes(vd.getBytes());
