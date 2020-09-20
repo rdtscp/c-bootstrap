@@ -144,8 +144,6 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(AddressOf &ao) {
   const atl::shared_ptr<X64::Operand> aoObj = ao.addressOfExpr->accept(*this);
   x64.lea(x64.rax, aoObj, "Load Address of the Expression into RAX");
   return x64.rax;
-
-  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Allocation &a) {
   // Allocate required bytes.
@@ -567,6 +565,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunCall &fc) {
   const atl::shared_ptr<FunDecl> funDecl = fc.funDecl.lock();
   for (unsigned int argNum = 0u; argNum < fc.funArgs.size(); ++argNum) {
     atl::shared_ptr<X64::Operand> argReg = fc.funArgs[argNum]->accept(*this);
+    if (isReferenceExpr(fc.funArgs[argNum])) {
+      x64.mov(x64.rax, argReg, "Arg is a Ref, implicitly deref.");
+      argReg = addrOffset(x64.rax, 0);
+    }
     if (funDecl->funParams[argNum]->type->astClass() == "ReferenceType") {
       x64.lea(x64.rcx, argReg);
       argReg = x64.rcx;
@@ -947,7 +949,12 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
           atl::shared_ptr<X64::IntValue>(new X64::IntValue(bytesRequired)),
           comment);
 
-  const atl::shared_ptr<X64::Operand> valueOperand = vd.varValue->accept(*this);
+  atl::shared_ptr<X64::Operand> valueOperand = vd.varValue->accept(*this);
+  if (vd.type->astClass() == "ReferenceType") {
+    x64.lea(x64.rax, valueOperand,
+            "Var is a Ref, store a pointer to the value.");
+    valueOperand = x64.rax;
+  }
 
   if (valueOperand->opType() != "None") {
     x64.mov(x64.rax, valueOperand,
@@ -972,16 +979,6 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarExpr &ve) {
   }
 
   return addrOffset(x64.rbp, varDecl->bpOffset);
-
-  // atl::shared_ptr<X64::Operand> varAddr = addrOffset(x64.rbp,
-  // varDecl->bpOffset); atl::shared_ptr<Type> varType = varDecl->type; while
-  // (varType->astClass() == "PointerType") {
-  //   x64.mov(x64.rax, varAddr);
-  //   varAddr = x64.rax;
-  //   varType = atl::static_pointer_cast<PointerType>(varType)->pointedType;
-  // }
-
-  // return varAddr;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(While &w) {
   const atl::string whileCondition = "whileCond" + atl::to_string(blockCount++);
@@ -1052,4 +1049,13 @@ GenerateX64::copyToRegister(const atl::shared_ptr<X64::Operand> &operand,
   x64.pop(x64.rcx);
 
   return x64.rax;
+}
+
+bool GenerateX64::isReferenceExpr(const atl::shared_ptr<Expr> &expr) const {
+  if (expr->exprType->astClass() == "ReferenceType" &&
+      expr->astClass() != "ValueAt") {
+    return true;
+  }
+
+  return false;
 }

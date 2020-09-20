@@ -108,5 +108,7 @@ private:
   atl::shared_ptr<X64::Register>
   copyToRegister(const atl::shared_ptr<X64::Operand> &operand,
                  const unsigned int num_bytes);
+
+  bool isReferenceExpr(const atl::shared_ptr<Expr> &expr) const;
 };
 } // namespace ACC
