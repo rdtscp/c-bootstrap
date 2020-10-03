@@ -79,6 +79,7 @@ void GenerateX64::defSystemFunDecls() {
       {"FunDecl_printf_char_ptr__char_", "_printf"},
       {"FunDecl_printf_char_ptr__int_", "_printf"},
       {"FunDecl_printf_char_ptr__unsigned_int_", "_printf"},
+      {"FunDecl_printf_char_ptr__int_ptr_", "_printf"},
       {"FunDecl_printf_char_ptr_", "_printf"}};
 
   for (unsigned int i = 0u; i < systemFunDecls.size(); ++i) {
@@ -142,9 +143,11 @@ void GenerateX64::mem_alloc(const atl::shared_ptr<X64::Operand> &num_bytes) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(AddressOf &ao) {
   const atl::shared_ptr<X64::Operand> aoObj = ao.addressOfExpr->accept(*this);
   x64.lea(x64.rax, aoObj, "Load Address of the Expression into RAX");
+  if (isReferenceExpr(ao.addressOfExpr)) {
+    x64.mov(x64.rax, addrOffset(x64.rax, 0),
+            "AddressOf a Ref, implicitly deref.");
+  }
   return x64.rax;
-
-  return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Allocation &a) {
   // Allocate required bytes.
@@ -156,21 +159,54 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ArrayType &at) {
   return at.size->accept(*this);
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Assign &as) {
-  const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
+  if (!as.assignOverload.expired()) {
+    atl::stack<atl::shared_ptr<X64::Register>> paramRegs = x64.paramRegs();
 
-  atl::shared_ptr<X64::Register> rhsReg =
-      copyToRegister(rhs, as.rhs->exprType->getBytes());
-  x64.push(rhsReg, "Store RHS on the Stack Temporarily");
+    x64.callerPrologue();
 
-  const atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
-  x64.mov(x64.rcx, genIntValue(0));
-  x64.pop(x64.rcx, "Pop the RHS off the Stack into rcx");
-  // We can't mov a StringLiteral into a space on the stack
-  // load it into a register(effectively the address) and
-  // then move that address onto the stack.
+    const atl::shared_ptr<FunDecl> funDecl = as.assignOverload.lock();
+    const atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
+    x64.lea(paramRegs.pop_back(), lhs);
+    const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
+    if (funDecl->funParams[1]->type->astClass() == "ReferenceType") {
+      x64.lea(paramRegs.pop_back(), rhs);
+    } else {
+      x64.mov(paramRegs.pop_back(), rhs);
+    }
+    x64.call(funDecl->getSignature().mangle());
 
-  rhsReg = x64.getTempReg(as.rhs->exprType->getBytes(), 1);
-  x64.mov(lhs, rhsReg, "Move RHS into LHS.");
+    x64.callerEpilogue();
+  } else {
+    const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
+    atl::shared_ptr<X64::Register> rhsReg = rhs;
+    if (isReferenceExpr(as.rhs)) {
+      x64.mov(x64.rax, rhs, "RHS is a Ref, storing its address.");
+      rhsReg = x64.rax;
+    } else {
+      rhsReg = copyToRegister(rhs, as.rhs->exprType->getBytes());
+    }
+    x64.push(rhsReg, "Store RHS on the Stack Temporarily");
+
+    atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
+    if (isReferenceExpr(as.lhs)) {
+      x64.mov(x64.rax, lhs, "LHS is a Ref, storing its address.");
+      lhs = addrOffset(x64.rax, 0);
+    }
+    x64.mov(x64.rcx, genIntValue(0));
+    x64.pop(x64.rcx, "Pop the RHS off the Stack into rcx");
+    // We can't mov a StringLiteral into a space on the stack
+    // load it into a register(effectively the address) and
+    // then move that address onto the stack.
+
+    if (isReferenceExpr(as.rhs)) {
+      x64.mov(x64.rcx, addrOffset(x64.rcx, 0),
+              "RHS is a Ref, implicitly deref.");
+      rhsReg = x64.rcx;
+    } else {
+      rhsReg = x64.getTempReg(as.rhs->exprType->getBytes(), 1);
+    }
+    x64.mov(lhs, rhsReg, "Move RHS into LHS.");
+  }
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(BaseType &bt) {
@@ -185,6 +221,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
 
   /* Evaluate RHS and Store in EAX */
   atl::shared_ptr<X64::Operand> rhsOperand = bo.rhs->accept(*this);
+  if (isReferenceExpr(bo.rhs)) {
+    x64.mov(x64.rax, rhsOperand, "RHS is a Ref, implicitly deref.");
+    rhsOperand = addrOffset(x64.rax, 0);
+  }
   atl::shared_ptr<X64::Register> rhsReadReg =
       copyToRegister(rhsOperand, bo.rhs->exprType->getBytes());
   x64.mov(x64.rax, rhsReadReg, "Move RHS into RAX.");
@@ -547,6 +587,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunCall &fc) {
   const atl::shared_ptr<FunDecl> funDecl = fc.funDecl.lock();
   for (unsigned int argNum = 0u; argNum < fc.funArgs.size(); ++argNum) {
     atl::shared_ptr<X64::Operand> argReg = fc.funArgs[argNum]->accept(*this);
+    if (isReferenceExpr(fc.funArgs[argNum])) {
+      x64.mov(x64.rax, argReg, "Arg is a Ref, implicitly deref.");
+      argReg = addrOffset(x64.rax, 0);
+    }
     if (funDecl->funParams[argNum]->type->astClass() == "ReferenceType") {
       x64.lea(x64.rcx, argReg);
       argReg = x64.rcx;
@@ -887,17 +931,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(TypeDefDecl &td) {
   return atl::shared_ptr<X64::None>();
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ValueAt &va) {
-  const atl::shared_ptr<Type> vaType = va.exprType;
-  if (vaType->astClass() == "BaseType") {
-    const atl::shared_ptr<X64::Operand> exprOperand =
-        va.derefExpr->accept(*this);
+  const atl::shared_ptr<X64::Operand> exprOperand = va.derefExpr->accept(*this);
 
-    x64.mov(x64.rax, exprOperand, "Move address into rax");
-    return addrOffset(x64.rax, 0);
-  } else {
-    printf("Dereferencing Non-Primitive Types not Supported Yet.\n");
-    throw;
-  }
+  x64.mov(x64.rax, exprOperand, "Move address into rax");
+  return addrOffset(x64.rax, 0);
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDecl &vd) {
   const int bytesRequired = roundTo16Bytes(vd.getBytes());
@@ -934,11 +971,21 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
           atl::shared_ptr<X64::IntValue>(new X64::IntValue(bytesRequired)),
           comment);
 
-  const atl::shared_ptr<X64::Operand> valueOperand = vd.varValue->accept(*this);
+  atl::shared_ptr<X64::Operand> valueOperand = vd.varValue->accept(*this);
+  if (vd.type->astClass() == "ReferenceType") {
+    x64.lea(x64.rax, valueOperand,
+            "Var is a Ref, store a pointer to the value.");
+    valueOperand = x64.rax;
+  }
 
   if (valueOperand->opType() != "None") {
     x64.mov(x64.rax, valueOperand,
             "Move " + vdIdent + "'s value into temp register.");
+    if (vd.type->astClass() != "ReferenceType" &&
+        isReferenceExpr(vd.varValue)) {
+      x64.mov(x64.rax, addrOffset(x64.rax, 0),
+              vdIdent + "'s value is a reference, implicitly deref.");
+    }
     x64.mov(addrOffset(x64.rbp, vd.bpOffset), x64.rax,
             "Move " + vdIdent + "'s value into its stack allocated space.");
   }
@@ -959,16 +1006,6 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarExpr &ve) {
   }
 
   return addrOffset(x64.rbp, varDecl->bpOffset);
-
-  // atl::shared_ptr<X64::Operand> varAddr = addrOffset(x64.rbp,
-  // varDecl->bpOffset); atl::shared_ptr<Type> varType = varDecl->type; while
-  // (varType->astClass() == "PointerType") {
-  //   x64.mov(x64.rax, varAddr);
-  //   varAddr = x64.rax;
-  //   varType = atl::static_pointer_cast<PointerType>(varType)->pointedType;
-  // }
-
-  // return varAddr;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(While &w) {
   const atl::string whileCondition = "whileCond" + atl::to_string(blockCount++);
@@ -1039,4 +1076,13 @@ GenerateX64::copyToRegister(const atl::shared_ptr<X64::Operand> &operand,
   x64.pop(x64.rcx);
 
   return x64.rax;
+}
+
+bool GenerateX64::isReferenceExpr(const atl::shared_ptr<Expr> &expr) const {
+  if (expr->exprType->astClass() == "ReferenceType" &&
+      expr->astClass() != "ValueAt") {
+    return true;
+  }
+
+  return false;
 }

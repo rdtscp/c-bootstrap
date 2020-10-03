@@ -13,8 +13,14 @@ unsigned int PointerType::getBytes() const { return 8; }
 bool PointerType::canCastTo(Type &rhs) const {
   // TODO Handle Polymorphism.
 
-  if (*this == rhs)
-    return true;
+  if (this->astClass() == rhs.astClass()) {
+    if (this->pointedType->canCastTo(
+            *static_cast<PointerType *>(&rhs)->pointedType))
+      return true;
+  } else {
+    if (*this == rhs)
+      return true;
+  }
 
   return false;
 }

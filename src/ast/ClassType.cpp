@@ -23,11 +23,13 @@ bool ClassType::canCastTo(Type &rhs) const {
 }
 
 bool ClassType::equivalentTo(Type &rhs) const {
-  if (rhs.astClass() != "ClassType") {
+  Type &rhsType = ReferenceType::collapseReferenceTypes(&rhs);
+
+  if (rhsType.astClass() != "ClassType") {
     return false;
   }
 
-  const ClassType &ct = *static_cast<ClassType *>(&rhs);
+  const ClassType &ct = *static_cast<ClassType *>(&rhsType);
   return typeDefinition.lock() == ct.typeDefinition.lock();
 }
 
