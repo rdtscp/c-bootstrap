@@ -37,7 +37,8 @@ public:
   string_view(const string_view &rhs)
       : m_size(rhs.m_size), m_value(rhs.m_value) {}
 
-  string_view &operator=(string_view rhs) {
+  string_view &operator=(const string_view &other) {
+    string_view rhs = other;
     test::swap(this->m_size, rhs.m_size);
     test::swap(this->m_value, rhs.m_value);
   }

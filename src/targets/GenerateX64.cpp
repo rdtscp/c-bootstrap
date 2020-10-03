@@ -143,6 +143,10 @@ void GenerateX64::mem_alloc(const atl::shared_ptr<X64::Operand> &num_bytes) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(AddressOf &ao) {
   const atl::shared_ptr<X64::Operand> aoObj = ao.addressOfExpr->accept(*this);
   x64.lea(x64.rax, aoObj, "Load Address of the Expression into RAX");
+  if (isReferenceExpr(ao.addressOfExpr)) {
+    x64.mov(x64.rax, addrOffset(x64.rax, 0),
+            "AddressOf a Ref, implicitly deref.");
+  }
   return x64.rax;
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(Allocation &a) {
@@ -174,19 +178,33 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Assign &as) {
     x64.callerEpilogue();
   } else {
     const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
-
-    atl::shared_ptr<X64::Register> rhsReg =
-        copyToRegister(rhs, as.rhs->exprType->getBytes());
+    atl::shared_ptr<X64::Register> rhsReg = rhs;
+    if (isReferenceExpr(as.rhs)) {
+      x64.mov(x64.rax, rhs, "RHS is a Ref, storing its address.");
+      rhsReg = x64.rax;
+    } else {
+      rhsReg = copyToRegister(rhs, as.rhs->exprType->getBytes());
+    }
     x64.push(rhsReg, "Store RHS on the Stack Temporarily");
 
-    const atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
+    atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
+    if (isReferenceExpr(as.lhs)) {
+      x64.mov(x64.rax, lhs, "LHS is a Ref, storing its address.");
+      lhs = addrOffset(x64.rax, 0);
+    }
     x64.mov(x64.rcx, genIntValue(0));
     x64.pop(x64.rcx, "Pop the RHS off the Stack into rcx");
     // We can't mov a StringLiteral into a space on the stack
     // load it into a register(effectively the address) and
     // then move that address onto the stack.
 
-    rhsReg = x64.getTempReg(as.rhs->exprType->getBytes(), 1);
+    if (isReferenceExpr(as.rhs)) {
+      x64.mov(x64.rcx, addrOffset(x64.rcx, 0),
+              "RHS is a Ref, implicitly deref.");
+      rhsReg = x64.rcx;
+    } else {
+      rhsReg = x64.getTempReg(as.rhs->exprType->getBytes(), 1);
+    }
     x64.mov(lhs, rhsReg, "Move RHS into LHS.");
   }
   return atl::shared_ptr<X64::None>();
@@ -963,6 +981,11 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(VarDef &vd) {
   if (valueOperand->opType() != "None") {
     x64.mov(x64.rax, valueOperand,
             "Move " + vdIdent + "'s value into temp register.");
+    if (vd.type->astClass() != "ReferenceType" &&
+        isReferenceExpr(vd.varValue)) {
+      x64.mov(x64.rax, addrOffset(x64.rax, 0),
+              vdIdent + "'s value is a reference, implicitly deref.");
+    }
     x64.mov(addrOffset(x64.rbp, vd.bpOffset), x64.rax,
             "Move " + vdIdent + "'s value into its stack allocated space.");
   }
