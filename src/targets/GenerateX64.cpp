@@ -203,6 +203,10 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(BinOp &bo) {
 
   /* Evaluate RHS and Store in EAX */
   atl::shared_ptr<X64::Operand> rhsOperand = bo.rhs->accept(*this);
+  if (isReferenceExpr(bo.rhs)) {
+    x64.mov(x64.rax, rhsOperand, "RHS is a Ref, implicitly deref.");
+    rhsOperand = addrOffset(x64.rax, 0);
+  }
   atl::shared_ptr<X64::Register> rhsReadReg =
       copyToRegister(rhsOperand, bo.rhs->exprType->getBytes());
   x64.mov(x64.rax, rhsReadReg, "Move RHS into RAX.");

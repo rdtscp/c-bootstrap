@@ -12,7 +12,9 @@ bool ReferenceType::canCastTo(Type &rhs) const {
   return this->referencedType->canCastTo(rhs);
 }
 
-unsigned int ReferenceType::getBytes() const { return 8; }
+unsigned int ReferenceType::getBytes() const {
+  return referencedType->getBytes();
+}
 bool ReferenceType::equivalentTo(Type &rhs) const {
   return referencedType->equivalentTo(rhs);
 }

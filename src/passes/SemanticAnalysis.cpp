@@ -212,9 +212,6 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(BinOp &bo) {
                  bo.getptr());
   }
 
-  bo.lhs->exprType = lhsType;
-  bo.rhs->exprType = rhsType;
-
   switch (bo.operation) {
   case Op::MOD:
     bo.exprType = atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::UINT));
