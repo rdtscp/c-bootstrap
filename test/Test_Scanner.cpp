@@ -1,30 +1,21 @@
 #include "atl/include/string.h"
 
+#include "TestPath.h"
 #include "gtest/gtest.h"
 
 #include "Scanner.h"
 #include "SourceToken.h"
 
-#include "TestPath.h"
-
-const atl::string tests_prefix = test_root + "Test_Scanner/";
-
 class Test_Scanner : public ::testing::Test {
 protected:
   atl::string t_source_file;
 
-  Test_Scanner() {}
-
-  // If the constructor and destructor are not enough for setting up
-  // and cleaning up each test, you can define the following methods:
-  virtual void SetUp() {
+  Test_Scanner() {
     const atl::string test_name =
         ::testing::UnitTest::GetInstance()->current_test_info()->name();
 
-    t_source_file = tests_prefix + test_name + "/test.cpp";
+    t_source_file = test_root + "Test_Scanner/" + test_name + "/test.cpp";
   }
-
-  virtual void TearDown() { t_source_file = ""; }
 };
 
 using namespace ACC;

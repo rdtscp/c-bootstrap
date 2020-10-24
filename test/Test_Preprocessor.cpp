@@ -6,24 +6,17 @@
 #include "Preprocessor.h"
 #include "SourceToken.h"
 
-const atl::string tests_prefix = test_root + "Test_Preprocessor/";
-
 class Test_Preprocessor : public ::testing::Test {
 protected:
   atl::string t_source_file;
+  const atl::string tests_prefix = test_root + "Test_Preprocessor/";
 
-  Test_Preprocessor() {}
-
-  // If the constructor and destructor are not enough for setting up
-  // and cleaning up each test, you can define the following methods:
-  virtual void SetUp() {
+  Test_Preprocessor() {
     const atl::string test_name =
         ::testing::UnitTest::GetInstance()->current_test_info()->name();
 
     t_source_file = tests_prefix + test_name + "/test.cpp";
   }
-
-  virtual void TearDown() { t_source_file = ""; }
 };
 
 using namespace ACC;

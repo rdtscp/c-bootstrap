@@ -1,6 +1,7 @@
 
 #include "atl/include/string.h"
 
+#include "TestPath.h"
 #include "gtest/gtest.h"
 
 #include "passes/DotGraph.h"
@@ -16,34 +17,27 @@
 #include <cstdio>
 #include <fstream>
 
-#include "TestPath.h"
-
-const atl::string tests_prefix = test_root + "Test_CodeGeneration/";
-
-// The fixture for testing class Project1. From google test primer.
 class Test_CodeGeneration : public ::testing::Test {
-protected:
-  atl::string t_source_file;
-  atl::string t_binary_file;
-
-  Test_CodeGeneration() {}
-
+private:
   bool fileExists(const atl::string &filepath) {
     std::ifstream file(filepath.c_str());
     return file.good();
   }
 
-  virtual void SetUp() {
+protected:
+  atl::string t_source_file;
+  atl::string t_binary_file;
+
+  Test_CodeGeneration() {
     const atl::string test_name =
         ::testing::UnitTest::GetInstance()->current_test_info()->name();
 
+    const atl::string tests_prefix = test_root + "Test_CodeGeneration/";
     t_source_file = tests_prefix + test_name + "/test.cpp";
     t_binary_file = tests_prefix + test_name + "/binary";
   }
 
-  virtual void TearDown() {
-    // Code here will be called immediately after each test (right
-    // before the destructor).
+  ~Test_CodeGeneration() {
     if (fileExists(t_binary_file)) {
       std::remove(t_binary_file.c_str());
     }

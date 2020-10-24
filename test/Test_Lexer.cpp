@@ -1,6 +1,7 @@
 #include "atl/include/string.h"
 #include "atl/include/vector.h"
 
+#include "TestPath.h"
 #include "gtest/gtest.h"
 
 #include "Lexer.h"
@@ -8,27 +9,16 @@
 #include "Scanner.h"
 #include "SourceToken.h"
 
-#include "TestPath.h"
-
-const atl::string tests_prefix = test_root + "Test_Lexer/";
-
-// The fixture for testing class Project1. From google test primer.
 class Test_Lexer : public ::testing::Test {
 protected:
   atl::string t_source_file;
 
-  Test_Lexer() {}
-
-  // If the constructor and destructor are not enough for setting up
-  // and cleaning up each test, you can define the following methods:
-  virtual void SetUp() {
+  Test_Lexer() {
     const atl::string test_name =
         ::testing::UnitTest::GetInstance()->current_test_info()->name();
 
-    t_source_file = tests_prefix + test_name + "/test.cpp";
+    t_source_file = test_root + "Test_Lexer/" + test_name + "/test.cpp";
   }
-
-  virtual void TearDown() { t_source_file = ""; }
 };
 
 using namespace ACC;

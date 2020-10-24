@@ -1,7 +1,7 @@
 #include "atl/include/string.h"
 
-#include "gtest/gtest.h"
 #include "TestPath.h"
+#include "gtest/gtest.h"
 
 #include "FileSystem.h"
 
@@ -29,23 +29,3 @@ TEST(FileSystemTest, TestResolveRelativePath) {
       FileSystem::resolveRelativePath(currFilepath, relativePath);
   ASSERT_EQ(actual, expected);
 }
-
-// The fixture for testing class Project1. From google test primer.
-class Test_Scanner : public ::testing::Test {
-protected:
-  Test_Scanner() {
-    // You can do set-up work for each test here.
-  }
-
-  // If the constructor and destructor are not enough for setting up
-  // and cleaning up each test, you can define the following methods:
-  virtual void SetUp() {
-    // Code here will be called immediately after the constructor (right
-    // before each test).
-  }
-
-  virtual void TearDown() {
-    // Code here will be called immediately after each test (right
-    // before the destructor).
-  }
-};
