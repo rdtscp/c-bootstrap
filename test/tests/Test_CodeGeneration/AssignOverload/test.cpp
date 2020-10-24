@@ -37,7 +37,8 @@ public:
   string_view(const string_view &rhs)
       : m_size(rhs.m_size), m_value(rhs.m_value) {}
 
-  string_view &operator=(string_view rhs) {
+  string_view &operator=(const string_view &other) {
+    string_view rhs = other;
     test::swap(this->m_size, rhs.m_size);
     test::swap(this->m_value, rhs.m_value);
   }
@@ -55,6 +56,8 @@ int main(int argc, char **argv) {
   string_view str("Test");
 
   string_view copy = str;
+
+  copy = str;
 
   printf("Copy: '%s'\n", copy.c_str());
 

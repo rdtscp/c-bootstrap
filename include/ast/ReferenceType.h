@@ -28,13 +28,23 @@ public:
 
   atl::string astClass() const override { return "ReferenceType"; }
 
-  static atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type) {
+  static atl::shared_ptr<Type>
+  collapseReferenceTypes(atl::shared_ptr<Type> type) {
     if (type->astClass() == "ReferenceType") {
       type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
       if (type->astClass() == "ReferenceType")
         type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
     }
     return type;
+  }
+
+  static Type &collapseReferenceTypes(Type *type) {
+    if (type->astClass() == "ReferenceType") {
+      type = static_cast<ReferenceType *>(type)->referencedType.get();
+      if (type->astClass() == "ReferenceType")
+        type = static_cast<ReferenceType *>(type)->referencedType.get();
+    }
+    return *type;
   }
 
   VISITOR_ACCEPTORS

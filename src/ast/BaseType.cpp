@@ -10,6 +10,10 @@ bool BaseType::canCastTo(Type &rhs) const {
       rhs.astClass() == "PointerType")
     return true;
 
+  if (this->astClass() == rhs.astClass()) {
+    return primitiveType == static_cast<BaseType *>(&rhs)->primitiveType;
+  }
+
   return false;
 }
 
