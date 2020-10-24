@@ -11,15 +11,25 @@
 #include "passes/DotGraph.h"
 #include "passes/SemanticAnalysis.h"
 
-using namespace ACC;
+class Test_ASTAnalysis : public ::testing::Test {
+protected:
+  atl::string t_source_file;
 
-const atl::string test_prefix = test_root + "Test_ASTAnalysis/";
+  Test_ASTAnalysis() {
+    const atl::string test_name =
+        ::testing::UnitTest::GetInstance()->current_test_info()->name();
+
+    t_source_file = test_root + "Test_ASTAnalysis/" + test_name + "/test.cpp";
+  }
+};
+
+using namespace ACC;
 
 // TODO: Test accessing namespace'd classes.
 
-TEST(Test_ASTAnalysis, Allocations) {
-  const atl::string filepath = test_prefix + "Allocations/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, Allocations) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -33,9 +43,9 @@ TEST(Test_ASTAnalysis, Allocations) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, AssignOverload) {
-  const atl::string filepath = test_prefix + "AssignOverload/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, AssignOverload) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -61,9 +71,9 @@ TEST(Test_ASTAnalysis, AssignOverload) {
   ASSERT_EQ(vardef->varValue->astClass(), "ConstructorCall");
 }
 
-TEST(Test_ASTAnalysis, AmbiguousIdentifier) {
-  const atl::string filepath = test_prefix + "AmbiguousIdentifier/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, AmbiguousIdentifier) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -77,9 +87,9 @@ TEST(Test_ASTAnalysis, AmbiguousIdentifier) {
   ASSERT_NE(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, CallWithReferences) {
-  const atl::string filepath = test_prefix + "CallWithReferences/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, CallWithReferences) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -93,9 +103,9 @@ TEST(Test_ASTAnalysis, CallWithReferences) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, ClassCallsItsMethod) {
-  const atl::string filepath = test_prefix + "ClassCallsItsMethod/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, ClassCallsItsMethod) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -109,9 +119,9 @@ TEST(Test_ASTAnalysis, ClassCallsItsMethod) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, ClassCallsItsOwnCtor) {
-  const atl::string filepath = test_prefix + "ClassCallsItsOwnCtor/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, ClassCallsItsOwnCtor) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -125,10 +135,9 @@ TEST(Test_ASTAnalysis, ClassCallsItsOwnCtor) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, ClassCallsItsOwnCtorNamespaced) {
-  const atl::string filepath =
-      test_prefix + "ClassCallsItsOwnCtorNamespaced/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, ClassCallsItsOwnCtorNamespaced) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -150,9 +159,9 @@ TEST(Test_ASTAnalysis, ClassCallsItsOwnCtorNamespaced) {
   }
 }
 
-TEST(Test_ASTAnalysis, ClassCallsStatic) {
-  const atl::string filepath = test_prefix + "ClassCallsStatic/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, ClassCallsStatic) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -166,9 +175,9 @@ TEST(Test_ASTAnalysis, ClassCallsStatic) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, DestructorMembers) {
-  const atl::string filepath = test_prefix + "DestructorMembers/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, DestructorMembers) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -182,9 +191,9 @@ TEST(Test_ASTAnalysis, DestructorMembers) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, DotGraph) {
-  const atl::string filepath = test_prefix + "DotGraph/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, DotGraph) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -196,9 +205,9 @@ TEST(Test_ASTAnalysis, DotGraph) {
   dotGraph.print();
 }
 
-TEST(Test_ASTAnalysis, DuplicateFunction) {
-  const atl::string filepath = test_prefix + "DuplicateFunction/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, DuplicateFunction) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -212,9 +221,9 @@ TEST(Test_ASTAnalysis, DuplicateFunction) {
   ASSERT_NE(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, DuplicateVariable) {
-  const atl::string filepath = test_prefix + "DuplicateVariable/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, DuplicateVariable) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -228,9 +237,9 @@ TEST(Test_ASTAnalysis, DuplicateVariable) {
   ASSERT_NE(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, FunModifiers) {
-  const atl::string filepath = test_prefix + "FunModifiers/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, FunModifiers) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -244,9 +253,9 @@ TEST(Test_ASTAnalysis, FunModifiers) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, FunctionOverloading) {
-  const atl::string filepath = test_prefix + "FunctionOverloading/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, FunctionOverloading) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -260,9 +269,9 @@ TEST(Test_ASTAnalysis, FunctionOverloading) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, MemberAccesses) {
-  const atl::string filepath = test_prefix + "MemberAccesses/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, MemberAccesses) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -276,9 +285,9 @@ TEST(Test_ASTAnalysis, MemberAccesses) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, MemberCalls) {
-  const atl::string filepath = test_prefix + "MemberCalls/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, MemberCalls) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -292,9 +301,9 @@ TEST(Test_ASTAnalysis, MemberCalls) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, MemberVar) {
-  const atl::string filepath = test_prefix + "MemberVar/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, MemberVar) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -308,9 +317,9 @@ TEST(Test_ASTAnalysis, MemberVar) {
   ASSERT_NE(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, NameAnalysis) {
-  const atl::string filepath = test_prefix + "NameAnalysis/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, NameAnalysis) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -324,9 +333,9 @@ TEST(Test_ASTAnalysis, NameAnalysis) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, NamespaceClass) {
-  const atl::string filepath = test_prefix + "NamespaceClass/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, NamespaceClass) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -340,9 +349,9 @@ TEST(Test_ASTAnalysis, NamespaceClass) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, NamespaceFunction) {
-  const atl::string filepath = test_prefix + "NamespaceFunction/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, NamespaceFunction) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -356,9 +365,9 @@ TEST(Test_ASTAnalysis, NamespaceFunction) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, NamespacePopulation) {
-  const atl::string filepath = test_prefix + "NamespacePopulation/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, NamespacePopulation) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -389,9 +398,9 @@ TEST(Test_ASTAnalysis, NamespacePopulation) {
   ASSERT_NE(classTypeDef, nullptr);
 }
 
-TEST(Test_ASTAnalysis, NoMainFunc) {
-  const atl::string filepath = test_prefix + "NoMainFunc/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, NoMainFunc) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -405,9 +414,9 @@ TEST(Test_ASTAnalysis, NoMainFunc) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, ReferenceClassBinOp) {
-  const atl::string filepath = test_prefix + "ReferenceClassBinOp/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, ReferenceClassBinOp) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -421,9 +430,9 @@ TEST(Test_ASTAnalysis, ReferenceClassBinOp) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, StringClass) {
-  const atl::string filepath = test_prefix + "StringClass/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, StringClass) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -437,9 +446,9 @@ TEST(Test_ASTAnalysis, StringClass) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, SubscriptResolution) {
-  const atl::string filepath = test_prefix + "SubscriptResolution/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, SubscriptResolution) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -453,9 +462,9 @@ TEST(Test_ASTAnalysis, SubscriptResolution) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, TypedefComparisons) {
-  const atl::string filepath = test_prefix + "TypedefComparisons/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, TypedefComparisons) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -469,9 +478,9 @@ TEST(Test_ASTAnalysis, TypedefComparisons) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, TypeDefReturnType) {
-  const atl::string filepath = test_prefix + "TypeDefReturnType/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, TypeDefReturnType) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -485,9 +494,9 @@ TEST(Test_ASTAnalysis, TypeDefReturnType) {
   ASSERT_EQ(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, UndefinedClass) {
-  const atl::string filepath = test_prefix + "UndefinedClass/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, UndefinedClass) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -501,9 +510,9 @@ TEST(Test_ASTAnalysis, UndefinedClass) {
   ASSERT_NE(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, UndefinedFunction) {
-  const atl::string filepath = test_prefix + "UndefinedFunction/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, UndefinedFunction) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -517,9 +526,9 @@ TEST(Test_ASTAnalysis, UndefinedFunction) {
   ASSERT_NE(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, UndefinedVariable) {
-  const atl::string filepath = test_prefix + "UndefinedVariable/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, UndefinedVariable) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -533,9 +542,9 @@ TEST(Test_ASTAnalysis, UndefinedVariable) {
   ASSERT_NE(0, semanticAnalysis.errorCount);
 }
 
-TEST(Test_ASTAnalysis, UseBeforeDecl) {
-  const atl::string filepath = test_prefix + "UseBeforeDecl/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_ASTAnalysis, UseBeforeDecl) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -548,23 +557,3 @@ TEST(Test_ASTAnalysis, UseBeforeDecl) {
   semanticAnalysis.printErrors();
   ASSERT_NE(0, semanticAnalysis.errorCount);
 }
-
-// The fixture for testing class Project1. From google test primer.
-class Test_ASTAnalysis : public ::testing::Test {
-protected:
-  Test_ASTAnalysis() {
-    // You can do set-up work for each test here.
-  }
-
-  // If the constructor and destructor are not enough for setting up
-  // and cleaning up each test, you can define the following methods:
-  virtual void SetUp() {
-    // Code here will be called immediately after the constructor (right
-    // before each test).
-  }
-
-  virtual void TearDown() {
-    // Code here will be called immediately after each test (right
-    // before the destructor).
-  }
-};
