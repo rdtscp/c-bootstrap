@@ -55,7 +55,6 @@ protected:
 using namespace ACC;
 
 TEST_F(Test_CodeGeneration, AddrOfRef) {
-  const atl::string filepath = test_prefix + "AddrOfRef/test.cpp";
   const atl::shared_ptr<SourceFileHandler> src(
       new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
