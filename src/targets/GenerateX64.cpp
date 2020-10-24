@@ -168,7 +168,8 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(Assign &as) {
     const atl::shared_ptr<X64::Operand> lhs = as.lhs->accept(*this);
     x64.lea(paramRegs.pop_back(), lhs);
     const atl::shared_ptr<X64::Operand> rhs = as.rhs->accept(*this);
-    if (funDecl->funParams[1]->type->astClass() == "ReferenceType") {
+    if (funDecl->funParams[1]->type->astClass() == "ReferenceType" ||
+        funDecl->funParams[1]->type->astClass() == "ClassType") {
       x64.lea(paramRegs.pop_back(), rhs);
     } else {
       x64.mov(paramRegs.pop_back(), rhs);
@@ -474,9 +475,6 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorDecl &cd) {
 }
 atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorDef &cd) {
   cd.scopeName = "FunDecl_" + cd.getSignature().mangle();
-  if (cd.numCallers == 0) {
-    return atl::shared_ptr<X64::None>();
-  }
 
   currScope = cd.getptr();
 
@@ -591,8 +589,9 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunCall &fc) {
       x64.mov(x64.rax, argReg, "Arg is a Ref, implicitly deref.");
       argReg = addrOffset(x64.rax, 0);
     }
-    if (funDecl->funParams[argNum]->type->astClass() == "ReferenceType") {
-      x64.lea(x64.rcx, argReg);
+    if (funDecl->funParams[argNum]->type->astClass() == "ReferenceType" ||
+        funDecl->funParams[argNum]->type->astClass() == "ClassType") {
+      x64.lea(x64.rcx, argReg, "Pass by Ref");
       argReg = x64.rcx;
     }
     if (paramRegs.size() > 0)
@@ -632,7 +631,30 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
   for (unsigned int idx = 0; idx < fd.funParams.size(); ++idx) {
     const atl::shared_ptr<X64::Operand> argAddr =
         fd.funParams[idx]->accept(*this);
-    x64.mov(argAddr, paramRegs.pop_back());
+
+    // Pass by value for non-trivial types.
+    if (fd.funParams[idx]->type->astClass() == "ClassType") {
+      x64.comment(" PassByValue - CopyCtor");
+      x64.callerPrologue();
+      x64.mov(x64.rsi, paramRegs.pop_back());
+      x64.lea(x64.rdi, argAddr);
+
+      const atl::shared_ptr<ClassType> paramType =
+          atl::static_pointer_cast<ClassType>(fd.funParams[idx]->type);
+      const atl::shared_ptr<ClassTypeDef> paramTypeDef =
+          paramType->typeDefinition.lock();
+      const FunSignature copyCtorSig(
+          nullptr, paramType->identifier,
+          {atl::shared_ptr<PointerType>(new PointerType(paramType)), paramType},
+          atl::set<FunDecl::FunModifiers>());
+      const atl::shared_ptr<ConstructorDecl> copyCtor =
+          paramTypeDef->findConstructorDecl(copyCtorSig);
+      x64.call(copyCtor->getSignature().mangle());
+      x64.callerEpilogue();
+
+    } else {
+      x64.mov(argAddr, paramRegs.pop_back());
+    }
   }
   x64.unindent();
   x64.comment(" -----------------------");
