@@ -19,8 +19,6 @@
 
 const atl::string tests_prefix = test_root + "Test_CodeGeneration/";
 
-using namespace ACC;
-
 // The fixture for testing class Project1. From google test primer.
 class Test_CodeGeneration : public ::testing::Test {
 protected:
@@ -53,6 +51,8 @@ protected:
     t_source_file = "";
   }
 };
+
+using namespace ACC;
 
 TEST_F(Test_CodeGeneration, Allocations) {
   const atl::shared_ptr<SourceFileHandler> src(
