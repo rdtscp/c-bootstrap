@@ -1,4 +1,4 @@
-#include "atl/include/ifstream.h"
+
 #include "atl/include/string.h"
 
 #include "gtest/gtest.h"
@@ -14,6 +14,7 @@
 #include "targets/GenerateX64.h"
 
 #include <cstdio>
+#include <fstream>
 
 #include "TestPath.h"
 
@@ -28,7 +29,7 @@ protected:
   Test_CodeGeneration() {}
 
   bool fileExists(const atl::string &filepath) {
-    atl::ifstream file(filepath.c_str());
+    std::ifstream file(filepath.c_str());
     return file.good();
   }
 
