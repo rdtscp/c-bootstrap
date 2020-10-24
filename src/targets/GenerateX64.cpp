@@ -639,16 +639,21 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(FunDef &fd) {
       x64.mov(x64.rsi, paramRegs.pop_back());
       x64.lea(x64.rdi, argAddr);
 
-      const atl::shared_ptr<ClassType> paramType =
-          atl::static_pointer_cast<ClassType>(fd.funParams[idx]->type);
-      const atl::shared_ptr<ClassTypeDef> paramTypeDef =
-          paramType->typeDefinition.lock();
+      // Get Parameters Type
+      const atl::shared_ptr<ClassTypeDef> paramType =
+          atl::static_pointer_cast<ClassType>(fd.funParams[idx]->type)
+              ->typeDefinition.lock();
+
+      const atl::shared_ptr<ClassType> classType(
+          new ClassType(paramType->classIdentifier));
+
       const FunSignature copyCtorSig(
-          nullptr, paramType->identifier,
-          {atl::shared_ptr<PointerType>(new PointerType(paramType)), paramType},
+          nullptr, paramType->classIdentifier,
+          {atl::shared_ptr<PointerType>(new PointerType(classType)),
+           atl::shared_ptr<ReferenceType>(new ReferenceType(classType))},
           atl::set<FunDecl::FunModifiers>());
       const atl::shared_ptr<ConstructorDecl> copyCtor =
-          paramTypeDef->findConstructorDecl(copyCtorSig);
+          paramType->findConstructorDecl(copyCtorSig);
       x64.call(copyCtor->getSignature().mangle());
       x64.callerEpilogue();
 
