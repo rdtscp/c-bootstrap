@@ -1,3 +1,4 @@
+#include "atl/include/ifstream.h"
 #include "atl/include/string.h"
 
 #include "gtest/gtest.h"
@@ -12,6 +13,8 @@
 #include "Scanner.h"
 #include "targets/GenerateX64.h"
 
+#include <cstdio>
+
 #include "TestPath.h"
 
 const atl::string tests_prefix = test_root + "Test_CodeGeneration/";
@@ -24,23 +27,30 @@ protected:
   atl::string t_source_file;
   atl::string t_binary_file;
 
-  Test_CodeGeneration() {
-    // You can do set-up work for each test here.
+  Test_CodeGeneration() {}
+
+  bool fileExists(const atl::string &filepath) {
+    atl::ifstream file(filepath.c_str());
+    return file.good();
   }
 
-  // If the constructor and destructor are not enough for setting up
-  // and cleaning up each test, you can define the following methods:
   virtual void SetUp() {
-    const atl::string test_prefix =
-        tests_prefix +
+    const atl::string test_name =
         ::testing::UnitTest::GetInstance()->current_test_info()->name();
-    t_source_file = test_prefix + "/test.cpp";
-    t_binary_file = test_prefix + "/binary";
+
+    t_source_file = tests_prefix + test_name + "/test.cpp";
+    t_binary_file = tests_prefix + test_name + "/binary";
   }
 
   virtual void TearDown() {
     // Code here will be called immediately after each test (right
     // before the destructor).
+    if (fileExists(t_binary_file)) {
+      std::remove(t_binary_file.c_str());
+    }
+
+    t_binary_file = "";
+    t_source_file = "";
   }
 };
 
