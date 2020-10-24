@@ -464,7 +464,6 @@ atl::shared_ptr<ConstructorDecl> Parser::parseConstructor() {
 atl::shared_ptr<Decl> Parser::parseDecl() {
   if (acceptTemplateDef()) {
     atl::shared_ptr<TemplateDef> td = parseTemplateDef();
-    expect(TC::SC);
     return td;
   }
 
@@ -608,7 +607,26 @@ atl::shared_ptr<FunDecl> Parser::parseFunDecl() {
         new FunDecl(funModifiers, funIdentifier, funParams, funType));
   }
 }
-atl::shared_ptr<TemplateDef> Parser::parseTemplateDef() { return nullptr; }
+atl::shared_ptr<TemplateDef> Parser::parseTemplateDef() {
+  expect(TC::TEMPLATE);
+  expect(TC::LT);
+  expect(TC::TYPENAME);
+  atl::vector<atl::shared_ptr<Identifier>> templateParams;
+  templateParams.push_back(parseIdentifier());
+  while (accept(TC::COMMA)) {
+    expect(TC::COMMA);
+    expect(TC::TYPENAME);
+    templateParams.push_back(parseIdentifier());
+  }
+  expect(TC::GT);
+  atl::shared_ptr<Decl> templatedDecl;
+  if (acceptClassTypeDecl()) {
+    templatedDecl = parseClassTypeDecl();
+  } else {
+    templatedDecl = parseFunDecl();
+  }
+  return createNode(new TemplateDef(templateParams, templatedDecl));
+}
 atl::shared_ptr<TypeDefDecl> Parser::parseTypeDefDecl() {
   expect(TC::TYPEDEF);
   atl::shared_ptr<Type> aliasedType = parseType();

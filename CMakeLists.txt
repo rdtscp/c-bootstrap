@@ -83,6 +83,7 @@ add_library(AST SHARED
   src/ast/StaticCast.cpp
   src/ast/StringLiteral.cpp
   src/ast/SubscriptOp.cpp
+  src/ast/TemplateDef.cpp
   src/ast/TertiaryExpr.cpp
   src/ast/Throw.cpp
   src/ast/TypeDefDecl.cpp

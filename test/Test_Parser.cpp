@@ -291,6 +291,92 @@ TEST_F(Test_Parser, SubscriptOp) {
   ASSERT_EQ(*actual, *expected);
 }
 
+TEST_F(Test_Parser, TemplateDef) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
+
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> actual = parser.getAST();
+  const unsigned int expected_size = 2;
+  ASSERT_EQ(actual->decls.size(), expected_size);
+  atl::vector<atl::shared_ptr<Decl>> expectedDecls = {
+      atl::shared_ptr<TemplateDef>(new TemplateDef(
+          {atl::shared_ptr<Identifier>(new Identifier("T"))},
+          atl::shared_ptr<FunDef>(new FunDef(
+              atl::set<FunDecl::FunModifiers>(),
+              atl::shared_ptr<Identifier>(new Identifier("swap")),
+              {atl::shared_ptr<VarDecl>(new VarDecl(
+                   atl::shared_ptr<ReferenceType>(new ReferenceType(
+                       atl::shared_ptr<ClassType>(new ClassType(
+                           atl::shared_ptr<Identifier>(new Identifier("T")))))),
+                   atl::shared_ptr<Identifier>(new Identifier("lhs")))),
+               atl::shared_ptr<VarDecl>(new VarDecl(
+                   atl::shared_ptr<ReferenceType>(new ReferenceType(
+                       atl::shared_ptr<ClassType>(new ClassType(
+                           atl::shared_ptr<Identifier>(new Identifier("T")))))),
+                   atl::shared_ptr<Identifier>(new Identifier("rhs"))))},
+              atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::VOID)),
+              atl::shared_ptr<Block>(new Block(
+                  {atl::shared_ptr<VarDef>(new VarDef(
+                       atl::shared_ptr<ClassType>(new ClassType(
+                           atl::shared_ptr<Identifier>(new Identifier("T")))),
+                       atl::shared_ptr<Identifier>(new Identifier("temp")),
+                       atl::shared_ptr<VarExpr>(
+                           new VarExpr(atl::shared_ptr<Identifier>(
+                               new Identifier("lhs")))))),
+                   atl::shared_ptr<Assign>(new Assign(
+                       atl::shared_ptr<VarExpr>(new VarExpr(
+                           atl::shared_ptr<Identifier>(new Identifier("lhs")))),
+                       atl::shared_ptr<VarExpr>(
+                           new VarExpr(atl::shared_ptr<Identifier>(
+                               new Identifier("rhs")))))),
+                   atl::shared_ptr<Assign>(new Assign(
+                       atl::shared_ptr<VarExpr>(new VarExpr(
+                           atl::shared_ptr<Identifier>(new Identifier("rhs")))),
+                       atl::shared_ptr<VarExpr>(
+                           new VarExpr(atl::shared_ptr<Identifier>(
+                               new Identifier("temp"))))))})))))),
+      atl::shared_ptr<FunDef>(new FunDef(
+          atl::set<FunDecl::FunModifiers>(),
+          atl::shared_ptr<Identifier>(new Identifier("main")),
+          {atl::shared_ptr<VarDecl>(new VarDecl(
+               atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+               atl::shared_ptr<Identifier>(new Identifier("argc")))),
+           atl::shared_ptr<VarDecl>(new VarDecl(
+               atl::shared_ptr<PointerType>(
+                   new PointerType(atl::shared_ptr<PointerType>(
+                       new PointerType(atl::shared_ptr<BaseType>(
+                           new BaseType(PrimitiveType::CHAR)))))),
+               atl::shared_ptr<Identifier>(new Identifier("argv"))))},
+          atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+          atl::shared_ptr<Block>(new Block(
+              {atl::shared_ptr<VarDef>(new VarDef(
+                   atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+                   atl::shared_ptr<Identifier>(new Identifier("a")),
+                   atl::shared_ptr<IntLiteral>(new IntLiteral("10")))),
+               atl::shared_ptr<VarDef>(new VarDef(
+                   atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
+                   atl::shared_ptr<Identifier>(new Identifier("b")),
+                   atl::shared_ptr<IntLiteral>(new IntLiteral("0")))),
+               atl::shared_ptr<FunCall>(new FunCall(
+                   atl::shared_ptr<Identifier>(new Identifier("swap")),
+                   {atl::shared_ptr<VarExpr>(new VarExpr(
+                        atl::shared_ptr<Identifier>(new Identifier("a")))),
+                    atl::shared_ptr<VarExpr>(new VarExpr(
+                        atl::shared_ptr<Identifier>(new Identifier("b"))))})),
+               atl::shared_ptr<Return>(new Return(atl::shared_ptr<VarExpr>(
+                   new VarExpr(atl::shared_ptr<Identifier>(
+                       new Identifier("a"))))))}))))};
+
+  ASSERT_EQ(actual->decls.size(), expectedDecls.size());
+
+  for (unsigned int i = 0; i < expectedDecls.size(); ++i)
+    ASSERT_TRUE(*actual->decls[i] == *expectedDecls[i]) << "decls[" << i << "]";
+}
+
 TEST_F(Test_Parser, VarDecls) {
   const atl::shared_ptr<SourceFileHandler> src(
       new SourceFileHandler(t_source_file));

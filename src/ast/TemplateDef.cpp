@@ -2,7 +2,9 @@
 
 using namespace ACC;
 
-TemplateDef::TemplateDef() {}
+TemplateDef::TemplateDef(const atl::vector<atl::shared_ptr<Identifier>> &params,
+                         const atl::shared_ptr<Decl> &decl)
+    : templateParams(params), templatedDecl(decl) {}
 
 atl::shared_ptr<Identifier> TemplateDef::getIdentifier() const {
   return nullptr;
