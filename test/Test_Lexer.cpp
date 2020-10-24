@@ -2,20 +2,40 @@
 #include "atl/include/vector.h"
 
 #include "gtest/gtest.h"
-#include "TestPath.h"
 
 #include "Lexer.h"
 #include "Preprocessor.h"
 #include "Scanner.h"
 #include "SourceToken.h"
 
+#include "TestPath.h"
+
+const atl::string tests_prefix = test_root + "Test_Lexer/";
+
+// The fixture for testing class Project1. From google test primer.
+class Test_Lexer : public ::testing::Test {
+protected:
+  atl::string t_source_file;
+
+  Test_Lexer() {}
+
+  // If the constructor and destructor are not enough for setting up
+  // and cleaning up each test, you can define the following methods:
+  virtual void SetUp() {
+    const atl::string test_name =
+        ::testing::UnitTest::GetInstance()->current_test_info()->name();
+
+    t_source_file = tests_prefix + test_name + "/test.cpp";
+  }
+
+  virtual void TearDown() { t_source_file = ""; }
+};
+
 using namespace ACC;
 
-const atl::string test_prefix = test_root + "Test_Lexer/";
-
-TEST(Test_Lexer, AllTokens) {
-  const atl::string filepath = test_prefix + "AllTokens/test.txt";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_Lexer, AllTokens) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -99,9 +119,9 @@ TEST(Test_Lexer, AllTokens) {
   }
 }
 
-TEST(Test_Lexer, FunDecl) {
-  const atl::string filepath = test_prefix + "FunDecl/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_Lexer, FunDecl) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -112,9 +132,9 @@ TEST(Test_Lexer, FunDecl) {
   }
 }
 
-TEST(Test_Lexer, NestedComments) {
-  const atl::string filepath = test_prefix + "NestedComments/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_Lexer, NestedComments) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -125,9 +145,9 @@ TEST(Test_Lexer, NestedComments) {
   }
 }
 
-TEST(Test_Lexer, VarDecls) {
-  const atl::string filepath = test_prefix + "VarDecls/test.cpp";
-  const atl::shared_ptr<SourceFileHandler> src(new SourceFileHandler(filepath));
+TEST_F(Test_Lexer, VarDecls) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Preprocessor preprocessor(src, {});
   ACC::Scanner scanner(preprocessor.getSource());
   Lexer lexer(scanner);
@@ -137,23 +157,3 @@ TEST(Test_Lexer, VarDecls) {
     currToken = lexer.nextToken().tokenClass;
   }
 }
-
-// The fixture for testing class Project1. From google test primer.
-class Test_Lexer : public ::testing::Test {
-protected:
-  Test_Lexer() {
-    // You can do set-up work for each test here.
-  }
-
-  // If the constructor and destructor are not enough for setting up
-  // and cleaning up each test, you can define the following methods:
-  virtual void SetUp() {
-    // Code here will be called immediately after the constructor (right
-    // before each test).
-  }
-
-  virtual void TearDown() {
-    // Code here will be called immediately after each test (right
-    // before the destructor).
-  }
-};
