@@ -349,6 +349,26 @@ TEST_F(Test_CodeGeneration, PassByReference) {
   ASSERT_EQ(system(binary.c_str()), 0);
 }
 
+TEST_F(Test_CodeGeneration, PassByValue) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
+  ACC::Preprocessor preprocessor(src, {});
+  ACC::Scanner scanner(preprocessor.getSource());
+  ACC::Lexer lexer(scanner);
+  ACC::Parser parser(lexer);
+  atl::shared_ptr<Program> progAST = parser.getAST();
+
+  SemanticAnalysis nameAnalysis(progAST);
+  nameAnalysis.run();
+  ASSERT_EQ(0, nameAnalysis.errorCount);
+
+  GenerateX64 x64Generator(progAST);
+  const atl::shared_ptr<SourceMemHandler> assembly = x64Generator.run();
+  LinkerBuilder linkAndBuilder(assembly, t_binary_file);
+  const atl::string binary = linkAndBuilder.linkAndBuild();
+  ASSERT_EQ(system(binary.c_str()), 0);
+}
+
 TEST_F(Test_CodeGeneration, PointerLooping) {
   const atl::shared_ptr<SourceFileHandler> src(
       new SourceFileHandler(t_source_file));
