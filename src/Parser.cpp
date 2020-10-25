@@ -312,7 +312,7 @@ bool Parser::acceptFunCall(int offset) {
   // Check for template params.
   if (accept(TC::LT, offset)) {
     ++offset;
-    while (accept(TC::IDENTIFIER, offset)) {
+    while (acceptType(offset)) {
       ++offset;
       if (accept(TC::COMMA, offset)) {
         ++offset;
@@ -1249,6 +1249,27 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
 }
 atl::shared_ptr<FunCall> Parser::parseFunCall() {
   const atl::shared_ptr<Identifier> ident = parseIdentifier();
+  // Templated Function Call
+  if (accept(TC::LT)) {
+    expect(TC::LT);
+    atl::vector<atl::shared_ptr<Type>> templateArgs;
+    templateArgs.push_back(parseType());
+    while (accept(TC::COMMA)) {
+      expect(TC::COMMA);
+      templateArgs.push_back(parseType());
+    }
+    expect(TC::GT);
+    expect(TC::LPAR);
+    atl::vector<atl::shared_ptr<Expr>> params;
+    if (acceptExpr())
+      params.push_back(parseExpr());
+    while (accept(TC::COMMA)) {
+      expect(TC::COMMA);
+      params.push_back(parseExpr());
+    }
+    expect(TC::RPAR);
+    return createNode(new TemplatedFunCall(ident, params, templateArgs));
+  }
   expect(TC::LPAR);
   atl::vector<atl::shared_ptr<Expr>> params;
   if (acceptExpr())

@@ -361,12 +361,15 @@ TEST_F(Test_Parser, TemplateDef) {
                    atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
                    atl::shared_ptr<Identifier>(new Identifier("b")),
                    atl::shared_ptr<IntLiteral>(new IntLiteral("0")))),
-               atl::shared_ptr<FunCall>(new FunCall(
+
+               atl::shared_ptr<TemplatedFunCall>(new TemplatedFunCall(
                    atl::shared_ptr<Identifier>(new Identifier("swap")),
                    {atl::shared_ptr<VarExpr>(new VarExpr(
                         atl::shared_ptr<Identifier>(new Identifier("a")))),
                     atl::shared_ptr<VarExpr>(new VarExpr(
-                        atl::shared_ptr<Identifier>(new Identifier("b"))))})),
+                        atl::shared_ptr<Identifier>(new Identifier("b"))))},
+                   {atl::shared_ptr<BaseType>(
+                       new BaseType(PrimitiveType::INT))})),
                atl::shared_ptr<Return>(new Return(atl::shared_ptr<VarExpr>(
                    new VarExpr(atl::shared_ptr<Identifier>(
                        new Identifier("a"))))))}))))};

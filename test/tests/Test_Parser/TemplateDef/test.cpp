@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
   int a = 10;
   int b = 0;
 
-  swap(a, b);
+  swap<int>(a, b);
 
   return a;
 }
