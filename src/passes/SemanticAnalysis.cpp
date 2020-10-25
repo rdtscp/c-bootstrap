@@ -890,6 +890,9 @@ atl::shared_ptr<Type> SemanticAnalysis::visit(SubscriptOp &so) {
 atl::shared_ptr<Type> SemanticAnalysis::visit(TemplateDef &td) {
   return nullptr;
 }
+atl::shared_ptr<Type> SemanticAnalysis::visit(TemplatedFunCall &tfc) {
+  return nullptr;
+}
 atl::shared_ptr<Type> SemanticAnalysis::visit(TertiaryExpr &t) {
   const atl::shared_ptr<Type> conditionType =
       t.tertiaryCondition->accept(*this);

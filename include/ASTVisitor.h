@@ -44,6 +44,7 @@ class SizeOf;
 class StringLiteral;
 class SubscriptOp;
 class TemplateDef;
+class TemplatedFunCall;
 class TertiaryExpr;
 class Throw;
 class StaticCast;
@@ -102,6 +103,7 @@ public:
   virtual T visit(StringLiteral &sl) = 0;
   virtual T visit(SubscriptOp &so) = 0;
   virtual T visit(TemplateDef &td) = 0;
+  virtual T visit(TemplatedFunCall &tfc) = 0;
   virtual T visit(TertiaryExpr &t) = 0;
   virtual T visit(Throw &t) = 0;
   virtual T visit(TypeDefDecl &tc) = 0;

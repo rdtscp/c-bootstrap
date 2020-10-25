@@ -948,6 +948,9 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(SubscriptOp &so) {
 atl::shared_ptr<X64::Operand> GenerateX64::visit(TemplateDef &td) {
   return atl::shared_ptr<X64::None>();
 }
+atl::shared_ptr<X64::Operand> GenerateX64::visit(TemplatedFunCall &tfc) {
+  throw;
+}
 atl::shared_ptr<X64::Operand> GenerateX64::visit(TertiaryExpr &t) {
   return atl::shared_ptr<X64::None>();
 }

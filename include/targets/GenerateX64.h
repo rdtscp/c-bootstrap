@@ -90,6 +90,7 @@ private:
   atl::shared_ptr<X64::Operand> visit(StringLiteral &sl) override;
   atl::shared_ptr<X64::Operand> visit(SubscriptOp &so) override;
   atl::shared_ptr<X64::Operand> visit(TemplateDef &td) override;
+  atl::shared_ptr<X64::Operand> visit(TemplatedFunCall &tfc) override;
   atl::shared_ptr<X64::Operand> visit(TertiaryExpr &t) override;
   atl::shared_ptr<X64::Operand> visit(Throw &t) override;
   atl::shared_ptr<X64::Operand> visit(TypeDefDecl &td) override;

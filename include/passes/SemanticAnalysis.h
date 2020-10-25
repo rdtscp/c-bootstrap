@@ -75,6 +75,7 @@ private:
   atl::shared_ptr<Type> visit(StringLiteral &sl) override;
   atl::shared_ptr<Type> visit(SubscriptOp &so) override;
   atl::shared_ptr<Type> visit(TemplateDef &td) override;
+  atl::shared_ptr<Type> visit(TemplatedFunCall &tfc) override;
   atl::shared_ptr<Type> visit(TertiaryExpr &t) override;
   atl::shared_ptr<Type> visit(Throw &t) override;
   atl::shared_ptr<Type> visit(TypeDefDecl &td) override;
@@ -85,7 +86,8 @@ private:
   atl::shared_ptr<Type> visit(While &w) override;
 
   /* Helpers */
-  atl::shared_ptr<PointerType> createThisParamType(atl::shared_ptr<Identifier> identifier) const;
+  atl::shared_ptr<PointerType>
+  createThisParamType(atl::shared_ptr<Identifier> identifier) const;
   atl::set<FunDecl::FunModifiers> funModifiers(bool isConst) const;
   atl::shared_ptr<BaseType> noType() const;
 };
