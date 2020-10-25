@@ -85,6 +85,7 @@ private:
   bool acceptObjExpr(int offset = 0);
   bool acceptObjExprOp(int offset = 0);
   bool acceptLitExpr(int offset = 0);
+  bool acceptFunCall(int offset = 0);
 
   bool acceptOperatorOverload(int offset = 0);
   bool acceptParam(int offset = 0);
@@ -144,8 +145,7 @@ private:
   /* Converts an Token to an Type */
   atl::shared_ptr<BaseType> tokenToType(const SourceToken::Class &tc);
 
-  template <typename T>
-  atl::shared_ptr<T> createNode(T *node) {
+  template <typename T> atl::shared_ptr<T> createNode(T *node) {
     node->position = prevPosition;
     return atl::shared_ptr<T>(node);
   }

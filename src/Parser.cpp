@@ -301,6 +301,30 @@ bool Parser::acceptLitExpr(int offset) {
                  TC::TRUE_VAL, TC::FALSE_VAL},
                 offset);
 }
+bool Parser::acceptFunCall(int offset) {
+  // Check for namespaced function.
+  while (accept(TC::IDENTIFIER, offset)) {
+    ++offset;
+    if (accept(TC::NAMESPACEACCESS, offset)) {
+      ++offset;
+    }
+  }
+  // Check for template params.
+  if (accept(TC::LT, offset)) {
+    ++offset;
+    while (accept(TC::IDENTIFIER, offset)) {
+      ++offset;
+      if (accept(TC::COMMA, offset)) {
+        ++offset;
+      }
+    }
+    if (accept(TC::GT, offset)) {
+      ++offset;
+    }
+  }
+  // Check for parenthesis.
+  return accept(TC::LPAR, offset);
+}
 
 bool Parser::acceptParam(int offset) { return acceptType(offset); }
 
@@ -1138,21 +1162,12 @@ atl::shared_ptr<Expr> Parser::parseObjExpr() {
     return createNode(new ParenthExpr(innerExpr));
   }
   if (accept(TC::IDENTIFIER)) {
-    const atl::shared_ptr<Identifier> ident = parseIdentifier();
+    // Parsing a FunCall
     atl::shared_ptr<Expr> objExpr;
-    if (accept(TC::LPAR)) {
-      expect(TC::LPAR);
-      atl::vector<atl::shared_ptr<Expr>> params;
-      if (acceptExpr())
-        params.push_back(parseExpr());
-      while (accept(TC::COMMA)) {
-        expect(TC::COMMA);
-        params.push_back(parseExpr());
-      }
-
-      expect(TC::RPAR);
-      objExpr = createNode(new FunCall(ident, params));
+    if (acceptFunCall()) {
+      objExpr = parseFunCall();
     } else {
+      const atl::shared_ptr<Identifier> ident = parseIdentifier();
       objExpr = createNode(new VarExpr(ident));
     }
 
