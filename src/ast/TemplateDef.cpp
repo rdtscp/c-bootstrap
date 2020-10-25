@@ -23,3 +23,9 @@ bool TemplateDef::operator==(const TemplateDef &rhs) const { return true; }
 bool TemplateDef::operator!=(const TemplateDef &rhs) const {
   return !(*this == rhs);
 }
+
+atl::shared_ptr<FunDecl>
+TemplateDef::findFunDecl(const FunSignature &funSignature,
+                         const atl::shared_ptr<Decl> &exemptDecl) {
+  return nullptr;
+}

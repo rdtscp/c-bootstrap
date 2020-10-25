@@ -52,6 +52,7 @@
 #include "ast/StringLiteral.h"
 #include "ast/SubscriptOp.h"
 #include "ast/TemplateDef.h"
+#include "ast/TemplatedFunCall.h"
 #include "ast/TertiaryExpr.h"
 #include "ast/Throw.h"
 #include "ast/Type.h"
