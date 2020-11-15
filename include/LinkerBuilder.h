@@ -36,10 +36,7 @@ public:
       printf("ld Failed: `%s`\n", ld_cmd.c_str());
       throw;
     }
-#else
-    m_outFilename = "echo \"Cannot link and build on this platform\"";
-#endif
-
+    
     { // Remove temp.s
       const atl::string delete_cmd = "rm ./" + temp_s_filename;
       const int delete_status = system(delete_cmd.c_str());
@@ -56,6 +53,9 @@ public:
         throw;
       }
     }
+#else
+    m_outFilename = "echo \"Cannot link and build on this platform\"";
+#endif
 
     return m_outFilename;
   }
