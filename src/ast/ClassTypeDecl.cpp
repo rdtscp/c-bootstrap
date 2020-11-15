@@ -1,11 +1,12 @@
-#include "ast/Identifier.h"
 #include "ast/ClassTypeDef.h"
 #include "ast/FunDef.h"
+#include "ast/Identifier.h"
 #include "ast/VarDef.h"
 
 using namespace ACC;
 
-ClassTypeDecl::ClassTypeDecl(const atl::shared_ptr<Identifier> &p_classIdentifier)
+ClassTypeDecl::ClassTypeDecl(
+    const atl::shared_ptr<Identifier> &p_classIdentifier)
     : classIdentifier(p_classIdentifier) {}
 
 atl::shared_ptr<Identifier> ClassTypeDecl::getIdentifier() const {
@@ -76,5 +77,19 @@ ClassTypeDecl::findVarDecl(const atl::shared_ptr<Identifier> identifier,
 atl::shared_ptr<VarDecl>
 ClassTypeDecl::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
                                 const atl::shared_ptr<Decl> &exemptDecl) {
+  return nullptr;
+}
+
+atl::shared_ptr<FunDecl>
+ClassTypeDecl::findTemplatedFunDecl(const TemplateFunSignature &FunSignature,
+                                    const atl::shared_ptr<Decl> &exemptDecl) {
+  // TODO: Implement
+  return nullptr;
+}
+
+atl::shared_ptr<FunDecl> ClassTypeDecl::findTemplatedFunDeclLocal(
+    const TemplateFunSignature &FunSignature,
+    const atl::shared_ptr<Decl> &exemptDecl) {
+  // TODO: Implement
   return nullptr;
 }

@@ -34,14 +34,16 @@ int main(int argc, char const *argv[]) {
     }
   }
 
-  const atl::shared_ptr<ACC::SourceFileHandler> src(new ACC::SourceFileHandler(inFilename, atl::fstream::open_mode::read));
+  const atl::shared_ptr<ACC::SourceFileHandler> src(
+      new ACC::SourceFileHandler(inFilename, atl::fstream::open_mode::read));
   if (preprocess) {
     ACC::Preprocessor preprocessor(src, {"/Users/alexanderwilson/Documents/"
                                          "GitHub/c-bootstrap/build/atl/src/",
                                          "/Users/alexanderwilson/Documents/"
                                          "GitHub/c-bootstrap/include/"});
-    const atl::shared_ptr<ACC::SourceMemHandler> pp_src = preprocessor.getSource();
-    printf("%s", pp_src->read().c_str());
+    const atl::shared_ptr<ACC::SourceMemHandler> pp_src =
+        preprocessor.getSource();
+    printf("%s\n", pp_src->read().c_str());
 
     return 0;
   } else {
@@ -75,11 +77,12 @@ int main(int argc, char const *argv[]) {
       dotGraph.print();
     } else {
       ACC::GenerateX64 x64Generator(progAST);
-      const atl::shared_ptr<ACC::SourceMemHandler> assembly = x64Generator.run();
+      const atl::shared_ptr<ACC::SourceMemHandler> assembly =
+          x64Generator.run();
 
       ACC::LinkerBuilder linkerBuilder(assembly, outFilename);
       const atl::string binary = linkerBuilder.linkAndBuild();
-      
+      printf("Built Binary: '%s'\n", binary.c_str());
     }
 
     return 0;

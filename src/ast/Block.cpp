@@ -99,3 +99,17 @@ Block::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
 
   return nullptr;
 }
+
+atl::shared_ptr<FunDecl>
+Block::findTemplatedFunDecl(const TemplateFunSignature &FunSignature,
+                            const atl::shared_ptr<Decl> &exemptDecl) {
+  // TODO: Implement
+  return nullptr;
+}
+
+atl::shared_ptr<FunDecl>
+Block::findTemplatedFunDeclLocal(const TemplateFunSignature &FunSignature,
+                                 const atl::shared_ptr<Decl> &exemptDecl) {
+  // TODO: Implement
+  return nullptr;
+}

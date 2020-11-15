@@ -102,7 +102,8 @@ Namespace::findFunDeclLocal(const FunSignature &funSignature,
       if (currDecl->astClass() == "ClassTypeDef") {
         const atl::shared_ptr<ClassTypeDef> currClassTypeDef =
             atl::static_pointer_cast<ClassTypeDef>(currDecl);
-        if (currClassTypeDef->getIdentifier()->head() != funSignature.namespaceHead())
+        if (currClassTypeDef->getIdentifier()->head() !=
+            funSignature.namespaceHead())
           continue;
 
         const atl::shared_ptr<FunDecl> classTypeDefFind =
@@ -206,5 +207,19 @@ Namespace::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
     return atl::static_pointer_cast<VarDecl>(currDecl);
   }
 
+  return nullptr;
+}
+
+atl::shared_ptr<FunDecl>
+Namespace::findTemplatedFunDecl(const TemplateFunSignature &FunSignature,
+                                const atl::shared_ptr<Decl> &exemptDecl) {
+  // TODO: Implement
+  return nullptr;
+}
+
+atl::shared_ptr<FunDecl>
+Namespace::findTemplatedFunDeclLocal(const TemplateFunSignature &FunSignature,
+                                     const atl::shared_ptr<Decl> &exemptDecl) {
+  // TODO: Implement
   return nullptr;
 }
