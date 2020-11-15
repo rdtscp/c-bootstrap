@@ -26,10 +26,11 @@ public:
       throw;
     }
 #ifdef __APPLE__
+    const atl::string obj_filename = "temp.o";
     const atl::string ld_cmd = "ld -no_pie -macosx_version_min 10.15 "
                                "-L/Library/Developer/CommandLineTools/SDKs/"
                                "MacOSX.sdk/usr/lib -lSystem -o " +
-                               m_outFilename + " temp.o";
+                               m_outFilename + " " + obj_filename;
     const int ld_status = system(ld_cmd.c_str());
     if (ld_status != 0) {
       printf("ld Failed: `%s`\n", ld_cmd.c_str());
@@ -38,6 +39,23 @@ public:
 #else
     m_outFilename = "echo \"Cannot link and build on this platform\"";
 #endif
+
+    { // Remove temp.s
+      const atl::string delete_cmd = "rm ./" + temp_s_filename;
+      const int delete_status = system(delete_cmd.c_str());
+      if (delete_status != 0) {
+        printf("Delete temp assembly file failed: `%s`\n", delete_cmd.c_str());
+        throw;
+      }
+    }
+    { // Remove temp.o
+      const atl::string delete_cmd = "rm ./" + obj_filename;
+      const int delete_status = system(delete_cmd.c_str());
+      if (delete_status != 0) {
+        printf("Delete temp object file failed: `%s`\n", delete_cmd.c_str());
+        throw;
+      }
+    }
 
     return m_outFilename;
   }
