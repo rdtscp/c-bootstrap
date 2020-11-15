@@ -31,11 +31,25 @@ public:
 
   atl::string toString() const;
 
-private:
+protected:
   const atl::shared_ptr<Type> funReturnType;
   const atl::shared_ptr<Identifier> funIdentifier;
   const atl::vector<atl::shared_ptr<Type>> funArgs;
   const atl::set<FunDecl::FunModifiers> funModifiers;
+};
+
+class TemplateFunSignature : public FunSignature {
+public:
+  atl::vector<atl::shared_ptr<Type>> templateArgs;
+
+  TemplateFunSignature(const atl::shared_ptr<Type> p_funReturnType,
+                       const atl::shared_ptr<Identifier> p_funIdentifier,
+                       const atl::vector<atl::shared_ptr<Type>> p_funArgs,
+                       const atl::set<FunDecl::FunModifiers> p_funModifiers,
+                       const atl::vector<atl::shared_ptr<Type>> p_templateArgs)
+      : FunSignature(p_funReturnType, p_funIdentifier, p_funArgs,
+                     p_funModifiers),
+        templateArgs(p_templateArgs) {}
 };
 
 } // namespace ACC
