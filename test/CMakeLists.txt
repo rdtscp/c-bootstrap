@@ -1,4 +1,5 @@
 enable_testing()
+include(ctest)
 
 # I couldn't make it work with INTERFACE_INCLUDE_DIRECTORIES
 include_directories("${source_dir}/googletest/include")
