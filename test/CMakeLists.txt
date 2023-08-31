@@ -3,6 +3,16 @@ enable_testing()
 # I couldn't make it work with INTERFACE_INCLUDE_DIRECTORIES
 include_directories("${source_dir}/googletest/include")
 
+set_target_properties(libgtest PROPERTIES
+  "IMPORTED_LOCATION" "${binary_dir}/lib/libgtest.a"
+  "IMPORTED_LINK_INTERFACE_LIBRARIES" "${CMAKE_THREAD_LIBS_INIT}"
+)
+
+set_target_properties(libgmock PROPERTIES
+  "IMPORTED_LOCATION" "${binary_dir}/lib/libgmock.a"
+  "IMPORTED_LINK_INTERFACE_LIBRARIES" "${CMAKE_THREAD_LIBS_INIT}"
+)
+
 add_executable(runTest_AST Test_AST.cpp  main.cpp)
 target_link_libraries(runTest_AST libgtest libgmock AST DotGraph GenerateX64 Optimiser Parser SemanticAnalysis)
 add_test(ASTUnitTests runTest_AST)
