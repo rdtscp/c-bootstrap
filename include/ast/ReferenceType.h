@@ -13,9 +13,10 @@ public:
 
   ReferenceType(const atl::shared_ptr<Type> &p_referencedType);
 
-  virtual bool canCastTo(Type &rhs) const override;
+  bool canCastTo(Type &rhs) const override;
   unsigned int getBytes() const override;
-  virtual bool equivalentTo(Type &rhs) const override;
+  bool equivalentTo(Type &rhs) const override;
+  atl::string mangle() const override;
 
   bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;
@@ -26,6 +27,25 @@ public:
   atl::shared_ptr<ReferenceType> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "ReferenceType"; }
+
+  static atl::shared_ptr<Type>
+  collapseReferenceTypes(atl::shared_ptr<Type> type) {
+    if (type->astClass() == "ReferenceType") {
+      type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
+      if (type->astClass() == "ReferenceType")
+        type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
+    }
+    return type;
+  }
+
+  static Type &collapseReferenceTypes(Type *type) {
+    if (type->astClass() == "ReferenceType") {
+      type = static_cast<ReferenceType *>(type)->referencedType.get();
+      if (type->astClass() == "ReferenceType")
+        type = static_cast<ReferenceType *>(type)->referencedType.get();
+    }
+    return *type;
+  }
 
   VISITOR_ACCEPTORS
 };

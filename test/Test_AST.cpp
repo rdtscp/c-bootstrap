@@ -88,6 +88,36 @@ TEST(ASTTest, PointerTypeComparisons) {
   ASSERT_TRUE(voidPtr == voidPtr2);
 }
 
+TEST(ASTTest, IdentifierEquality) {
+ {
+    atl::shared_ptr<Identifier> iden1(new Identifier("iden1"));
+    atl::shared_ptr<Identifier> iden2(new Identifier("iden1"));
+    atl::shared_ptr<Identifier> iden3(new Identifier("iden3"));
+    ASSERT_EQ(*iden1, *iden2);
+  ASSERT_NE(*iden1, *iden3);
+  }
+  {
+    atl::shared_ptr<Identifier> namespaceIden1(new Identifier("Namespace"));
+    atl::shared_ptr<Identifier> iden1(new Identifier("Func"));
+    namespaceIden1->insert(iden1);
+
+    atl::shared_ptr<Identifier> namespaceIden2(new Identifier("Namespace"));
+    atl::shared_ptr<Identifier> iden2(new Identifier("Func"));
+    namespaceIden2->insert(iden2);
+
+    ASSERT_EQ(*namespaceIden1, *namespaceIden2);
+  }
+  {
+    atl::shared_ptr<Identifier> namespaceIden1(new Identifier("Namespace"));
+
+    atl::shared_ptr<Identifier> namespaceIden2(new Identifier("Namespace"));
+    atl::shared_ptr<Identifier> iden2(new Identifier("Func"));
+    namespaceIden2->insert(iden2);
+
+    ASSERT_NE(*namespaceIden1, *namespaceIden2);
+  }
+}
+
 TEST(ASTTest, VarDeclComparisons) {
   VarDecl vd1(atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::INT)),
               atl::shared_ptr<Identifier>(new Identifier("var1")));
@@ -294,7 +324,7 @@ TEST(ASTTest, FunDeclFunDefComparisons) {
 TEST(ASTTest, Scope_resolveVarExpr_currScope) {
   //   atl::shared_ptr<Scope> outerScope(new Scope());
   //   atl::shared_ptr<Scope> currScope(new Scope());
-  //   currScope->outerScope = outerScope;
+  //   currScope->outerScope = outerScope.lock();
 
   //   /* Store a variable in the current scope. */
   //   const atl::shared_ptr<BaseType> varDeclType(new
@@ -314,7 +344,7 @@ TEST(ASTTest, Scope_resolveVarExpr_currScope) {
 TEST(ASTTest, Scope_resolveVarExpr_outerScope) {
   //   atl::shared_ptr<Scope> outerScope(new Scope());
   //   atl::shared_ptr<Scope> currScope(new Scope());
-  //   currScope->outerScope = outerScope;
+  //   currScope->outerScope = outerScope.lock();
 
   //   /* Store a variable in the current scope. */
   //   const atl::shared_ptr<BaseType> varDeclType(new
@@ -322,7 +352,7 @@ TEST(ASTTest, Scope_resolveVarExpr_outerScope) {
   //   varDeclIdent(new Identifier("var1")); const atl::shared_ptr<VarDecl>
   //   varDecl(
   //       new VarDecl(varDeclType, varDeclIdent));
-  //   outerScope->insertDecl(varDecl);
+  //   outerScope.lock()->insertDecl(varDecl);
 
   //   /* Resolve it */
   //   const atl::shared_ptr<Identifier> searchIdent(new Identifier("var1"));
@@ -334,7 +364,7 @@ TEST(ASTTest, Scope_resolveVarExpr_outerScope) {
 TEST(ASTTest, Scope_resolveFunCall_innerScope) {
   //   atl::shared_ptr<Scope> outerScope(new Scope());
   //   atl::shared_ptr<Scope> currScope(new Scope());
-  //   currScope->outerScope = outerScope;
+  //   currScope->outerScope = outerScope.lock();
 
   //   /* Store a function in the current scope. */
   //   const atl::shared_ptr<FunDecl> funDeclOne(new FunDecl(
@@ -353,6 +383,43 @@ TEST(ASTTest, Scope_resolveFunCall_innerScope) {
   //   atl::shared_ptr<FunDecl> resolvedFunDecl =
   //       currScope->resolveFunCall(funSignature);
   //   ASSERT_EQ(*funDeclOne, *resolvedFunDecl);
+}
+
+TEST(ASTTest, StmtComparison) {
+  atl::shared_ptr<Stmt> s1 = atl::shared_ptr<VarDecl>(new VarDecl(
+    atl::shared_ptr<ReferenceType>(new ReferenceType(
+      atl::shared_ptr<PointerType>(new PointerType(
+        atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR))
+      ))
+    )),
+    atl::shared_ptr<Identifier>(new Identifier("t1"))
+  ));
+
+  atl::shared_ptr<Stmt> s2 = atl::shared_ptr<VarDecl>(new VarDecl(
+    atl::shared_ptr<ReferenceType>(new ReferenceType(
+      atl::shared_ptr<PointerType>(new PointerType(
+        atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR))
+      ))
+    )),
+    atl::shared_ptr<Identifier>(new Identifier("t2"))
+  ));
+
+  ASSERT_NE(*s1, *s2);
+
+  atl::shared_ptr<Stmt> s3 = atl::shared_ptr<VarDecl>(new VarDecl(
+    atl::shared_ptr<ReferenceType>(new ReferenceType(
+      atl::shared_ptr<PointerType>(new PointerType(
+        atl::shared_ptr<BaseType>(new BaseType(PrimitiveType::CHAR))
+      ))
+    )),
+    atl::shared_ptr<Identifier>(new Identifier("t2"))
+  ));
+
+  ASSERT_EQ(*s2, *s3);
+
+  atl::shared_ptr<Stmt> s4 = atl::shared_ptr<Return>(new Return());
+
+  ASSERT_NE(*s3, *s4);
 }
 
 TEST(ASTTest, ClassTypeDef_resolveVarExpr) {

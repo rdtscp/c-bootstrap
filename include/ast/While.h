@@ -15,6 +15,12 @@ public:
   While(const atl::shared_ptr<Stmt> &p_body,
         const atl::shared_ptr<Expr> &p_condition);
 
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
+
+  bool operator==(const While &rhs) const;
+  bool operator!=(const While &rhs) const;
+
   atl::shared_ptr<While> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "While"; }

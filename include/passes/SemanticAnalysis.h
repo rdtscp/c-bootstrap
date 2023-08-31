@@ -3,15 +3,18 @@
 #include "AST.h"
 #include "ASTVisitor.h"
 
+#include "atl/include/stack.h"
+
 namespace ACC {
 
 class SemanticAnalysis : public ASTVisitor<atl::shared_ptr<Type>> {
-
 public:
   int errorCount = 0;
   atl::vector<atl::string> errors;
 
   SemanticAnalysis(atl::shared_ptr<Program> progAST);
+
+  ~SemanticAnalysis();
 
   atl::shared_ptr<Type> error(const atl::string &errorType,
                               const atl::string &error,
@@ -24,6 +27,8 @@ public:
 private:
   atl::shared_ptr<Program> progAST;
   atl::shared_ptr<Scope> currScope;
+  atl::shared_ptr<FunDef> currFunDef;
+  atl::stack<atl::shared_ptr<Identifier>> parentIdentifiers;
 
   /* ---- Visit AST ---- */
 
@@ -57,6 +62,7 @@ private:
   atl::shared_ptr<Type> visit(MemberAccess &ma) override;
   atl::shared_ptr<Type> visit(MemberCall &mc) override;
   atl::shared_ptr<Type> visit(Namespace &n) override;
+  atl::shared_ptr<Type> visit(Not &n) override;
   atl::shared_ptr<Type> visit(Nullptr &n) override;
   atl::shared_ptr<Type> visit(ParenthExpr &pe) override;
   atl::shared_ptr<Type> visit(PointerType &pt) override;
@@ -69,6 +75,7 @@ private:
   atl::shared_ptr<Type> visit(StringLiteral &sl) override;
   atl::shared_ptr<Type> visit(SubscriptOp &so) override;
   atl::shared_ptr<Type> visit(TemplateDef &td) override;
+  atl::shared_ptr<Type> visit(TemplatedFunCall &tfc) override;
   atl::shared_ptr<Type> visit(TertiaryExpr &t) override;
   atl::shared_ptr<Type> visit(Throw &t) override;
   atl::shared_ptr<Type> visit(TypeDefDecl &td) override;
@@ -79,7 +86,8 @@ private:
   atl::shared_ptr<Type> visit(While &w) override;
 
   /* Helpers */
-  atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type);
+  atl::shared_ptr<PointerType>
+  createThisParamType(atl::shared_ptr<Identifier> identifier) const;
   atl::set<FunDecl::FunModifiers> funModifiers(bool isConst) const;
   atl::shared_ptr<BaseType> noType() const;
 };

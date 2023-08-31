@@ -1,5 +1,7 @@
 #include "ast/FunSignature.h"
 
+#include "ast/ReferenceType.h"
+
 using namespace ACC;
 
 FunSignature::FunSignature(const atl::shared_ptr<Type> p_funReturnType,
@@ -23,8 +25,6 @@ const FunSignature FunSignature::lowerNamespace() const {
 }
 
 bool FunSignature::canCall(const FunSignature &rhs) const {
-  // TODO: Incorporate return type?
-
   // TODO: Handle when default args are provided.
   if (funArgs.size() != rhs.funArgs.size())
     return false;
@@ -50,16 +50,40 @@ bool FunSignature::canCall(const FunSignature &rhs) const {
   return true;
 }
 
+atl::string FunSignature::mangle() const {
+  atl::string output = funIdentifier->mangle();
+  for (unsigned int idx = 0u; idx < funArgs.size(); ++idx) {
+    output += "_" + funArgs[idx]->mangle() + "_";
+  }
+
+  return output;
+}
+
+atl::shared_ptr<Type> collapseReferenceTypes(atl::shared_ptr<Type> type) {
+  if (type->astClass() == "ReferenceType") {
+    type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
+    if (type->astClass() == "ReferenceType")
+      type = atl::static_pointer_cast<ReferenceType>(type)->referencedType;
+  }
+  return type;
+}
+
 bool FunSignature::operator==(const FunSignature &rhs) const {
   // TODO: Incorporate return type?
 
   if (funArgs.size() != rhs.funArgs.size())
     return false;
 
-  // Check args match.
-  for (unsigned int idx = 0u; idx < funArgs.size(); ++idx)
-    if (funArgs[idx]->canCastTo(*rhs.funArgs[idx]))
+  for (unsigned int idx = 0u; idx < funArgs.size(); ++idx) {
+    const atl::shared_ptr<Type> lhsType = collapseReferenceTypes(funArgs[idx]);
+    const atl::shared_ptr<Type> rhsType =
+        collapseReferenceTypes(rhs.funArgs[idx]);
+    // const atl::shared_ptr<Type> lhsType = funArgs[idx];
+    // const atl::shared_ptr<Type> rhsType = rhs.funArgs[idx];
+
+    if (*lhsType != *rhsType && !lhsType->canCastTo(*rhsType))
       return false;
+  }
 
   // Check identifier.
   if (*funIdentifier != *rhs.funIdentifier)
@@ -76,4 +100,18 @@ bool FunSignature::operator==(const FunSignature &rhs) const {
 
 bool FunSignature::operator!=(const FunSignature &rhs) const {
   return !(*this == rhs);
+}
+
+atl::string FunSignature::toString() const {
+  atl::string output = funIdentifier->toString() + "(";
+
+  for (unsigned int i = 0; i < funArgs.size(); ++i) {
+    output += funArgs[i]->astClass();
+    if (i != funArgs.size() - 1) {
+      output += ", ";
+    }
+  }
+
+  output += ")";
+  return output;
 }

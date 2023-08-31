@@ -16,6 +16,8 @@ public:
   atl::shared_ptr<Expr> object;
   atl::shared_ptr<VarExpr> fieldVariable;
 
+  atl::weak_ptr<ClassTypeDef> objectTypeDef;
+
   MemberAccess(const atl::shared_ptr<Expr> &p_object,
                const atl::shared_ptr<VarExpr> &p_fieldVariable,
                const SourceToken::Class &p_accessType);
@@ -26,6 +28,9 @@ public:
 
   bool operator==(const MemberAccess &rhs) const;
   bool operator!=(const MemberAccess &rhs) const;
+
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
 
   atl::shared_ptr<MemberAccess> getptr() { return shared_from_this(); }
 

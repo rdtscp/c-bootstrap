@@ -53,8 +53,8 @@ Namespace::findClassDecl(const atl::shared_ptr<Identifier> identifier,
 
     return atl::static_pointer_cast<ClassTypeDecl>(currDecl);
   }
-  if (outerScope != nullptr)
-    return outerScope->findClassDecl(identifier, exemptDecl);
+  if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findClassDecl(identifier, exemptDecl);
 
   return nullptr;
 }
@@ -74,8 +74,8 @@ Namespace::findClassDef(const atl::shared_ptr<Identifier> identifier,
 
     return atl::static_pointer_cast<ClassTypeDecl>(currDecl);
   }
-  if (outerScope != nullptr)
-    return outerScope->findClassDef(identifier, exemptDecl);
+  if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findClassDef(identifier, exemptDecl);
 
   return nullptr;
 }
@@ -87,8 +87,8 @@ Namespace::findFunDecl(const FunSignature &funSignature,
       findFunDeclLocal(funSignature, exemptDecl);
   if (localFind != nullptr)
     return localFind;
-  else if (outerScope != nullptr)
-    return outerScope->findFunDecl(funSignature, exemptDecl);
+  else if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findFunDecl(funSignature, exemptDecl);
   else
     return nullptr;
 }
@@ -102,7 +102,8 @@ Namespace::findFunDeclLocal(const FunSignature &funSignature,
       if (currDecl->astClass() == "ClassTypeDef") {
         const atl::shared_ptr<ClassTypeDef> currClassTypeDef =
             atl::static_pointer_cast<ClassTypeDef>(currDecl);
-        if (currClassTypeDef->getIdentifier()->head() != funSignature.namespaceHead())
+        if (currClassTypeDef->getIdentifier()->head() !=
+            funSignature.namespaceHead())
           continue;
 
         const atl::shared_ptr<FunDecl> classTypeDefFind =
@@ -154,8 +155,8 @@ Namespace::findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
       findTypeDefDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
     return localFind;
-  else if (outerScope != nullptr)
-    return outerScope->findTypeDefDecl(identifier, exemptDecl);
+  else if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findTypeDefDecl(identifier, exemptDecl);
   else
     return nullptr;
 }
@@ -185,8 +186,8 @@ Namespace::findVarDecl(const atl::shared_ptr<Identifier> identifier,
       findVarDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
     return localFind;
-  else if (outerScope != nullptr)
-    return outerScope->findVarDecl(identifier, exemptDecl);
+  else if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findVarDecl(identifier, exemptDecl);
   else
     return nullptr;
 }
@@ -206,5 +207,19 @@ Namespace::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
     return atl::static_pointer_cast<VarDecl>(currDecl);
   }
 
+  return nullptr;
+}
+
+atl::shared_ptr<FunDecl>
+Namespace::findTemplatedFunDecl(const TemplateFunSignature &FunSignature,
+                                const atl::shared_ptr<Decl> &exemptDecl) {
+  // TODO: Implement
+  return nullptr;
+}
+
+atl::shared_ptr<FunDecl>
+Namespace::findTemplatedFunDeclLocal(const TemplateFunSignature &FunSignature,
+                                     const atl::shared_ptr<Decl> &exemptDecl) {
+  // TODO: Implement
   return nullptr;
 }

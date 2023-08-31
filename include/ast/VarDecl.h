@@ -16,9 +16,10 @@ class VarDecl : public Decl,
 public:
   atl::shared_ptr<Type> type;
   atl::shared_ptr<Identifier> identifier;
-  atl::shared_ptr<FunDecl> parentFunc;
+  atl::weak_ptr<FunDecl> parentFunc;
 
-  int fpOffset = 0;
+  int bpOffset = 0;
+  bool isGlobal = false;
 
   VarDecl(const atl::shared_ptr<Type> &p_type,
           const atl::shared_ptr<Identifier> &p_identifier);
@@ -29,6 +30,9 @@ public:
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
+
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
 
   bool operator==(const VarDecl &rhs) const;
   bool operator!=(const VarDecl &rhs) const;

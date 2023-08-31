@@ -2,7 +2,9 @@
 
 using namespace ACC;
 
-TemplateDef::TemplateDef() {}
+TemplateDef::TemplateDef(const atl::vector<atl::shared_ptr<Identifier>> &params,
+                         const atl::shared_ptr<Decl> &decl)
+    : templateParams(params), templatedDecl(decl) {}
 
 atl::shared_ptr<Identifier> TemplateDef::getIdentifier() const {
   return nullptr;
@@ -20,4 +22,10 @@ bool TemplateDef::operator==(const TemplateDef &rhs) const { return true; }
 
 bool TemplateDef::operator!=(const TemplateDef &rhs) const {
   return !(*this == rhs);
+}
+
+atl::shared_ptr<FunDecl>
+TemplateDef::findFunDecl(const FunSignature &funSignature,
+                         const atl::shared_ptr<Decl> &exemptDecl) {
+  return nullptr;
 }

@@ -57,43 +57,56 @@ atl::shared_ptr<ASTNode> Optimiser::visit(BinOp &bo) {
     switch (bo.operation) {
     case Op::ADD:
       newVal = lhsVal + rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::AND:
       newVal = lhsVal && rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::DIV:
       newVal = lhsVal / rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::EQ:
       newVal = lhsVal == rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::GE:
       newVal = lhsVal >= rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::GT:
       newVal = lhsVal > rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::LE:
       newVal = lhsVal <= rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::LT:
       newVal = lhsVal < rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::MOD:
       newVal = lhsVal % rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::MUL:
       newVal = lhsVal * rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::NE:
       newVal = lhsVal != rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::OR:
       newVal = lhsVal || rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::SUB:
       newVal = lhsVal - rhsVal;
-      return atl::shared_ptr<IntLiteral>(new IntLiteral(atl::to_string(newVal)));
+      return atl::shared_ptr<IntLiteral>(
+          new IntLiteral(atl::to_string(newVal)));
     case Op::ASSIGNADD:
       return bo.getptr();
     }
@@ -103,13 +116,13 @@ atl::shared_ptr<ASTNode> Optimiser::visit(BinOp &bo) {
   return bo.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(Block &b) {
-  if (b.outerScope == nullptr) {
+  if (b.outerScope.lock() == nullptr) {
     b.outerScope = currScope;
     currScope = b.getptr();
   }
   for (unsigned int idx = 0; idx < b.stmts.size(); ++idx)
     b.stmts[idx] = atl::static_pointer_cast<Stmt>(b.stmts[idx]->accept(*this));
-  currScope = b.outerScope;
+  currScope = b.outerScope.lock();
   return b.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(BoolLiteral &bl) {
@@ -172,7 +185,7 @@ atl::shared_ptr<ASTNode> Optimiser::visit(FunDef &fd) {
   // for (auto &param : fd.funParams)
   // param = atl::static_pointer_cast<VarDecl>(param->accept(*this));
   fd.funBlock = atl::static_pointer_cast<Block>(fd.funBlock->accept(*this));
-  currScope = fd.funBlock->outerScope;
+  currScope = fd.funBlock->outerScope.lock();
   return fd.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(Identifier &i) { return i.getptr(); }
@@ -197,6 +210,10 @@ atl::shared_ptr<ASTNode> Optimiser::visit(Namespace &n) {
     n.namespaceDecls[i] =
         atl::static_pointer_cast<Decl>(n.namespaceDecls[i]->accept(*this));
   }
+  return n.getptr();
+}
+atl::shared_ptr<ASTNode> Optimiser::visit(Not &n) {
+  n.expr = atl::static_pointer_cast<Expr>(n.expr->accept(*this));
   return n.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(Nullptr &n) { return n.getptr(); }
@@ -238,6 +255,9 @@ atl::shared_ptr<ASTNode> Optimiser::visit(SubscriptOp &so) {
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(TemplateDef &td) {
   return td.getptr();
+}
+atl::shared_ptr<ASTNode> Optimiser::visit(TemplatedFunCall &tfc) {
+  return tfc.getptr();
 }
 atl::shared_ptr<ASTNode> Optimiser::visit(TertiaryExpr &t) {
   return t.getptr();

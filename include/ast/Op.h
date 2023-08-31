@@ -49,6 +49,8 @@ static atl::string opToStr(Op op) {
     return "&&";
   case Op::ASSIGNADD:
     return "+=";
+  default:
+    throw "Internal Error: Unknown Op in opToStr()";
   }
 } // namespace ACC
 

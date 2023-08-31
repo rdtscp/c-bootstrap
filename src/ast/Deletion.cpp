@@ -19,3 +19,11 @@ bool Deletion::operator==(const Deletion &rhs) const {
 bool Deletion::operator!=(const Deletion &rhs) const {
   return !(*this == rhs);
 };
+
+bool Deletion::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const Deletion *>(&rhs);
+  return false;
+}
+
+bool Deletion::operator!=(const Stmt &rhs) const { return !(*this == rhs); }

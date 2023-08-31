@@ -30,3 +30,11 @@ bool FunCall::operator==(const FunCall &rhs) const {
 }
 
 bool FunCall::operator!=(const FunCall &rhs) const { return !(*this == rhs); }
+
+bool FunCall::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const FunCall *>(&rhs);
+  return false;
+}
+
+bool FunCall::operator!=(const Stmt &rhs) const { return !(*this == rhs); }

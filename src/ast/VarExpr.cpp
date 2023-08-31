@@ -13,6 +13,14 @@ bool VarExpr::operator==(Expr &rhs) const {
 
 bool VarExpr::operator!=(Expr &rhs) const { return !(*this == rhs); }
 
+bool VarExpr::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const VarExpr *>(&rhs);
+  return false;
+}
+
+bool VarExpr::operator!=(const Stmt &rhs) const { return !(*this == rhs); }
+
 bool VarExpr::operator==(const VarExpr &rhs) const {
   if (*varIdentifier != *rhs.varIdentifier)
     return false;

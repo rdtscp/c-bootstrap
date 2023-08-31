@@ -11,7 +11,7 @@ class SubscriptOp : public Expr,
 public:
   atl::shared_ptr<VarExpr> variable;
   atl::shared_ptr<Expr> index;
-  atl::shared_ptr<FunDecl> operatorDecl;
+  atl::weak_ptr<FunDecl> operatorDecl;
 
   SubscriptOp(const atl::shared_ptr<VarExpr> &p_variable,
               const atl::shared_ptr<Expr> &p_index);
@@ -20,6 +20,9 @@ public:
   
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
+
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
 
   bool operator==(const SubscriptOp &rhs) const;
   bool operator!=(const SubscriptOp &rhs) const;

@@ -14,10 +14,22 @@ ConstructorDef::ConstructorDef(
     const atl::shared_ptr<Block> &p_constructorBlock)
     : ConstructorDecl(p_classType, p_constructorParams),
       initialiserList(p_initialiserList), constructorBlock(p_constructorBlock) {
+  // Make every initialiser list LHS be a MemberAccess.
+  for (unsigned int idx = 0u; idx < initialiserList.size(); ++idx) {
+    initialiserList[idx]->lhs = createThisAccess(initialiserList[idx]->lhs);
+  }
 }
 
 atl::shared_ptr<Identifier> ConstructorDef::getIdentifier() const {
   return classType->identifier;
+}
+
+atl::shared_ptr<MemberAccess> ConstructorDef::createThisAccess(
+    const atl::shared_ptr<Expr> &memberExpr) const {
+  const atl::shared_ptr<VarExpr> thisExpr(
+      new VarExpr(atl::shared_ptr<Identifier>(new Identifier("this"))));
+  return atl::shared_ptr<MemberAccess>(
+      new MemberAccess(thisExpr, memberExpr, SourceToken::Class::PTRDOT));
 }
 
 bool ConstructorDef::operator==(Decl &rhs) const {
@@ -53,19 +65,19 @@ bool ConstructorDef::operator!=(const ConstructorDef &rhs) const {
 atl::shared_ptr<ClassTypeDecl>
 ConstructorDef::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                               const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findClassDecl(identifier, exemptDecl);
+  return outerScope.lock()->findClassDecl(identifier, exemptDecl);
 }
 
 atl::shared_ptr<ClassTypeDef>
 ConstructorDef::findClassDef(const atl::shared_ptr<Identifier> identifier,
                              const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findClassDef(identifier, exemptDecl);
+  return outerScope.lock()->findClassDef(identifier, exemptDecl);
 }
 
 atl::shared_ptr<FunDecl>
 ConstructorDef::findFunDecl(const FunSignature &funSignature,
                             const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findFunDecl(funSignature, exemptDecl);
+  return outerScope.lock()->findFunDecl(funSignature, exemptDecl);
 }
 
 atl::shared_ptr<FunDecl>
@@ -81,8 +93,9 @@ ConstructorDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
       findVarDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
     return localFind;
-  else if (outerScope != nullptr)
-    return outerScope->findVarDecl(identifier, exemptDecl);
+  else if (outerScope.lock() != nullptr)
+    return outerScope.lock()->outerScope.lock()->findVarDecl(identifier,
+                                                             exemptDecl);
   else
     return nullptr;
 }

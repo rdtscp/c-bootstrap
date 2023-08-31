@@ -375,6 +375,11 @@ atl::string SourceOutput::visit(Namespace &n) {
 
   return output;
 }
+atl::string SourceOutput::visit(Not &n) {
+  atl::string output = "!";
+  output += n.expr->accept(*this);
+  return output;
+}
 atl::string SourceOutput::visit(Nullptr &n) { return "nullptr"; }
 atl::string SourceOutput::visit(ParenthExpr &pe) {
   atl::string output = "(";
@@ -436,10 +441,8 @@ atl::string SourceOutput::visit(StringLiteral &sl) { return sl.getLiteral(); }
 atl::string SourceOutput::visit(SubscriptOp &so) {
   return so.variable->accept(*this) + "[" + so.index->accept(*this) + "]";
 }
-atl::string SourceOutput::visit(TemplateDef &td) {
-  atl::string output;
-  return output;
-}
+atl::string SourceOutput::visit(TemplateDef &td) { throw; }
+atl::string SourceOutput::visit(TemplatedFunCall &tfc) { throw; }
 atl::string SourceOutput::visit(TertiaryExpr &t) {
   atl::string output;
   output += t.tertiaryCondition->accept(*this);

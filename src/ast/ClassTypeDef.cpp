@@ -1,6 +1,7 @@
 #include "ast/ClassTypeDef.h"
 #include "ast/ClassType.h"
 #include "ast/ConstructorDef.h"
+#include "ast/DestructorDef.h"
 #include "ast/FunDef.h"
 #include "ast/FunSignature.h"
 #include "ast/PointerType.h"
@@ -11,7 +12,47 @@ using namespace ACC;
 ClassTypeDef::ClassTypeDef(
     const atl::shared_ptr<Identifier> &p_classIdentifier,
     const atl::vector<atl::shared_ptr<Decl>> &p_classDecls)
-    : ClassTypeDecl(p_classIdentifier), classDecls(p_classDecls) {}
+    : ClassTypeDecl(p_classIdentifier), classDecls(p_classDecls) {
+  /* Add `this` parameter to all FunDecls. */
+  for (unsigned int declIdx = 0; declIdx < classDecls.size(); ++declIdx) {
+    const atl::shared_ptr<Decl> currDecl = classDecls[declIdx];
+    if (currDecl->astClass() == "ConstructorDecl" ||
+        currDecl->astClass() == "ConstructorDef") {
+      // Create a new ConstructorDecl as a copy of the original.
+      atl::shared_ptr<ConstructorDecl> ctorDecl =
+          atl::static_pointer_cast<ConstructorDecl>(currDecl);
+
+      // Create the this param.
+      atl::shared_ptr<VarDecl> thisParam =
+          createThisParam(ctorDecl->Decl::position);
+      ctorDecl->constructorParams.push_front(thisParam);
+    }
+    if (currDecl->astClass() == "DestructorDecl" ||
+        currDecl->astClass() == "DestructorDef") {
+      atl::shared_ptr<DestructorDecl> dtorDecl =
+          atl::static_pointer_cast<DestructorDecl>(currDecl);
+
+      atl::shared_ptr<VarDecl> thisParam =
+          createThisParam(dtorDecl->Decl::position);
+      dtorDecl->thisParam = thisParam;
+    }
+    if (currDecl->astClass() == "FunDecl" || currDecl->astClass() == "FunDef") {
+      // Create a new ConstructorDecl as a copy of the original.
+      atl::shared_ptr<FunDecl> funDecl =
+          atl::static_pointer_cast<FunDecl>(currDecl);
+      if (!funDecl->funModifiers.find(FunDecl::FunModifiers::STATIC)) {
+        // Create the this param.
+        atl::shared_ptr<VarDecl> thisParam =
+            createThisParam(funDecl->Decl::position);
+        if (funDecl->funModifiers.find(FunDecl::FunModifiers::CONST)) {
+          thisParam->type->typeModifiers.insert(Type::Modifiers::CONST);
+        }
+        funDecl->funParams.push_front(thisParam);
+      }
+    }
+    // TODO: Handle Destructor.
+  }
+}
 
 atl::shared_ptr<Identifier> ClassTypeDef::getIdentifier() const {
   return classIdentifier;
@@ -89,7 +130,7 @@ ClassTypeDef::resolveFunCall(const FunSignature &funSignature,
 atl::shared_ptr<ClassTypeDecl>
 ClassTypeDef::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                             const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findClassDecl(identifier);
+  return outerScope.lock()->findClassDecl(identifier);
 }
 
 atl::shared_ptr<ClassTypeDef>
@@ -111,8 +152,8 @@ ClassTypeDef::findClassDef(const atl::shared_ptr<Identifier> identifier,
 
     return atl::static_pointer_cast<ClassTypeDecl>(currDecl);
   }
-  if (outerScope != nullptr)
-    return outerScope->findClassDecl(identifier, exemptDecl);
+  if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findClassDecl(identifier, exemptDecl);
 
   return nullptr;
 }
@@ -145,8 +186,8 @@ ClassTypeDef::findFunDecl(const FunSignature &funSignature,
       findFunDeclLocal(funSignature, exemptDecl);
   if (localFind != nullptr)
     return localFind;
-  else if (outerScope != nullptr)
-    return outerScope->findFunDecl(funSignature, exemptDecl);
+  else if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findFunDecl(funSignature, exemptDecl);
   else
     return nullptr;
 }
@@ -200,8 +241,8 @@ ClassTypeDef::findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
       findTypeDefDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
     return localFind;
-  else if (outerScope != nullptr)
-    return outerScope->findTypeDefDecl(identifier, exemptDecl);
+  else if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findTypeDefDecl(identifier, exemptDecl);
   else
     return nullptr;
 }
@@ -231,8 +272,8 @@ ClassTypeDef::findVarDecl(const atl::shared_ptr<Identifier> identifier,
       findVarDeclLocal(identifier, exemptDecl);
   if (localFind != nullptr)
     return localFind;
-  else if (outerScope != nullptr)
-    return outerScope->findVarDecl(identifier, exemptDecl);
+  else if (outerScope.lock() != nullptr)
+    return outerScope.lock()->findVarDecl(identifier, exemptDecl);
   else
     return nullptr;
 }
@@ -255,7 +296,8 @@ ClassTypeDef::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
   return nullptr;
 }
 
-atl::shared_ptr<VarDecl> ClassTypeDef::createThisParam(const Position &thisPosition) const {
+atl::shared_ptr<VarDecl>
+ClassTypeDef::createThisParam(const Position &thisPosition) const {
   const atl::shared_ptr<ClassType> classType(new ClassType(classIdentifier));
   classType->position = thisPosition;
   const atl::shared_ptr<PointerType> thisType(new PointerType(classType));

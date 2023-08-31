@@ -12,13 +12,25 @@ ArrayType::ArrayType(const atl::shared_ptr<Type> &p_type,
 
 unsigned int ArrayType::getBytes() const {
   unsigned int elementSize = pointedType->getBytes();
-  if (size->astClass() != "IntLiteral")
-    throw ACC::Error(
-        "Internal Error: Attempted to getBytes() of dynamic ArrayType.");
+  if (size->astClass() != "IntLiteral") {
+    // It's a dynamic array, its just a pointer.
+    return 8;
+  }
+
 
   const atl::shared_ptr<IntLiteral> sizeIntLiteral =
       atl::static_pointer_cast<IntLiteral>(size);
   return atl::stoi(sizeIntLiteral->getLiteral()) * elementSize;
+}
+
+bool ArrayType::canCastTo(Type &rhs) const {
+  // TODO Handle Polymorphism.
+  if (rhs.astClass() == "PointerType") {
+    const PointerType &at = *static_cast<PointerType *>(&rhs);
+    return pointedType->equivalentTo(*at.pointedType);
+  }
+
+  return (*this == rhs);
 }
 
 bool ArrayType::equivalentTo(Type &rhs) const {
@@ -29,14 +41,6 @@ bool ArrayType::equivalentTo(Type &rhs) const {
   return *this == rhs;
 }
 
-bool ArrayType::operator==(Type &rhs) const {
-  if (rhs.astClass() == astClass())
-    return *this == *static_cast<ArrayType *>(&rhs);
-  return false;
-}
-
-bool ArrayType::operator!=(Type &t) const { return !(*this == t); }
-
 bool ArrayType::operator==(const ArrayType &rhs) const {
   return (*pointedType == *rhs.pointedType && *size == *rhs.size);
 }
@@ -44,3 +48,11 @@ bool ArrayType::operator==(const ArrayType &rhs) const {
 bool ArrayType::operator!=(const ArrayType &rhs) const {
   return !(*this == rhs);
 }
+
+bool ArrayType::operator==(Type &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<ArrayType *>(&rhs);
+  return false;
+}
+
+bool ArrayType::operator!=(Type &t) const { return !(*this == t); }

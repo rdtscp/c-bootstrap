@@ -57,6 +57,7 @@ private:
   atl::shared_ptr<ASTNode> visit(MemberAccess &ma) override;
   atl::shared_ptr<ASTNode> visit(MemberCall &mc) override;
   atl::shared_ptr<ASTNode> visit(Namespace &n) override;
+  atl::shared_ptr<ASTNode> visit(Not &n) override;
   atl::shared_ptr<ASTNode> visit(Nullptr &n) override;
   atl::shared_ptr<ASTNode> visit(ParenthExpr &pe) override;
   atl::shared_ptr<ASTNode> visit(PointerType &pt) override;
@@ -69,6 +70,7 @@ private:
   atl::shared_ptr<ASTNode> visit(StringLiteral &sl) override;
   atl::shared_ptr<ASTNode> visit(SubscriptOp &so) override;
   atl::shared_ptr<ASTNode> visit(TemplateDef &td) override;
+  atl::shared_ptr<ASTNode> visit(TemplatedFunCall &tfc) override;
   atl::shared_ptr<ASTNode> visit(TertiaryExpr &t) override;
   atl::shared_ptr<ASTNode> visit(Throw &t) override;
   atl::shared_ptr<ASTNode> visit(TypeDefDecl &td) override;

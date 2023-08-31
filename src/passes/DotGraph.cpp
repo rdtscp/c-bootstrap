@@ -2,8 +2,9 @@
 
 using namespace ACC;
 
-DotGraph::DotGraph(atl::shared_ptr<Program> progAST, const atl::string &outputFilename) :
-  outputFile(outputFilename), progAST(progAST) {}
+DotGraph::DotGraph(atl::shared_ptr<Program> progAST,
+                   const atl::string &outputFilename)
+    : outputFile(outputFilename), progAST(progAST) {}
 void DotGraph::print() { visit(*progAST); }
 
 void DotGraph::declare(const atl::string &nodeID, const atl::string &label) {
@@ -390,6 +391,7 @@ atl::string DotGraph::visit(Namespace &n) {
     n.namespaceDecls[i]->accept(*this);
   return namespaceID;
 }
+atl::string DotGraph::visit(Not &n) { return n.expr->accept(*this); }
 atl::string DotGraph::visit(Nullptr &n) {
   const atl::string nullptrID = "Nullptr" + atl::to_string(++nodeCount);
   declare(nullptrID, "nullptr");
@@ -489,6 +491,7 @@ atl::string DotGraph::visit(SubscriptOp &so) {
   return subscriptOpID;
 }
 atl::string DotGraph::visit(TemplateDef &td) { return ""; }
+atl::string DotGraph::visit(TemplatedFunCall &tfc) { throw; }
 atl::string DotGraph::visit(TertiaryExpr &t) {
   const atl::string tertiaryID = "TertiaryExpr" + atl::to_string(++nodeCount);
   const atl::string conditionID = t.tertiaryCondition->accept(*this);

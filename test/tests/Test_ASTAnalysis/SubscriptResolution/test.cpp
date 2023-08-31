@@ -2,7 +2,7 @@ class Example1 {
 public:
   Example1(int x) : m_val(x) {}
 
-  int operator[](const int y) { return m_val + y; }
+  int operator[](const int y) { return this->m_val + y; }
 
 private:
   int m_val;

@@ -11,13 +11,14 @@ class ClassType : public Type, public atl::enable_shared_from_this<ClassType> {
 
 public:
   atl::shared_ptr<Identifier> identifier;
-  atl::shared_ptr<ClassTypeDef> typeDefinition;
+  atl::weak_ptr<ClassTypeDef> typeDefinition;
 
   ClassType(const atl::shared_ptr<Identifier> &p_identifier);
 
   virtual bool canCastTo(Type &rhs) const override;
   virtual bool equivalentTo(Type &rhs) const override; //{ return *this == rhs; }
   unsigned int getBytes() const override;
+  atl::string mangle() const override;
 
   bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;

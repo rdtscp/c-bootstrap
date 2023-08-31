@@ -10,12 +10,15 @@ class VarExpr : public Expr, public atl::enable_shared_from_this<VarExpr> {
 
 public:
   atl::shared_ptr<Identifier> varIdentifier;
-  atl::shared_ptr<VarDecl> varDecl;
+  atl::weak_ptr<VarDecl> varDecl;
 
   VarExpr(const atl::shared_ptr<Identifier> &p_varIdentifier);
 
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
+
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
 
   bool operator==(const VarExpr &rhs) const;
   bool operator!=(const VarExpr &rhs) const;

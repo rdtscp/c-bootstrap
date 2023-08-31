@@ -12,8 +12,9 @@ public:
 
   BaseType(const PrimitiveType p_pType);
 
-  virtual bool canCastTo(Type &rhs) const override;
+  bool canCastTo(Type &rhs) const override;
   unsigned int getBytes() const override;
+  atl::string mangle() const override;
 
   bool operator==(Type &rhs) const override;
   bool operator!=(Type &rhs) const override;

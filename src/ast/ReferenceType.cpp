@@ -12,9 +12,18 @@ bool ReferenceType::canCastTo(Type &rhs) const {
   return this->referencedType->canCastTo(rhs);
 }
 
-unsigned int ReferenceType::getBytes() const { return 4; }
+unsigned int ReferenceType::getBytes() const {
+  return referencedType->getBytes();
+}
 bool ReferenceType::equivalentTo(Type &rhs) const {
   return referencedType->equivalentTo(rhs);
+}
+
+atl::string ReferenceType::mangle() const {
+  atl::string output = referencedType->mangle() + "_ref";
+  if (typeModifiers.find(Type::Modifiers::CONST))
+    output += "_const";
+  return output;
 }
 
 bool ReferenceType::operator==(Type &rhs) const {

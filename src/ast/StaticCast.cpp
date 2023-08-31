@@ -25,3 +25,11 @@ bool StaticCast::operator==(const StaticCast &rhs) const {
 }
 
 bool StaticCast::operator!=(const StaticCast &rhs) const { return !(*this == rhs); }
+
+bool StaticCast::operator==(const Stmt &rhs) const {
+  if (rhs.astClass() == astClass())
+    return *this == *static_cast<const StaticCast *>(&rhs);
+  return false;
+}
+
+bool StaticCast::operator!=(const Stmt &rhs) const { return !(*this == rhs); }

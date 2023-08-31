@@ -8,9 +8,22 @@ using namespace ACC;
 PointerType::PointerType(const atl::shared_ptr<Type> &p_pointedType)
     : pointedType(p_pointedType) {}
 
-unsigned int PointerType::getBytes() const { return 4; }
+unsigned int PointerType::getBytes() const { return 8; }
 
-bool PointerType::canCastTo(Type &rhs) const { return false; }
+bool PointerType::canCastTo(Type &rhs) const {
+  // TODO Handle Polymorphism.
+
+  if (this->astClass() == rhs.astClass()) {
+    if (this->pointedType->canCastTo(
+            *static_cast<PointerType *>(&rhs)->pointedType))
+      return true;
+  } else {
+    if (*this == rhs)
+      return true;
+  }
+
+  return false;
+}
 
 bool PointerType::equivalentTo(Type &rhs) const {
   if (rhs.astClass() == "ArrayType") {
@@ -29,6 +42,13 @@ bool PointerType::equivalentTo(Type &rhs) const {
       return false;
   }
   return *this == rhs;
+}
+
+atl::string PointerType::mangle() const {
+  atl::string output = pointedType->mangle() + "_ptr";
+  if (typeModifiers.find(Type::Modifiers::CONST))
+    output += "_const";
+  return output;
 }
 
 bool PointerType::operator==(Type &rhs) const {

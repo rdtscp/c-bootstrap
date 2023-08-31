@@ -8,10 +8,12 @@
 namespace ACC {
 
 class DestructorDecl : public Decl,
+                       public Scope,
                        public atl::enable_shared_from_this<DestructorDecl> {
 
 public:
   atl::shared_ptr<ClassType> classType;
+  atl::shared_ptr<VarDecl> thisParam;
 
   DestructorDecl(const atl::shared_ptr<Type> &p_classType);
 
@@ -26,6 +28,8 @@ public:
   atl::shared_ptr<DestructorDecl> getptr() { return shared_from_this(); }
 
   atl::string astClass() const override { return "DestructorDecl"; }
+
+  SCOPE_OVERRIDES
 
   VISITOR_ACCEPTORS
 };

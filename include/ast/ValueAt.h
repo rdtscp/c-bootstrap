@@ -12,9 +12,11 @@ public:
 
   ValueAt(const atl::shared_ptr<Expr> &p_derefExpr);
 
-  
   bool operator==(Expr &rhs) const override;
   bool operator!=(Expr &rhs) const override;
+
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
 
   bool operator==(const ValueAt &rhs) const;
   bool operator!=(const ValueAt &rhs) const;

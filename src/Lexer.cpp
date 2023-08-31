@@ -542,7 +542,6 @@ void Lexer::passComment() {
       c = scanner.next();
       if (c == '*' && scanner.peek() == '/') {
         scanner.next(); // Consume the closing DIV.
-        c = scanner.next();
         return;
       }
       if (c == '\0')

@@ -73,6 +73,7 @@ public:
   VISITOR_ACCEPTORS
 
 private:
+  void rvalRefWrap(atl::shared_ptr<ConstructorDecl> ctorDecl);
   atl::shared_ptr<VarDecl> createThisParam(const Position &thisPosition) const;
 };
 

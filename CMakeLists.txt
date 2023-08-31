@@ -2,8 +2,31 @@ cmake_minimum_required(VERSION 3.6.2)
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_FLAGS "-Wall -Wno-unused-function -Werror")
 
-
 project(acc)
+
+IF (CMAKE_BUILD_TYPE MATCHES Debug)
+  IF (NOT CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    message("Enabling LeakSanitizer")
+    set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -fno-omit-frame-pointer -fsanitize=leak")
+    set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -g -fno-omit-frame-pointer -fsanitize=leak")
+  ENDIF (NOT CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+ENDIF (CMAKE_BUILD_TYPE MATCHES Debug)
+
+# Code Coverage Configuration
+option(CODE_COVERAGE "Enable coverage reporting" OFF)
+IF (CODE_COVERAGE)
+  message("Enabling Code Coverage")
+  add_library(coverage_config INTERFACE)
+
+  set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g --coverage")
+  set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -O0 -g --coverage")
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+    target_link_options(coverage_config INTERFACE --coverage)
+  else()
+    target_link_libraries(coverage_config INTERFACE --coverage)
+  endif()
+ENDIF (CODE_COVERAGE)
+
 
 include(ExternalProject)
 ExternalProject_Add(atl
@@ -48,6 +71,7 @@ add_library(AST SHARED
   src/ast/MemberAccess.cpp
   src/ast/MemberCall.cpp
   src/ast/Namespace.cpp
+  src/ast/Not.cpp
   src/ast/Nullptr.cpp
   src/ast/ParenthExpr.cpp
   src/ast/PointerType.cpp
@@ -59,6 +83,8 @@ add_library(AST SHARED
   src/ast/StaticCast.cpp
   src/ast/StringLiteral.cpp
   src/ast/SubscriptOp.cpp
+  src/ast/TemplateDef.cpp
+  src/ast/TemplatedFunCall.cpp
   src/ast/TertiaryExpr.cpp
   src/ast/Throw.cpp
   src/ast/TypeDefDecl.cpp
@@ -69,7 +95,7 @@ add_library(AST SHARED
   src/ast/While.cpp
 )
 add_library(DotGraph SHARED src/passes/DotGraph.cpp)
-add_library(GenerateX86 SHARED src/targets/GenerateX86.cpp)
+add_library(GenerateX64 SHARED src/targets/GenerateX64.cpp)
 add_library(Lexer SHARED src/Lexer.cpp)
 add_library(Optimiser SHARED src/passes/Optimiser.cpp)
 add_library(Parser SHARED src/Parser.cpp)
@@ -77,21 +103,21 @@ add_library(Preprocessor SHARED src/Preprocessor.cpp)
 add_library(SemanticAnalysis SHARED src/passes/SemanticAnalysis.cpp)
 add_library(SourceOutput SHARED src/passes/SourceOutput.cpp)
 add_library(Scanner SHARED src/Scanner.cpp)
-add_library(X86 SHARED src/targets/X86.cpp)
+add_library(X64 SHARED src/targets/X64.cpp)
 
 add_dependencies(AST atl)
-add_dependencies(GenerateX86 atl)
+add_dependencies(GenerateX64 atl)
 add_dependencies(Lexer atl)
 add_dependencies(Optimiser atl)
 add_dependencies(Parser atl)
 add_dependencies(Preprocessor atl)
 add_dependencies(Scanner atl)
 add_dependencies(SemanticAnalysis atl)
-add_dependencies(X86 atl)
+add_dependencies(X64 atl)
 
-target_link_libraries(AST X86)
+target_link_libraries(AST X64)
 target_link_libraries(DotGraph AST)
-target_link_libraries(GenerateX86  AST X86)
+target_link_libraries(GenerateX64  AST X64)
 target_link_libraries(Lexer Scanner)
 target_link_libraries(Optimiser AST)
 target_link_libraries(Parser AST Lexer)
@@ -102,7 +128,7 @@ target_link_libraries(SourceOutput AST)
 install(
   TARGETS AST
           DotGraph
-          GenerateX86
+          GenerateX64
           Lexer
           Optimiser
           Parser
@@ -110,7 +136,7 @@ install(
           Scanner
           SemanticAnalysis
           SourceOutput
-          X86
+          X64
   DESTINATION lib
 )
 
@@ -118,11 +144,6 @@ install(
   DIRECTORY ${CMAKE_SOURCE_DIR}/include
   DESTINATION include
 )
-
-IF(CMAKE_BUILD_TYPE MATCHES Debug)
-  set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
-  set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
-ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 # Don't Install Google Test if its already installed.
 IF(NOT GTEST_INSTALLED MATCHES TRUE)
@@ -169,4 +190,4 @@ add_subdirectory(test)
 
 add_executable(acc main.cpp)
 add_dependencies(acc atl)
-target_link_libraries(acc AST DotGraph GenerateX86 Optimiser Parser Preprocessor Scanner SemanticAnalysis SourceOutput)
+target_link_libraries(acc AST DotGraph GenerateX64 Optimiser Parser Preprocessor Scanner SemanticAnalysis SourceOutput)

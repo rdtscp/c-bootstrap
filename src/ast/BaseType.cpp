@@ -10,6 +10,10 @@ bool BaseType::canCastTo(Type &rhs) const {
       rhs.astClass() == "PointerType")
     return true;
 
+  if (this->astClass() == rhs.astClass()) {
+    return primitiveType == static_cast<BaseType *>(&rhs)->primitiveType;
+  }
+
   return false;
 }
 
@@ -34,6 +38,44 @@ unsigned int BaseType::getBytes() const {
   }
 }
 
+atl::string BaseType::mangle() const {
+  atl::string output;
+  switch (primitiveType) {
+  case PrimitiveType::CHAR:
+    output = "char";
+    break;
+  case PrimitiveType::INT:
+    output = "int";
+    break;
+  case PrimitiveType::SHORT:
+    output = "short";
+    break;
+  case PrimitiveType::VOID:
+    output = "void";
+    break;
+  case PrimitiveType::UINT:
+    output = "unsigned_int";
+    break;
+  case PrimitiveType::BOOL:
+    output = "bool";
+    break;
+  case PrimitiveType::NULLPTR_T:
+    output = "nullptr_t";
+    break;
+  default:
+    return "INTERNAL_ERROR";
+  }
+  if (typeModifiers.find(Type::Modifiers::CONST))
+    output += "_const";
+
+  return output;
+}
+
+bool BaseType::operator==(const BaseType &rhs) const {
+  return primitiveType == rhs.primitiveType;
+}
+bool BaseType::operator!=(const BaseType &rhs) const { return !(*this == rhs); }
+
 bool BaseType::operator==(Type &rhs) const {
   if (rhs.astClass() == "ReferenceType") {
     const ReferenceType *rhsRefType = static_cast<ReferenceType *>(&rhs);
@@ -45,8 +87,3 @@ bool BaseType::operator==(Type &rhs) const {
   }
 }
 bool BaseType::operator!=(Type &t) const { return !(*this == t); }
-
-bool BaseType::operator==(const BaseType &rhs) const {
-  return primitiveType == rhs.primitiveType;
-}
-bool BaseType::operator!=(const BaseType &rhs) const { return !(*this == rhs); }

@@ -1,19 +1,28 @@
 #include "atl/include/string.h"
 
+#include "TestPath.h"
 #include "gtest/gtest.h"
 
 #include "Scanner.h"
 #include "SourceToken.h"
 
+class Test_Scanner : public ::testing::Test {
+protected:
+  atl::string t_source_file;
+
+  Test_Scanner() {
+    const atl::string test_name =
+        ::testing::UnitTest::GetInstance()->current_test_info()->name();
+
+    t_source_file = test_root + "Test_Scanner/" + test_name + "/test.cpp";
+  }
+};
+
 using namespace ACC;
 
-// atl::string test_prefix =
-// "/Users/alexanderwilson/Documents/GitHub/c-bootstrap/test/tests/Test_Scanner/";
-atl::string test_prefix = "../../test/tests/Test_Scanner/";
-
-TEST(ScannerTest, API) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "API/test.cpp");
+TEST_F(Test_Scanner, API) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Scanner scanner(src);
 
   atl::string output;
@@ -57,9 +66,9 @@ TEST(ScannerTest, API) {
   ASSERT_EQ(scanner.peek(), '\0');
 }
 
-TEST(ScannerTest, FetchingPastEOF) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "FetchingPastEOF/test.cpp");
+TEST_F(Test_Scanner, FetchingPastEOF) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Scanner scanner(src);
   ASSERT_EQ(scanner.next(), 'c');
   ASSERT_EQ(scanner.next(), 'h');
@@ -75,9 +84,9 @@ TEST(ScannerTest, FetchingPastEOF) {
   ASSERT_EQ(scanner.next(), '\0');
 }
 
-TEST(ScannerTest, PeekingPastEOF) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix + "PeekingPastEOF/test.cpp");
+TEST_F(Test_Scanner, PeekingPastEOF) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Scanner scanner(src);
   ASSERT_EQ(scanner.next(), 'c');
   ASSERT_EQ(scanner.peek(), 'h');
@@ -103,32 +112,11 @@ TEST(ScannerTest, PeekingPastEOF) {
   ASSERT_EQ(scanner.peek(), '\0');
 }
 
-TEST(ScannerTest, ScanningPreprocessorDirectives) {
-  const SourceHandler src(SourceHandler::Type::FILEPATH,
-                          test_prefix +
-                              "ScanningPreprocessorDirectives/test.cpp");
+TEST_F(Test_Scanner, ScanningPreprocessorDirectives) {
+  const atl::shared_ptr<SourceFileHandler> src(
+      new SourceFileHandler(t_source_file));
   ACC::Scanner scanner(src);
 
   while (scanner.next() != '\0') {
   }
 }
-
-// The fixture for testing class Project1. From google test primer.
-class Test_Scanner : public ::testing::Test {
-protected:
-  Test_Scanner() {
-    // You can do set-up work for each test here.
-  }
-
-  // If the constructor and destructor are not enough for setting up
-  // and cleaning up each test, you can define the following methods:
-  virtual void SetUp() {
-    // Code here will be called immediately after the constructor (right
-    // before each test).
-  }
-
-  virtual void TearDown() {
-    // Code here will be called immediately after each test (right
-    // before the destructor).
-  }
-};

@@ -54,19 +54,19 @@ bool ConstructorDecl::operator!=(const ConstructorDecl &rhs) const {
 atl::shared_ptr<ClassTypeDecl>
 ConstructorDecl::findClassDecl(const atl::shared_ptr<Identifier> identifier,
                                const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findClassDecl(identifier);
+  return outerScope.lock()->findClassDecl(identifier);
 }
 
 atl::shared_ptr<ClassTypeDef>
 ConstructorDecl::findClassDef(const atl::shared_ptr<Identifier> identifier,
                               const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findClassDef(identifier);
+  return outerScope.lock()->findClassDef(identifier);
 }
 
 atl::shared_ptr<FunDecl>
 ConstructorDecl::findFunDecl(const FunSignature &funSignature,
                              const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findFunDecl(funSignature);
+  return outerScope.lock()->findFunDecl(funSignature);
 }
 
 atl::shared_ptr<FunDecl>
@@ -78,7 +78,7 @@ ConstructorDecl::findFunDeclLocal(const FunSignature &funSignature,
 atl::shared_ptr<TypeDefDecl>
 ConstructorDecl::findTypeDefDecl(const atl::shared_ptr<Identifier> identifier,
                                  const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findTypeDefDecl(identifier, exemptDecl);
+  return outerScope.lock()->findTypeDefDecl(identifier, exemptDecl);
 }
 
 atl::shared_ptr<TypeDefDecl> ConstructorDecl::findTypeDefDeclLocal(
@@ -90,11 +90,25 @@ atl::shared_ptr<TypeDefDecl> ConstructorDecl::findTypeDefDeclLocal(
 atl::shared_ptr<VarDecl>
 ConstructorDecl::findVarDecl(const atl::shared_ptr<Identifier> identifier,
                              const atl::shared_ptr<Decl> &exemptDecl) {
-  return outerScope->findVarDecl(identifier);
+  return outerScope.lock()->findVarDecl(identifier);
 }
 
 atl::shared_ptr<VarDecl>
 ConstructorDecl::findVarDeclLocal(const atl::shared_ptr<Identifier> identifier,
                                   const atl::shared_ptr<Decl> &exemptDecl) {
+  return nullptr;
+}
+
+atl::shared_ptr<FunDecl>
+ConstructorDecl::findTemplatedFunDecl(const TemplateFunSignature &FunSignature,
+                                      const atl::shared_ptr<Decl> &exemptDecl) {
+  // TODO: Implement
+  return nullptr;
+}
+
+atl::shared_ptr<FunDecl> ConstructorDecl::findTemplatedFunDeclLocal(
+    const TemplateFunSignature &FunSignature,
+    const atl::shared_ptr<Decl> &exemptDecl) {
+  // TODO: Implement
   return nullptr;
 }

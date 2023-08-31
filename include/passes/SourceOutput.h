@@ -55,6 +55,7 @@ private:
   atl::string visit(MemberAccess &ma) override;
   atl::string visit(MemberCall &mc) override;
   atl::string visit(Namespace &n) override;
+  atl::string visit(Not &n) override;
   atl::string visit(Nullptr &n) override;
   atl::string visit(ParenthExpr &pe) override;
   atl::string visit(PointerType &pt) override;
@@ -67,6 +68,7 @@ private:
   atl::string visit(StringLiteral &sl) override;
   atl::string visit(SubscriptOp &so) override;
   atl::string visit(TemplateDef &td) override;
+  atl::string visit(TemplatedFunCall &tfc) override;
   atl::string visit(TertiaryExpr &t) override;
   atl::string visit(Throw &t) override;
   atl::string visit(TypeDefDecl &td) override;

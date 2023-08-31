@@ -85,6 +85,7 @@ private:
   bool acceptObjExpr(int offset = 0);
   bool acceptObjExprOp(int offset = 0);
   bool acceptLitExpr(int offset = 0);
+  bool acceptFunCall(int offset = 0);
 
   bool acceptOperatorOverload(int offset = 0);
   bool acceptParam(int offset = 0);
@@ -134,6 +135,7 @@ private:
   atl::shared_ptr<Expr> parseObjExprOp();
   atl::shared_ptr<FunCall> parseFunCall();
   atl::shared_ptr<Expr> parseLitExpr();
+  atl::shared_ptr<StringLiteral> parseStringLiteral();
 
   atl::string parseOperatorOverload();
   atl::shared_ptr<VarDecl> parseParam();
@@ -142,10 +144,20 @@ private:
 
   /* Converts an Token to an Type */
   atl::shared_ptr<BaseType> tokenToType(const SourceToken::Class &tc);
-  template <typename Ret>
-  atl::shared_ptr<Ret> createNode(atl::shared_ptr<ASTNode> node) {
+
+  template <typename T> atl::shared_ptr<T> createNode(T *node) {
     node->position = prevPosition;
-    return node;
+    return atl::shared_ptr<T>(node);
+  }
+
+  atl::shared_ptr<VarDecl> createNode(VarDecl *node) {
+    node->Decl::position = prevPosition;
+    return atl::shared_ptr<VarDecl>(node);
+  }
+
+  atl::shared_ptr<VarDef> createNode(VarDef *node) {
+    node->Decl::position = prevPosition;
+    return atl::shared_ptr<VarDecl>(node);
   }
 };
 

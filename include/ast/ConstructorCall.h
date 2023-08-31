@@ -13,7 +13,8 @@ class ConstructorCall : public Expr,
 public:
   atl::shared_ptr<Identifier> constructorIdentifier;
   atl::vector<atl::shared_ptr<Expr>> constructorArgs;
-  atl::shared_ptr<ConstructorDecl> constructorDecl;
+  atl::weak_ptr<ConstructorDecl> constructorDecl;
+  atl::weak_ptr<VarDecl> objectToConstruct;
 
   ConstructorCall(const atl::shared_ptr<Identifier> &p_ctorIdentifier,
                   const atl::vector<atl::shared_ptr<Expr>> &p_ctorArgs);
@@ -23,6 +24,9 @@ public:
 
   bool operator==(const ConstructorCall &rhs) const;
   bool operator!=(const ConstructorCall &rhs) const;
+
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
 
   atl::shared_ptr<ConstructorCall> getptr() { return shared_from_this(); }
 

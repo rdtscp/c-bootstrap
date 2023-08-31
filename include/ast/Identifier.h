@@ -26,6 +26,7 @@ public:
   const atl::shared_ptr<Identifier> tail() const;
   const unsigned int size() const;
 
+  atl::string mangle() const;
   atl::string toString() const;
 
   atl::shared_ptr<Identifier> getptr() { return shared_from_this(); }

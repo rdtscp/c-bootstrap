@@ -9,8 +9,8 @@
 namespace ACC {
 
 class FunDef : public FunDecl {
-
 public:
+  int localVarBytes = 0;
   atl::shared_ptr<Block> funBlock;
 
   FunDef(const atl::set<FunModifiers> &p_funModifiers,
@@ -33,6 +33,8 @@ public:
   atl::shared_ptr<FunDecl> getptr() { return FunDecl::shared_from_this(); }
 
   atl::string astClass() const override { return "FunDef"; }
+
+  bool isThisParam(const atl::shared_ptr<VarDecl> &varDecl) const;
 
   /* Scope Methods */
   virtual atl::shared_ptr<ClassTypeDecl>

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ConstructorDecl.h"
 #include "Decl.h"
 #include "Expr.h"
 #include "Stmt.h"
@@ -13,8 +14,6 @@ class VarDef : public VarDecl {
 public:
   atl::shared_ptr<Expr> varValue;
 
-  int fpOffset = 0;
-
   VarDef(const atl::shared_ptr<Type> &p_varType,
          const atl::shared_ptr<Identifier> &p_varidentifier,
          const atl::shared_ptr<Expr> &p_varValue);
@@ -25,6 +24,9 @@ public:
 
   bool operator==(Decl &rhs) const override;
   bool operator!=(Decl &rhs) const override;
+
+  bool operator==(const Stmt &rhs) const override;
+  bool operator!=(const Stmt &rhs) const override;
 
   bool operator==(const VarDef &rhs) const;
   bool operator!=(const VarDef &rhs) const;
