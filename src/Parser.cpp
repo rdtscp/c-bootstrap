@@ -81,7 +81,7 @@ void Parser::nextToken() {
 
 /* -- Decls -- */
 bool Parser::acceptAccessModifier(int offset) {
-  return accept(TC::PUBLIC, offset) | accept(TC::PRIVATE, offset) |
+  return accept(TC::PUBLIC, offset) || accept(TC::PRIVATE, offset) ||
          accept(TC::PROTECTED, offset);
 }
 bool Parser::acceptClassTypeDecl(int offset) {
