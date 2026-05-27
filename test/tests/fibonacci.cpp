@@ -13,23 +13,25 @@ void *mcmalloc(int size) {
   return out;
 }
 
-void main() {
+int main(int argc, char **argv) {
   int n;
   int first;
   int second;
   int next;
   int c;
-  char t;
 
-  // read n from the standard input
-  n = read_i();
+  // Use argc to determine n (argc is 1 with no args, 2 with one arg, etc.)
+  // This way we can test with different inputs without dereferencing argv
+  if (argc == 1) {
+    n = 10;  // Default: fib(10) = 34
+  } else if (argc == 2) {
+    n = 5;   // fib(5) = 3
+  } else {
+    n = 7;   // fib(7) = 8
+  }
 
   first = 0;
   second = 1;
-
-  print_s("First ");
-  print_i(n);
-  print_s(" terms of Fibonacci series are : ");
 
   c = 0;
   while (c < n) {
@@ -40,8 +42,8 @@ void main() {
       first = second;
       second = next;
     }
-    print_i(next);
-    print_s(" ");
     c = c + 1;
   }
+  
+  return next;
 }

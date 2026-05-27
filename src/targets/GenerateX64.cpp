@@ -110,17 +110,32 @@ void GenerateX64::defSystemFunDecls() {
 }
 
 void GenerateX64::mainEntry() {
+  atl::string mainMangle;
+  for (unsigned int idx = 0u; idx < progAST->decls.size(); ++idx) {
+    const atl::shared_ptr<Decl> &decl = progAST->decls[idx];
+    if (decl->astClass() == "FunDef" || decl->astClass() == "FunDecl") {
+      const atl::shared_ptr<FunDecl> funDecl =
+          atl::static_pointer_cast<FunDecl>(decl);
+      if (funDecl->funIdentifier->value == "main") {
+        mainMangle = funDecl->getSignature().mangle();
+        break;
+      }
+    }
+  }
+
   x64.block("_main");
   x64.indent();
   // Save the state of the stack, and align it to 16 bytes.
+  // On entry, rdi = argc, rsi = argv
   x64.mov(x64.rax, x64.rsp);
   x64.write("and rsp, -16");
   x64.push(x64.rax);
   x64.push(x64.rbp);
   x64.mov(x64.rbp, x64.rsp);
-  // Call our main.
-  x64.call("main_int__char_ptr_ptr_");
-  // Restore state.
+  
+  // rdi and rsi already contain argc and argv from the OS
+  x64.call(mainMangle);
+  
   x64.pop(x64.rbp);
   x64.pop(x64.rcx);
   x64.mov(x64.rsp, x64.rcx);
