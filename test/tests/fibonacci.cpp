@@ -1,28 +1,30 @@
-void print_s(char *s) {}
+void printf(char *, char *);
+void printf(char *, int);
 
-void print_i(int i) {}
+void print_s(char *s) { printf("%s", s); }
 
-void print_c(char c) {}
+void print_i(int i) { printf("%d", i); }
 
-char read_c() { return 'c'; }
-
-int read_i() { return 0; }
-
-void *mcmalloc(int size) {
-  void *out;
-  return out;
+int stoi(char *str) {
+  int output;
+  int idx;
+  output = 0;
+  idx = 0;
+  while (str[idx] != '\0') {
+    output = output * 10 + static_cast<int>(str[idx]) - static_cast<int>('0');
+    idx = idx + 1;
+  }
+  return output;
 }
 
-void main() {
+int main(int argc, char **argv) {
   int n;
   int first;
   int second;
   int next;
   int c;
-  char t;
 
-  // read n from the standard input
-  n = read_i();
+  n = stoi(argv[1]);
 
   first = 0;
   second = 1;
@@ -44,4 +46,6 @@ void main() {
     print_s(" ");
     c = c + 1;
   }
+
+  return 0;
 }
