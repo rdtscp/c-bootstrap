@@ -16,7 +16,7 @@ atl::shared_ptr<SourceMemHandler> GenerateX64::run() {
   visit(*progAST);
   // Write all the data section last.
   x64.write("SECTION .data");
-  for (uint32_t i = 0u; i < stringLiterals.size(); ++i) {
+  for (unsigned int i = 0u; i < stringLiterals.size(); ++i) {
     const atl::shared_ptr<X64::StringLiteral> &strLiteral = stringLiterals[i];
     x64.string_literal(strLiteral->strName, strLiteral->strVal);
   }
@@ -449,7 +449,7 @@ atl::shared_ptr<X64::Operand> GenerateX64::visit(ConstructorCall &cc) {
           "Load the address of: " + objToCtruct->identifier->toString());
 
   const atl::shared_ptr<ConstructorDecl> ctorDecl = cc.constructorDecl.lock();
-  for (uint argNum = 0; argNum < cc.constructorArgs.size(); ++argNum) {
+  for (unsigned int argNum = 0; argNum < cc.constructorArgs.size(); ++argNum) {
     atl::shared_ptr<X64::Operand> argReg =
         cc.constructorArgs[argNum]->accept(*this);
     if (ctorDecl->constructorParams[argNum + 1]->type->astClass() ==
