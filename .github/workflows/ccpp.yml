@@ -130,11 +130,11 @@ jobs:
 
     - name: Get Coverage
       run: |
-        lcov --directory ./build/ --capture --output-file coverage.info
-        lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info
-        lcov --remove coverage.info '*/gtest/*' "${HOME}"'/.cache/*' --output-file coverage.info
+        lcov --directory ./build/ --capture --output-file coverage.info --ignore-errors mismatch,gcov
+        lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info --ignore-errors mismatch,unused
+        lcov --remove coverage.info '*/gtest/*' "${HOME}"'/.cache/*' --output-file coverage.info --ignore-errors mismatch,unused
 
-        lcov --remove coverage.info '*/atl/*' "${HOME}"'/.cache/*' --output-file coverage.info
+        lcov --remove coverage.info '*/atl/*' "${HOME}"'/.cache/*' --output-file coverage.info --ignore-errors mismatch,unused
         lcov --list coverage.info
 
     - name: Upload Coverage

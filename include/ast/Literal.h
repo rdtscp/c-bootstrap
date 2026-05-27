@@ -10,6 +10,8 @@ public:
 
   Literal(const atl::string &p_value) : value(p_value) {}
   virtual ~Literal() {}
+  using Expr::operator==;
+  using Expr::operator!=;
   virtual bool operator==(Expr &rhs) const = 0;
   virtual bool operator!=(Expr &rhs) const = 0;
   virtual bool operator==(Literal &rhs) const = 0;
