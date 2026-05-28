@@ -12,8 +12,8 @@ class LinkerBuilder final {
 
 public:
   LinkerBuilder(const atl::shared_ptr<SourceHandler> &assembly,
-                const atl::string &outFilename)
-      : m_assembly(assembly), m_outFilename(outFilename) {}
+                const atl::string &outFilename, bool dumpAsm = false)
+      : m_assembly(assembly), m_outFilename(outFilename), m_dumpAsm(dumpAsm) {}
 
   atl::string linkAndBuild() {
     const atl::string temp_s_filename = "temp.s";
@@ -25,6 +25,17 @@ public:
       printf("Nasm Failed\n");
       throw;
     }
+
+    if (m_dumpAsm) {
+      const atl::string asm_filename = m_outFilename + ".s";
+      const atl::string copy_cmd = "cp " + temp_s_filename + " " + asm_filename;
+      const int copy_status = system(copy_cmd.c_str());
+      if (copy_status != 0) {
+        printf("Copy assembly file failed: `%s`\n", copy_cmd.c_str());
+        throw;
+      }
+    }
+
 #ifdef __APPLE__
     const atl::string obj_filename = "temp.o";
     const atl::string ld_cmd = "ld -no_pie -macosx_version_min 10.15 "
@@ -36,7 +47,7 @@ public:
       printf("ld Failed: `%s`\n", ld_cmd.c_str());
       throw;
     }
-    
+
     { // Remove temp.s
       const atl::string delete_cmd = "rm ./" + temp_s_filename;
       const int delete_status = system(delete_cmd.c_str());
@@ -63,6 +74,7 @@ public:
 private:
   atl::shared_ptr<SourceHandler> m_assembly;
   atl::string m_outFilename;
+  bool m_dumpAsm;
 
   void createTempAssemblyFile(const atl::string &temp_s_filename) {
     atl::ofstream temp_s(temp_s_filename);
