@@ -13,7 +13,7 @@
 int main(int argc, char const *argv[]) {
   if (argc < 3) {
     printf("Usage: acc <input> <output> [ --graph |  --opt | "
-           "--preprocess ]\n");
+           "--preprocess | --dump-asm ]\n");
     return 1;
   }
   const atl::string inFilename(argv[1]);
@@ -22,6 +22,7 @@ int main(int argc, char const *argv[]) {
   bool outputGraph = false;
   bool optimise = false;
   bool preprocess = false;
+  bool dumpAsm = false;
   if (argc > 2) {
     for (int i = 3; i < argc; ++i) {
       const atl::string flag(argv[i]);
@@ -31,6 +32,8 @@ int main(int argc, char const *argv[]) {
         optimise = true;
       if (flag == "--preprocess")
         preprocess = true;
+      if (flag == "--dump-asm")
+        dumpAsm = true;
     }
   }
 
@@ -80,7 +83,7 @@ int main(int argc, char const *argv[]) {
       const atl::shared_ptr<ACC::SourceMemHandler> assembly =
           x64Generator.run();
 
-      ACC::LinkerBuilder linkerBuilder(assembly, outFilename);
+      ACC::LinkerBuilder linkerBuilder(assembly, outFilename, dumpAsm);
       const atl::string binary = linkerBuilder.linkAndBuild();
       printf("Built Binary: '%s'\n", binary.c_str());
     }
